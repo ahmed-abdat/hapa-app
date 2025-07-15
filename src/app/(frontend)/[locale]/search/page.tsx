@@ -7,14 +7,26 @@ import React from 'react'
 import { Search } from '@/search/Component'
 import PageClient from './page.client'
 import { CardPostData } from '@/components/Card'
+import { t } from '@/utilities/translations'
+import { isValidLocale, type Locale } from '@/utilities/locale'
+import { notFound } from 'next/navigation'
 
 type Args = {
+  params: Promise<{
+    locale: string
+  }>
   searchParams: Promise<{
     q: string
   }>
 }
-export default async function Page({ searchParams: searchParamsPromise }: Args) {
+export default async function Page({ params: paramsPromise, searchParams: searchParamsPromise }: Args) {
+  const { locale } = await paramsPromise
   const { q: query } = await searchParamsPromise
+  
+  if (!isValidLocale(locale)) {
+    notFound()
+  }
+  
   const payload = await getPayload({ config: configPromise })
 
   const posts = await payload.find({
@@ -73,9 +85,9 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
       </div>
 
       {posts.totalDocs > 0 ? (
-        <CollectionArchive posts={posts.docs as CardPostData[]} />
+        <CollectionArchive posts={posts.docs as CardPostData[]} locale={locale} />
       ) : (
-        <div className="container">No results found.</div>
+        <div className="container">{t('noResults', locale)}</div>
       )}
     </div>
   )

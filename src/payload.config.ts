@@ -29,6 +29,9 @@ export default buildConfig({
       htmlAttributes: {
         suppressHydrationWarning: true,
       },
+      bodyAttributes: {
+        suppressHydrationWarning: true,
+      },
     },
     components: {
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.

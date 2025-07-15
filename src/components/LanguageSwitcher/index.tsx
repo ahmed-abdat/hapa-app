@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation'
 import { locales, getLocaleName, type Locale } from '@/utilities/locale'
+import { Globe } from 'lucide-react'
 
 type Props = {
   currentLocale: Locale
@@ -19,20 +20,24 @@ export const LanguageSwitcher: React.FC<Props> = ({ currentLocale }) => {
   }
 
   return (
-    <div className="flex gap-2">
-      {locales.map((locale) => (
-        <button
-          key={locale}
-          onClick={() => handleLocaleChange(locale)}
-          className={`px-3 py-1 text-sm rounded ${
-            locale === currentLocale
-              ? 'bg-primary text-primary-foreground'
-              : 'bg-muted text-muted-foreground hover:bg-muted/80'
-          }`}
-        >
-          {getLocaleName(locale)}
-        </button>
-      ))}
+    <div className="flex items-center gap-2">
+      <Globe className="w-4 h-4 text-primary" />
+      <div className="flex gap-1">
+        {locales.map((locale) => (
+          <button
+            key={locale}
+            onClick={() => handleLocaleChange(locale)}
+            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+              locale === currentLocale
+                ? 'bg-primary text-white shadow-sm'
+                : 'text-gray-700 hover:text-primary hover:bg-gray-50'
+            }`}
+            aria-label={`Switch to ${getLocaleName(locale)}`}
+          >
+            {getLocaleName(locale)}
+          </button>
+        ))}
+      </div>
     </div>
   )
 }

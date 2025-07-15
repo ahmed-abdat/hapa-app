@@ -110,6 +110,8 @@ const queryPageBySlug = cache(async ({ slug, locale }: { slug: string; locale: L
   const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayload({ config: configPromise })
+  
+  const shouldDisableFallback = locale && locale !== 'fr'
 
   const result = await payload.find({
     collection: 'pages',
@@ -118,6 +120,7 @@ const queryPageBySlug = cache(async ({ slug, locale }: { slug: string; locale: L
     pagination: false,
     overrideAccess: draft,
     locale,
+    fallbackLocale: shouldDisableFallback ? false : undefined,
     where: {
       slug: {
         equals: slug,

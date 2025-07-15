@@ -7,6 +7,8 @@ import React, { Fragment } from 'react'
 import type { Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
+import { t } from '@/utilities/translations'
+import { type Locale } from '@/utilities/locale'
 
 export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
 
@@ -17,9 +19,10 @@ export const Card: React.FC<{
   relationTo?: 'posts'
   showCategories?: boolean
   title?: string
+  locale?: Locale
 }> = (props) => {
   const { card, link } = useClickableCard({})
-  const { className, doc, relationTo, showCategories, title: titleFromProps } = props
+  const { className, doc, relationTo, showCategories, title: titleFromProps, locale = 'fr' } = props
 
   const { slug, categories, meta, title } = doc || {}
   const { description, image: metaImage } = meta || {}
@@ -27,7 +30,7 @@ export const Card: React.FC<{
   const hasCategories = categories && Array.isArray(categories) && categories.length > 0
   const titleToUse = titleFromProps || title
   const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
-  const href = `/${relationTo}/${slug}`
+  const href = `/${locale}/${relationTo}/${slug}`
 
   return (
     <article
@@ -38,7 +41,7 @@ export const Card: React.FC<{
       ref={card.ref}
     >
       <div className="relative w-full ">
-        {!metaImage && <div className="">No image</div>}
+        {!metaImage && <div className="text-muted-foreground text-sm p-4">{t('noImage', locale)}</div>}
         {metaImage && typeof metaImage !== 'string' && <Media resource={metaImage} size="33vw" />}
       </div>
       <div className="p-4">
@@ -50,7 +53,7 @@ export const Card: React.FC<{
                   if (typeof category === 'object') {
                     const { title: titleFromCategory } = category
 
-                    const categoryTitle = titleFromCategory || 'Untitled category'
+                    const categoryTitle = titleFromCategory || t('untitledCategory', locale)
 
                     const isLast = index === categories.length - 1
 

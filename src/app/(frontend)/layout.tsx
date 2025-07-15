@@ -29,7 +29,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="grammarly-disable-indicator" content="true" />
         <meta name="grammarly-disable-editor" content="true" />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <Providers>
           <LocaleHandler />
           <AdminBar

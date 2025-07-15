@@ -37,7 +37,19 @@ export const SlugComponent: React.FC<SlugComponentProps> = ({
 
   // The value of the field we're listening to for the slug
   const targetFieldValue = useFormFields(([fields]) => {
-    return fields[fieldToUse]?.value as string
+    const fieldValue = fields[fieldToUse]?.value
+    
+    // Always use French ('fr') for slug generation, regardless of current locale
+    if (fieldValue && typeof fieldValue === 'object') {
+      // If it's a localized field, only use French if it exists and is not empty
+      if ('fr' in fieldValue && fieldValue.fr && fieldValue.fr.trim()) {
+        return fieldValue.fr as string
+      }
+      // Return empty string if French doesn't exist or is empty
+      return ''
+    }
+    
+    return fieldValue as string
   })
 
   useEffect(() => {

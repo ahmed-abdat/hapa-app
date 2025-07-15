@@ -50,22 +50,37 @@ export const Posts: CollectionConfig<'posts'> = {
   admin: {
     defaultColumns: ['title', 'slug', 'updatedAt'],
     livePreview: {
-      url: ({ data, req }) => {
+      url: ({ data, req, locale }) => {
+        // Check if French title exists for slug generation
+        const frenchTitle = data?.title?.fr
+        if (!frenchTitle || !frenchTitle.trim()) {
+          return null // This will disable the preview button
+        }
+
         const path = generatePreviewPath({
           slug: typeof data?.slug === 'string' ? data.slug : '',
           collection: 'posts',
           req,
+          locale: locale?.code,
         })
 
         return path
       },
     },
-    preview: (data, { req }) =>
-      generatePreviewPath({
+    preview: (data, { req, locale }) => {
+      // Check if French title exists for slug generation
+      const frenchTitle = data?.title?.fr
+      if (!frenchTitle || !frenchTitle.trim()) {
+        return null // This will disable the preview button
+      }
+
+      return generatePreviewPath({
         slug: typeof data?.slug === 'string' ? data.slug : '',
         collection: 'posts',
         req,
-      }),
+        locale: locale?.code,
+      })
+    },
     useAsTitle: 'title',
   },
   fields: [

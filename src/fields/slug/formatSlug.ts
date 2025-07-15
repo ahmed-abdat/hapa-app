@@ -13,12 +13,22 @@ export const formatSlugHook =
       return formatSlug(value)
     }
 
-    if (operation === 'create' || !data?.slug) {
-      const fallbackData = data?.[fallback] || data?.[fallback]
+    // Always generate slug from French title if it exists, regardless of operation
+    if (operation === 'create' || operation === 'update' || !data?.slug) {
+      let fallbackData = data?.[fallback]
 
-      if (fallbackData && typeof fallbackData === 'string') {
+      // Handle localized fields - always use French ('fr') for slug generation
+      if (fallbackData && typeof fallbackData === 'object' && 'fr' in fallbackData) {
+        fallbackData = fallbackData.fr
+      }
+
+      // Only generate slug if French title exists and is not empty
+      if (fallbackData && typeof fallbackData === 'string' && fallbackData.trim()) {
         return formatSlug(fallbackData)
       }
+      
+      // Return empty string if no French title
+      return ''
     }
 
     return value

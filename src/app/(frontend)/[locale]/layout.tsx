@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import React from 'react'
-import { isValidLocale, type Locale } from '@/utilities/locale'
+import { isValidLocale, type Locale as _Locale } from '@/utilities/locale'
 
 type Props = {
   children: React.ReactNode
