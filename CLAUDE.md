@@ -213,3 +213,7 @@ This is a **production-ready** HAPA government website with:
 - ✅ Vercel deployment ready
 
 **Ready for content migration from Drupal 7 and go-live.**
+
+## Commit Guidelines
+
+- **Important**: Do not mention Claude Code in commit messages

@@ -55,6 +55,13 @@ const config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      spacing: {
+        'header-x': '1rem',        // 16px - consistent horizontal spacing
+        'header-y': '1rem',        // 16px - consistent vertical spacing
+        'nav-gap': '0.5rem',       // 8px - navigation items gap
+        'section-gap': '1.5rem',   // 24px - section spacing
+        'action-gap': '1rem',      // 16px - action items gap
+      },
       colors: {
         accent: {
           DEFAULT: 'hsl(var(--accent))',
