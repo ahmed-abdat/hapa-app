@@ -284,6 +284,11 @@ Defined in `src/app/(frontend)/globals.css`:
 3. **Focus on practical examples** with working code snippets
 4. **Test bilingual functionality** (French/Arabic) for all changes
 
+## Commit Guidelines
+
+### Commit Practices
+- Do not mention claude code on the commit
+
 ## Project Status
 
 This is a **production-ready** HAPA government website featuring:
