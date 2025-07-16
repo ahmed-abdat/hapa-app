@@ -85,11 +85,14 @@ export async function generateStaticParams() {
   })
 
   const totalPages = Math.ceil(totalDocs / 10)
+  const locales = ['fr', 'ar']
 
-  const pages: { pageNumber: string }[] = []
+  const pages: { pageNumber: string; locale: string }[] = []
 
-  for (let i = 1; i <= totalPages; i++) {
-    pages.push({ pageNumber: String(i) })
+  for (const locale of locales) {
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push({ pageNumber: String(i), locale })
+    }
   }
 
   return pages
