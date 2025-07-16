@@ -8,7 +8,7 @@ import { Search } from '@/search/Component'
 import PageClient from './page.client'
 import { CardPostData } from '@/components/Card'
 import { t } from '@/utilities/translations'
-import { isValidLocale, type Locale } from '@/utilities/locale'
+import { isValidLocale } from '@/utilities/locale'
 import { notFound } from 'next/navigation'
 
 type Args = {

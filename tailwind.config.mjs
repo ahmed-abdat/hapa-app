@@ -96,6 +96,10 @@ const config = {
       fontFamily: {
         mono: ['var(--font-geist-mono)'],
         sans: ['var(--font-geist-sans)'],
+        'arabic-sans': ['var(--font-arabic-noto)', 'Noto Sans Arabic', 'Segoe UI', 'Tahoma', 'Arial', 'sans-serif'],
+        'arabic-display': ['var(--font-arabic-cairo)', 'Cairo', 'Noto Sans Arabic', 'Segoe UI', 'sans-serif'],
+        'arabic-tajawal': ['var(--font-arabic-tajawal)', 'Tajawal', 'Arial', 'sans-serif'],
+        'arabic-amiri': ['var(--font-arabic-amiri)', 'Amiri', 'Times New Roman', 'serif'],
       },
       keyframes: {
         'accordion-down': {

@@ -14,11 +14,12 @@ export const revalidate = 600
 type Args = {
   params: Promise<{
     pageNumber: string
+    locale: string
   }>
 }
 
 export default async function Page({ params: paramsPromise }: Args) {
-  const { pageNumber } = await paramsPromise
+  const { pageNumber, locale } = await paramsPromise
   const payload = await getPayload({ config: configPromise })
 
   const sanitizedPageNumber = Number(pageNumber)
@@ -77,11 +78,14 @@ export async function generateStaticParams() {
   })
 
   const totalPages = Math.ceil(totalDocs / 10)
+  const locales = ['fr', 'ar']
 
-  const pages: { pageNumber: string }[] = []
+  const pages: { pageNumber: string; locale: string }[] = []
 
-  for (let i = 1; i <= totalPages; i++) {
-    pages.push({ pageNumber: String(i) })
+  for (const locale of locales) {
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push({ pageNumber: String(i), locale })
+    }
   }
 
   return pages
