@@ -43,37 +43,43 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({}) => {
       <div className="bg-primary text-white">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex items-center justify-between py-2 text-xs lg:text-sm">
-            <div className="flex items-center gap-x-4">
-              <span className="font-medium">
-                {validLocale === "ar"
-                  ? "الجمهورية الإسلامية الموريتانية"
-                  : "République Islamique de Mauritanie"}
-              </span>
-              <span className="text-primary-foreground/80">
-                {validLocale === "ar"
-                  ? "شرف - عدل - عمل"
-                  : "Honneur - Justice - Travail"}
-              </span>
-            </div>
-            <div className="hidden md:flex items-center gap-x-2 text-xs">
-              <span className="text-primary-foreground/80">
-                {validLocale === "ar" ? "الموقع الرسمي" : "Site officiel"}
-              </span>
-              <div className="w-2 h-2 bg-secondary rounded-full"></div>
-              <span className="text-primary-foreground/80">www.hapa.mr</span>
-            </div>
+            {validLocale === "ar" ? (
+              <>
+                <div className="hidden md:flex items-center gap-x-2 text-xs">
+                  <span className="text-primary-foreground/80">www.hapa.mr</span>
+                  <div className="w-2 h-2 bg-secondary rounded-full"></div>
+                  <span className="text-primary-foreground/80">الموقع الرسمي</span>
+                </div>
+                <div className="flex items-center gap-x-4">
+                  <span className="text-primary-foreground/80">شرف - عدل - عمل</span>
+                  <span className="font-medium">الجمهورية الإسلامية الموريتانية</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-x-4">
+                  <span className="font-medium">République Islamique de Mauritanie</span>
+                  <span className="text-primary-foreground/80">Honneur - Justice - Travail</span>
+                </div>
+                <div className="hidden md:flex items-center gap-x-2 text-xs">
+                  <span className="text-primary-foreground/80">Site officiel</span>
+                  <div className="w-2 h-2 bg-secondary rounded-full"></div>
+                  <span className="text-primary-foreground/80">www.hapa.mr</span>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Main Header - Simplified layout without customer service */}
-      <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between py-4 lg:py-5">
+      {/* Main Header - Consistent spacing layout */}
+      <div className="w-full px-header-x sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between py-header-y lg:py-5">
           {/* Logo and Organization Info */}
-          <div className="flex items-center gap-x-3">
+          <div className="flex items-center gap-6">
             <Link
               href={`/${validLocale}`}
-              className="flex items-center gap-x-3 hover:opacity-80 transition-opacity group"
+              className="flex items-center gap-3 hover:opacity-80 transition-opacity group"
             >
               {/* Official Government Seal/Logo */}
               <div className="relative">
