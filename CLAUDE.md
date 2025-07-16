@@ -272,6 +272,18 @@ Defined in `src/app/(frontend)/globals.css`:
 3. **Migrations**: Automatic database migrations via `pnpm ci`
 4. **Monitoring**: Performance and error tracking enabled
 
+## Documentation
+
+### Essential Documentation
+- **docs/DEVELOPMENT_GUIDE.md** - Development patterns, common mistakes, and current improvements
+- **docs/MULTILINGUAL_SLUG_IMPROVEMENTS.md** - Detailed tracking of slug generation enhancements
+
+### Development Best Practices
+1. **Check docs/DEVELOPMENT_GUIDE.md first** for common patterns and mistakes
+2. **Update documentation** when you learn something new or fix an issue
+3. **Focus on practical examples** with working code snippets
+4. **Test bilingual functionality** (French/Arabic) for all changes
+
 ## Project Status
 
 This is a **production-ready** HAPA government website featuring:
@@ -280,5 +292,6 @@ This is a **production-ready** HAPA government website featuring:
 - ✅ Government branding and accessibility compliance
 - ✅ SEO optimization and performance focus
 - ✅ Secure deployment on Vercel Pro
+- ✅ Comprehensive documentation and knowledge base
 
 The project is ready for content migration and production use.

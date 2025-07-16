@@ -8,17 +8,24 @@ import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
 import { notFound } from 'next/navigation'
+import { isValidLocale } from '@/utilities/locale'
 
 export const revalidate = 600
 
 type Args = {
   params: Promise<{
     pageNumber: string
+    locale: string
   }>
 }
 
 export default async function Page({ params: paramsPromise }: Args) {
-  const { pageNumber } = await paramsPromise
+  const { pageNumber, locale } = await paramsPromise
+  
+  if (!isValidLocale(locale)) {
+    notFound()
+  }
+  
   const payload = await getPayload({ config: configPromise })
 
   const sanitizedPageNumber = Number(pageNumber)
@@ -30,6 +37,7 @@ export default async function Page({ params: paramsPromise }: Args) {
     depth: 1,
     limit: 12,
     page: sanitizedPageNumber,
+    locale,
     overrideAccess: false,
   })
 
