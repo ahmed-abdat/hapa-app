@@ -1,5 +1,7 @@
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
+import { fr } from '@payloadcms/translations/languages/fr'
+import { ar } from '@payloadcms/translations/languages/ar'
 
 import sharp from 'sharp' // sharp-import
 import path from 'path'
@@ -26,12 +28,6 @@ export default buildConfig({
     meta: {
       titleSuffix: '- HAPA Admin',
       description: 'HAPA Media Regulatory Authority Admin Panel',
-      htmlAttributes: {
-        suppressHydrationWarning: true,
-      },
-      bodyAttributes: {
-        suppressHydrationWarning: true,
-      },
     },
     components: {
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
@@ -66,6 +62,26 @@ export default buildConfig({
           height: 900,
         },
       ],
+    },
+  },
+  // Admin Interface Internationalization (French and Arabic only)
+  i18n: {
+    supportedLanguages: { fr, ar },
+    translations: {
+      fr: {
+        // Plugin-generated collections
+        'general:forms': 'Formulaires',
+        'general:form-submissions': 'Soumissions de formulaires',
+        'general:redirects': 'Redirections',
+        'general:search': 'Résultats de recherche',
+      },
+      ar: {
+        // Plugin-generated collections
+        'general:forms': 'نماذج',
+        'general:form-submissions': 'إرسالات النماذج',
+        'general:redirects': 'عمليات إعادة التوجيه',
+        'general:search': 'نتائج البحث',
+      },
     },
   },
   localization: {

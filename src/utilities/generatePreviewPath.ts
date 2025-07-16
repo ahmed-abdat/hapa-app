@@ -18,6 +18,7 @@ export const generatePreviewPath = ({ collection, slug, locale }: Props) => {
   const basePath = `${collectionPrefixMap[collection]}/${slug}`
   const localizedPath = `/${currentLocale}${basePath}`
   
+  
   const encodedParams = new URLSearchParams({
     slug,
     collection,

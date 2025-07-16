@@ -12,6 +12,7 @@ import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
+import { enforceFrenchLocale } from '@/utilities/hooks/enforceFrenchLocale'
 
 import {
   MetaDescriptionField,
@@ -23,6 +24,16 @@ import {
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
+  labels: {
+    singular: {
+      fr: 'Page',
+      ar: 'صفحة'
+    },
+    plural: {
+      fr: 'Pages',
+      ar: 'صفحات'
+    }
+  },
   access: {
     create: authenticated,
     delete: authenticated,
@@ -38,19 +49,34 @@ export const Pages: CollectionConfig<'pages'> = {
   },
   admin: {
     defaultColumns: ['title', 'slug', 'updatedAt'],
+    components: {
+      edit: {
+        beforeDocumentControls: [
+          '@/components/ForceLocaleMessage/index.tsx#ForceLocaleMessage',
+        ],
+      },
+    },
     livePreview: {
       url: ({ data, req, locale }) => {
         // Check if French title exists for slug generation
-        const frenchTitle = data?.title?.fr
+        const frenchTitle = data?.title && typeof data.title === 'object' && 'fr' in data.title 
+          ? data.title.fr 
+          : null
         if (!frenchTitle || !frenchTitle.trim()) {
-          return null // This will disable the preview button
+          return '' // Return empty string to disable preview for pages without French title
+        }
+
+        // Ensure we have a valid slug
+        const slug = typeof data?.slug === 'string' && data.slug.trim() ? data.slug : ''
+        if (!slug) {
+          return '' // Return empty string if no slug is available
         }
 
         const path = generatePreviewPath({
-          slug: typeof data?.slug === 'string' ? data.slug : '',
+          slug,
           collection: 'pages',
           req,
-          locale: locale?.code,
+          locale: (locale && typeof locale === 'object' && 'code' in locale) ? String((locale as { code: string }).code) : String(locale || 'fr'),
         })
 
         return path
@@ -58,16 +84,24 @@ export const Pages: CollectionConfig<'pages'> = {
     },
     preview: (data, { req, locale }) => {
       // Check if French title exists for slug generation
-      const frenchTitle = data?.title?.fr
+      const frenchTitle = data?.title && typeof data.title === 'object' && 'fr' in data.title 
+        ? data.title.fr 
+        : null
       if (!frenchTitle || !frenchTitle.trim()) {
-        return null // This will disable the preview button
+        return '' // Return empty string to disable preview for pages without French title
+      }
+
+      // Ensure we have a valid slug
+      const slug = typeof data?.slug === 'string' && data.slug.trim() ? data.slug : ''
+      if (!slug) {
+        return '' // Return empty string if no slug is available
       }
 
       return generatePreviewPath({
-        slug: typeof data?.slug === 'string' ? data.slug : '',
+        slug,
         collection: 'pages',
         req,
-        locale: locale?.code,
+        locale: (locale && typeof locale === 'object' && 'code' in locale) ? String((locale as { code: string }).code) : String(locale || 'fr'),
       })
     },
     useAsTitle: 'title',
@@ -140,6 +174,7 @@ export const Pages: CollectionConfig<'pages'> = {
     ...slugField(),
   ],
   hooks: {
+    beforeOperation: [enforceFrenchLocale],
     afterChange: [revalidatePage],
     beforeChange: [populatePublishedAt],
     afterDelete: [revalidateDelete],

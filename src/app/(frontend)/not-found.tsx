@@ -1,5 +1,6 @@
 import React from 'react'
 import { Metadata } from 'next'
+import Link from 'next/link'
 
 export default function NotFound() {
   return (
@@ -8,12 +9,12 @@ export default function NotFound() {
       <p className="text-lg mb-8">
         The page you are looking for does not exist.
       </p>
-      <a 
+      <Link 
         href="/" 
         className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-md hover:bg-primary/90 transition-colors"
       >
         Return Home
-      </a>
+      </Link>
     </div>
   )
 }

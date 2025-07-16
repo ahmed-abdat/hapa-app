@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "env": {}
+    },
+    "exa-search": {
+      "url": "https://server.smithery.ai/exa/mcp",
+      "transport": "http",
+      "env": {
+        "API_KEY": "${EXA_API_KEY}",
+        "PROFILE": "${EXA_PROFILE}"
+      }
+    },
+    "brave-search": {
+      "url": "https://server.smithery.ai/@smithery-ai/brave-search/mcp",
+      "transport": "http",
+      "env": {
+        "API_KEY": "${BRAVE_API_KEY}",
+        "PROFILE": "${BRAVE_PROFILE}"
+      }
+    }
+  }
+}
