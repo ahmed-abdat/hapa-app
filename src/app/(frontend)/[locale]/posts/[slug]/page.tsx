@@ -28,8 +28,13 @@ export async function generateStaticParams() {
     },
   })
 
-  const params = posts.docs.map(({ slug }) => {
-    return { slug }
+  const locales = ['fr', 'ar']
+  const params: { locale: string; slug: string }[] = []
+
+  posts.docs.forEach(({ slug }) => {
+    locales.forEach((locale) => {
+      params.push({ locale, slug })
+    })
   })
 
   return params

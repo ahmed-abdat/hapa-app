@@ -84,7 +84,7 @@ export async function generateStaticParams() {
     overrideAccess: false,
   })
 
-  const totalPages = Math.ceil(totalDocs / 10)
+  const totalPages = Math.ceil(totalDocs / 12)
   const locales = ['fr', 'ar']
 
   const pages: { pageNumber: string; locale: string }[] = []

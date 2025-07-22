@@ -58,19 +58,45 @@ export const Pages: CollectionConfig<'pages'> = {
     },
     livePreview: {
       url: ({ data, req, locale }) => {
+        console.log('🔍 LIVE PREVIEW DEBUG - Input data:', {
+          dataId: data?.id,
+          dataSlug: data?.slug,
+          dataTitle: data?.title,
+          locale,
+          localeType: typeof locale
+        })
+
         // Check if French title exists for slug generation
         const frenchTitle = data?.title && typeof data.title === 'object' && 'fr' in data.title 
           ? data.title.fr 
+          : typeof data?.title === 'string' 
+          ? data.title 
           : null
+        
+        console.log('🔍 LIVE PREVIEW DEBUG - French title check:', {
+          titleType: typeof data?.title,
+          isObject: typeof data?.title === 'object',
+          hasFr: data?.title && typeof data.title === 'object' && 'fr' in data.title,
+          frenchTitle
+        })
+        
         if (!frenchTitle || !frenchTitle.trim()) {
+          console.log('🚫 LIVE PREVIEW DEBUG - No French title found')
           return '' // Return empty string to disable preview for pages without French title
         }
 
         // Ensure we have a valid slug
         const slug = typeof data?.slug === 'string' && data.slug.trim() ? data.slug : ''
         if (!slug) {
+          console.log('🚫 LIVE PREVIEW DEBUG - No slug found')
           return '' // Return empty string if no slug is available
         }
+
+        console.log('✅ LIVE PREVIEW DEBUG - Generating preview path with:', {
+          slug,
+          collection: 'pages',
+          locale: (locale && typeof locale === 'object' && 'code' in locale) ? String((locale as { code: string }).code) : String(locale || 'fr')
+        })
 
         const path = generatePreviewPath({
           slug,
@@ -79,30 +105,60 @@ export const Pages: CollectionConfig<'pages'> = {
           locale: (locale && typeof locale === 'object' && 'code' in locale) ? String((locale as { code: string }).code) : String(locale || 'fr'),
         })
 
+        console.log('✅ LIVE PREVIEW DEBUG - Generated path:', path)
         return path
       },
     },
     preview: (data, { req, locale }) => {
+      console.log('🔍 PREVIEW DEBUG - Input data:', {
+        dataId: data?.id,
+        dataSlug: data?.slug,
+        dataTitle: data?.title,
+        locale,
+        localeType: typeof locale
+      })
+
       // Check if French title exists for slug generation
       const frenchTitle = data?.title && typeof data.title === 'object' && 'fr' in data.title 
         ? data.title.fr 
+        : typeof data?.title === 'string' 
+        ? data.title 
         : null
+      
+      console.log('🔍 PREVIEW DEBUG - French title check:', {
+        titleType: typeof data?.title,
+        isObject: typeof data?.title === 'object',
+        hasFr: data?.title && typeof data.title === 'object' && 'fr' in data.title,
+        frenchTitle
+      })
+      
       if (!frenchTitle || !frenchTitle.trim()) {
+        console.log('🚫 PREVIEW DEBUG - No French title found')
         return '' // Return empty string to disable preview for pages without French title
       }
 
       // Ensure we have a valid slug
       const slug = typeof data?.slug === 'string' && data.slug.trim() ? data.slug : ''
       if (!slug) {
+        console.log('🚫 PREVIEW DEBUG - No slug found')
         return '' // Return empty string if no slug is available
       }
 
-      return generatePreviewPath({
+      console.log('✅ PREVIEW DEBUG - Generating preview path with:', {
+        slug,
+        collection: 'pages',
+        locale: (locale && typeof locale === 'object' && 'code' in locale) ? String((locale as { code: string }).code) : String(locale || 'fr')
+      })
+
+      const path = generatePreviewPath({
         slug,
         collection: 'pages',
         req,
         locale: (locale && typeof locale === 'object' && 'code' in locale) ? String((locale as { code: string }).code) : String(locale || 'fr'),
       })
+
+      console.log('✅ PREVIEW DEBUG - Generated path:', path)
+      return path
     },
     useAsTitle: 'title',
   },
