@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 import type { Header } from "@/payload-types";
 
@@ -15,7 +17,7 @@ interface HeaderClientProps {
   data: Header;
 }
 
-export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
+export const HeaderClient: React.FC<HeaderClientProps> = ({ data: _data }) => {
   /* Storing the value in a useState to avoid hydration errors */
   const [theme, setTheme] = useState<string | null>(null);
   const { headerTheme, setHeaderTheme } = useHeaderTheme();
@@ -39,38 +41,6 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-      {/* Government Identity Bar */}
-      <div className="bg-primary text-white">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex items-center justify-between py-2 text-xs lg:text-sm">
-            {validLocale === "ar" ? (
-              <>
-                <div className="hidden md:flex items-center gap-x-2 text-xs">
-                  <span className="text-primary-foreground/80">www.hapa.mr</span>
-                  <div className="w-2 h-2 bg-secondary rounded-full"></div>
-                  <span className="text-primary-foreground/80">الموقع الرسمي</span>
-                </div>
-                <div className="flex items-center gap-x-4">
-                  <span className="text-primary-foreground/80">شرف - عدل - عمل</span>
-                  <span className="font-medium">الجمهورية الإسلامية الموريتانية</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex items-center gap-x-4">
-                  <span className="font-medium">République Islamique de Mauritanie</span>
-                  <span className="text-primary-foreground/80">Honneur - Justice - Travail</span>
-                </div>
-                <div className="hidden md:flex items-center gap-x-2 text-xs">
-                  <span className="text-primary-foreground/80">Site officiel</span>
-                  <div className="w-2 h-2 bg-secondary rounded-full"></div>
-                  <span className="text-primary-foreground/80">www.hapa.mr</span>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
 
       {/* Main Header - Consistent spacing layout */}
       <div className="w-full px-header-x sm:px-6 lg:px-8">
@@ -103,16 +73,31 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
                     ? "الهيئة العليا للصحافة والإعلام"
                     : "Haute Autorité de la Presse et de l'Audiovisuel"}
                 </p>
-                <p className="text-xs lg:text-xs text-gray-500">
-                  {validLocale === "ar" ? "موريتانيا" : "Mauritanie"}
-                </p>
+
               </div>
             </Link>
           </div>
 
           {/* Navigation */}
           <ModernHeader />
-          <ModernMobileNav />
+          
+          {/* Mobile Navigation with Search */}
+          <div className="flex items-center gap-2 lg:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hover:bg-primary/10 hover:text-primary transition-colors"
+              asChild
+            >
+              <Link href={`/${validLocale}/search`}>
+                <Search className="w-5 h-5" />
+                <span className="sr-only">
+                  {validLocale === "ar" ? "البحث" : "Rechercher"}
+                </span>
+              </Link>
+            </Button>
+            <ModernMobileNav />
+          </div>
         </div>
       </div>
     </header>

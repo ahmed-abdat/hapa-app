@@ -11,6 +11,16 @@ export const translations = {
     noResults: 'Aucun résultat trouvé',
     loading: 'Chargement...',
     noImage: 'Aucune image',
+    // Hero section translations
+    heroTitle: 'Haute Autorité de la Presse et de l\'Audiovisuel',
+    heroSubtitle: 'Réguler le paysage médiatique mauritanien avec transparence et intégrité',
+    applyLicense: 'Demander Licence',
+    contactHapa: 'Nous Contacter',
+    registeredJournalists: 'Journalistes enregistrés',
+    complaintsResolved: 'Plaintes résolues',
+    mediaOperators: 'Opérateurs médiatiques',
+    keyStatistics: 'Statistiques clés',
+    officialRegulatory: 'Autorité de régulation officielle',
   },
   ar: {
     author: 'المؤلف',
@@ -22,6 +32,16 @@ export const translations = {
     noResults: 'لم يتم العثور على نتائج',
     loading: 'جاري التحميل...',
     noImage: 'لا توجد صورة',
+    // Hero section translations
+    heroTitle: 'الهيئة العليا للصحافة والإعلام',
+    heroSubtitle: 'تنظيم المشهد الإعلامي الموريتاني بشفافية ونزاهة',
+    applyLicense: 'طلب ترخيص',
+    contactHapa: 'اتصل بنا',
+    registeredJournalists: 'صحفيون مسجلون',
+    complaintsResolved: 'شكاوى محلولة',
+    mediaOperators: 'المشغلون الإعلاميون',
+    keyStatistics: 'إحصائيات رئيسية',
+    officialRegulatory: 'السلطة التنظيمية الرسمية',
   },
 } as const
 
