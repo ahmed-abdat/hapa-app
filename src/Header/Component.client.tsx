@@ -15,7 +15,7 @@ interface HeaderClientProps {
   data: Header;
 }
 
-export const HeaderClient: React.FC<HeaderClientProps> = ({}) => {
+export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   /* Storing the value in a useState to avoid hydration errors */
   const [theme, setTheme] = useState<string | null>(null);
   const { headerTheme, setHeaderTheme } = useHeaderTheme();

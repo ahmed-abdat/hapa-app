@@ -53,15 +53,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   const { isEnabled: draft } = await draftMode()
   const { locale, slug = 'home' } = await paramsPromise
   
-  console.log('🔍 PAGE DEBUG - Rendering page:', {
-    locale,
-    slug,
-    draft,
-    validLocale: isValidLocale(locale)
-  })
-  
   if (!isValidLocale(locale)) {
-    console.log('🚫 PAGE DEBUG - Invalid locale, returning notFound')
     notFound()
   }
   
@@ -74,21 +66,12 @@ export default async function Page({ params: paramsPromise }: Args) {
     locale,
   })
 
-  console.log('🔍 PAGE DEBUG - Query result:', {
-    pageFound: !!page,
-    pageTitle: page?.title,
-    pageSlug: page?.slug,
-    draft
-  })
-
   // Remove this code once your website is seeded
   if (!page && slug === 'home') {
-    console.log('🏠 PAGE DEBUG - Using homeStatic fallback')
     page = homeStatic
   }
 
   if (!page) {
-    console.log('🚫 PAGE DEBUG - No page found, returning PayloadRedirects')
     return <PayloadRedirects url={url} />
   }
 
@@ -126,13 +109,6 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
 const queryPageBySlug = cache(async ({ slug, locale }: { slug: string; locale: Locale }) => {
   const { isEnabled: draft } = await draftMode()
 
-  console.log('🔍 QUERY PAGE DEBUG - Starting query:', {
-    slug,
-    locale,
-    draft,
-    shouldDisableFallback: locale && locale !== 'fr'
-  })
-
   const payload = await getPayload({ config: configPromise })
   
   const shouldDisableFallback = locale && locale !== 'fr'
@@ -152,17 +128,7 @@ const queryPageBySlug = cache(async ({ slug, locale }: { slug: string; locale: L
     },
   }
 
-  console.log('🔍 QUERY PAGE DEBUG - Query options:', queryOptions)
-
   const result = await payload.find(queryOptions)
-
-  console.log('🔍 QUERY PAGE DEBUG - Query result:', {
-    totalDocs: result.totalDocs,
-    docsCount: result.docs?.length || 0,
-    firstDocSlug: result.docs?.[0]?.slug,
-    firstDocTitle: result.docs?.[0]?.title,
-    firstDocId: result.docs?.[0]?.id
-  })
 
   return result.docs?.[0] || null
 })
