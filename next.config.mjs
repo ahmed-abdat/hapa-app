@@ -16,6 +16,8 @@ const config = withPayload(
       typescript: {
         ignoreBuildErrors: true,
       },
+      // Suppress hydration warnings from browser extensions
+      reactStrictMode: false,
       experimental: {
         fullySpecified: true,
         serverActions: {
@@ -30,6 +32,14 @@ const config = withPayload(
       },
       images: {
         domains: ['localhost'],
+        remotePatterns: [
+          {
+            protocol: 'https',
+            hostname: 'pub-17095e08be3e47baac773bf102d0e3ab.r2.dev',
+            port: '',
+            pathname: '/**',
+          },
+        ],
       },
       webpack: (webpackConfig) => {
         webpackConfig.resolve.extensionAlias = {

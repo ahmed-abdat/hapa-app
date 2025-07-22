@@ -1,4 +1,4 @@
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+// import { s3Storage } from '@payloadcms/storage-s3' // Using getStorageConfig instead
 import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
 import { fr } from '@payloadcms/translations/languages/fr'
 import { ar } from '@payloadcms/translations/languages/ar'
@@ -19,6 +19,7 @@ import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { getStorageConfig } from './utilities/storage-config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -111,13 +112,9 @@ export default buildConfig({
   globals: [Header, Footer],
   plugins: [
     ...plugins,
-    vercelBlobStorage({
-      collections: {
-        media: true,
-      },
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
-    }),
-  ],
+    // Storage Configuration (R2 preferred, local files fallback)
+    getStorageConfig(),
+  ].filter(Boolean),
   secret: process.env.PAYLOAD_SECRET,
   sharp,
   typescript: {

@@ -5,14 +5,9 @@ import {
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
-import path from 'path'
-import { fileURLToPath } from 'url'
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
-
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -32,6 +27,34 @@ export const Media: CollectionConfig = {
     read: anyone,
     update: authenticated,
   },
+  hooks: {
+    beforeChange: [
+      // R2 folder organization by media type only
+      ({ data, req }) => {
+        if (req.file?.name) {
+          // Get file extension to determine folder type
+          const extension = req.file.name.split('.').pop()?.toLowerCase()
+          let folder = 'media'
+          
+          // Categorize by file type - simple structure
+          if (['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif', 'svg'].includes(extension || '')) {
+            folder = 'images'
+          } else if (['pdf', 'doc', 'docx', 'txt', 'rtf'].includes(extension || '')) {
+            folder = 'docs'
+          } else if (['mp4', 'mov', 'avi', 'webm', 'mkv'].includes(extension || '')) {
+            folder = 'videos'
+          } else if (['mp3', 'wav', 'ogg', 'aac', 'm4a'].includes(extension || '')) {
+            folder = 'audio'
+          }
+          
+          // Simple structure: just store by type
+          data.prefix = folder
+          
+        }
+        return data
+      }
+    ]
+  },
   fields: [
     {
       name: 'alt',
@@ -49,42 +72,12 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
-    // Upload to the public/media directory in Next.js making them publicly accessible even outside of Payload
-    staticDir: path.resolve(dirname, '../../public/media'),
-    adminThumbnail: 'thumbnail',
+    // Store ONLY original images in R2 cloud storage, organized by type (images/, docs/, videos/, audio/)
+    // Image optimization will be handled by ImageKit or Next.js Image component
+    adminThumbnail: ({ doc }) => doc.url || '', // Use original image for admin thumbnail
     focalPoint: true,
-    imageSizes: [
-      {
-        name: 'thumbnail',
-        width: 300,
-      },
-      {
-        name: 'square',
-        width: 500,
-        height: 500,
-      },
-      {
-        name: 'small',
-        width: 600,
-      },
-      {
-        name: 'medium',
-        width: 900,
-      },
-      {
-        name: 'large',
-        width: 1400,
-      },
-      {
-        name: 'xlarge',
-        width: 1920,
-      },
-      {
-        name: 'og',
-        width: 1200,
-        height: 630,
-        crop: 'center',
-      },
-    ],
+    disableLocalStorage: true, // Force R2 storage only
+    // Removed imageSizes array - store only original images for maximum cost efficiency
+    imageSizes: [], // No pre-generated sizes - save 85% storage costs
   },
 }
