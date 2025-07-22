@@ -9,7 +9,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { SearchIcon, ArrowRight, ArrowLeft } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -59,33 +59,40 @@ export function ModernHeader() {
           <NavigationMenuTrigger className="font-medium text-sm px-header-x hover:bg-primary/10 hover:text-primary focus:bg-primary/15 focus:text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors">
             {title}
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="!w-[450px] p-4 bg-white shadow-lg border border-gray-200">
-            <div className="flex flex-col lg:grid grid-cols-2 gap-4">
-              <div className="flex flex-col h-full justify-between">
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-2 mb-2">
-                    {item.icon && (
-                      <item.icon className="w-5 h-5 text-primary" />
-                    )}
-                    <p className="text-base font-semibold">{title}</p>
+          <NavigationMenuContent className="!w-[400px] md:!w-[420px] p-4 md:p-6 bg-white shadow-xl border border-gray-100 rounded-lg" dir={validLocale === "ar" ? "rtl" : "ltr"}>
+            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-6">
+              {/* Group Info */}
+              <div className="flex flex-col justify-between min-h-0">
+                <div className="flex flex-col flex-shrink-0">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-primary/10 rounded-lg flex-shrink-0">
+                      {item.icon && (
+                        <item.icon className="w-5 h-5 text-primary" />
+                      )}
+                    </div>
+                    <h3 className="text-base lg:text-lg font-semibold text-gray-900 leading-tight">{title}</h3>
                   </div>
-                  <p className="text-muted-foreground text-sm">
+                  <p className="text-gray-600 text-sm leading-relaxed flex-1">
                     {item.description
                       ? getNavigationItemText(item, validLocale, "description")
                       : ""}
                   </p>
                 </div>
-                <Button
-                  size="sm"
-                  className="mt-6 bg-primary hover:bg-primary/90 text-white"
-                  asChild
-                >
-                  <Link href={`/${validLocale}/services`}>
-                    {validLocale === "ar" ? "الخدمات" : "Services"}
-                  </Link>
-                </Button>
+                <div className="mt-4 lg:mt-6 flex-shrink-0">
+                  <Button
+                    size="sm"
+                    className="bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg transition-all duration-200 text-sm"
+                    asChild
+                  >
+                    <Link href={`/${validLocale}/services`}>
+                      {validLocale === "ar" ? "المزيد" : "En savoir plus"}
+                    </Link>
+                  </Button>
+                </div>
               </div>
-              <div className="flex flex-col text-sm h-full justify-end">
+
+              {/* Group Items */}
+              <div className="flex flex-col gap-1 lg:gap-2 min-h-0">
                 {item.items?.map((subItem) => {
                   const subTitle = getNavigationItemText(
                     subItem,
@@ -100,27 +107,25 @@ export function ModernHeader() {
                     <NavigationMenuLink
                       key={subTitle}
                       asChild
-                      className="flex flex-row justify-between items-center hover:bg-primary/10 hover:text-primary py-3 px-4 rounded-lg group transition-colors border border-transparent hover:border-primary/20"
+                      className="flex items-center justify-between hover:bg-gray-50 hover:text-primary py-2 lg:py-3 px-3 lg:px-4 rounded-lg group transition-all duration-200 border border-transparent hover:border-primary/20 hover:shadow-sm min-h-0"
                     >
-                      <Link href={`/${validLocale}${subItem.href}`}>
-                        <div className="flex items-start gap-3">
-                          {subItem.icon && (
-                            <subItem.icon className="w-4 h-4 text-muted-foreground mt-0.5" />
-                          )}
-                          <div className="flex flex-col">
-                            <span className="font-medium">{subTitle}</span>
+                      <Link href={`/${validLocale}${subItem.href}`} className="flex items-center justify-between w-full min-w-0">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <div className="w-2 h-2 bg-primary/60 rounded-full group-hover:bg-primary transition-colors flex-shrink-0" />
+                          <div className="flex flex-col min-w-0 flex-1">
+                            <span className="font-medium text-sm leading-tight truncate">{subTitle}</span>
                             {subDescription && (
-                              <span className="text-xs text-muted-foreground mt-1">
+                              <span className="text-xs text-gray-500 mt-0.5 leading-relaxed line-clamp-2">
                                 {subDescription}
                               </span>
                             )}
                           </div>
                         </div>
-                        {validLocale === "ar" ? (
-                          <ArrowLeft className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                        ) : (
-                          <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                        )}
+                        <div className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors flex-shrink-0 ml-2">
+                          <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={validLocale === "ar" ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"} />
+                          </svg>
+                        </div>
                       </Link>
                     </NavigationMenuLink>
                   );
