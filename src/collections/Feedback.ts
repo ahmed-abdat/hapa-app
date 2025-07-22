@@ -5,6 +5,16 @@ import { anyone } from '../access/anyone'
 
 export const Feedback: CollectionConfig = {
   slug: 'feedback',
+  labels: {
+    singular: {
+      fr: 'Message',
+      ar: 'رسالة'
+    },
+    plural: {
+      fr: 'Messages',
+      ar: 'رسائل'
+    }
+  },
   access: {
     create: anyone, // Allow public submissions
     delete: authenticated,

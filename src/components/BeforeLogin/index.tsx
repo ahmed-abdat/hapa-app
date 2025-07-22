@@ -8,7 +8,7 @@ const BeforeLogin: React.FC = () => {
           🏛️ HAPA
         </h2>
         <h3 style={{ color: '#2C3E50', marginBottom: '1rem', fontSize: '18px', fontWeight: 'normal' }}>
-          Haute Autorité de la Presse et de l'Audiovisuel
+          Haute Autorité de la Presse et de l&apos;Audiovisuel
         </h3>
         <p style={{ color: '#666', fontSize: '14px', margin: 0, fontStyle: 'italic' }}>
           الهيئة العليا للصحافة والإعلام المرئي والمسموع
@@ -24,10 +24,10 @@ const BeforeLogin: React.FC = () => {
         margin: '0 auto'
       }}>
         <p style={{ margin: 0, color: '#2C3E50', fontSize: '16px', lineHeight: '1.5' }}>
-          <strong>Panneau d'administration</strong>
+          <strong>Panneau d&apos;administration</strong>
         </p>
         <p style={{ margin: '0.5rem 0 0 0', color: '#666', fontSize: '14px' }}>
-          Connectez-vous pour gérer le contenu du site officiel de l'autorité de régulation des médias de Mauritanie.
+          Connectez-vous pour gérer le contenu du site officiel de l&apos;autorité de régulation des médias de Mauritanie.
         </p>
       </div>
       

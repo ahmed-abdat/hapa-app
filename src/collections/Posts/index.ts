@@ -17,6 +17,7 @@ import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidateDelete, revalidatePost } from './hooks/revalidatePost'
+import { enforceFrenchLocale } from '@/utilities/hooks/enforceFrenchLocale'
 
 import {
   MetaDescriptionField,
@@ -26,9 +27,20 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from '@/fields/slug'
+import { formatSlug } from '@/fields/slug/formatSlug'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
+  labels: {
+    singular: {
+      fr: 'Article',
+      ar: 'مقال'
+    },
+    plural: {
+      fr: 'Articles',
+      ar: 'مقالات'
+    }
+  },
   access: {
     create: authenticated,
     delete: authenticated,
@@ -49,37 +61,105 @@ export const Posts: CollectionConfig<'posts'> = {
   },
   admin: {
     defaultColumns: ['title', 'slug', 'updatedAt'],
+    components: {
+      edit: {
+        beforeDocumentControls: [
+          '@/components/ForceLocaleMessage/index.tsx#ForceLocaleMessage',
+        ],
+      },
+    },
     livePreview: {
       url: ({ data, req, locale }) => {
-        // Check if French title exists for slug generation
-        const frenchTitle = data?.title?.fr
+        
+        // Handle the case where data might be the document object or just a string
+        let frenchTitle = ''
+        let slug = ''
+        
+        if (typeof data === 'object' && data !== null) {
+          // Normal case - data is the document object
+          if (data.title && typeof data.title === 'object' && 'fr' in data.title) {
+            frenchTitle = String(data.title.fr || '')
+          } else if (typeof data.title === 'string') {
+            frenchTitle = data.title
+          }
+          
+          slug = typeof data.slug === 'string' ? data.slug : ''
+        } else if (typeof data === 'string') {
+          // Fallback case - data is just the title string
+          frenchTitle = data
+          // We'll need to generate the slug from the title
+          slug = '' // Will be handled below
+        }
+
+
         if (!frenchTitle || !frenchTitle.trim()) {
-          return null // This will disable the preview button
+          return '' // Return empty string to disable preview for posts without French title
+        }
+
+        // If we don't have a slug but have a title, generate it
+        if (!slug && frenchTitle) {
+          slug = formatSlug(frenchTitle)
+        }
+
+        if (!slug) {
+          return '' // Return empty string if no slug is available
         }
 
         const path = generatePreviewPath({
-          slug: typeof data?.slug === 'string' ? data.slug : '',
+          slug,
           collection: 'posts',
           req,
-          locale: locale?.code,
+          locale: (locale && typeof locale === 'object' && 'code' in locale) ? String((locale as { code: string }).code) : String(locale || 'fr'),
         })
 
         return path
       },
     },
     preview: (data, { req, locale }) => {
-      // Check if French title exists for slug generation
-      const frenchTitle = data?.title?.fr
-      if (!frenchTitle || !frenchTitle.trim()) {
-        return null // This will disable the preview button
+      
+      // Handle the case where data might be the document object or just a string
+      let frenchTitle = ''
+      let slug = ''
+      
+      if (typeof data === 'object' && data !== null) {
+        // Normal case - data is the document object
+        if (data.title && typeof data.title === 'object' && 'fr' in data.title) {
+          frenchTitle = String(data.title.fr || '')
+        } else if (typeof data.title === 'string') {
+          frenchTitle = data.title
+        }
+        
+        slug = typeof data.slug === 'string' ? data.slug : ''
+      } else if (typeof data === 'string') {
+        // Fallback case - data is just the title string
+        frenchTitle = data
+        // We'll need to generate the slug from the title
+        slug = '' // Will be handled below
       }
 
-      return generatePreviewPath({
-        slug: typeof data?.slug === 'string' ? data.slug : '',
+
+      if (!frenchTitle || !frenchTitle.trim()) {
+        return '' // Return empty string to disable preview for posts without French title
+      }
+
+      // If we don't have a slug but have a title, generate it
+      if (!slug && frenchTitle) {
+        // Use imported formatSlug function
+        slug = formatSlug(frenchTitle)
+      }
+
+      if (!slug) {
+        return '' // Return empty string if no slug is available
+      }
+
+      const path = generatePreviewPath({
+        slug,
         collection: 'posts',
-        req,
-        locale: locale?.code,
+        req, 
+        locale: (locale && typeof locale === 'object' && 'code' in locale) ? String((locale as { code: string }).code) : String(locale || 'fr'),
       })
+
+      return path
     },
     useAsTitle: 'title',
   },
@@ -237,6 +317,7 @@ export const Posts: CollectionConfig<'posts'> = {
     ...slugField(),
   ],
   hooks: {
+    beforeOperation: [enforceFrenchLocale],
     afterChange: [revalidatePost],
     afterRead: [populateAuthors],
     afterDelete: [revalidateDelete],

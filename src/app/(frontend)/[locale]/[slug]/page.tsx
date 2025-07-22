@@ -113,7 +113,7 @@ const queryPageBySlug = cache(async ({ slug, locale }: { slug: string; locale: L
   
   const shouldDisableFallback = locale && locale !== 'fr'
 
-  const result = await payload.find({
+  const queryOptions = {
     collection: 'pages',
     draft,
     limit: 1,
@@ -126,7 +126,9 @@ const queryPageBySlug = cache(async ({ slug, locale }: { slug: string; locale: L
         equals: slug,
       },
     },
-  })
+  }
+
+  const result = await payload.find(queryOptions)
 
   return result.docs?.[0] || null
 })

@@ -16,6 +16,16 @@ export function LocaleHandler() {
     // Update HTML attributes
     document.documentElement.lang = language
     document.documentElement.dir = direction
+    
+    // Apply Arabic font classes automatically
+    const body = document.body
+    if (isArabic) {
+      body.classList.add('font-arabic-sans')
+      body.classList.remove('font-sans')
+    } else {
+      body.classList.add('font-sans')
+      body.classList.remove('font-arabic-sans')
+    }
   }, [pathname])
 
   return null

@@ -28,8 +28,13 @@ export async function generateStaticParams() {
     },
   })
 
-  const params = posts.docs.map(({ slug }) => {
-    return { slug }
+  const locales = ['fr', 'ar']
+  const params: { locale: string; slug: string }[] = []
+
+  posts.docs.forEach(({ slug }) => {
+    locales.forEach((locale) => {
+      params.push({ locale, slug })
+    })
   })
 
   return params
@@ -46,9 +51,14 @@ export default async function Post({ params: paramsPromise }: Args) {
   const { isEnabled: draft } = await draftMode()
   const { locale, slug = '' } = await paramsPromise
   const url = '/posts/' + slug
+  
+  
   const post = await queryPostBySlug({ slug, locale })
 
-  if (!post) return <PayloadRedirects url={url} />
+  if (!post) {
+    return <PayloadRedirects url={url} />
+  }
+
 
   return (
     <article className="pt-16 pb-16">
@@ -91,6 +101,7 @@ const queryPostBySlug = cache(async ({ slug, locale }: { slug: string; locale?: 
   
   const shouldDisableFallback = locale && locale !== 'fr'
 
+
   const result = await payload.find({
     collection: 'posts',
     draft,
@@ -105,6 +116,7 @@ const queryPostBySlug = cache(async ({ slug, locale }: { slug: string; locale?: 
       },
     },
   })
+
 
   return result.docs?.[0] || null
 })
