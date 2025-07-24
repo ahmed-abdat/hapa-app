@@ -5,9 +5,11 @@ import type { Page } from '@/payload-types'
 import { HighImpactHero } from '@/heros/HighImpact'
 import { LowImpactHero } from '@/heros/LowImpact'
 import { MediumImpactHero } from '@/heros/MediumImpact'
+import { HomepageHero } from '@/heros/HomepageHero'
 
 const heroes = {
   highImpact: HighImpactHero,
+  homepageHero: HomepageHero,
   lowImpact: LowImpactHero,
   mediumImpact: MediumImpactHero,
 }

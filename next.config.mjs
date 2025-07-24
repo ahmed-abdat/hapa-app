@@ -29,7 +29,19 @@ const config = withPayload(
         PAYLOAD_DO_NOT_SANITIZE_LOCALIZED_PROPERTY: 'true',
       },
       images: {
-        domains: ['localhost'],
+        remotePatterns: [
+          {
+            protocol: 'http',
+            hostname: 'localhost',
+            port: '3000',
+            pathname: '/**',
+          },
+          {
+            protocol: 'https',
+            hostname: 'localhost',
+            pathname: '/**',
+          },
+        ],
       },
       webpack: (webpackConfig) => {
         webpackConfig.resolve.extensionAlias = {
