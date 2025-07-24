@@ -7,7 +7,6 @@ export interface AdvancedGradientButtonProps extends React.ButtonHTMLAttributes<
   className?: string
   children?: React.ReactNode
   gradientColor?: string
-  hoverColor?: string
 }
 
 const AdvancedGradientButton = React.forwardRef<HTMLButtonElement, AdvancedGradientButtonProps>(
@@ -16,7 +15,6 @@ const AdvancedGradientButton = React.forwardRef<HTMLButtonElement, AdvancedGradi
       className,
       children,
       gradientColor = "hsl(var(--accent) / 0.6)", // HAPA accent color with opacity
-      _hoverColor = "hsl(var(--accent) / 0.9)",
       ...props
     },
     ref

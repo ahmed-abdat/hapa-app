@@ -14,5 +14,21 @@ export const homeStatic: RequiredDataFromCollectionSlug<'pages'> = {
     title: 'HAPA - Haute Autorité de la Presse et de l\'Audiovisuel',
   },
   title: 'Accueil',
-  layout: [],
+  layout: [
+    {
+      blockType: 'aboutMission',
+    },
+    {
+      blockType: 'mediaSpace',
+    },
+    {
+      blockType: 'newsAnnouncements',
+    },
+    {
+      blockType: 'partnersSection',
+    },
+    {
+      blockType: 'coreServices',
+    },
+  ],
 }

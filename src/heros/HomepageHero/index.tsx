@@ -102,13 +102,12 @@ export const HomepageHero: React.FC<Page["hero"]> = ({
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
-                className="flex sm:flex-row items-center justify-center lg:justify-start gap-4"
+                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
               >
                 <Link href="/services/media-licensing">
                   <AdvancedGradientButton
                     className="px-6 py-4 text-sm font-semibold lg:text-base"
                     gradientColor="rgba(15, 122, 46, 0.6)" // HAPA accent color
-                    hoverColor="rgba(15, 122, 46, 0.9)"
                   >
                     <span>{getTranslation("applyLicense", locale)}</span>
                     {locale === "ar" ? (

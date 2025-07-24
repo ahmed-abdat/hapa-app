@@ -193,7 +193,18 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (
+    | AboutMissionBlock
+    | CallToActionBlock
+    | ContentBlock
+    | CoreServicesBlock
+    | MediaBlock
+    | MediaSpaceBlock
+    | NewsAnnouncementsBlock
+    | PartnersSectionBlock
+    | ArchiveBlock
+    | FormBlock
+  )[];
   meta?: {
     title?: string | null;
     /**
@@ -397,6 +408,25 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutMissionBlock".
+ */
+export interface AboutMissionBlock {
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Optional image to display alongside the content
+   */
+  media?: (number | null) | Media;
+  /**
+   * Display achievement statistics and impact numbers
+   */
+  showStats?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'aboutMission';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "CallToActionBlock".
  */
 export interface CallToActionBlock {
@@ -495,6 +525,17 @@ export interface ContentBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CoreServicesBlock".
+ */
+export interface CoreServicesBlock {
+  title?: string | null;
+  description?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'coreServices';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
@@ -502,6 +543,82 @@ export interface MediaBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaSpaceBlock".
+ */
+export interface MediaSpaceBlock {
+  title?: string | null;
+  description?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mediaSpace';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsAnnouncementsBlock".
+ */
+export interface NewsAnnouncementsBlock {
+  /**
+   * Choose between simple grid layout or rich layout with urgent announcements and featured posts.
+   */
+  layoutVariant?: ('simple' | 'rich') | null;
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Display the most recent post as a featured article with larger layout (Rich layout only)
+   */
+  showFeatured?: boolean | null;
+  /**
+   * Display urgent announcements banner at the top (Rich layout only)
+   */
+  showUrgentBanner?: boolean | null;
+  /**
+   * Set the maximum number of posts to display in this section
+   */
+  maxPosts?: number | null;
+  /**
+   * Manually select specific posts to display. If empty, will show the most recent posts automatically.
+   */
+  posts?: (number | Post)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'newsAnnouncements';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PartnersSectionBlock".
+ */
+export interface PartnersSectionBlock {
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Display certification badges and trust indicators
+   */
+  showTrustMetrics?: boolean | null;
+  /**
+   * Display logos of international partners and organizations
+   */
+  showPartnerLogos?: boolean | null;
+  /**
+   * Add partner organizations and their details
+   */
+  partners?:
+    | {
+        name: string;
+        /**
+         * Upload partner logo (recommended: 200x100px, transparent background)
+         */
+        logo?: (number | null) | Media;
+        url?: string | null;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'partnersSection';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1041,9 +1158,14 @@ export interface PagesSelect<T extends boolean = true> {
   layout?:
     | T
     | {
+        aboutMission?: T | AboutMissionBlockSelect<T>;
         cta?: T | CallToActionBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
+        coreServices?: T | CoreServicesBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
+        mediaSpace?: T | MediaSpaceBlockSelect<T>;
+        newsAnnouncements?: T | NewsAnnouncementsBlockSelect<T>;
+        partnersSection?: T | PartnersSectionBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
       };
@@ -1060,6 +1182,18 @@ export interface PagesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutMissionBlock_select".
+ */
+export interface AboutMissionBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  media?: T;
+  showStats?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1113,10 +1247,66 @@ export interface ContentBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CoreServicesBlock_select".
+ */
+export interface CoreServicesBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "MediaBlock_select".
  */
 export interface MediaBlockSelect<T extends boolean = true> {
   media?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaSpaceBlock_select".
+ */
+export interface MediaSpaceBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsAnnouncementsBlock_select".
+ */
+export interface NewsAnnouncementsBlockSelect<T extends boolean = true> {
+  layoutVariant?: T;
+  title?: T;
+  description?: T;
+  showFeatured?: T;
+  showUrgentBanner?: T;
+  maxPosts?: T;
+  posts?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PartnersSectionBlock_select".
+ */
+export interface PartnersSectionBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  showTrustMetrics?: T;
+  showPartnerLogos?: T;
+  partners?:
+    | T
+    | {
+        name?: T;
+        logo?: T;
+        url?: T;
+        description?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
