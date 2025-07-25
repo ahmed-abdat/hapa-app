@@ -7,17 +7,16 @@ import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-import type { Header } from "@/payload-types";
-
 import { ModernHeader } from "@/components/navigation/modern-header";
 import { ModernMobileNav } from "@/components/navigation/modern-mobile-nav";
 import { isValidLocale, defaultLocale } from "@/utilities/locale";
 
 interface HeaderClientProps {
-  data: Header;
+  data?: any; // Optional data parameter for compatibility (not used)
 }
 
-export const HeaderClient: React.FC<HeaderClientProps> = ({ data: _data }) => {
+export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
+  // Ignore any Payload header data - we use static navigation
   /* Storing the value in a useState to avoid hydration errors */
   const [theme, setTheme] = useState<string | null>(null);
   const { headerTheme, setHeaderTheme } = useHeaderTheme();

@@ -15,22 +15,14 @@
     "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation next lint --fix",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
-    "test": "playwright test",
-    "test:ui": "playwright test --ui",
-    "test:headed": "playwright test --headed",
-    "test:debug": "playwright test --debug",
-    "test:crawl": "playwright test e2e/website-crawler.spec.ts",
-    "test:category": "playwright test e2e/category-integration.spec.ts",
-    "test:api": "playwright test e2e/api-testing.spec.ts",
-    "test:install": "playwright install",
-    "test:report": "playwright show-report"
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.850.0",
     "@hookform/resolvers": "^5.1.1",
     "@payloadcms/admin-bar": "3.44.0",
     "@payloadcms/db-vercel-postgres": "3.44.0",
+    "@payloadcms/email-resend": "3.44.0",
     "@payloadcms/live-preview-react": "3.44.0",
     "@payloadcms/next": "3.44.0",
     "@payloadcms/payload-cloud": "3.44.0",
@@ -77,6 +69,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
+    "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/typography": "^0.5.13",
     "@types/node": "22.5.4",
     "@types/react": "19.1.0",

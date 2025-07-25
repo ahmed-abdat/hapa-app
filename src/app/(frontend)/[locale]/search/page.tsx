@@ -1,36 +1,39 @@
-import type { Metadata } from 'next/types'
+import type { Metadata } from "next/types";
 
-import { CollectionArchive } from '@/components/CollectionArchive'
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
-import React from 'react'
-import { Search } from '@/search/Component'
-import PageClient from './page.client'
-import { CardPostData } from '@/components/Card'
-import { t } from '@/utilities/translations'
-import { isValidLocale } from '@/utilities/locale'
-import { notFound } from 'next/navigation'
+import { CollectionArchive } from "@/components/CollectionArchive";
+import configPromise from "@payload-config";
+import { getPayload } from "payload";
+import React from "react";
+import { Search } from "@/search/Component";
+import PageClient from "./page.client";
+import { CardPostData } from "@/components/Card";
+import { t } from "@/utilities/translations";
+import { isValidLocale } from "@/utilities/locale";
+import { notFound } from "next/navigation";
 
 type Args = {
   params: Promise<{
-    locale: string
-  }>
+    locale: string;
+  }>;
   searchParams: Promise<{
-    q: string
-  }>
-}
-export default async function Page({ params: paramsPromise, searchParams: searchParamsPromise }: Args) {
-  const { locale } = await paramsPromise
-  const { q: query } = await searchParamsPromise
-  
+    q: string;
+  }>;
+};
+export default async function Page({
+  params: paramsPromise,
+  searchParams: searchParamsPromise,
+}: Args) {
+  const { locale } = await paramsPromise;
+  const { q: query } = await searchParamsPromise;
+
   if (!isValidLocale(locale)) {
-    notFound()
+    notFound();
   }
-  
-  const payload = await getPayload({ config: configPromise })
+
+  const payload = await getPayload({ config: configPromise });
 
   const posts = await payload.find({
-    collection: 'search',
+    collection: "search",
     depth: 1,
     limit: 12,
     select: {
@@ -51,12 +54,12 @@ export default async function Page({ params: paramsPromise, searchParams: search
                 },
               },
               {
-                'meta.description': {
+                "meta.description": {
                   like: query,
                 },
               },
               {
-                'meta.title': {
+                "meta.title": {
                   like: query,
                 },
               },
@@ -69,10 +72,10 @@ export default async function Page({ params: paramsPromise, searchParams: search
           },
         }
       : {}),
-  })
+  });
 
   return (
-    <div className="pt-24 pb-24">
+    <div className="py-8">
       <PageClient />
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none text-center">
@@ -85,16 +88,19 @@ export default async function Page({ params: paramsPromise, searchParams: search
       </div>
 
       {posts.totalDocs > 0 ? (
-        <CollectionArchive posts={posts.docs as CardPostData[]} locale={locale} />
+        <CollectionArchive
+          posts={posts.docs as CardPostData[]}
+          locale={locale}
+        />
       ) : (
-        <div className="container">{t('noResults', locale)}</div>
+        <div className="container">{t("noResults", locale)}</div>
       )}
     </div>
-  )
+  );
 }
 
 export function generateMetadata(): Metadata {
   return {
     title: `Payload Website Template Search`,
-  }
+  };
 }

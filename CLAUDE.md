@@ -168,6 +168,8 @@ POSTGRES_URL=postgresql://...           # Neon database connection
 PAYLOAD_SECRET=...                      # Payload CMS encryption key
 NEXT_PUBLIC_SERVER_URL=http://localhost:3000    # Public URL
 BLOB_READ_WRITE_TOKEN=...              # Vercel Blob storage token
+RESEND_API_KEY=...                      # Resend email service API key
+EMAIL_FROM=noreply@hapa.mr              # Default sender email address
 ```
 
 ## Performance and SEO

@@ -4,10 +4,7 @@ const BeforeLogin: React.FC = () => {
   return (
     <div style={{ textAlign: 'center', padding: '2rem' }}>
       <div style={{ marginBottom: '2rem' }}>
-        <h2 style={{ color: '#065986', marginBottom: '0.5rem', fontSize: '28px', fontWeight: 'bold' }}>
-          🏛️ HAPA
-        </h2>
-        <h3 style={{ color: '#2C3E50', marginBottom: '1rem', fontSize: '18px', fontWeight: 'normal' }}>
+        <h3 style={{ color: '#138B3A', marginBottom: '1rem', fontSize: '20px', fontWeight: 'bold' }}>
           Haute Autorité de la Presse et de l&apos;Audiovisuel
         </h3>
         <p style={{ color: '#666', fontSize: '14px', margin: 0, fontStyle: 'italic' }}>
@@ -16,10 +13,10 @@ const BeforeLogin: React.FC = () => {
       </div>
       
       <div style={{ 
-        background: 'linear-gradient(135deg, #f8f9fa 0%, rgba(212, 165, 116, 0.1) 100%)',
+        background: 'linear-gradient(135deg, #f8f9fa 0%, rgba(19, 139, 58, 0.1) 100%)',
         padding: '1.5rem',
         borderRadius: '8px',
-        border: '1px solid #D4A574',
+        border: '1px solid #138B3A',
         maxWidth: '400px',
         margin: '0 auto'
       }}>

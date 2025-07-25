@@ -1,48 +1,48 @@
-import type { Metadata } from 'next/types'
+import type { Metadata } from "next/types";
 
-import { CollectionArchive } from '@/components/CollectionArchive'
-import { PageRange } from '@/components/PageRange'
-import { Pagination } from '@/components/Pagination'
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
-import React from 'react'
-import PageClient from './page.client'
-import { notFound } from 'next/navigation'
-import { isValidLocale } from '@/utilities/locale'
+import { CollectionArchive } from "@/components/CollectionArchive";
+import { PageRange } from "@/components/PageRange";
+import { Pagination } from "@/components/Pagination";
+import configPromise from "@payload-config";
+import { getPayload } from "payload";
+import React from "react";
+import PageClient from "./page.client";
+import { notFound } from "next/navigation";
+import { isValidLocale } from "@/utilities/locale";
 
-export const revalidate = 600
+export const revalidate = 600;
 
 type Args = {
   params: Promise<{
-    pageNumber: string
-    locale: string
-  }>
-}
+    pageNumber: string;
+    locale: string;
+  }>;
+};
 
 export default async function Page({ params: paramsPromise }: Args) {
-  const { pageNumber, locale } = await paramsPromise
-  
+  const { pageNumber, locale } = await paramsPromise;
+
   if (!isValidLocale(locale)) {
-    notFound()
+    notFound();
   }
-  
-  const payload = await getPayload({ config: configPromise })
 
-  const sanitizedPageNumber = Number(pageNumber)
+  const payload = await getPayload({ config: configPromise });
 
-  if (!Number.isInteger(sanitizedPageNumber)) notFound()
+  const sanitizedPageNumber = Number(pageNumber);
+
+  if (!Number.isInteger(sanitizedPageNumber)) notFound();
 
   const posts = await payload.find({
-    collection: 'posts',
+    collection: "posts",
     depth: 1,
     limit: 12,
     page: sanitizedPageNumber,
     locale,
     overrideAccess: false,
-  })
+  });
 
   return (
-    <div className="pt-24 pb-24">
+    <div className="py-8">
       <PageClient />
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none">
@@ -67,33 +67,44 @@ export default async function Page({ params: paramsPromise }: Args) {
         )}
       </div>
     </div>
-  )
+  );
 }
 
-export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
-  const { pageNumber } = await paramsPromise
+export async function generateMetadata({
+  params: paramsPromise,
+}: Args): Promise<Metadata> {
+  const { pageNumber } = await paramsPromise;
   return {
-    title: `Payload Website Template Posts Page ${pageNumber || ''}`,
-  }
+    title: `Payload Website Template Posts Page ${pageNumber || ""}`,
+  };
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const { totalDocs } = await payload.count({
-    collection: 'posts',
-    overrideAccess: false,
-  })
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const { totalDocs } = await payload.count({
+      collection: "posts",
+      overrideAccess: false,
+    });
 
-  const totalPages = Math.ceil(totalDocs / 12)
-  const locales = ['fr', 'ar']
+    const totalPages = Math.ceil(totalDocs / 12);
+    const locales = ["fr", "ar"];
 
-  const pages: { pageNumber: string; locale: string }[] = []
+    const pages: { pageNumber: string; locale: string }[] = [];
 
-  for (const locale of locales) {
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push({ pageNumber: String(i), locale })
+    for (const locale of locales) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push({ pageNumber: String(i), locale });
+      }
     }
-  }
 
-  return pages
+    return pages;
+  } catch (error) {
+    console.error('Error generating static params for posts pagination:', error)
+    // Return minimal params to allow build to continue
+    return [
+      { pageNumber: '1', locale: 'fr' },
+      { pageNumber: '1', locale: 'ar' }
+    ]
+  }
 }

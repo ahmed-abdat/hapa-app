@@ -1,88 +1,95 @@
-import type { Metadata } from 'next/types'
-import { CollectionArchive } from '@/components/CollectionArchive'
-import { PageRange } from '@/components/PageRange'
-import { Pagination } from '@/components/Pagination'
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
-import React from 'react'
-import { isValidLocale } from '@/utilities/locale'
-import { notFound } from 'next/navigation'
+import type { Metadata } from "next/types";
+import { CollectionArchive } from "@/components/CollectionArchive";
+import { PageRange } from "@/components/PageRange";
+import { Pagination } from "@/components/Pagination";
+import configPromise from "@payload-config";
+import { getPayload } from "payload";
+import React from "react";
+import { isValidLocale } from "@/utilities/locale";
+import { notFound } from "next/navigation";
 
-export const dynamic = 'force-static'
-export const revalidate = 600
+export const dynamic = "force-dynamic";
+export const revalidate = 600;
 
 type Args = {
   params: Promise<{
-    locale: string
-    category: string
-  }>
-}
+    locale: string;
+    category: string;
+  }>;
+};
 
-// Category mapping for publications
+// Category mapping for publications (using French-based slugs)
 const categoryMappings: Record<string, { fr: string; ar: string }> = {
-  decisions: { fr: 'Décisions et communiqués', ar: 'قرارات وبيانات' },
-  reports: { fr: 'Rapports', ar: 'تقارير' },
-  laws: { fr: 'Lois et règlements', ar: 'قوانين وتشريعات' },
-  publications: { fr: 'Publications et éditions', ar: 'إصدرات ومنشورات' },
-}
+  decisions: { fr: "Décisions et communiqués", ar: "قرارات وبيانات" },
+  rapports: { fr: "Rapports", ar: "تقارير" },
+  "lois-et-reglements": { fr: "Lois et règlements", ar: "قوانين وتشريعات" },
+  publications: { fr: "Publications et éditions", ar: "إصدرات ومنشورات" },
+  actualites: { fr: "Actualités", ar: "الأخبار" },
+};
 
-export default async function PublicationCategoryPage({ params: paramsPromise }: Args) {
-  const { locale, category } = await paramsPromise
-  
+export default async function PublicationCategoryPage({
+  params: paramsPromise,
+}: Args) {
+  const { locale, category } = await paramsPromise;
+
   if (!isValidLocale(locale)) {
-    notFound()
+    notFound();
   }
 
   // Validate category
   if (!categoryMappings[category]) {
-    notFound()
+    notFound();
   }
 
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayload({ config: configPromise });
 
   // 1. Find category by slug (using the category parameter)
   const categoryResult = await payload.find({
-    collection: 'categories',
+    collection: "categories",
     where: { slug: { equals: category } },
     limit: 1,
     locale,
-  })
+  });
 
   // If category doesn't exist in CMS, create empty state
-  const categoryData = categoryResult.docs.length > 0 
-    ? categoryResult.docs[0] 
-    : { 
-        id: '',
-        title: categoryMappings[category][locale as 'fr' | 'ar'], 
-        slug: category 
-      }
+  const categoryData =
+    categoryResult.docs.length > 0
+      ? categoryResult.docs[0]
+      : {
+          id: "",
+          title: categoryMappings[category][locale as "fr" | "ar"],
+          slug: category,
+        };
 
   // 2. Find posts in this category (using existing ArchiveBlock pattern)
   const posts = await payload.find({
-    collection: 'posts',
+    collection: "posts",
     depth: 1,
     limit: 12,
     locale,
     overrideAccess: false,
-    where: categoryResult.docs.length > 0 
-      ? { categories: { in: [categoryData.id] } }
-      : { id: { equals: 'nonexistent' } }, // Return empty if category doesn't exist
+    where:
+      categoryResult.docs.length > 0
+        ? { categories: { in: [categoryData.id] } }
+        : { id: { equals: "nonexistent" } }, // Return empty if category doesn't exist
     select: {
       title: true,
       slug: true,
       categories: true,
       meta: true,
+      publishedAt: true,
+      createdAt: true,
     },
-  })
+  });
 
   return (
-    <div className="pt-24 pb-24">
+    <div className="py-8">
       {/* Category Header */}
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none">
           <h1>{categoryData.title}</h1>
           <p className="text-muted-foreground">
-            {posts.totalDocs} {locale === 'ar' ? 'مقال' : 'articles'}
+            {posts.totalDocs} {locale === "ar" ? "مقال" : "articles"}
           </p>
         </div>
       </div>
@@ -104,10 +111,9 @@ export default async function PublicationCategoryPage({ params: paramsPromise }:
         <div className="container">
           <div className="text-center py-12">
             <p className="text-muted-foreground">
-              {locale === 'ar' 
-                ? 'لا توجد مقالات في هذه الفئة حاليًا'
-                : 'Aucun article dans cette catégorie pour le moment'
-              }
+              {locale === "ar"
+                ? "لا توجد مقالات في هذه الفئة حاليًا"
+                : "Aucun article dans cette catégorie pour le moment"}
             </p>
           </div>
         </div>
@@ -116,55 +122,51 @@ export default async function PublicationCategoryPage({ params: paramsPromise }:
       {/* Pagination */}
       <div className="container">
         {posts.totalPages > 1 && posts.page && (
-          <Pagination 
-            page={posts.page} 
+          <Pagination
+            page={posts.page}
             totalPages={posts.totalPages}
             basePath={`/${locale}/publications/${category}`}
           />
         )}
       </div>
     </div>
-  )
+  );
 }
 
-export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
-  const { locale, category } = await paramsPromise
-  
+export async function generateMetadata({
+  params: paramsPromise,
+}: Args): Promise<Metadata> {
+  const { locale, category } = await paramsPromise;
+
   if (!isValidLocale(locale)) {
-    return {}
+    return {};
   }
 
   // Validate category
   if (!categoryMappings[category]) {
-    return {}
+    return {};
   }
 
-  const categoryTitle = categoryMappings[category][locale as 'fr' | 'ar']
-  const title = `${categoryTitle} - HAPA`
+  const categoryTitle = categoryMappings[category][locale as "fr" | "ar"];
+  const title = `${categoryTitle} - HAPA`;
 
   return {
     title,
-    description: locale === 'ar' 
-      ? `مقالات في فئة ${categoryTitle}`
-      : `Articles dans la catégorie ${categoryTitle}`,
+    description:
+      locale === "ar"
+        ? `مقالات في فئة ${categoryTitle}`
+        : `Articles dans la catégorie ${categoryTitle}`,
     alternates: {
       languages: {
-        'fr': `/fr/publications/${category}`,
-        'ar': `/ar/publications/${category}`
-      }
-    }
-  }
+        fr: `/fr/publications/${category}`,
+        ar: `/ar/publications/${category}`,
+      },
+    },
+  };
 }
 
 export async function generateStaticParams() {
-  // Generate for all publication categories
-  const categories = ['decisions', 'reports', 'laws', 'publications']
-  const locales = ['fr', 'ar']
-  
-  return categories.flatMap(category =>
-    locales.map(locale => ({
-      locale,
-      category
-    }))
-  )
+  // Skip static generation during build due to database connection issues
+  // Pages will be generated on-demand which is acceptable for dynamic content
+  return [];
 }

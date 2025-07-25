@@ -13,15 +13,29 @@ import { CMSLink } from '@/components/Link'
 import { isValidLocale, defaultLocale } from '@/utilities/locale'
 
 interface FooterProps {
-  footerData: Footer
+  footerData?: Footer
 }
 
-export function Footer({ footerData }: FooterProps) {
+export function Footer({ footerData }: FooterProps = {}) {
   const pathname = usePathname()
   const currentLocale = pathname.split('/')[1]
   const validLocale = isValidLocale(currentLocale) ? currentLocale : defaultLocale
 
-  const navItems = footerData?.navItems || []
+  // Static navigation items instead of CMS-managed ones
+  const defaultNavItems = [
+    {
+      href: `/${validLocale}/about`,
+      label: validLocale === 'ar' ? 'حول الهيئة' : 'À propos'
+    },
+    {
+      href: `/${validLocale}/actualites`,
+      label: validLocale === 'ar' ? 'الأخبار' : 'Actualités'
+    },
+    {
+      href: `/${validLocale}/contact`,
+      label: validLocale === 'ar' ? 'اتصل بنا' : 'Contact'
+    }
+  ]
 
   return (
     <footer className="mt-auto bg-gradient-to-br from-accent via-accent/95 to-accent/90 text-white">
@@ -98,12 +112,14 @@ export function Footer({ footerData }: FooterProps) {
               {validLocale === 'ar' ? 'روابط سريعة' : 'Liens rapides'}
             </h4>
             <nav className="flex flex-col gap-2">
-              {navItems.map(({ link }, i) => (
-                <CMSLink 
+              {defaultNavItems.map((item, i) => (
+                <Link 
                   key={i} 
-                  {...link} 
-                  className="text-white/80 hover:text-secondary text-sm transition-colors duration-200 hover:translate-x-1"
-                />
+                  href={item.href}
+                  className="text-white/80 hover:text-secondary text-sm transition-colors duration-200 hover:translate-x-1 rtl:hover:-translate-x-1"
+                >
+                  {item.label}
+                </Link>
               ))}
             </nav>
           </div>

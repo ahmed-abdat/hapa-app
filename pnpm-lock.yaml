@@ -20,6 +20,9 @@ importers:
       '@payloadcms/db-vercel-postgres':
         specifier: 3.44.0
         version: 3.44.0(@libsql/client@0.14.0(bufferutil@4.0.8)(utf-8-validate@6.0.5))(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(gel@2.0.1)(payload@3.44.0(bufferutil@4.0.8)(graphql@16.9.0)(typescript@5.7.3)(utf-8-validate@6.0.5))
+      '@payloadcms/email-resend':
+        specifier: 3.44.0
+        version: 3.44.0(payload@3.44.0(bufferutil@4.0.8)(graphql@16.9.0)(typescript@5.7.3)(utf-8-validate@6.0.5))
       '@payloadcms/live-preview-react':
         specifier: 3.44.0
         version: 3.44.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -153,6 +156,9 @@ importers:
       '@eslint/eslintrc':
         specifier: ^3.3.1
         version: 3.3.1
+      '@tailwindcss/container-queries':
+        specifier: ^0.1.1
+        version: 0.1.1(tailwindcss@3.4.17)
       '@tailwindcss/typography':
         specifier: ^0.5.13
         version: 0.5.16(tailwindcss@3.4.17)
@@ -174,6 +180,12 @@ importers:
       eslint-config-next:
         specifier: 15.3.0
         version: 15.3.0(eslint-plugin-import-x@4.6.1(eslint@9.22.0(jiti@1.21.6))(typescript@5.7.3))(eslint@9.22.0(jiti@1.21.6))(typescript@5.7.3)
+      pg:
+        specifier: ^8.16.3
+        version: 8.16.3
+      playwright:
+        specifier: ^1.54.1
+        version: 1.54.1
       postcss:
         specifier: ^8.4.38
         version: 8.5.5
@@ -5101,6 +5113,12 @@ packages:
     peerDependencies:
       payload: 3.44.0
 
+  '@payloadcms/email-resend@3.44.0':
+    resolution: {integrity: sha512-nmXcJRFgFrxTjopy10WQ5Y8L9bVclL6PIp5ccDQbd9FWfUo977jJLQm3q+iO9fcvj3haabgG8befyliFgxh6fA==}
+    engines: {node: ^18.20.2 || >=20.9.0}
+    peerDependencies:
+      payload: 3.44.0
+
   '@payloadcms/graphql@3.44.0':
     resolution: {integrity: sha512-6YsRSYAyL3HMl1geRTvVCljOJ109fl1q23+BsoVCf+0cqkJGJfodDJxVzReQFLtFAuMhZAHb4d+p7GitJ4uozw==}
     hasBin: true
@@ -6476,6 +6494,11 @@ packages:
 
   '@swc/types@0.1.21':
     resolution: {integrity: sha512-2YEtj5HJVbKivud9N4bpPBAyZhj4S2Ipe5LkUG94alTpr7in/GU/EARgPAd3BwU+YOmFVJC2+kjqhGRi3r0ZpQ==}
+
+  '@tailwindcss/container-queries@0.1.1':
+    resolution: {integrity: sha512-p18dswChx6WnTSaJCSGx6lTmrGzNNvm2FtXmiO6AuA1V4U5REyoqwmT6kgAsIMdjo07QdAfYXHJ4hnMtfHzWgA==}
+    peerDependencies:
+      tailwindcss: '>=3.2.0'
 
   '@tailwindcss/typography@0.5.16':
     resolution: {integrity: sha512-0wDLwCVF5V3x3b1SGXPCDcdsbDHMBe+lkFzBRaHeLvNi+nrrnZ1lA18u+OTWO8iSWU2GxUOCvlXtDuqftc1oiA==}
@@ -10480,8 +10503,18 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  playwright-core@1.54.1:
+    resolution: {integrity: sha512-Nbjs2zjj0htNhzgiy5wu+3w09YetDx5pkrpI/kZotDlDUaYk0HVA5xrBVPdow4SAUIlhgKcJeJg4GRKW6xHusA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   playwright@1.50.0:
     resolution: {integrity: sha512-+GinGfGTrd2IfX1TA4N2gNmeIksSb+IAe589ZH+FlmpV3MYTx6+buChGIuDLQwrGNCw2lWibqV50fU510N7S+w==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright@1.54.1:
+    resolution: {integrity: sha512-peWpSwIBmSLi6aW2auvrUtf2DqY16YYcCMO8rTVx486jKmDTJg7UAhyrraP98GB8BoPURZP8+nxO7TSd4cPr5g==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -16318,6 +16351,10 @@ snapshots:
       nodemailer: 6.9.16
       payload: 3.44.0(bufferutil@4.0.8)(graphql@16.9.0)(typescript@5.7.3)(utf-8-validate@6.0.5)
 
+  '@payloadcms/email-resend@3.44.0(payload@3.44.0(bufferutil@4.0.8)(graphql@16.9.0)(typescript@5.7.3)(utf-8-validate@6.0.5))':
+    dependencies:
+      payload: 3.44.0(bufferutil@4.0.8)(graphql@16.9.0)(typescript@5.7.3)(utf-8-validate@6.0.5)
+
   '@payloadcms/graphql@3.44.0(graphql@16.9.0)(payload@3.44.0(bufferutil@4.0.8)(graphql@16.9.0)(typescript@5.7.3)(utf-8-validate@6.0.5))(typescript@5.7.3)':
     dependencies:
       graphql: 16.9.0
@@ -18189,6 +18226,10 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
 
+  '@tailwindcss/container-queries@0.1.1(tailwindcss@3.4.17)':
+    dependencies:
+      tailwindcss: 3.4.17
+
   '@tailwindcss/typography@0.5.16(tailwindcss@3.4.17)':
     dependencies:
       lodash.castarray: 4.4.0
@@ -18379,7 +18420,7 @@ snapshots:
 
   '@types/nodemailer@6.4.17':
     dependencies:
-      '@types/node': 22.15.30
+      '@types/node': 22.5.4
 
   '@types/parse-json@4.0.2': {}
 
@@ -23141,9 +23182,17 @@ snapshots:
 
   playwright-core@1.50.0: {}
 
+  playwright-core@1.54.1: {}
+
   playwright@1.50.0:
     dependencies:
       playwright-core: 1.50.0
+    optionalDependencies:
+      fsevents: 2.3.2
+
+  playwright@1.54.1:
+    dependencies:
+      playwright-core: 1.54.1
     optionalDependencies:
       fsevents: 2.3.2
 

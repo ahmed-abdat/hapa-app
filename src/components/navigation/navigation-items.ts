@@ -22,17 +22,17 @@ export const navigationItems: NavigationItem[] = [
   },
   {
     title: { fr: "À propos", ar: "تعريف" },
-    description: { fr: "Découvrez HAPA et sa mission", ar: "تعرف على الهابا ومهمتها" },
+    description: { fr: "Découvrez HAPA et sa mission", ar: "تعرف على الهيئة العليا للصحافة والإعلام ومهمتها" },
     icon: Building2,
     items: [
       {
         title: { fr: "Mot du Président", ar: "كلمة الرئيس" },
         href: "/about/president",
-        description: { fr: "Message du Président de HAPA", ar: "رسالة رئيس الهابا" },
+        description: { fr: "Message du Président de HAPA", ar: "رسالة رئيس الهيئة العليا للصحافة والإعلام" },
         icon: User,
       },
       {
-        title: { fr: "Mission HAPA", ar: "مهمة الهابا" },
+        title: { fr: "Mission HAPA", ar: "مهمة الهيئة العليا للصحافة والإعلام" },
         href: "/about/mission",
         description: { fr: "Notre mission et objectifs", ar: "مهمتنا وأهدافنا" },
         icon: Building2,
@@ -64,13 +64,13 @@ export const navigationItems: NavigationItem[] = [
       },
       {
         title: { fr: "Rapports", ar: "تقارير" },
-        href: "/publications/reports",
+        href: "/publications/rapports",
         description: { fr: "Rapports d'activité et études", ar: "تقارير النشاط والدراسات" },
         icon: BookOpen,
       },
       {
-        title: { fr: "Lois et règlements", ar: "قوانين ونظم" },
-        href: "/publications/laws",
+        title: { fr: "Lois et règlements", ar: "قوانين وتشريعات" },
+        href: "/publications/lois-et-reglements",
         description: { fr: "Cadre juridique et réglementaire", ar: "الإطار القانوني والتنظيمي" },
         icon: Gavel,
       },
@@ -78,7 +78,7 @@ export const navigationItems: NavigationItem[] = [
   },
   {
     title: { fr: "Actualités", ar: "الأخبار" },
-    href: "/news",
+    href: "/actualites",
     description: { fr: "Dernières nouvelles et actualités", ar: "آخر الأخبار والمستجدات" },
     icon: MessageCircle,
   },

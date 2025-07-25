@@ -1,11 +1,8 @@
 import { HeaderClient } from './Component.client'
-import { getCachedGlobal } from '@/utilities/getGlobals'
 import React from 'react'
 
-import type { Header } from '@/payload-types'
-
 export async function Header() {
-  const headerData: Header = await getCachedGlobal('header', 1)()
-
-  return <HeaderClient data={headerData} />
+  // Use empty data since we removed the global header configuration
+  // The HeaderClient should handle empty/undefined data gracefully
+  return <HeaderClient data={undefined} />
 }

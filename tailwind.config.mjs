@@ -8,15 +8,25 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
+    // More specific patterns for better performance
+    './src/components/**/*.{ts,tsx}',
+    './src/blocks/**/*.{ts,tsx}',
+    './src/heros/**/*.{ts,tsx}',
+    './src/app/**/*.{ts,tsx}',
+    // Include utilities for dynamic class generation
+    './src/utilities/**/*.{ts,tsx}',
+    './src/providers/**/*.{ts,tsx}',
   ],
   darkMode: ['selector', '[data-theme="dark"]'],
   plugins: [tailwindcssAnimate, typography],
   prefix: '',
   safelist: [
+    // Grid spans
     'lg:col-span-4',
     'lg:col-span-6',
     'lg:col-span-8',
     'lg:col-span-12',
+    // Card states
     'border-border',
     'bg-card',
     'border-error',
@@ -25,6 +35,33 @@ const config = {
     'bg-success/30',
     'border-warning',
     'bg-warning/30',
+    // Animation classes for dynamic content
+    'animate-in',
+    'animate-out',
+    'fade-in',
+    'fade-out',
+    'slide-in-from-top',
+    'slide-in-from-bottom',
+    'slide-in-from-left',
+    'slide-in-from-right',
+    'zoom-in',
+    'zoom-out',
+    // Motion and transform classes
+    'transform-gpu',
+    'will-change-transform',
+    'will-change-auto',
+    // Dynamic spacing that might be generated
+    'pt-16',
+    'pb-16',
+    'pt-12',
+    'pb-12',
+    'mt-8',
+    'mb-8',
+    // Line clamp utilities
+    'line-clamp-1',
+    'line-clamp-2',
+    'line-clamp-3',
+    'line-clamp-4',
   ],
   theme: {
     container: {
@@ -107,6 +144,28 @@ const config = {
         'arabic-display': ['var(--font-arabic-cairo)', 'Cairo', 'Noto Sans Arabic', 'Segoe UI', 'sans-serif'],
         'arabic-tajawal': ['var(--font-arabic-tajawal)', 'Tajawal', 'Arial', 'sans-serif'],
         'arabic-amiri': ['var(--font-arabic-amiri)', 'Amiri', 'Times New Roman', 'serif'],
+      },
+      fontSize: {
+        // Enhanced sizing for Arabic text
+        'xs': ['0.75rem', { lineHeight: '1.6' }],
+        'sm': ['0.875rem', { lineHeight: '1.7' }],
+        'base': ['1rem', { lineHeight: '1.75' }],
+        'lg': ['1.125rem', { lineHeight: '1.8' }],
+        'xl': ['1.25rem', { lineHeight: '1.8' }],
+        '2xl': ['1.5rem', { lineHeight: '1.7' }],
+        '3xl': ['1.875rem', { lineHeight: '1.6' }],
+        '4xl': ['2.25rem', { lineHeight: '1.5' }],
+        '5xl': ['3rem', { lineHeight: '1.4' }],
+        '6xl': ['3.75rem', { lineHeight: '1.3' }],
+        '7xl': ['4.5rem', { lineHeight: '1.2' }],
+        '8xl': ['6rem', { lineHeight: '1.1' }],
+        '9xl': ['8rem', { lineHeight: '1' }],
+        // Arabic-specific sizes
+        'arabic-sm': ['1rem', { lineHeight: '1.8', letterSpacing: '0.01em' }],
+        'arabic-base': ['1.125rem', { lineHeight: '1.9', letterSpacing: '0.01em' }],
+        'arabic-lg': ['1.25rem', { lineHeight: '1.9', letterSpacing: '0.005em' }],
+        'arabic-xl': ['1.5rem', { lineHeight: '1.8', letterSpacing: '0.005em' }],
+        'arabic-display': ['2rem', { lineHeight: '1.6', letterSpacing: '0' }],
       },
       keyframes: {
         'accordion-down': {

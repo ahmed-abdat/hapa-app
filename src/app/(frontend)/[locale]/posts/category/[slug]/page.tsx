@@ -1,55 +1,55 @@
-import type { Metadata } from 'next/types'
-import { CollectionArchive } from '@/components/CollectionArchive'
-import { PageRange } from '@/components/PageRange'
-import { Pagination } from '@/components/Pagination'
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
-import React from 'react'
-import { isValidLocale } from '@/utilities/locale'
-import { notFound } from 'next/navigation'
+import type { Metadata } from "next/types";
+import { CollectionArchive } from "@/components/CollectionArchive";
+import { PageRange } from "@/components/PageRange";
+import { Pagination } from "@/components/Pagination";
+import configPromise from "@payload-config";
+import { getPayload } from "payload";
+import React from "react";
+import { isValidLocale } from "@/utilities/locale";
+import { notFound } from "next/navigation";
 
-export const dynamic = 'force-static'
-export const revalidate = 600
+export const dynamic = "force-static";
+export const revalidate = 600;
 
 type Args = {
   params: Promise<{
-    locale: string
-    slug: string
-  }>
-}
+    locale: string;
+    slug: string;
+  }>;
+};
 
 export default async function CategoryPage({ params: paramsPromise }: Args) {
-  const { locale, slug } = await paramsPromise
-  
+  const { locale, slug } = await paramsPromise;
+
   if (!isValidLocale(locale)) {
-    notFound()
+    notFound();
   }
 
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayload({ config: configPromise });
 
   // 1. Find category by slug
   const categoryResult = await payload.find({
-    collection: 'categories',
+    collection: "categories",
     where: { slug: { equals: slug } },
     limit: 1,
     locale,
-  })
+  });
 
   if (categoryResult.docs.length === 0) {
-    notFound()
+    notFound();
   }
 
-  const category = categoryResult.docs[0]
+  const category = categoryResult.docs[0];
 
   // 2. Find posts in this category (using existing ArchiveBlock pattern)
   const posts = await payload.find({
-    collection: 'posts',
+    collection: "posts",
     depth: 1,
     limit: 12,
     locale,
     overrideAccess: false,
     where: {
-      categories: { in: [category.id] }
+      categories: { in: [category.id] },
     },
     select: {
       title: true,
@@ -57,16 +57,16 @@ export default async function CategoryPage({ params: paramsPromise }: Args) {
       categories: true,
       meta: true,
     },
-  })
+  });
 
   return (
-    <div className="pt-24 pb-24">
+    <div className="py-8">
       {/* Category Header */}
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none">
           <h1>{category.title}</h1>
           <p className="text-muted-foreground">
-            {posts.totalDocs} {locale === 'ar' ? 'مقال' : 'articles'}
+            {posts.totalDocs} {locale === "ar" ? "مقال" : "articles"}
           </p>
         </div>
       </div>
@@ -87,57 +87,59 @@ export default async function CategoryPage({ params: paramsPromise }: Args) {
       {/* Pagination */}
       <div className="container">
         {posts.totalPages > 1 && posts.page && (
-          <Pagination 
-            page={posts.page} 
+          <Pagination
+            page={posts.page}
             totalPages={posts.totalPages}
             basePath={`/${locale}/posts/category/${slug}`}
           />
         )}
       </div>
     </div>
-  )
+  );
 }
 
-export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
-  const { locale, slug } = await paramsPromise
-  
+export async function generateMetadata({
+  params: paramsPromise,
+}: Args): Promise<Metadata> {
+  const { locale, slug } = await paramsPromise;
+
   if (!isValidLocale(locale)) {
-    return {}
+    return {};
   }
 
   // Get category for meta
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayload({ config: configPromise });
   const categoryResult = await payload.find({
-    collection: 'categories',
+    collection: "categories",
     where: { slug: { equals: slug } },
     limit: 1,
     locale,
-  })
+  });
 
   if (categoryResult.docs.length === 0) {
-    return {}
+    return {};
   }
 
-  const category = categoryResult.docs[0]
-  const title = `${category.title} - HAPA`
+  const category = categoryResult.docs[0];
+  const title = `${category.title} - HAPA`;
 
   return {
     title,
     description: `Articles dans la catégorie ${category.title}`,
     alternates: {
       languages: {
-        'fr': `/fr/posts/category/${slug}`,
-        'ar': `/ar/posts/category/${slug}`
-      }
-    }
-  }
+        fr: `/fr/posts/category/${slug}`,
+        ar: `/ar/posts/category/${slug}`,
+      },
+    },
+  };
 }
 
 export async function generateStaticParams() {
   // Generate for common categories - can be expanded
   return [
-    { locale: 'fr', slug: 'news' },
-    { locale: 'ar', slug: 'news' },
+    { locale: "fr", slug: "news" },
+    { locale: "ar", slug: "news" },
     // Add more as categories are created in admin
-  ]
+  ];
 }

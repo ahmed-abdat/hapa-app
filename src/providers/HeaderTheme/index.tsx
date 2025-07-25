@@ -2,7 +2,7 @@
 
 import type { Theme } from '@/providers/Theme/types'
 
-import React, { createContext, useCallback, use, useState } from 'react'
+import React, { createContext, useCallback, useContext, useState } from 'react'
 
 import canUseDOM from '@/utilities/canUseDOM'
 
@@ -30,4 +30,10 @@ export const HeaderThemeProvider = ({ children }: { children: React.ReactNode })
   return <HeaderThemeContext value={{ headerTheme, setHeaderTheme }}>{children}</HeaderThemeContext>
 }
 
-export const useHeaderTheme = (): ContextType => use(HeaderThemeContext)
+export const useHeaderTheme = (): ContextType => {
+  const context = React.useContext(HeaderThemeContext)
+  if (!context) {
+    throw new Error('useHeaderTheme must be used within a HeaderThemeProvider')
+  }
+  return context
+}

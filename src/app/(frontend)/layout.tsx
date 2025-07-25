@@ -9,7 +9,6 @@ import React from "react";
 import { AdminBar } from "@/components/AdminBar";
 import { Footer } from "@/Footer/Component";
 import { Header } from "@/Header/Component";
-import { getCachedGlobal } from "@/utilities/getGlobals";
 import { LocaleHandler } from "@/components/LocaleHandler";
 import { Providers } from "@/providers";
 import { mergeOpenGraph } from "@/utilities/mergeOpenGraph";
@@ -26,7 +25,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const { isEnabled } = await draftMode();
-  const footerData = await getCachedGlobal("footer", 1)();
 
   return (
     <html
@@ -61,7 +59,7 @@ export default async function RootLayout({
 
           <Header />
           {children}
-          <Footer footerData={footerData} />
+          <Footer />
 
           {/* Stagewise toolbar for AI-powered editing - only loads in development */}
           {process.env.NODE_ENV === "development" && (
@@ -79,9 +77,44 @@ export default async function RootLayout({
 
 export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
-  openGraph: mergeOpenGraph(),
+  title: {
+    default: "HAPA - Haute Autorité de la Presse et de l'Audiovisuel",
+    template: "%s | HAPA"
+  },
+  description: "Site officiel de la Haute Autorité de la Presse et de l'Audiovisuel de Mauritanie. Régulation et supervision des médias mauritaniens.",
+  keywords: ["HAPA", "Mauritanie", "Presse", "Audiovisuel", "Média", "Régulation"],
+  authors: [{ name: "HAPA", url: "https://hapa.mr" }],
+  creator: "HAPA",
+  publisher: "HAPA",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: mergeOpenGraph({
+    title: "HAPA - Haute Autorité de la Presse et de l'Audiovisuel",
+    description: "Site officiel de la Haute Autorité de la Presse et de l'Audiovisuel de Mauritanie",
+    siteName: "HAPA",
+    locale: "fr_MR",
+    type: "website",
+  }),
   twitter: {
     card: "summary_large_image",
-    creator: "@payloadcms",
+    title: "HAPA - Haute Autorité de la Presse et de l'Audiovisuel",
+    description: "Site officiel de la Haute Autorité de la Presse et de l'Audiovisuel de Mauritanie",
+    creator: "@HAPA_MR",
+  },
+  alternates: {
+    canonical: getServerSideURL(),
+    languages: {
+      'fr': `${getServerSideURL()}/fr`,
+      'ar': `${getServerSideURL()}/ar`,
+    },
   },
 };

@@ -19,8 +19,7 @@ export async function POST(): Promise<Response> {
   try {
     // Create a Payload request object to pass to the Local API for transactions
     // At this point you should pass in a user, locale, and any other context you need for the Local API
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const payloadReq = await createLocalReq({ user: user as any }, payload)
+    const payloadReq = await createLocalReq({ user }, payload)
 
     await seed({ payload, req: payloadReq })
 

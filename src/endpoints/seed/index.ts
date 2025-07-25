@@ -122,80 +122,59 @@ export const seed = async ({
       file: hero1Buffer,
     }),
 
+    // HAPA Government Categories (with bilingual content)
     payload.create({
       collection: 'categories',
       data: {
-        title: 'Technology',
-        breadcrumbs: [
-          {
-            label: 'Technology',
-            url: '/technology',
-          },
-        ],
+        title: {
+          fr: 'Actualités',
+          ar: 'الأخبار'
+        },
+        slug: 'news',
       },
     }),
 
     payload.create({
       collection: 'categories',
       data: {
-        title: 'News',
-        breadcrumbs: [
-          {
-            label: 'News',
-            url: '/news',
-          },
-        ],
+        title: {
+          fr: 'Décisions et communiqués',
+          ar: 'قرارات وبيانات'
+        },
+        slug: 'decisions',
       },
     }),
 
     payload.create({
       collection: 'categories',
       data: {
-        title: 'Finance',
-        breadcrumbs: [
-          {
-            label: 'Finance',
-            url: '/finance',
-          },
-        ],
-      },
-    }),
-    payload.create({
-      collection: 'categories',
-      data: {
-        title: 'Design',
-        breadcrumbs: [
-          {
-            label: 'Design',
-            url: '/design',
-          },
-        ],
+        title: {
+          fr: 'Rapports',
+          ar: 'تقارير'
+        },
+        slug: 'reports',
       },
     }),
 
     payload.create({
       collection: 'categories',
       data: {
-        title: 'Software',
-        breadcrumbs: [
-          {
-            label: 'Software',
-            url: '/software',
-          },
-        ],
+        title: {
+          fr: 'Lois et règlements',
+          ar: 'قوانين وتشريعات'
+        },
+        slug: 'laws',
       },
     }),
 
     payload.create({
       collection: 'categories',
       data: {
-        title: 'Engineering',
-        breadcrumbs: [
-          {
-            label: 'Engineering',
-            url: '/engineering',
-          },
-        ],
+        title: {
+          fr: 'Publications et éditions',
+          ar: 'إصدرات ومنشورات'
+        },
+        slug: 'publications',
       },
     }),
   ])

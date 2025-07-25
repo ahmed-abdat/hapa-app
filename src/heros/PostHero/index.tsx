@@ -17,59 +17,90 @@ export const PostHero: React.FC<{
   const hasAuthors =
     populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
 
+  // Calculate responsive title size based on title length
+  const getTitleClass = (titleLength: number) => {
+    if (titleLength > 100) return "text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
+    if (titleLength > 60) return "text-2xl md:text-4xl lg:text-4xl xl:text-5xl"
+    if (titleLength > 30) return "text-3xl md:text-4xl lg:text-4xl xl:text-5xl"
+    return "text-3xl md:text-4xl lg:text-4xl xl:text-5xl"
+  }
+
+  const titleClass = getTitleClass(title?.length || 0)
+
   return (
     <div className="relative -mt-[10.4rem] flex items-end">
-      <div className="container z-10 relative lg:grid lg:grid-cols-[1fr_48rem_1fr] text-white pb-8">
-        <div className="col-start-1 col-span-1 md:col-start-2 md:col-span-2">
-          <div className="uppercase text-sm mb-6">
-            {categories?.map((category, index) => {
-              if (typeof category === 'object' && category !== null) {
-                const { title: categoryTitle } = category
-
-                const titleToUse = categoryTitle || t('untitledCategory', locale)
-
-                const isLast = index === categories.length - 1
-
-                return (
-                  <React.Fragment key={category.id}>
-                    {titleToUse}
-                    {!isLast && <React.Fragment>, &nbsp;</React.Fragment>}
-                  </React.Fragment>
-                )
-              }
-              return null
-            })}
+      <div className="container z-10 relative text-white">
+        <div className="max-w-4xl mx-auto md:px-6 lg:px-8">
+          {/* Enhanced responsive title */}
+          <div className="mb-4 md:mb-6 pt-24 md:pt-28 lg:pt-32">
+            <h1 className={`font-bold leading-tight tracking-tight ${titleClass}`}>
+              {title}
+            </h1>
           </div>
 
-          <div className="">
-            <h1 className="mb-6 text-3xl md:text-5xl lg:text-6xl">{title}</h1>
-          </div>
+          {/* Metadata section below title - horizontal layout */}
+          <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-6">
+            {/* Categories */}
+            {categories && categories.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {categories.map((category) => {
+                  if (typeof category === 'object' && category !== null) {
+                    const { title: categoryTitle } = category
+                    const titleToUse = categoryTitle || t('untitledCategory', locale)
 
-          <div className="flex flex-col md:flex-row gap-4 md:gap-16">
-            {hasAuthors && (
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm">{t('author', locale)}</p>
-
-                  <p>{formatAuthors(populatedAuthors)}</p>
-                </div>
+                    return (
+                      <span 
+                        key={category.id}
+                        className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 transition-colors"
+                      >
+                        {titleToUse}
+                      </span>
+                    )
+                  }
+                  return null
+                })}
               </div>
             )}
-            {publishedAt && (
-              <div className="flex flex-col gap-1">
-                <p className="text-sm">{t('datePublished', locale)}</p>
 
-                <time dateTime={publishedAt}>{formatDateTime(publishedAt)}</time>
-              </div>
+            {/* Date separator and publication date */}
+            {publishedAt && (
+              <>
+                {categories && categories.length > 0 && (
+                  <div className="w-1 h-1 bg-white/40 rounded-full hidden sm:block" />
+                )}
+                <time 
+                  dateTime={publishedAt}
+                  className="text-sm text-white/90 font-medium flex items-center gap-1"
+                >
+                  <span className="text-white/60">{t('datePublished', locale)}:</span>
+                  {formatDateTime(publishedAt)}
+                </time>
+              </>
+            )}
+
+            {/* Author information - inline */}
+            {hasAuthors && (
+              <>
+                <div className="w-1 h-1 bg-white/40 rounded-full hidden md:block" />
+                <div className="flex items-center gap-1 text-sm">
+                  <span className="text-white/60">{t('author', locale)}:</span>
+                  <span className="text-white/90 font-medium">
+                    {formatAuthors(populatedAuthors)}
+                  </span>
+                </div>
+              </>
             )}
           </div>
         </div>
       </div>
-      <div className="min-h-[80vh] select-none">
+      
+      {/* Enhanced hero image with better gradient */}
+      <div className="min-h-[75vh] md:min-h-[80vh] lg:min-h-[85vh] select-none">
         {heroImage && typeof heroImage !== 'string' && (
           <Media fill priority imgClassName="-z-10 object-cover" resource={heroImage} />
         )}
-        <div className="absolute pointer-events-none left-0 bottom-0 w-full h-1/2 bg-gradient-to-t from-black to-transparent" />
+        <div className="absolute pointer-events-none left-0 bottom-0 w-full h-2/3 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+        <div className="absolute pointer-events-none left-0 top-0 w-full h-32 bg-gradient-to-b from-black/40 to-transparent" />
       </div>
     </div>
   )

@@ -29,7 +29,7 @@ export const AboutMission: Block = {
         placeholder: {
           en: 'About HAPA',
           fr: 'À Propos de HAPA',
-          ar: 'حول هابا',
+          ar: 'حول الهيئة العليا للصحافة والإعلام',
         },
       },
     },
@@ -46,7 +46,7 @@ export const AboutMission: Block = {
         placeholder: {
           en: 'Brief description of HAPA\'s role and mission...',
           fr: 'Brève description du rôle et de la mission de HAPA...',
-          ar: 'وصف مختصر لدور ومهمة هابا...',
+          ar: 'وصف مختصر لدور ومهمة الهيئة العليا للصحافة والإعلام...',
         },
       },
     },

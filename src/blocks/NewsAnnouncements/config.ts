@@ -81,7 +81,7 @@ export const NewsAnnouncements: Block = {
         placeholder: {
           en: 'Stay informed about the latest regulatory updates and official announcements from HAPA...',
           fr: 'Restez informé des dernières mises à jour réglementaires et annonces officielles de HAPA...',
-          ar: 'ابق على اطلاع على آخر التحديثات التنظيمية والإعلانات الرسمية من هابا...',
+          ar: 'ابق على اطلاع على آخر التحديثات التنظيمية والإعلانات الرسمية من الهيئة العليا للصحافة والإعلام...',
         },
       },
     },

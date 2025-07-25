@@ -18,30 +18,36 @@ import { notFound } from 'next/navigation'
 import type { Page } from '@/payload-types'
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const pages = await payload.find({
-    collection: 'pages',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-    pagination: false,
-    select: {
-      slug: true,
-    },
+  try {
+    const payload = await getPayload({ config: configPromise })
+    const pages = await payload.find({
+      collection: 'pages',
+      draft: false,
+      limit: 1000,
+      overrideAccess: false,
+      pagination: false,
+      select: {
+        slug: true,
+      },
   })
 
   const params: { locale: string; slug: string }[] = []
   
-  pages.docs?.forEach((doc) => {
-    if (doc.slug && doc.slug !== 'home') {
-      params.push(
-        { locale: 'fr', slug: doc.slug },
-        { locale: 'ar', slug: doc.slug }
-      )
-    }
-  })
+    pages.docs?.forEach((doc) => {
+      if (doc.slug && doc.slug !== 'home') {
+        params.push(
+          { locale: 'fr', slug: doc.slug },
+          { locale: 'ar', slug: doc.slug }
+        )
+      }
+    })
 
-  return params
+    return params
+  } catch (error) {
+    console.error('Error generating static params for pages:', error)
+    // Return empty array on database error to allow build to continue
+    return []
+  }
 }
 
 type Args = {

@@ -22,10 +22,11 @@ import { SubmissionListCell as SubmissionListCell_12e2d20cdb1c8e137c3e287e74d9d2
 import { DetailedSubmissionView as DetailedSubmissionView_c24073714ba214089ca892c81a8a0299 } from '@/components/CustomForms/DetailedSubmissionView/index.tsx'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
-import { RowLabel as RowLabel_0540b7d6275e2eab731bc6fd569972a4 } from '@/Header/RowLabel.tsx'
-import { RowLabel as RowLabel_7a95d423917281b67837057c07808738 } from '@/Footer/RowLabel.tsx'
+import { default as default_f29f68a77f206966bf4b9f0b29ef1b8d } from '@/components/AdminLogo/index.tsx'
 import { default as default_bb163149bb2f5ec0480c98bcc5e9bc47 } from '@/components/BeforeDashboard/index.tsx'
 import { default as default_2b8a0745141004fb388d207202b9bc59 } from '@/components/BeforeLogin/index.tsx'
+import { default as default_d358d65a9cea1b8d5f3eeb59f16692e3 } from '@/components/AdminProvider/index.tsx'
+import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -52,8 +53,9 @@ export const importMap = {
   "@/components/CustomForms/DetailedSubmissionView/index.tsx#DetailedSubmissionView": DetailedSubmissionView_c24073714ba214089ca892c81a8a0299,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
-  "@/Header/RowLabel.tsx#RowLabel": RowLabel_0540b7d6275e2eab731bc6fd569972a4,
-  "@/Footer/RowLabel.tsx#RowLabel": RowLabel_7a95d423917281b67837057c07808738,
+  "@/components/AdminLogo/index.tsx#default": default_f29f68a77f206966bf4b9f0b29ef1b8d,
   "@/components/BeforeDashboard/index.tsx#default": default_bb163149bb2f5ec0480c98bcc5e9bc47,
-  "@/components/BeforeLogin/index.tsx#default": default_2b8a0745141004fb388d207202b9bc59
+  "@/components/BeforeLogin/index.tsx#default": default_2b8a0745141004fb388d207202b9bc59,
+  "@/components/AdminProvider/index.tsx#default": default_d358d65a9cea1b8d5f3eeb59f16692e3,
+  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }

@@ -1,0 +1,61 @@
+/* HAPA Admin Interface Custom Styles */
+
+/* Override Payload's default colors with HAPA brand colors */
+:root {
+  --theme-bg-primary: #ffffff;
+  --theme-bg-secondary: #f8f9fa;
+  --theme-text-primary: #2c3e50;
+  --theme-text-secondary: #666666;
+  --theme-success-100: #e8f5e8;
+  --theme-success-500: #138B3A;
+  --theme-success-600: #0F7A2E;
+  --theme-warning-100: #fff9e6;
+  --theme-warning-500: #E6E619;
+  --theme-warning-600: #cccc16;
+}
+
+/* Admin header styling */
+.payload-nav__brand {
+  display: flex !important;
+  align-items: center !important;
+  padding: 0.5rem 1rem !important;
+}
+
+/* Ensure HAPA logo displays properly in nav */
+.payload-nav__brand img {
+  max-height: 32px !important;
+  width: auto !important;
+  object-fit: contain !important;
+}
+
+/* Success banner with HAPA colors */
+.banner--type-success {
+  background-color: #e8f5e8 !important;
+  border-color: #138B3A !important;
+  color: #0F7A2E !important;
+}
+
+/* Primary buttons with HAPA green */
+.btn--style-primary {
+  background-color: #138B3A !important;
+  border-color: #138B3A !important;
+}
+
+.btn--style-primary:hover {
+  background-color: #0F7A2E !important;
+  border-color: #0F7A2E !important;
+}
+
+/* Active navigation items */
+.nav__link--active {
+  background-color: rgba(19, 139, 58, 0.1) !important;
+  color: #138B3A !important;
+}
+
+/* Form focus states */
+.text-input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: #138B3A !important;
+  box-shadow: 0 0 0 2px rgba(19, 139, 58, 0.2) !important;
+}

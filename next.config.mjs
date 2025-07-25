@@ -23,6 +23,10 @@ const config = withPayload(
         serverActions: {
           bodySizeLimit: '5mb',
         },
+        // Static generation optimization for database-driven content
+        staticGenerationRetryCount: 3, // Retry failed page generation up to 3 times
+        staticGenerationMaxConcurrency: 6, // Process up to 6 pages per worker (reduced from default)
+        staticGenerationMinPagesPerWorker: 10, // Start new worker after 10 pages (reduced from default)
       },
       env: {
         PAYLOAD_CORE_DEV: 'true',
@@ -31,22 +35,26 @@ const config = withPayload(
         PAYLOAD_DO_NOT_SANITIZE_LOCALIZED_PROPERTY: 'true',
       },
       images: {
+        deviceSizes: [640, 768, 1024, 1280, 1600, 1920],
+        imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+        formats: ['image/webp'],
+        minimumCacheTTL: 2678400, // 31 days
+        dangerouslyAllowSVG: false,
+        contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
         remotePatterns: [
           {
             protocol: 'http',
             hostname: 'localhost',
-            port: '3000',
-            pathname: '/**',
+            pathname: '/api/media/**',
           },
           {
-            protocol: 'https',
+            protocol: 'https', 
             hostname: 'localhost',
-            pathname: '/**',
+            pathname: '/api/media/**',
           },
           {
             protocol: 'https',
             hostname: 'pub-17095e08be3e47baac773bf102d0e3ab.r2.dev',
-            port: '',
             pathname: '/**',
           },
         ],

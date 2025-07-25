@@ -59,7 +59,13 @@ export function ModernHeader() {
           <NavigationMenuTrigger className="font-medium text-sm px-header-x hover:bg-primary/10 hover:text-primary focus:bg-primary/15 focus:text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors">
             {title}
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="!w-[400px] md:!w-[420px] p-4 md:p-6 bg-white shadow-xl border border-gray-100 rounded-lg" dir={validLocale === "ar" ? "rtl" : "ltr"}>
+          <NavigationMenuContent 
+            className={cn(
+              "!w-[400px] md:!w-[420px] p-4 md:p-6 bg-white shadow-xl border border-gray-100 rounded-lg",
+              validLocale === "ar" ? "mr-2" : "ml-2"
+            )} 
+            dir={validLocale === "ar" ? "rtl" : "ltr"}
+          >
             <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-6">
               {/* Group Info */}
               <div className="flex flex-col justify-between min-h-0">
@@ -84,7 +90,13 @@ export function ModernHeader() {
                     className="bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg transition-all duration-200 text-sm"
                     asChild
                   >
-                    <Link href={`/${validLocale}/services`}>
+                    <Link href={`/${validLocale}${
+                      title === "تعريف" || title === "À propos" 
+                        ? "/about/mission" 
+                        : title === "إصدارات" || title === "Publications"
+                        ? "/publications/decisions"
+                        : "/about/mission"
+                    }`}>
                       {validLocale === "ar" ? "المزيد" : "En savoir plus"}
                     </Link>
                   </Button>

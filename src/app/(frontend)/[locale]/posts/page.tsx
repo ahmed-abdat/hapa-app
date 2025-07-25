@@ -1,64 +1,64 @@
-import type { Metadata } from 'next/types'
+import type { Metadata } from "next/types";
 
-import { CollectionArchive } from '@/components/CollectionArchive'
-import { PageRange } from '@/components/PageRange'
-import { Pagination } from '@/components/Pagination'
-import { CategoryFilter } from '@/components/CategoryFilter'
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
-import React from 'react'
-import PageClient from './page.client'
-import { isValidLocale } from '@/utilities/locale'
-import { notFound } from 'next/navigation'
+import { CollectionArchive } from "@/components/CollectionArchive";
+import { PageRange } from "@/components/PageRange";
+import { Pagination } from "@/components/Pagination";
+import { CategoryFilter } from "@/components/CategoryFilter";
+import configPromise from "@payload-config";
+import { getPayload } from "payload";
+import React from "react";
+import PageClient from "./page.client";
+import { isValidLocale } from "@/utilities/locale";
+import { notFound } from "next/navigation";
 
-export const dynamic = 'force-static'
-export const revalidate = 600
+export const dynamic = "force-dynamic";
+export const revalidate = 600;
 
 type Args = {
   params: Promise<{
-    locale: string
-  }>
+    locale: string;
+  }>;
   searchParams: Promise<{
-    category?: string
-  }>
-}
+    category?: string;
+  }>;
+};
 
-export default async function Page({ 
-  params: paramsPromise, 
-  searchParams: searchParamsPromise 
+export default async function Page({
+  params: paramsPromise,
+  searchParams: searchParamsPromise,
 }: Args) {
-  const { locale } = await paramsPromise
-  const { category } = await searchParamsPromise
-  
+  const { locale } = await paramsPromise;
+  const { category } = await searchParamsPromise;
+
   if (!isValidLocale(locale)) {
-    notFound()
+    notFound();
   }
 
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayload({ config: configPromise });
 
   // Build query with optional category filter
-  let whereClause = {}
-  let selectedCategory = null
+  let whereClause = {};
+  let selectedCategory = null;
 
   if (category) {
     // Find category by slug
     const categoryResult = await payload.find({
-      collection: 'categories',
+      collection: "categories",
       where: { slug: { equals: category } },
       limit: 1,
       locale,
-    })
+    });
 
     if (categoryResult.docs.length > 0) {
-      selectedCategory = categoryResult.docs[0]
+      selectedCategory = categoryResult.docs[0];
       whereClause = {
-        categories: { in: [selectedCategory.id] }
-      }
+        categories: { in: [selectedCategory.id] },
+      };
     }
   }
 
   const posts = await payload.find({
-    collection: 'posts',
+    collection: "posts",
     depth: 1,
     limit: 12,
     locale,
@@ -69,29 +69,30 @@ export default async function Page({
       slug: true,
       categories: true,
       meta: true,
+      publishedAt: true,
+      createdAt: true,
     },
-  })
+  });
 
   // Get all categories for filter dropdown
   const allCategories = await payload.find({
-    collection: 'categories',
+    collection: "categories",
     limit: 100,
     locale,
-    sort: 'title',
-  })
+    sort: "title",
+  });
 
   return (
-    <div className="pt-24 pb-24">
+    <div className="py-8">
       <PageClient />
-      
+
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none">
-          <h1>
-            {selectedCategory ? selectedCategory.title : 'Posts'}
-          </h1>
+          <h1>{selectedCategory ? selectedCategory.title : "Posts"}</h1>
           {selectedCategory && (
             <p className="text-muted-foreground">
-              {locale === 'ar' ? 'في فئة' : 'Dans la catégorie'}: {selectedCategory.title}
+              {locale === "ar" ? "في فئة" : "Dans la catégorie"}:{" "}
+              {selectedCategory.title}
             </p>
           )}
         </div>
@@ -99,7 +100,7 @@ export default async function Page({
 
       {/* Category Filter */}
       <div className="container mb-8">
-        <CategoryFilter 
+        <CategoryFilter
           categories={allCategories.docs}
           selectedCategory={category}
           locale={locale}
@@ -119,26 +120,23 @@ export default async function Page({
 
       <div className="container">
         {posts.totalPages > 1 && posts.page && (
-          <Pagination 
-            page={posts.page} 
+          <Pagination
+            page={posts.page}
             totalPages={posts.totalPages}
             preserveSearchParams={true}
           />
         )}
       </div>
     </div>
-  )
+  );
 }
 
 export function generateMetadata(): Metadata {
   return {
     title: `HAPA - Posts`,
-  }
+  };
 }
 
 export async function generateStaticParams() {
-  return [
-    { locale: 'fr' },
-    { locale: 'ar' }
-  ]
+  return [{ locale: "fr" }, { locale: "ar" }];
 }
