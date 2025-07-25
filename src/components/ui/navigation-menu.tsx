@@ -46,8 +46,10 @@ const navigationMenuTriggerStyle = cva(
 
 const NavigationMenuTrigger = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Trigger> & {
+    locale?: 'ar' | 'fr'
+  }
+>(({ className, children, locale, ...props }, ref) => (
   <NavigationMenuPrimitive.Trigger
     ref={ref}
     className={cn(navigationMenuTriggerStyle(), "group", className)}
@@ -55,7 +57,10 @@ const NavigationMenuTrigger = React.forwardRef<
   >
     {children}{" "}
     <ChevronDownIcon
-      className="relative top-[1px] ml-1 h-3 w-3 transition duration-300 group-data-[state=open]:rotate-180"
+      className={cn(
+        "relative top-[1px] h-3 w-3 transition duration-300 group-data-[state=open]:rotate-180",
+        locale === 'ar' ? 'mr-1' : 'ml-1'
+      )}
       aria-hidden="true"
     />
   </NavigationMenuPrimitive.Trigger>

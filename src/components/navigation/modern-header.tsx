@@ -56,7 +56,10 @@ export function ModernHeader() {
     if (item.items) {
       return (
         <NavigationMenuItem key={title}>
-          <NavigationMenuTrigger className="font-medium text-sm px-header-x hover:bg-primary/10 hover:text-primary focus:bg-primary/15 focus:text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors">
+          <NavigationMenuTrigger 
+            className="font-medium text-sm px-header-x hover:bg-primary/10 hover:text-primary focus:bg-primary/15 focus:text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+            locale={validLocale}
+          >
             {title}
           </NavigationMenuTrigger>
           <NavigationMenuContent className="!w-[400px] md:!w-[420px] p-4 md:p-6 bg-white shadow-xl border border-gray-100 rounded-lg" dir={validLocale === "ar" ? "rtl" : "ltr"}>

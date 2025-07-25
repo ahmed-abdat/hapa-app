@@ -8,11 +8,14 @@ import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { CoreServicesBlock } from '@/blocks/CoreServices/Component'
 import { FormBlock } from '@/blocks/Form/Component'
+import { GalleryBlock } from '@/blocks/Gallery/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { MediaSpaceBlock } from '@/blocks/MediaSpace/Component'
 import { NewsAnnouncementsBlock } from '@/blocks/NewsAnnouncements/Component'
 import { NewsAnnouncementsRichBlock } from '@/blocks/NewsAnnouncements/ComponentRich'
 import { PartnersSectionBlock } from '@/blocks/PartnersSection/Component'
+import { QuoteBlock } from '@/blocks/Quote/Component'
+import { StatisticsBlock } from '@/blocks/Statistics/Component'
 
 const blockComponents = {
   aboutMission: AboutMissionBlock,
@@ -21,10 +24,13 @@ const blockComponents = {
   coreServices: CoreServicesBlock,
   cta: CallToActionBlock,
   formBlock: FormBlock,
+  gallery: GalleryBlock,
   mediaBlock: MediaBlock,
   mediaSpace: MediaSpaceBlock,
   newsAnnouncements: NewsAnnouncementsBlock,
   partnersSection: PartnersSectionBlock,
+  quote: QuoteBlock,
+  statistics: StatisticsBlock,
 }
 
 export const RenderBlocks: React.FC<{

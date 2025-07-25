@@ -8,10 +8,13 @@ import { CallToAction } from '../../blocks/CallToAction/config'
 import { Content } from '../../blocks/Content/config'
 import { CoreServices } from '../../blocks/CoreServices/config'
 import { FormBlock } from '../../blocks/Form/config'
+import { Gallery } from '../../blocks/Gallery/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { MediaSpace } from '../../blocks/MediaSpace/config'
 import { NewsAnnouncements } from '../../blocks/NewsAnnouncements/config'
 import { PartnersSection } from '../../blocks/PartnersSection/config'
+import { Quote } from '../../blocks/Quote/config'
+import { Statistics } from '../../blocks/Statistics/config'
 import { hero } from '@/heros/config'
 import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
@@ -138,7 +141,7 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [AboutMission, CallToAction, Content, CoreServices, MediaBlock, MediaSpace, NewsAnnouncements, PartnersSection, Archive, FormBlock],
+              blocks: [AboutMission, CallToAction, Content, CoreServices, Gallery, MediaBlock, MediaSpace, NewsAnnouncements, PartnersSection, Quote, Statistics, Archive, FormBlock],
               required: true,
               localized: true,
               admin: {

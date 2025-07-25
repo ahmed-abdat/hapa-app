@@ -198,10 +198,13 @@ export interface Page {
     | CallToActionBlock
     | ContentBlock
     | CoreServicesBlock
+    | GalleryBlock
     | MediaBlock
     | MediaSpaceBlock
     | NewsAnnouncementsBlock
     | PartnersSectionBlock
+    | QuoteBlock
+    | StatisticsBlock
     | ArchiveBlock
     | FormBlock
   )[];
@@ -536,6 +539,57 @@ export interface CoreServicesBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GalleryBlock".
+ */
+export interface GalleryBlock {
+  /**
+   * Optional title for the gallery section
+   */
+  title?: string | null;
+  /**
+   * Optional subtitle to provide more context
+   */
+  subtitle?: string | null;
+  /**
+   * Add images to the gallery. Drag to reorder.
+   */
+  images: {
+    /**
+     * Upload an image for the gallery
+     */
+    image: number | Media;
+    /**
+     * Optional title for this image
+     */
+    title?: string | null;
+    /**
+     * Optional description for this image
+     */
+    description?: string | null;
+    id?: string | null;
+  }[];
+  /**
+   * Choose how to arrange the images
+   */
+  layout?: ('masonry' | 'grid' | 'flex') | null;
+  /**
+   * Maximum number of columns on larger screens
+   */
+  columns?: ('2' | '3' | '4' | '5') | null;
+  /**
+   * Display image titles and descriptions on hover
+   */
+  showTitles?: boolean | null;
+  /**
+   * Allow users to view images in a fullscreen lightbox
+   */
+  enableLightbox?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gallery';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
@@ -619,6 +673,90 @@ export interface PartnersSectionBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'partnersSection';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "QuoteBlock".
+ */
+export interface QuoteBlock {
+  /**
+   * The main quote or testimonial text
+   */
+  quote: string;
+  /**
+   * The person who said or wrote this quote
+   */
+  author?: string | null;
+  /**
+   * The role, title, or organization of the author
+   */
+  role?: string | null;
+  /**
+   * Choose the visual style for this quote
+   */
+  variant?: ('default' | 'featured' | 'testimonial' | 'pull') | null;
+  /**
+   * Display a quote icon in the block
+   */
+  showIcon?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'quote';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatisticsBlock".
+ */
+export interface StatisticsBlock {
+  /**
+   * Optional title for the statistics section
+   */
+  title?: string | null;
+  /**
+   * Optional subtitle to provide more context
+   */
+  subtitle?: string | null;
+  /**
+   * Add statistics to display. Each will be animated when it comes into view.
+   */
+  statistics: {
+    /**
+     * The numerical value to display
+     */
+    value: number;
+    /**
+     * Text to show before the number (e.g., "$", "+")
+     */
+    prefix?: string | null;
+    /**
+     * Text to show after the number (e.g., "%", "K", "M")
+     */
+    suffix?: string | null;
+    /**
+     * The label describing what this statistic represents
+     */
+    label: string;
+    /**
+     * Optional additional description
+     */
+    description?: string | null;
+    /**
+     * Choose an icon to represent this statistic
+     */
+    icon?: ('trending' | 'users' | 'files' | 'award' | 'building' | 'globe') | null;
+    id?: string | null;
+  }[];
+  /**
+   * How to arrange the statistics
+   */
+  layout?: ('grid' | 'horizontal' | 'vertical') | null;
+  /**
+   * Choose the visual style for the statistics display
+   */
+  variant?: ('default' | 'featured' | 'minimal' | 'glassmorphism') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'statistics';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1162,10 +1300,13 @@ export interface PagesSelect<T extends boolean = true> {
         cta?: T | CallToActionBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
         coreServices?: T | CoreServicesBlockSelect<T>;
+        gallery?: T | GalleryBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
         mediaSpace?: T | MediaSpaceBlockSelect<T>;
         newsAnnouncements?: T | NewsAnnouncementsBlockSelect<T>;
         partnersSection?: T | PartnersSectionBlockSelect<T>;
+        quote?: T | QuoteBlockSelect<T>;
+        statistics?: T | StatisticsBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
       };
@@ -1257,6 +1398,28 @@ export interface CoreServicesBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GalleryBlock_select".
+ */
+export interface GalleryBlockSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  layout?: T;
+  columns?: T;
+  showTitles?: T;
+  enableLightbox?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "MediaBlock_select".
  */
 export interface MediaBlockSelect<T extends boolean = true> {
@@ -1307,6 +1470,42 @@ export interface PartnersSectionBlockSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "QuoteBlock_select".
+ */
+export interface QuoteBlockSelect<T extends boolean = true> {
+  quote?: T;
+  author?: T;
+  role?: T;
+  variant?: T;
+  showIcon?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatisticsBlock_select".
+ */
+export interface StatisticsBlockSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  statistics?:
+    | T
+    | {
+        value?: T;
+        prefix?: T;
+        suffix?: T;
+        label?: T;
+        description?: T;
+        icon?: T;
+        id?: T;
+      };
+  layout?: T;
+  variant?: T;
   id?: T;
   blockName?: T;
 }

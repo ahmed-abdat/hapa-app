@@ -9,6 +9,7 @@ import React from 'react'
 import PageClient from './page.client'
 import { notFound } from 'next/navigation'
 import { isValidLocale } from '@/utilities/locale'
+import { setRequestLocale } from 'next-intl/server'
 
 export const revalidate = 600
 
@@ -25,6 +26,8 @@ export default async function Page({ params: paramsPromise }: Args) {
   if (!isValidLocale(locale)) {
     notFound()
   }
+
+  setRequestLocale(locale)
   
   const payload = await getPayload({ config: configPromise })
 

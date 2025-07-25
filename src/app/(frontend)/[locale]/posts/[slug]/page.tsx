@@ -14,6 +14,7 @@ import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
+import { setRequestLocale } from 'next-intl/server'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -52,6 +53,7 @@ export default async function Post({ params: paramsPromise }: Args) {
   const { locale, slug = '' } = await paramsPromise
   const url = '/posts/' + slug
   
+  setRequestLocale(locale)
   
   const post = await queryPostBySlug({ slug, locale })
 
@@ -71,17 +73,24 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       <PostHero post={post} locale={locale} />
 
-      <div className="flex flex-col items-center gap-4 pt-8">
-        <div className="container">
-          <RichText className="max-w-[48rem] mx-auto" data={post.content} enableGutter={false} />
-          {post.relatedPosts && post.relatedPosts.length > 0 && (
+      <div className="article-container">
+        <RichText 
+          className="prose-hapa max-w-none" 
+          data={post.content} 
+          enableGutter={false}
+          variant="article"
+          locale={locale}
+        />
+        
+        {post.relatedPosts && post.relatedPosts.length > 0 && (
+          <div className="mt-16 pt-8 border-t border-border">
             <RelatedPosts
-              className="mt-12 max-w-[52rem] lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
+              className="max-w-none"
               docs={post.relatedPosts.filter((post) => typeof post === 'object')}
               locale={locale}
             />
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </article>
   )

@@ -128,3 +128,164 @@ html[data-theme='light'] {
   font-feature-settings: "liga" 1, "kern" 1;
   text-rendering: optimizeLegibility;
 }
+
+/* ========================================
+   HAPA COMPONENT CLASSES FOR CONTENT
+   ======================================== */
+
+/* Article Container Component */
+.article-container {
+  @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+}
+
+/* Article Header Components */
+.article-header {
+  @apply mb-8 pb-6 border-b border-border;
+}
+
+.article-title {
+  @apply text-3xl md:text-4xl lg:text-5xl font-bold mb-4;
+  @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  line-height: 1.2;
+}
+
+.article-subtitle {
+  @apply text-xl md:text-2xl font-medium text-muted-foreground mb-4;
+  line-height: 1.4;
+}
+
+.article-lead {
+  @apply text-lg md:text-xl text-muted-foreground font-medium leading-relaxed;
+}
+
+/* Article Metadata Component */
+.article-meta {
+  @apply flex flex-wrap items-center gap-4 text-sm text-muted-foreground mt-6;
+}
+
+.article-meta-item {
+  @apply flex items-center gap-2;
+}
+
+.reading-time-badge {
+  @apply bg-primary/10 text-primary px-3 py-1 rounded-full font-medium text-xs;
+}
+
+.category-badge {
+  @apply bg-secondary/20 text-secondary-foreground px-3 py-1 rounded-full font-medium text-xs;
+  @apply border border-secondary/30 hover:bg-secondary/30 transition-colors;
+}
+
+/* Enhanced Content Cards for Archives */
+.content-card {
+  @apply bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300;
+  @apply border border-border hover:border-primary/20;
+  @apply transform hover:-translate-y-1;
+}
+
+.content-card-image {
+  @apply aspect-video overflow-hidden;
+}
+
+.content-card-image img {
+  @apply w-full h-full object-cover transition-transform duration-300 hover:scale-105;
+}
+
+.content-card-content {
+  @apply p-6;
+}
+
+.content-card-title {
+  @apply text-xl font-semibold text-foreground mb-3 line-clamp-2;
+  @apply hover:text-primary transition-colors;
+}
+
+.content-card-excerpt {
+  @apply text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-3;
+}
+
+.content-card-meta {
+  @apply flex items-center justify-between text-xs text-muted-foreground;
+}
+
+/* Arabic Typography Enhancements */
+.article-title[lang="ar"] {
+  @apply font-arabic-display text-2xl md:text-3xl lg:text-4xl;
+  line-height: 1.4;
+}
+
+.article-subtitle[lang="ar"] {
+  @apply font-arabic-display text-lg md:text-xl;
+  line-height: 1.5;
+}
+
+/* Prose enhancements for Arabic content */
+.prose[lang="ar"] {
+  @apply font-arabic-sans text-lg leading-8;
+}
+
+.prose[lang="ar"] h1,
+.prose[lang="ar"] h2,
+.prose[lang="ar"] h3,
+.prose[lang="ar"] h4 {
+  @apply font-arabic-display;
+}
+
+/* Pull Quote Component */
+.pull-quote {
+  @apply my-8 p-6 rounded-2xl relative overflow-hidden;
+  @apply bg-gradient-to-br from-secondary/10 via-secondary/5 to-transparent;
+  @apply border-l-4 border-secondary shadow-sm;
+}
+
+.pull-quote::before {
+  content: '"';
+  @apply absolute top-2 left-4 text-6xl font-bold text-secondary/20 select-none;
+}
+
+.pull-quote-text {
+  @apply text-xl md:text-2xl font-medium text-foreground leading-relaxed relative z-10;
+}
+
+.pull-quote-attribution {
+  @apply text-sm font-semibold text-primary mt-4 uppercase tracking-wider;
+}
+
+/* Highlight Component */
+.text-highlight {
+  @apply bg-gradient-to-r from-secondary/20 to-secondary/10 px-2 py-1 rounded;
+  @apply font-medium text-foreground;
+}
+
+/* Reading Progress Bar */
+.reading-progress {
+  @apply fixed top-0 left-0 h-1 bg-gradient-to-r from-primary to-accent z-50;
+  transition: width 0.3s ease;
+}
+
+/* Enhanced Responsive Design */
+@media (max-width: 768px) {
+  .article-title {
+    @apply text-2xl leading-tight;
+  }
+  
+  .article-subtitle {
+    @apply text-lg;
+  }
+  
+  .article-lead {
+    @apply text-base;
+  }
+  
+  .pull-quote-text {
+    @apply text-lg;
+  }
+  
+  .content-card-content {
+    @apply p-4;
+  }
+  
+  .article-meta {
+    @apply flex-col items-start gap-2;
+  }
+}
