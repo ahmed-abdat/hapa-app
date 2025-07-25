@@ -3,6 +3,7 @@ import type { Metadata } from 'next/types'
 import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
+import { CategoryFilter } from '@/components/CategoryFilter'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
@@ -17,10 +18,17 @@ type Args = {
   params: Promise<{
     locale: string
   }>
+  searchParams: Promise<{
+    category?: string
+  }>
 }
 
-export default async function Page({ params: paramsPromise }: Args) {
+export default async function Page({ 
+  params: paramsPromise, 
+  searchParams: searchParamsPromise 
+}: Args) {
   const { locale } = await paramsPromise
+  const { category } = await searchParamsPromise
   
   if (!isValidLocale(locale)) {
     notFound()
@@ -28,12 +36,34 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   const payload = await getPayload({ config: configPromise })
 
+  // Build query with optional category filter
+  let whereClause = {}
+  let selectedCategory = null
+
+  if (category) {
+    // Find category by slug
+    const categoryResult = await payload.find({
+      collection: 'categories',
+      where: { slug: { equals: category } },
+      limit: 1,
+      locale,
+    })
+
+    if (categoryResult.docs.length > 0) {
+      selectedCategory = categoryResult.docs[0]
+      whereClause = {
+        categories: { in: [selectedCategory.id] }
+      }
+    }
+  }
+
   const posts = await payload.find({
     collection: 'posts',
     depth: 1,
     limit: 12,
     locale,
     overrideAccess: false,
+    where: whereClause, // Add conditional filtering
     select: {
       title: true,
       slug: true,
@@ -42,13 +72,38 @@ export default async function Page({ params: paramsPromise }: Args) {
     },
   })
 
+  // Get all categories for filter dropdown
+  const allCategories = await payload.find({
+    collection: 'categories',
+    limit: 100,
+    locale,
+    sort: 'title',
+  })
+
   return (
     <div className="pt-24 pb-24">
       <PageClient />
+      
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none">
-          <h1>Posts</h1>
+          <h1>
+            {selectedCategory ? selectedCategory.title : 'Posts'}
+          </h1>
+          {selectedCategory && (
+            <p className="text-muted-foreground">
+              {locale === 'ar' ? 'في فئة' : 'Dans la catégorie'}: {selectedCategory.title}
+            </p>
+          )}
         </div>
+      </div>
+
+      {/* Category Filter */}
+      <div className="container mb-8">
+        <CategoryFilter 
+          categories={allCategories.docs}
+          selectedCategory={category}
+          locale={locale}
+        />
       </div>
 
       <div className="container mb-8">
@@ -64,7 +119,11 @@ export default async function Page({ params: paramsPromise }: Args) {
 
       <div className="container">
         {posts.totalPages > 1 && posts.page && (
-          <Pagination page={posts.page} totalPages={posts.totalPages} />
+          <Pagination 
+            page={posts.page} 
+            totalPages={posts.totalPages}
+            preserveSearchParams={true}
+          />
         )}
       </div>
     </div>
