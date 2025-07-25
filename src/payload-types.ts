@@ -149,7 +149,7 @@ export interface Page {
   id: number;
   title: string;
   hero: {
-    type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
+    type: 'none' | 'homepageHero' | 'highImpact' | 'mediumImpact' | 'lowImpact';
     richText?: {
       root: {
         type: string;
@@ -191,7 +191,19 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ComplaintFormBlock | ContactFormBlock | ContentBlock | MediaBlock | ArchiveBlock)[];
+  layout: (
+    | AboutMissionBlock
+    | ArchiveBlock
+    | CallToActionBlock
+    | ComplaintFormBlock
+    | ContactFormBlock
+    | ContentBlock
+    | CoreServicesBlock
+    | MediaBlock
+    | MediaSpaceBlock
+    | NewsAnnouncementsBlock
+    | PartnersSectionBlock
+  )[];
   meta?: {
     title?: string | null;
     /**
@@ -338,6 +350,59 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutMissionBlock".
+ */
+export interface AboutMissionBlock {
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Optional image to display alongside the content
+   */
+  media?: (number | null) | Media;
+  /**
+   * Display achievement statistics and impact numbers
+   */
+  showStats?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'aboutMission';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ArchiveBlock".
+ */
+export interface ArchiveBlock {
+  introContent?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  populateBy?: ('collection' | 'selection') | null;
+  relationTo?: 'posts' | null;
+  categories?: (number | Category)[] | null;
+  limit?: number | null;
+  selectedDocs?:
+    | {
+        relationTo: 'posts';
+        value: number | Post;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'archive';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "CallToActionBlock".
  */
 export interface CallToActionBlock {
@@ -454,6 +519,17 @@ export interface ContentBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CoreServicesBlock".
+ */
+export interface CoreServicesBlock {
+  title?: string | null;
+  description?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'coreServices';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
@@ -464,37 +540,79 @@ export interface MediaBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock".
+ * via the `definition` "MediaSpaceBlock".
  */
-export interface ArchiveBlock {
-  introContent?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'posts' | null;
-  categories?: (number | Category)[] | null;
-  limit?: number | null;
-  selectedDocs?:
+export interface MediaSpaceBlock {
+  title?: string | null;
+  description?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mediaSpace';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsAnnouncementsBlock".
+ */
+export interface NewsAnnouncementsBlock {
+  /**
+   * Choose between simple grid layout or rich layout with urgent announcements and featured posts.
+   */
+  layoutVariant?: ('simple' | 'rich') | null;
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Display the most recent post as a featured article with larger layout (Rich layout only)
+   */
+  showFeatured?: boolean | null;
+  /**
+   * Display urgent announcements banner at the top (Rich layout only)
+   */
+  showUrgentBanner?: boolean | null;
+  /**
+   * Set the maximum number of posts to display in this section
+   */
+  maxPosts?: number | null;
+  /**
+   * Manually select specific posts to display. If empty, will show the most recent posts automatically.
+   */
+  posts?: (number | Post)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'newsAnnouncements';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PartnersSectionBlock".
+ */
+export interface PartnersSectionBlock {
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Display certification badges and trust indicators
+   */
+  showTrustMetrics?: boolean | null;
+  /**
+   * Display logos of international partners and organizations
+   */
+  showPartnerLogos?: boolean | null;
+  /**
+   * Add partner organizations and their details
+   */
+  partners?:
     | {
-        relationTo: 'posts';
-        value: number | Post;
+        name: string;
+        /**
+         * Upload partner logo (recommended: 200x100px, transparent background)
+         */
+        logo?: (number | null) | Media;
+        url?: string | null;
+        description?: string | null;
+        id?: string | null;
       }[]
     | null;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'archive';
+  blockType: 'partnersSection';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -873,12 +991,17 @@ export interface PagesSelect<T extends boolean = true> {
   layout?:
     | T
     | {
+        aboutMission?: T | AboutMissionBlockSelect<T>;
+        archive?: T | ArchiveBlockSelect<T>;
         cta?: T | CallToActionBlockSelect<T>;
         complaintForm?: T | ComplaintFormBlockSelect<T>;
         contactForm?: T | ContactFormBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
+        coreServices?: T | CoreServicesBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
-        archive?: T | ArchiveBlockSelect<T>;
+        mediaSpace?: T | MediaSpaceBlockSelect<T>;
+        newsAnnouncements?: T | NewsAnnouncementsBlockSelect<T>;
+        partnersSection?: T | PartnersSectionBlockSelect<T>;
       };
   meta?:
     | T
@@ -893,6 +1016,32 @@ export interface PagesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutMissionBlock_select".
+ */
+export interface AboutMissionBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  media?: T;
+  showStats?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ArchiveBlock_select".
+ */
+export interface ArchiveBlockSelect<T extends boolean = true> {
+  introContent?: T;
+  populateBy?: T;
+  relationTo?: T;
+  categories?: T;
+  limit?: T;
+  selectedDocs?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -962,6 +1111,16 @@ export interface ContentBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CoreServicesBlock_select".
+ */
+export interface CoreServicesBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "MediaBlock_select".
  */
 export interface MediaBlockSelect<T extends boolean = true> {
@@ -971,15 +1130,47 @@ export interface MediaBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock_select".
+ * via the `definition` "MediaSpaceBlock_select".
  */
-export interface ArchiveBlockSelect<T extends boolean = true> {
-  introContent?: T;
-  populateBy?: T;
-  relationTo?: T;
-  categories?: T;
-  limit?: T;
-  selectedDocs?: T;
+export interface MediaSpaceBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsAnnouncementsBlock_select".
+ */
+export interface NewsAnnouncementsBlockSelect<T extends boolean = true> {
+  layoutVariant?: T;
+  title?: T;
+  description?: T;
+  showFeatured?: T;
+  showUrgentBanner?: T;
+  maxPosts?: T;
+  posts?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PartnersSectionBlock_select".
+ */
+export interface PartnersSectionBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  showTrustMetrics?: T;
+  showPartnerLogos?: T;
+  partners?:
+    | T
+    | {
+        name?: T;
+        logo?: T;
+        url?: T;
+        description?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
