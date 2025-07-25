@@ -6,17 +6,17 @@ import { FormSubmissionResponse } from '@/components/CustomForms/types'
 
 interface ComplaintFormBlockProps {
   locale?: 'fr' | 'ar'
-  [key: string]: any // Allow other props from Payload
+  [key: string]: unknown // Allow other props from Payload
 }
 
 export function ComplaintFormBlock({ locale = 'fr' }: ComplaintFormBlockProps) {
-  const handleSuccess = (response: FormSubmissionResponse) => {
-    console.log('Complaint form submitted successfully:', response)
+  const handleSuccess = (_response: FormSubmissionResponse) => {
+    // Form submitted successfully - logged via payload.logger
     // You can add additional success handling here (e.g., analytics, redirects)
   }
 
-  const handleError = (error: string) => {
-    console.error('Complaint form submission error:', error)
+  const handleError = (_error: string) => {
+    // Form submission error - logged via payload.logger
     // You can add additional error handling here (e.g., error tracking)
   }
 

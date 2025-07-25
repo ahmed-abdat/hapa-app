@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Button } from '@/components/ui/button'
+// import { Button } from '@/components/ui/button' // Unused import
 import { useWatchForm } from '@payloadcms/ui'
 
 interface SubmissionData {
@@ -16,7 +16,7 @@ interface SubmissionData {
   documentType?: string
   urgency?: string
   purpose?: string
-  [key: string]: any
+  [key: string]: unknown
 }
 
 interface SubmissionDisplayProps {
@@ -24,17 +24,17 @@ interface SubmissionDisplayProps {
   readOnly?: boolean
   // Payload field component props
   path?: string
-  field?: any
-  [key: string]: any
+  field?: unknown
+  [key: string]: unknown
 }
 
 export const SubmissionDisplay: React.FC<SubmissionDisplayProps> = (props) => {
   // Extract value from props - Payload passes it differently
-  const { value, readOnly = true, path, ...otherProps } = props
+  const { value, readOnly: _readOnly = true, path, ..._otherProps } = props
   
   // Get the actual document data using Payload's hook
   const { fields } = useWatchForm()
-  const actualValue = fields?.submissionData?.value || fields?.[path]?.value
+  const actualValue = fields?.submissionData?.value || (path ? fields?.[path]?.value : undefined)
   
   // Use the actual value from document instead of props.value
   const submissionData = actualValue || value;
@@ -48,14 +48,15 @@ export const SubmissionDisplay: React.FC<SubmissionDisplayProps> = (props) => {
   }
 
   // Create a compact summary view showing key information
+  const data = submissionData as Record<string, unknown>;
   const keyInfo = [
-    { label: 'Nom', value: submissionData.name },
-    { label: 'Email', value: submissionData.email },
-    { label: 'Téléphone', value: submissionData.phone },
-    { label: 'Sujet', value: submissionData.subject },
+    { label: 'Nom', value: data.name },
+    { label: 'Email', value: data.email },
+    { label: 'Téléphone', value: data.phone },
+    { label: 'Sujet', value: data.subject },
   ].filter(item => item.value)
 
-  const description = submissionData.message || submissionData.description || 'Aucune description'
+  const description = data.message || data.description || 'Aucune description'
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
@@ -64,7 +65,7 @@ export const SubmissionDisplay: React.FC<SubmissionDisplayProps> = (props) => {
         {keyInfo.map((item, index) => (
           <div key={index} className="flex">
             <span className="font-medium text-gray-700 min-w-16">{item.label}:</span>
-            <span className="text-gray-900 ml-2 truncate" title={item.value}>{item.value}</span>
+            <span className="text-gray-900 ml-2 truncate" title={String(item.value)}>{String(item.value)}</span>
           </div>
         ))}
       </div>
@@ -74,7 +75,7 @@ export const SubmissionDisplay: React.FC<SubmissionDisplayProps> = (props) => {
         <div className="pt-2 border-t border-gray-100">
           <span className="font-medium text-gray-700 text-sm">Message:</span>
           <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-            {description.length > 100 ? `${description.substring(0, 100)}...` : description}
+            {String(description).length > 100 ? `${String(description).substring(0, 100)}...` : String(description)}
           </p>
         </div>
       )}

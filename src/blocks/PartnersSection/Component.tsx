@@ -5,13 +5,8 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { motion, Variants } from "framer-motion";
 import {
-  Shield,
   Award,
   Globe,
-  Users,
-  CheckCircle,
-  Star,
-  Building,
   Handshake
 } from "lucide-react";
 import { getTranslation } from "@/utilities/translations"; 
@@ -93,71 +88,7 @@ const mockPartners = [
   }
 ];
 
-const trustMetrics = [
-  {
-    icon: Shield,
-    value: "ISO 27001",
-    label: {
-      fr: "Certifié Sécurité",
-      ar: "معتمد الأمان"
-    },
-    color: "from-green-500 to-green-600"
-  },
-  {
-    icon: Award,
-    value: "WCAG 2.2 AA",
-    label: {
-      fr: "Accessibilité Web",
-      ar: "إمكانية الوصول للويب"
-    },
-    color: "from-blue-500 to-blue-600"
-  },
-  {
-    icon: Globe,
-    value: "15+",
-    label: {
-      fr: "Partenaires Internationaux", 
-      ar: "شركاء دوليون"
-    },
-    color: "from-purple-500 to-purple-600"
-  },
-  {
-    icon: Users,
-    value: "99.9%",
-    label: {
-      fr: "Temps de Disponibilité",
-      ar: "وقت التشغيل"
-    },
-    color: "from-primary to-accent"
-  }
-];
-
-const certifications = [
-  {
-    title: {
-      fr: "Transparence Gouvernementale",
-      ar: "الشفافية الحكومية"
-    },
-    icon: CheckCircle,
-    year: "2024"
-  },
-  {
-    title: {
-      fr: "Excellence Réglementaire",
-      ar: "التميز التنظيمي"
-    },
-    icon: Star,
-    year: "2024"
-  },
-  {
-    title: {
-      fr: "Innovation Numérique",
-      ar: "الابتكار الرقمي"
-    },
-    icon: Building,
-    year: "2025"
-  }
-];
+// Removed unused trustMetrics and certifications arrays
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -185,7 +116,7 @@ const itemVariants: Variants = {
 export const PartnersSectionBlock: React.FC<PartnersSectionProps> = ({
   title,
   description,
-  showTrustMetrics = true,
+  showTrustMetrics: _showTrustMetrics = true,
   showPartnerLogos = true,
   partners = mockPartners,
 }) => {
@@ -238,27 +169,10 @@ export const PartnersSectionBlock: React.FC<PartnersSectionProps> = ({
               </div>
               
               <div className="space-y-4 sm:space-y-6">
-                {certifications.map((cert, index) => {
-                  const Icon = cert.icon;
-                  return (
-                    <div key={index} className="flex items-center gap-4 p-4 bg-white/60 rounded-xl hover:bg-white/80 transition-colors duration-200">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-                      </div>
-                      <div className="flex-grow">
-                        <h4 className="font-semibold text-sm sm:text-base text-gray-900">
-                          {cert.title[locale]}
-                        </h4>
-                        <p className="text-xs sm:text-sm text-gray-600">
-                          {getTranslation("certifiedSince", locale)} {cert.year}
-                        </p>
-                      </div>
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center">
-                        <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
-                      </div>
-                    </div>
-                  );
-                })}
+                {/* Certifications feature removed - can be added back when needed */}
+                <p className="text-gray-600 text-center py-8">
+                  Certifications coming soon
+                </p>
               </div>
             </div>
           </motion.div>

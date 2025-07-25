@@ -6,7 +6,7 @@ export const homeStatic: RequiredDataFromCollectionSlug<'pages'> = {
   _status: 'published',
   hero: {
     type: 'homepageHero',
-    media: '1', // Placeholder media ID - will be replaced when real media is uploaded
+    media: 1, // Placeholder media ID - will be replaced when real media is uploaded
     richText: null,
   },
   meta: {

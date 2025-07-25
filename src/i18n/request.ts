@@ -3,13 +3,14 @@ import {routing} from './routing';
  
 export default getRequestConfig(async ({requestLocale}) => {
   // This typically corresponds to the `[locale]` segment
-  let locale;
+  let locale: string;
   
-  // Ensure that a valid locale is used
-  if (!requestLocale || !routing.locales.includes(requestLocale as any)) {
+  // Await the requestLocale if it's a promise and ensure that a valid locale is used
+  const resolvedLocale = await requestLocale;
+  if (!resolvedLocale || !routing.locales.includes(resolvedLocale as 'fr' | 'ar')) {
     locale = routing.defaultLocale;
   } else {
-    locale = requestLocale;
+    locale = resolvedLocale;
   }
  
   return {

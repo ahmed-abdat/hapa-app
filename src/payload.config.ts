@@ -10,7 +10,6 @@ import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
 import { CustomFormSubmissions } from './collections/CustomFormSubmissions'
-import { Feedback } from './collections/Feedback'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
@@ -104,14 +103,14 @@ export default buildConfig({
       connectionString: process.env.POSTGRES_URL || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Feedback, CustomFormSubmissions, Users],
+  collections: [Pages, Posts, Media, Categories, CustomFormSubmissions, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
     ...plugins,
     // Storage Configuration (R2 preferred, local files fallback)
     getStorageConfig(),
-  ].filter(Boolean),
+  ].filter((plugin): plugin is NonNullable<typeof plugin> => Boolean(plugin)),
   secret: process.env.PAYLOAD_SECRET,
   sharp,
   typescript: {

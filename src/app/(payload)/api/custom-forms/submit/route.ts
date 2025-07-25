@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { formSchemas, FormType } from '@/components/CustomForms/schemas'
+import { formSchemas, FormType } from '@/components/CustomForms/schemas/index'
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const validationResult = schema.safeParse(body)
 
     if (!validationResult.success) {
-      const errors = validationResult.error.errors.reduce((acc, error) => {
+      const errors = validationResult.error.issues.reduce((acc, error) => {
         const field = error.path.join('.')
         if (!acc[field]) acc[field] = []
         acc[field].push(error.message)
@@ -59,8 +59,8 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // TODO: Send email notifications here if needed
-    // await sendNotificationEmail(validationResult.data, submission.id)
+    // Email notifications can be added here in the future
+    // Example: await sendNotificationEmail(validationResult.data, submission.id)
 
     return NextResponse.json({
       success: true,

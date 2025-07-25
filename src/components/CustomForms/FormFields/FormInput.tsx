@@ -14,7 +14,7 @@ export function FormInput({
   disabled = false,
   className = '',
   type = 'text'
-}: FormFieldProps & { type?: 'text' | 'email' | 'tel' | 'password' }) {
+}: FormFieldProps & { type?: 'text' | 'email' | 'tel' | 'password' | 'date' }) {
   const {
     register,
     formState: { errors }

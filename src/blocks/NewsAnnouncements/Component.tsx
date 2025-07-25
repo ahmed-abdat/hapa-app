@@ -6,20 +6,13 @@ import { motion, Variants } from "framer-motion";
 import { Link } from "@/i18n/navigation";
 import {
   Calendar,
-  Clock,
   ArrowRight,
   ArrowLeft,
-  Bell,
-  AlertCircle,
-  FileText,
-  ExternalLink,
-  ChevronRight,
-  ChevronLeft
+  FileText
 } from "lucide-react";
-import { getTranslation, translations } from "@/utilities/translations";
+import { getTranslation } from "@/utilities/translations";
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
-import { Media } from "@/components/Media";
-import type { Post, Media as MediaType } from "@/payload-types";
+import type { Post } from "@/payload-types";
 
 type NewsAnnouncementsProps = {
   title?: string;
@@ -32,48 +25,30 @@ type NewsAnnouncementsProps = {
 // Mock data for development - replace with actual posts from CMS
 const mockPosts: Partial<Post>[] = [
   {
-    id: "1",
-    title: {
-      fr: "Nouvelles réglementations pour les médias audiovisuels",
-      ar: "قوانين جديدة لوسائل الإعلام السمعية البصرية"
-    },
+    id: 1,
+    title: "Nouvelles réglementations pour les médias audiovisuels",
     meta: {
-      description: {
-        fr: "La HAPA annonce de nouvelles directives pour améliorer la qualité du contenu audiovisuel en Mauritanie.",
-        ar: "تعلن الهيئة العليا للصحافة والإعلام عن توجيهات جديدة لتحسين جودة المحتوى السمعي البصري في موريتانيا."
-      }
+      description: "La HAPA annonce de nouvelles directives pour améliorer la qualité du contenu audiovisuel en Mauritanie."
     },
     publishedAt: "2025-01-20T10:00:00.000Z",
     slug: "nouvelles-reglementations-medias-audiovisuels",
     _status: "published"
   },
   {
-    id: "2", 
-    title: {
-      fr: "Formation professionnelle pour les journalistes",
-      ar: "تدريب مهني للصحفيين"
-    },
+    id: 2, 
+    title: "Formation professionnelle pour les journalistes",
     meta: {
-      description: {
-        fr: "Programme de formation continue pour renforcer les compétences des professionnels des médias.",
-        ar: "برنامج تدريب مستمر لتعزيز مهارات المهنيين في وسائل الإعلام."
-      }
+      description: "Programme de formation continue pour renforcer les compétences des professionnels des médias."
     },
     publishedAt: "2025-01-18T14:30:00.000Z",
     slug: "formation-professionnelle-journalistes",
     _status: "published"
   },
   {
-    id: "3",
-    title: {  
-      fr: "Rapport annuel sur la liberté de la presse",
-      ar: "التقرير السنوي حول حرية الصحافة"
-    },
+    id: 3,
+    title: "Rapport annuel sur la liberté de la presse",
     meta: {
-      description: {
-        fr: "Publication du rapport annuel 2024 sur l'état de la liberté de la presse en Mauritanie.",
-        ar: "نشر التقرير السنوي 2024 حول حالة حرية الصحافة في موريتانيا."
-      }
+      description: "Publication du rapport annuel 2024 sur l'état de la liberté de la presse en Mauritanie."
     },
     publishedAt: "2025-01-15T09:00:00.000Z",
     slug: "rapport-annuel-liberte-presse-2024",
@@ -81,26 +56,7 @@ const mockPosts: Partial<Post>[] = [
   }
 ];
 
-const urgentAnnouncements = [
-  {
-    id: "urgent-1",
-    type: "urgent" as const,
-    title: {
-      fr: "Suspension temporaire des licences TV",
-      ar: "إيقاف مؤقت للتراخيص التلفزيونية"
-    },
-    date: "2025-01-22T08:00:00.000Z"
-  },
-  {
-    id: "urgent-2", 
-    type: "alert" as const,
-    title: {
-      fr: "Mise à jour des procédures de plainte",
-      ar: "تحديث إجراءات الشكاوى"
-    },
-    date: "2025-01-21T16:30:00.000Z"
-  }
-];
+// Removed unused urgentAnnouncements data
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -137,29 +93,13 @@ const formatDate = (dateString: string, locale: Locale): string => {
   return date.toLocaleDateString(localeCode, options);
 };
 
-const getTimeAgo = (dateString: string, locale: Locale): string => {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-  
-  if (diffInMinutes < 60) {
-    return locale === 'ar' ? `منذ ${diffInMinutes} دقيقة` : `Il y a ${diffInMinutes} min`;
-  }
-  
-  const diffInHours = Math.floor(diffInMinutes / 60);
-  if (diffInHours < 24) {
-    return locale === 'ar' ? `منذ ${diffInHours} ساعة` : `Il y a ${diffInHours}h`;
-  }
-  
-  const diffInDays = Math.floor(diffInHours / 24);
-  return locale === 'ar' ? `منذ ${diffInDays} يوم` : `Il y a ${diffInDays} jours`;
-};
+// Removed unused getTimeAgo function
 
 export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
   title,
   description,
   posts = mockPosts,
-  showFeatured = true,
+  showFeatured: _showFeatured = true,
   maxPosts = 6,
 }) => {
   const params = useParams();
@@ -167,8 +107,9 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
   const direction = getLocaleDirection(locale);
   const isRtl = direction === "rtl";
 
-  const featuredPost = posts[0];
-  const regularPosts = posts.slice(1, maxPosts);
+  // Remove unused variables
+  // const featuredPost = posts[0];
+  // const regularPosts = posts.slice(1, maxPosts);
 
   return (
     <section

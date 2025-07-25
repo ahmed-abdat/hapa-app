@@ -16,28 +16,29 @@ interface SubmissionData {
   urgency?: string
   purpose?: string
   dateOfIncident?: string
-  [key: string]: any
+  [key: string]: unknown
 }
 
 interface DetailedSubmissionViewProps {
   value?: SubmissionData
   readOnly?: boolean
   path?: string
-  field?: any
-  [key: string]: any
+  field?: unknown
+  [key: string]: unknown
 }
 
 export const DetailedSubmissionView: React.FC<DetailedSubmissionViewProps> = (props) => {
-  const { value, readOnly = true, path, ...otherProps } = props
+  const { value, readOnly: _readOnly = true, path, ..._otherProps } = props
   
   // Get the actual document data using Payload's hook
   const { fields } = useWatchForm()
-  const actualValue = fields?.submissionData?.value || fields?.[path]?.value
+  const actualValue = fields?.submissionData?.value || (path ? fields?.[path]?.value : undefined)
   
   // Use the actual value from document instead of props.value
   const submissionData = actualValue || value;
+  const data = submissionData as Record<string, unknown>;
   
-  if (!submissionData || typeof submissionData !== 'object') {
+  if (!data || typeof data !== 'object') {
     return (
       <div className="p-4 text-center text-gray-500 bg-gray-50 rounded-md border">
         <span className="text-sm">Aucune donnée disponible</span>
@@ -72,7 +73,7 @@ export const DetailedSubmissionView: React.FC<DetailedSubmissionViewProps> = (pr
   }
 
   // Format field values for display
-  const formatFieldValue = (key: string, value: any): string => {
+  const formatFieldValue = (key: string, value: unknown): string => {
     if (value === null || value === undefined) return 'Non renseigné'
     if (typeof value === 'boolean') return value ? 'Oui' : 'Non'
     
@@ -84,7 +85,7 @@ export const DetailedSubmissionView: React.FC<DetailedSubmissionViewProps> = (pr
         procedure: 'Procédure administrative',
         other: 'Autre'
       }
-      return types[value] || value
+      return types[value as string] || String(value)
     }
     
     if (key === 'documentType') {
@@ -95,7 +96,7 @@ export const DetailedSubmissionView: React.FC<DetailedSubmissionViewProps> = (pr
         authorization: 'Autorisation',
         other: 'Autre document'
       }
-      return types[value] || value
+      return types[value as string] || String(value)
     }
     
     if (key === 'urgency') {
@@ -104,7 +105,7 @@ export const DetailedSubmissionView: React.FC<DetailedSubmissionViewProps> = (pr
         urgent: '⚡ Urgent',
         'very-urgent': '🚨 Très urgent'
       }
-      return urgencies[value] || value
+      return urgencies[value as string] || String(value)
     }
     
     if (key === 'formType') {
@@ -113,7 +114,7 @@ export const DetailedSubmissionView: React.FC<DetailedSubmissionViewProps> = (pr
         complaint: '⚠️ Plainte officielle',
         'document-request': '📄 Demande de document'
       }
-      return types[value] || value
+      return types[value as string] || String(value)
     }
     
     if (key === 'locale') {
@@ -121,7 +122,7 @@ export const DetailedSubmissionView: React.FC<DetailedSubmissionViewProps> = (pr
     }
     
     if (key === 'dateOfIncident') {
-      return new Date(value).toLocaleDateString('fr-FR', {
+      return new Date(value as string | number | Date).toLocaleDateString('fr-FR', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
@@ -133,14 +134,14 @@ export const DetailedSubmissionView: React.FC<DetailedSubmissionViewProps> = (pr
   }
 
   // Organize fields by importance and category
-  const personalInfo = ['name', 'email', 'phone', 'organization'].filter(key => submissionData[key])
-  const contentInfo = ['subject', 'message', 'description', 'purpose'].filter(key => submissionData[key])
-  const formMetadata = ['formType', 'locale', 'complaintType', 'documentType', 'urgency', 'dateOfIncident'].filter(key => submissionData[key])
-  const otherFields = Object.keys(submissionData).filter(key => 
+  const personalInfo = ['name', 'email', 'phone', 'organization'].filter(key => data[key])
+  const contentInfo = ['subject', 'message', 'description', 'purpose'].filter(key => data[key])
+  const formMetadata = ['formType', 'locale', 'complaintType', 'documentType', 'urgency', 'dateOfIncident'].filter(key => data[key])
+  const otherFields = Object.keys(data || {}).filter(key => 
     ![...personalInfo, ...contentInfo, ...formMetadata].includes(key) &&
-    submissionData[key] !== undefined &&
-    submissionData[key] !== null &&
-    submissionData[key] !== ''
+    data[key] !== undefined &&
+    data[key] !== null &&
+    data[key] !== ''
   )
 
   return (
@@ -161,7 +162,7 @@ export const DetailedSubmissionView: React.FC<DetailedSubmissionViewProps> = (pr
                     {formatFieldName(key)}
                   </label>
                   <div className="text-sm text-gray-900 bg-gray-50 rounded-md px-3 py-2 border">
-                    {formatFieldValue(key, submissionData[key])}
+                    {formatFieldValue(key, data[key])}
                   </div>
                 </div>
               ))}
@@ -189,7 +190,7 @@ export const DetailedSubmissionView: React.FC<DetailedSubmissionViewProps> = (pr
                     ? 'whitespace-pre-wrap min-h-20' 
                     : ''
                 }`}>
-                  {formatFieldValue(key, submissionData[key])}
+                  {formatFieldValue(key, data[key])}
                 </div>
               </div>
             ))}
@@ -213,7 +214,7 @@ export const DetailedSubmissionView: React.FC<DetailedSubmissionViewProps> = (pr
                     {formatFieldName(key)}
                   </label>
                   <div className="text-sm text-gray-900 bg-gray-50 rounded-md px-3 py-2 border">
-                    {formatFieldValue(key, submissionData[key])}
+                    {formatFieldValue(key, data[key])}
                   </div>
                 </div>
               ))}
@@ -238,7 +239,7 @@ export const DetailedSubmissionView: React.FC<DetailedSubmissionViewProps> = (pr
                     {formatFieldName(key)}
                   </label>
                   <div className="text-sm text-gray-900 bg-gray-50 rounded-md px-3 py-2 border">
-                    {formatFieldValue(key, submissionData[key])}
+                    {formatFieldValue(key, data[key])}
                   </div>
                 </div>
               ))}

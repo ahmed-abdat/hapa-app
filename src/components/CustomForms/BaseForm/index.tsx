@@ -1,20 +1,20 @@
 'use client'
 
 import React, { ReactNode } from 'react'
-import { FormProvider, UseFormReturn } from 'react-hook-form'
+import { FormProvider, UseFormReturn, FieldValues } from 'react-hook-form'
 import { FormTranslations } from '../types'
 
-interface BaseFormProps {
+interface BaseFormProps<T extends FieldValues = FieldValues> {
   children: ReactNode
-  methods: UseFormReturn<any>
-  onSubmit: (data: any) => void
+  methods: UseFormReturn<T>
+  onSubmit: (data: T) => void
   translations: FormTranslations
   locale: 'fr' | 'ar'
   isLoading?: boolean
   className?: string
 }
 
-export function BaseForm({
+export function BaseForm<T extends FieldValues = FieldValues>({
   children,
   methods,
   onSubmit,
@@ -22,7 +22,7 @@ export function BaseForm({
   locale,
   isLoading = false,
   className = ''
-}: BaseFormProps) {
+}: BaseFormProps<T>) {
   const config = translations[locale] || translations['fr'] // Fallback to French if locale not found
 
   return (

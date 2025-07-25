@@ -134,8 +134,8 @@ export const PartnersSection: Block = {
           admin: {
             placeholder: 'https://example.com',
           },
-          validate: (val) => {
-            if (val && !/^https?:\/\/.+/.test(val)) {
+          validate: (val: string | null | undefined) => {
+            if (val && typeof val === 'string' && !/^https?:\/\/.+/.test(val)) {
               return 'Please enter a valid URL starting with http:// or https://'
             }
             return true

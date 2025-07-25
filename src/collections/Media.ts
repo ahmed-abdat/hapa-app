@@ -74,7 +74,9 @@ export const Media: CollectionConfig = {
   upload: {
     // Store ONLY original images in R2 cloud storage, organized by type (images/, docs/, videos/, audio/)
     // Image optimization will be handled by ImageKit or Next.js Image component
-    adminThumbnail: ({ doc }) => doc.url || '', // Use original image for admin thumbnail
+    adminThumbnail: ({ doc }: { doc: Record<string, unknown> }) => {
+      return typeof doc.url === 'string' ? doc.url : null
+    }, // Use original image for admin thumbnail
     focalPoint: true,
     disableLocalStorage: true, // Force R2 storage only
     // Removed imageSizes array - store only original images for maximum cost efficiency

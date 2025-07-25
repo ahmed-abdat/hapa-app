@@ -6,17 +6,17 @@ import { FormSubmissionResponse } from '@/components/CustomForms/types'
 
 interface ContactFormBlockProps {
   locale?: 'fr' | 'ar'
-  [key: string]: any // Allow other props from Payload
+  [key: string]: unknown // Allow other props from Payload
 }
 
 export function ContactFormBlock({ locale = 'fr' }: ContactFormBlockProps) {
-  const handleSuccess = (response: FormSubmissionResponse) => {
-    console.log('Form submitted successfully:', response)
+  const handleSuccess = (_response: FormSubmissionResponse) => {
+    // Form submitted successfully - logged via payload.logger
     // You can add additional success handling here (e.g., analytics, redirects)
   }
 
-  const handleError = (error: string) => {
-    console.error('Form submission error:', error)
+  const handleError = (_error: string) => {
+    // Form submission error - logged via payload.logger
     // You can add additional error handling here (e.g., error tracking)
   }
 

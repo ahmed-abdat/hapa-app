@@ -47,7 +47,7 @@ export const RenderBlocks: React.FC<{
 
           // Handle News/Announcements variant selection
           if (blockType === 'newsAnnouncements') {
-            const layoutVariant = (block as any).layoutVariant || 'simple'
+            const layoutVariant = (block as { layoutVariant?: string }).layoutVariant || 'simple'
             const Block = layoutVariant === 'rich' ? NewsAnnouncementsRichBlock : NewsAnnouncementsBlock
             
             return (

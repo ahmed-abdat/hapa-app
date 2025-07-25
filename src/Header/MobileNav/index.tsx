@@ -68,12 +68,12 @@ export const MobileNav: React.FC<MobileNavProps> = ({ data }) => {
           <div className="flex-1 overflow-y-auto">
             <nav className="p-4 space-y-2">
               {navItems.map(({ link }, i) => (
-                <CMSLink 
-                  key={i} 
-                  {...link} 
-                  className="block px-4 py-3 text-gray-700 hover:text-primary hover:bg-primary/5 rounded-md transition-colors duration-200 font-medium"
-                  onClick={toggleMenu}
-                />
+                <div key={i} onClick={toggleMenu}>
+                  <CMSLink 
+                    {...link} 
+                    className="block px-4 py-3 text-gray-700 hover:text-primary hover:bg-primary/5 rounded-md transition-colors duration-200 font-medium"
+                  />
+                </div>
               ))}
               
               {/* Mobile-specific links */}

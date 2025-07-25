@@ -6,12 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **HAPA Website** - Official government website for Mauritania's media regulatory authority (Haute Autorité de la Presse et de l'Audiovisuel).
 
-Production-ready bilingual government website with French/Arabic support and RTL layout. Built with Payload CMS 3.44.0 headless CMS and Next.js 15 with next-intl for internationalization.
+Production-ready bilingual government website with French/Arabic support and RTL layout. Built with Payload CMS 3.44.0 headless CMS and Next.js 15.3.3 with next-intl for internationalization.
 
 **Critical Architecture Components:**
 - **CMS**: Payload CMS with localized collections and block-based page builder
 - **Internationalization**: next-intl routing with French (default) and Arabic (RTL) support
-- **Frontend**: Next.js 15 App Router with locale-based routing (`/fr/`, `/ar/`)
+- **Frontend**: Next.js 15.3.3 App Router with locale-based routing (`/fr/`, `/ar/`)
 - **Database**: Neon PostgreSQL with Vercel adapter
 - **Storage**: Vercel Blob for media files
 
@@ -298,7 +298,7 @@ const client = new Client({
 
 This is a **production-ready** HAPA government website featuring:
 - ✅ Complete bilingual implementation (French/Arabic + RTL)
-- ✅ Modern tech stack (Next.js 15, Payload CMS 3.44.0)
+- ✅ Modern tech stack (Next.js 15.3.3, Payload CMS 3.44.0)
 - ✅ Government branding and accessibility compliance
 - ✅ SEO optimization and performance focus
 - ✅ Secure deployment on Vercel Pro

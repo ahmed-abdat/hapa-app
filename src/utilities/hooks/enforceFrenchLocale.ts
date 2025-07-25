@@ -12,7 +12,7 @@ export const enforceFrenchLocale: CollectionBeforeOperationHook = async ({
   // Only enforce for create operations in admin context
   if (operation === 'create' && req.context?.source !== 'local-api') {
     // Check if request is coming from admin panel
-    const referer = req.headers?.referer || req.headers?.['referer']
+    const referer = req.headers?.get?.('referer') || req.headers?.get?.('Referer')
     const isAdminRequest = referer?.includes('/admin') || req.context?.source === 'admin'
     
     if (isAdminRequest) {

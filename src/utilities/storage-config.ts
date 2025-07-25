@@ -30,7 +30,7 @@ export function getStorageConfig() {
         disableLocalStorage: true,
       })
     } catch (error) {
-      console.error('R2 Storage initialization failed:', error instanceof Error ? error.message : error)
+      console.warn('R2 Storage initialization failed, using Vercel Blob fallback:', error instanceof Error ? error.message : error)
       return null
     }
   } else {

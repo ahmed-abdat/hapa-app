@@ -71,7 +71,6 @@ export interface Config {
     posts: Post;
     media: Media;
     categories: Category;
-    feedback: Feedback;
     'custom-form-submissions': CustomFormSubmission;
     users: User;
     redirects: Redirect;
@@ -87,7 +86,6 @@ export interface Config {
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
-    feedback: FeedbackSelect<false> | FeedbackSelect<true>;
     'custom-form-submissions': CustomFormSubmissionsSelect<false> | CustomFormSubmissionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -615,59 +613,6 @@ export interface PartnersSectionBlock {
   blockType: 'partnersSection';
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "feedback".
- */
-export interface Feedback {
-  id: number;
-  /**
-   * Nom du contact
-   */
-  name: string;
-  /**
-   * Adresse email du contact
-   */
-  email: string;
-  /**
-   * Sujet du message
-   */
-  subject: string;
-  /**
-   * Contenu du message
-   */
-  message: string;
-  /**
-   * Statut de traitement du message
-   */
-  status?: ('new' | 'in_progress' | 'resolved' | 'closed') | null;
-  /**
-   * Priorité de traitement
-   */
-  priority?: ('low' | 'normal' | 'high' | 'urgent') | null;
-  /**
-   * Réponse de l'administrateur au message
-   */
-  adminResponse?: string | null;
-  /**
-   * Date et heure de la réponse
-   */
-  responseDate?: string | null;
-  /**
-   * Administrateur qui a répondu
-   */
-  respondedBy?: (number | null) | User;
-  /**
-   * Notes internes pour l'équipe (non visibles au public)
-   */
-  internalNotes?: string | null;
-  /**
-   * Étiquettes pour catégoriser le message
-   */
-  tags?: string[] | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
  * Toutes les soumissions des formulaires personnalisés. Cliquez sur une soumission pour voir les détails complets.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -893,10 +838,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'categories';
         value: number | Category;
-      } | null)
-    | ({
-        relationTo: 'feedback';
-        value: number | Feedback;
       } | null)
     | ({
         relationTo: 'custom-form-submissions';
@@ -1242,25 +1183,6 @@ export interface CategoriesSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "feedback_select".
- */
-export interface FeedbackSelect<T extends boolean = true> {
-  name?: T;
-  email?: T;
-  subject?: T;
-  message?: T;
-  status?: T;
-  priority?: T;
-  adminResponse?: T;
-  responseDate?: T;
-  respondedBy?: T;
-  internalNotes?: T;
-  tags?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -26,7 +26,6 @@ import { RowLabel as RowLabel_0540b7d6275e2eab731bc6fd569972a4 } from '@/Header/
 import { RowLabel as RowLabel_7a95d423917281b67837057c07808738 } from '@/Footer/RowLabel.tsx'
 import { default as default_bb163149bb2f5ec0480c98bcc5e9bc47 } from '@/components/BeforeDashboard/index.tsx'
 import { default as default_2b8a0745141004fb388d207202b9bc59 } from '@/components/BeforeLogin/index.tsx'
-import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -56,6 +55,5 @@ export const importMap = {
   "@/Header/RowLabel.tsx#RowLabel": RowLabel_0540b7d6275e2eab731bc6fd569972a4,
   "@/Footer/RowLabel.tsx#RowLabel": RowLabel_7a95d423917281b67837057c07808738,
   "@/components/BeforeDashboard/index.tsx#default": default_bb163149bb2f5ec0480c98bcc5e9bc47,
-  "@/components/BeforeLogin/index.tsx#default": default_2b8a0745141004fb388d207202b9bc59,
-  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
+  "@/components/BeforeLogin/index.tsx#default": default_2b8a0745141004fb388d207202b9bc59
 }

@@ -24,7 +24,8 @@ export const Card: React.FC<{
   const { card, link } = useClickableCard({})
   const { className, doc, relationTo, showCategories, title: titleFromProps, locale = 'fr' } = props
 
-  const { id, slug, categories, meta, title } = doc || {}
+  const { slug, categories, meta, title } = doc || {}
+  // Remove unused id variable
   const { description, image: metaImage } = meta || {}
 
   const hasCategories = categories && Array.isArray(categories) && categories.length > 0

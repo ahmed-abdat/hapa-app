@@ -17,10 +17,9 @@ import {
   ChevronLeft,
   Zap,
 } from "lucide-react";
-import { getTranslation, translations } from "@/utilities/translations";
+import { getTranslation } from "@/utilities/translations";
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
-import { Media } from "@/components/Media";
-import type { Post, Media as MediaType } from "@/payload-types";
+import type { Post } from "@/payload-types";
 
 type NewsAnnouncementsRichProps = {
   title?: string;
@@ -34,80 +33,50 @@ type NewsAnnouncementsRichProps = {
 // Mock data for development - replace with actual posts from CMS
 const mockPosts: Partial<Post>[] = [
   {
-    id: "1",
-    title: {
-      fr: "Nouvelles réglementations pour les médias audiovisuels",
-      ar: "قوانين جديدة لوسائل الإعلام السمعية البصرية"
-    },
+    id: 1,
+    title: "Nouvelles réglementations pour les médias audiovisuels",
     meta: {
-      description: {
-        fr: "La HAPA annonce de nouvelles directives pour améliorer la qualité du contenu audiovisuel en Mauritanie.",
-        ar: "تعلن الهيئة العليا للصحافة والإعلام عن توجيهات جديدة لتحسين جودة المحتوى السمعي البصري في موريتانيا."
-      }
+      description: "La HAPA annonce de nouvelles directives pour améliorer la qualité du contenu audiovisuel en Mauritanie."
     },
     publishedAt: "2025-01-23T10:00:00.000Z",
     slug: "nouvelles-reglementations-medias-audiovisuels",
     _status: "published"
   },
   {
-    id: "2", 
-    title: {
-      fr: "Formation professionnelle pour les journalistes",
-      ar: "تدريب مهني للصحفيين"
-    },
+    id: 2, 
+    title: "Formation professionnelle pour les journalistes",
     meta: {
-      description: {
-        fr: "Programme de formation continue pour renforcer les compétences des professionnels des médias.",
-        ar: "برنامج تدريب مستمر لتعزيز مهارات المهنيين في وسائل الإعلام."
-      }
+      description: "Programme de formation continue pour renforcer les compétences des professionnels des médias."
     },
     publishedAt: "2025-01-22T14:30:00.000Z",
     slug: "formation-professionnelle-journalistes",
     _status: "published"
   },
   {
-    id: "3",
-    title: {  
-      fr: "Rapport annuel sur la liberté de la presse",
-      ar: "التقرير السنوي حول حرية الصحافة"
-    },
+    id: 3,
+    title: "Rapport annuel sur la liberté de la presse",
     meta: {
-      description: {
-        fr: "Publication du rapport annuel 2024 sur l'état de la liberté de la presse en Mauritanie.",
-        ar: "نشر التقرير السنوي 2024 حول حالة حرية الصحافة في موريتانيا."
-      }
+      description: "Publication du rapport annuel 2024 sur l'état de la liberté de la presse en Mauritanie."
     },
     publishedAt: "2025-01-21T09:00:00.000Z",
     slug: "rapport-annuel-liberte-presse-2024",
     _status: "published"
   },
   {
-    id: "4",
-    title: {
-      fr: "Nouvelle procédure de licensing médiatique",
-      ar: "إجراء جديد لترخيص الوسائل الإعلامية"
-    },
+    id: 4,
+    title: "Nouvelle procédure de licensing médiatique",
     meta: {
-      description: {
-        fr: "Simplification des démarches pour obtenir une licence médiatique en Mauritanie.",
-        ar: "تبسيط الإجراءات للحصول على ترخيص إعلامي في موريتانيا."
-      }
+      description: "Simplification des démarches pour obtenir une licence médiatique en Mauritanie."
     },
     publishedAt: "2025-01-20T11:15:00.000Z",
     slug: "nouvelle-procedure-licensing-mediatique",
     _status: "published"
   },
   {
-    id: "5",
-    title: {
-      fr: "Mise à jour du code de déontologie",
-      ar: "تحديث مدونة أخلاقيات المهنة"
-    },
+    id: 5,
+    title: "Mise à jour du code de déontologie",
     meta: {
-      description: {
-        fr: "Révision des standards éthiques pour les professionnels des médias mauritaniens.",
-        ar: "مراجعة المعايير الأخلاقية للمهنيين الإعلاميين الموريتانيين."
-      }
+      description: "Révision des standards éthiques pour les professionnels des médias mauritaniens."
     },
     publishedAt: "2025-01-19T16:45:00.000Z",
     slug: "mise-a-jour-code-deontologie",
@@ -229,18 +198,7 @@ const getUrgentIcon = (type: 'urgent' | 'alert' | 'important') => {
   }
 };
 
-const getUrgentColor = (type: 'urgent' | 'alert' | 'important') => {
-  switch (type) {
-    case 'urgent':
-      return 'from-red-600 to-red-700';
-    case 'alert':
-      return 'from-orange-500 to-orange-600';
-    case 'important':
-      return 'from-amber-500 to-amber-600';
-    default:
-      return 'from-red-600 to-red-700';
-  }
-};
+// Removed unused getUrgentColor function
 
 export const NewsAnnouncementsRichBlock: React.FC<NewsAnnouncementsRichProps> = ({
   title,

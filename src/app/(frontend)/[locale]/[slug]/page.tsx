@@ -15,6 +15,8 @@ import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { isValidLocale, type Locale } from '@/utilities/locale'
 import { notFound } from 'next/navigation'
 
+import type { Page } from '@/payload-types'
+
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
   const pages = await payload.find({
@@ -31,7 +33,7 @@ export async function generateStaticParams() {
   const params: { locale: string; slug: string }[] = []
   
   pages.docs?.forEach((doc) => {
-    if (doc.slug !== 'home') {
+    if (doc.slug && doc.slug !== 'home') {
       params.push(
         { locale: 'fr', slug: doc.slug },
         { locale: 'ar', slug: doc.slug }
@@ -44,7 +46,7 @@ export async function generateStaticParams() {
 
 type Args = {
   params: Promise<{
-    locale: string
+    locale: Locale
     slug?: string
   }>
 }
@@ -64,7 +66,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   page = await queryPageBySlug({
     slug,
     locale,
-  })
+  }) as RequiredDataFromCollectionSlug<'pages'> | null
 
   // Remove this code once your website is seeded
   if (!page && slug === 'home') {
@@ -86,7 +88,7 @@ export default async function Page({ params: paramsPromise }: Args) {
       {draft && <LivePreviewListener />}
 
       <RenderHero {...hero} />
-      <RenderBlocks blocks={layout} locale={locale as 'fr' | 'ar'} />
+      <RenderBlocks blocks={layout} locale={locale} />
     </article>
   )
 }
@@ -101,7 +103,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   const page = await queryPageBySlug({
     slug,
     locale,
-  })
+  }) as Partial<Page> | null
 
   return generateMeta({ doc: page })
 }
@@ -114,13 +116,13 @@ const queryPageBySlug = cache(async ({ slug, locale }: { slug: string; locale: L
   const shouldDisableFallback = locale && locale !== 'fr'
 
   const queryOptions = {
-    collection: 'pages',
+    collection: 'pages' as const,
     draft,
     limit: 1,
     pagination: false,
     overrideAccess: draft,
     locale,
-    fallbackLocale: shouldDisableFallback ? false : undefined,
+    fallbackLocale: shouldDisableFallback ? (false as const) : ('fr' as const),
     where: {
       slug: {
         equals: slug,

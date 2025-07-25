@@ -71,8 +71,8 @@ export function ContactForm({ locale, onSuccess, onError }: ContactFormProps) {
         setSubmitStatus('error')
         onError?.(result.message)
       }
-    } catch (error) {
-      console.error('Form submission error:', error)
+    } catch (_error) {
+      // Form submission error - handled via error callback
       setSubmitStatus('error')
       onError?.(translations[locale].errorMessage)
     } finally {

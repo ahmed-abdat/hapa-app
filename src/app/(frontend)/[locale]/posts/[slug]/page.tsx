@@ -9,6 +9,7 @@ import React, { cache } from 'react'
 import RichText from '@/components/RichText'
 
 import type { Post } from '@/payload-types'
+import type { Locale } from '@/utilities/locale'
 
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
@@ -32,9 +33,11 @@ export async function generateStaticParams() {
   const params: { locale: string; slug: string }[] = []
 
   posts.docs.forEach(({ slug }) => {
-    locales.forEach((locale) => {
-      params.push({ locale, slug })
-    })
+    if (slug) {
+      locales.forEach((locale) => {
+        params.push({ locale, slug })
+      })
+    }
   })
 
   return params
@@ -42,7 +45,7 @@ export async function generateStaticParams() {
 
 type Args = {
   params: Promise<{
-    locale: string
+    locale: Locale
     slug?: string
   }>
 }
@@ -94,7 +97,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   return generateMeta({ doc: post })
 }
 
-const queryPostBySlug = cache(async ({ slug, locale }: { slug: string; locale?: string }) => {
+const queryPostBySlug = cache(async ({ slug, locale }: { slug: string; locale?: Locale }) => {
   const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayload({ config: configPromise })

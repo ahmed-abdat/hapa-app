@@ -42,7 +42,7 @@ export const SlugComponent: React.FC<SlugComponentProps> = ({
     // Always use French ('fr') for slug generation, regardless of current locale
     if (fieldValue && typeof fieldValue === 'object') {
       // If it's a localized field, only use French if it exists and is not empty
-      if ('fr' in fieldValue && fieldValue.fr && fieldValue.fr.trim()) {
+      if ('fr' in fieldValue && fieldValue.fr && typeof fieldValue.fr === 'string' && fieldValue.fr.trim()) {
         return fieldValue.fr as string
       }
       // Return empty string if French doesn't exist or is empty

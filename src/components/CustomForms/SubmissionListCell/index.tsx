@@ -17,10 +17,10 @@ interface SubmissionListCellProps {
     status?: string
     createdAt?: string
   }
-  [key: string]: any
+  [key: string]: unknown
 }
 
-export const SubmissionListCell: React.FC<SubmissionListCellProps> = ({ rowData, ...props }) => {
+export const SubmissionListCell: React.FC<SubmissionListCellProps> = ({ rowData, ..._props }) => {
   if (!rowData?.submissionData) {
     return <span className="text-gray-400 text-sm">Pas de données</span>
   }

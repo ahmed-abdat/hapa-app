@@ -1,7 +1,7 @@
 export interface FormSubmissionData {
   id?: string
   formType: 'contact' | 'complaint' | 'document-request'
-  submissionData: Record<string, any>
+  submissionData: Record<string, unknown>
   status: 'new' | 'reviewed' | 'in-progress' | 'responded' | 'closed'
   locale: 'fr' | 'ar'
   createdAt?: string
