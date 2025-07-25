@@ -18,13 +18,15 @@ import { SlugFieldWithNotice as SlugFieldWithNotice_e83c5ccf8f9b3dccc0f0e2a7ece0
 import { ForceLocaleMessage as ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62 } from '@/components/ForceLocaleMessage/index.tsx'
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BlocksFeatureClient as BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
+import { SubmissionListCell as SubmissionListCell_12e2d20cdb1c8e137c3e287e74d9d2d6 } from '@/components/CustomForms/SubmissionListCell/index.tsx'
+import { DetailedSubmissionView as DetailedSubmissionView_c24073714ba214089ca892c81a8a0299 } from '@/components/CustomForms/DetailedSubmissionView/index.tsx'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { RowLabel as RowLabel_0540b7d6275e2eab731bc6fd569972a4 } from '@/Header/RowLabel.tsx'
 import { RowLabel as RowLabel_7a95d423917281b67837057c07808738 } from '@/Footer/RowLabel.tsx'
 import { default as default_bb163149bb2f5ec0480c98bcc5e9bc47 } from '@/components/BeforeDashboard/index.tsx'
 import { default as default_2b8a0745141004fb388d207202b9bc59 } from '@/components/BeforeLogin/index.tsx'
-import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e } from '@payloadcms/storage-vercel-blob/client'
+import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -47,11 +49,13 @@ export const importMap = {
   "@/components/ForceLocaleMessage/index.tsx#ForceLocaleMessage": ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62,
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BlocksFeatureClient": BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
+  "@/components/CustomForms/SubmissionListCell/index.tsx#SubmissionListCell": SubmissionListCell_12e2d20cdb1c8e137c3e287e74d9d2d6,
+  "@/components/CustomForms/DetailedSubmissionView/index.tsx#DetailedSubmissionView": DetailedSubmissionView_c24073714ba214089ca892c81a8a0299,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@/Header/RowLabel.tsx#RowLabel": RowLabel_0540b7d6275e2eab731bc6fd569972a4,
   "@/Footer/RowLabel.tsx#RowLabel": RowLabel_7a95d423917281b67837057c07808738,
   "@/components/BeforeDashboard/index.tsx#default": default_bb163149bb2f5ec0480c98bcc5e9bc47,
   "@/components/BeforeLogin/index.tsx#default": default_2b8a0745141004fb388d207202b9bc59,
-  "@payloadcms/storage-vercel-blob/client#VercelBlobClientUploadHandler": VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e
+  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }

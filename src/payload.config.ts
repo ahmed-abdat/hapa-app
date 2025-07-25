@@ -1,4 +1,4 @@
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+// import { s3Storage } from '@payloadcms/storage-s3' // Using getStorageConfig instead
 import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
 import { fr } from '@payloadcms/translations/languages/fr'
 import { ar } from '@payloadcms/translations/languages/ar'
@@ -9,6 +9,7 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
+import { CustomFormSubmissions } from './collections/CustomFormSubmissions'
 import { Feedback } from './collections/Feedback'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
@@ -19,6 +20,7 @@ import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { getStorageConfig } from './utilities/storage-config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -70,15 +72,11 @@ export default buildConfig({
     translations: {
       fr: {
         // Plugin-generated collections
-        'general:forms': 'Formulaires',
-        'general:form-submissions': 'Soumissions de formulaires',
         'general:redirects': 'Redirections',
         'general:search': 'Résultats de recherche',
       },
       ar: {
         // Plugin-generated collections
-        'general:forms': 'نماذج',
-        'general:form-submissions': 'إرسالات النماذج',
         'general:redirects': 'عمليات إعادة التوجيه',
         'general:search': 'نتائج البحث',
       },
@@ -106,18 +104,14 @@ export default buildConfig({
       connectionString: process.env.POSTGRES_URL || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Feedback, Users],
+  collections: [Pages, Posts, Media, Categories, Feedback, CustomFormSubmissions, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
     ...plugins,
-    vercelBlobStorage({
-      collections: {
-        media: true,
-      },
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
-    }),
-  ],
+    // Storage Configuration (R2 preferred, local files fallback)
+    getStorageConfig(),
+  ].filter(Boolean),
   secret: process.env.PAYLOAD_SECRET,
   sharp,
   typescript: {

@@ -10,7 +10,7 @@ import { Media } from '@/components/Media'
 import { t } from '@/utilities/translations'
 import { type Locale } from '@/utilities/locale'
 
-export type CardPostData = Pick<Post, 'slug' | 'categories' | 'meta' | 'title'>
+export type CardPostData = Pick<Post, 'id' | 'slug' | 'categories' | 'meta' | 'title'>
 
 export const Card: React.FC<{
   alignItems?: 'center'
@@ -24,7 +24,7 @@ export const Card: React.FC<{
   const { card, link } = useClickableCard({})
   const { className, doc, relationTo, showCategories, title: titleFromProps, locale = 'fr' } = props
 
-  const { slug, categories, meta, title } = doc || {}
+  const { id, slug, categories, meta, title } = doc || {}
   const { description, image: metaImage } = meta || {}
 
   const hasCategories = categories && Array.isArray(categories) && categories.length > 0
@@ -58,7 +58,7 @@ export const Card: React.FC<{
                     const isLast = index === categories.length - 1
 
                     return (
-                      <Fragment key={index}>
+                      <Fragment key={category.id}>
                         {categoryTitle}
                         {!isLast && <Fragment>, &nbsp;</Fragment>}
                       </Fragment>

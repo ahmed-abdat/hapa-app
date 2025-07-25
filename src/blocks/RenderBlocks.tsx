@@ -4,22 +4,27 @@ import type { Page } from '@/payload-types'
 
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
+import { ComplaintFormBlock } from '@/blocks/ComplaintFormBlock/Component'
+import { ContactFormBlock } from '@/blocks/ContactFormBlock/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
-import { FormBlock } from '@/blocks/Form/Component'
+// import { FormBlock } from '@/blocks/Form/Component' // Removed - replaced with custom forms
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
+  complaintForm: ComplaintFormBlock,
+  contactForm: ContactFormBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
-  formBlock: FormBlock,
+  // formBlock: FormBlock, // Removed - replaced with custom forms
   mediaBlock: MediaBlock,
 }
 
 export const RenderBlocks: React.FC<{
   blocks: Page['layout'][0][]
+  locale?: 'fr' | 'ar'
 }> = (props) => {
-  const { blocks } = props
+  const { blocks, locale = 'fr' } = props
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
 
@@ -34,9 +39,9 @@ export const RenderBlocks: React.FC<{
 
             if (Block) {
               return (
-                <div className="my-16" key={index}>
+                <div className="my-16" key={`block-${block.blockType}-${index}`}>
                   {/* @ts-expect-error there may be some mismatch between the expected types here */}
-                  <Block {...block} disableInnerContainer />
+                  <Block {...block} locale={locale} disableInnerContainer />
                 </div>
               )
             }
