@@ -9,6 +9,7 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
+import { CustomFormSubmissions } from './collections/CustomFormSubmissions'
 import { Feedback } from './collections/Feedback'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
@@ -71,15 +72,11 @@ export default buildConfig({
     translations: {
       fr: {
         // Plugin-generated collections
-        'general:forms': 'Formulaires',
-        'general:form-submissions': 'Soumissions de formulaires',
         'general:redirects': 'Redirections',
         'general:search': 'Résultats de recherche',
       },
       ar: {
         // Plugin-generated collections
-        'general:forms': 'نماذج',
-        'general:form-submissions': 'إرسالات النماذج',
         'general:redirects': 'عمليات إعادة التوجيه',
         'general:search': 'نتائج البحث',
       },
@@ -107,7 +104,7 @@ export default buildConfig({
       connectionString: process.env.POSTGRES_URL || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Feedback, Users],
+  collections: [Pages, Posts, Media, Categories, Feedback, CustomFormSubmissions, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [

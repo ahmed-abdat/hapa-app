@@ -37,6 +37,14 @@ This is a production-ready government website built with modern web technologies
 - `pnpm payload migrate` - Run database migrations (select "+" to accept schema changes)
 - `pnpm payload seed` - Seed database with sample content (development only)
 
+### Neon CLI Database Management
+- `neonctl auth` - Authenticate with Neon (required once, opens browser)
+- `neonctl projects list` - List all Neon projects 
+- `neonctl databases list --project-id <project-id>` - List databases in project
+- `neonctl branches list --project-id <project-id>` - List database branches
+- `neonctl connection-string <branch> --project-id <project-id>` - Get connection string
+- Direct queries via Node.js scripts with connection string for debugging
+
 ## Quick Start Guide
 
 1. **Install dependencies**: `pnpm install`
@@ -138,9 +146,19 @@ All content collections support bilingual content through:
 - **Pages**: Static content (About HAPA, Legal information) with block-based layout
 - **Posts**: News articles, press releases, decisions with rich text content
 - **Categories**: Content organization with bilingual labels
-- **Feedback**: Contact form submissions with localized fields
+- **Custom Form Submissions**: Contact and complaint form submissions (replaced Feedback collection)
 - **Media**: File uploads with automatic optimization and CDN delivery
 - **Users**: Admin authentication with role-based access
+
+### Custom Forms System
+The project uses a custom forms system built with React Hook Form + Zod + Shadcn UI instead of Payload's form builder plugin for better control and government compliance:
+
+- **Contact Forms**: General inquiries with name, email, phone, subject, message
+- **Complaint Forms**: Formal complaints with organization, incident details, complaint type
+- **Document Request Forms**: Official document requests with urgency levels
+- **Bilingual Support**: All forms work in French/Arabic with proper RTL layout
+- **Admin Interface**: Enhanced submission management with contact actions (email, WhatsApp)
+- **API Endpoint**: `/api/custom-forms/submit` handles form submissions with validation
 
 ### Admin Interface
 - **URL**: `/admin` - Payload CMS admin interface
@@ -174,6 +192,29 @@ All content collections support bilingual content through:
 2. Run `pnpm payload migrate` to apply changes
 3. Generate new types with `pnpm generate:types`
 4. Update components to use new fields
+
+### Database Debugging with Neon CLI
+When debugging database issues, use the Neon CLI for direct access:
+
+1. **Authentication**: Run `neonctl auth` once (opens browser for OAuth)
+2. **Project Access**: Use project ID `damp-snow-64638673` for HAPA project
+3. **Database Structure**: 
+   - Database: `neondb` 
+   - Production branch: `br-floral-frog-a20lonlx`
+   - Development branch: `br-dawn-recipe-a20o2l0x`
+4. **Direct Queries**: Create Node.js scripts with pg client for complex debugging
+5. **Schema Cleanup**: Drop conflicting tables when removing Payload plugins
+
+**Example Debug Script Pattern:**
+```javascript
+import pkg from 'pg';
+const { Client } = pkg;
+
+const client = new Client({
+  connectionString: process.env.POSTGRES_URL,
+  ssl: { rejectUnauthorized: false }
+});
+```
 
 ## Performance and SEO
 
@@ -283,6 +324,72 @@ Defined in `src/app/(frontend)/globals.css`:
 2. **Update documentation** when you learn something new or fix an issue
 3. **Focus on practical examples** with working code snippets
 4. **Test bilingual functionality** (French/Arabic) for all changes
+
+## Database Management & Debugging
+
+### Neon CLI Setup and Usage
+The project uses Neon PostgreSQL with CLI tools for database operations:
+
+**Installation & Authentication:**
+```bash
+npm install -g neonctl
+neonctl auth  # Opens browser for OAuth (one-time setup)
+```
+
+**HAPA Project Details:**
+- **Project ID**: `damp-snow-64638673` 
+- **Database**: `neondb`
+- **Region**: `aws-eu-central-1`
+- **Branches**: 
+  - `production` (br-floral-frog-a20lonlx) - main branch
+  - `development` (br-dawn-recipe-a20o2l0x) - dev branch
+
+**Common Neon CLI Commands:**
+```bash
+# List projects and branches
+neonctl projects list
+neonctl branches list --project-id damp-snow-64638673
+
+# Get connection strings
+neonctl connection-string production --project-id damp-snow-64638673
+
+# Database management
+neonctl databases list --project-id damp-snow-64638673
+```
+
+### Direct Database Access
+For complex debugging, create temporary Node.js scripts:
+
+```javascript
+import pkg from 'pg';
+const { Client } = pkg;
+
+async function debugDatabase() {
+  const client = new Client({
+    connectionString: process.env.POSTGRES_URL,
+    ssl: { rejectUnauthorized: false }
+  });
+  
+  await client.connect();
+  // Your queries here
+  await client.end();
+}
+```
+
+**Best Practices:**
+- Use Neon CLI for schema inspection and branch management
+- Create temporary debug scripts for complex data analysis
+- Always use SSL connections (`rejectUnauthorized: false` for dev)
+- Clean up debug scripts after use
+- Use `neonctl connection-string` to get current connection details
+
+### Database Schema Management
+When making schema changes that affect Payload collections:
+
+1. **Remove Payload plugins**: Drop associated tables manually if needed
+2. **Migration conflicts**: Use Neon CLI to inspect and clean conflicting tables
+3. **Schema sync**: Let Payload dev mode auto-sync after manual cleanup
+4. **Type generation**: Always run `pnpm generate:types` after schema changes
 
 ## Commit Guidelines
 

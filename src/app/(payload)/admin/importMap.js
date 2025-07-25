@@ -18,6 +18,8 @@ import { SlugFieldWithNotice as SlugFieldWithNotice_e83c5ccf8f9b3dccc0f0e2a7ece0
 import { ForceLocaleMessage as ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62 } from '@/components/ForceLocaleMessage/index.tsx'
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BlocksFeatureClient as BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
+import { SubmissionListCell as SubmissionListCell_12e2d20cdb1c8e137c3e287e74d9d2d6 } from '@/components/CustomForms/SubmissionListCell/index.tsx'
+import { DetailedSubmissionView as DetailedSubmissionView_c24073714ba214089ca892c81a8a0299 } from '@/components/CustomForms/DetailedSubmissionView/index.tsx'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { RowLabel as RowLabel_0540b7d6275e2eab731bc6fd569972a4 } from '@/Header/RowLabel.tsx'
@@ -47,6 +49,8 @@ export const importMap = {
   "@/components/ForceLocaleMessage/index.tsx#ForceLocaleMessage": ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62,
   "@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient": HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BlocksFeatureClient": BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
+  "@/components/CustomForms/SubmissionListCell/index.tsx#SubmissionListCell": SubmissionListCell_12e2d20cdb1c8e137c3e287e74d9d2d6,
+  "@/components/CustomForms/DetailedSubmissionView/index.tsx#DetailedSubmissionView": DetailedSubmissionView_c24073714ba214089ca892c81a8a0299,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@/Header/RowLabel.tsx#RowLabel": RowLabel_0540b7d6275e2eab731bc6fd569972a4,
