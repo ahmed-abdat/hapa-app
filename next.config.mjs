@@ -34,6 +34,17 @@ const config = withPayload(
         domains: ['localhost'],
         remotePatterns: [
           {
+            protocol: 'http',
+            hostname: 'localhost',
+            port: '3000',
+            pathname: '/**',
+          },
+          {
+            protocol: 'https',
+            hostname: 'localhost',
+            pathname: '/**',
+          },
+          {
             protocol: 'https',
             hostname: 'pub-17095e08be3e47baac773bf102d0e3ab.r2.dev',
             port: '',

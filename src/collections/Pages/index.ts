@@ -2,13 +2,18 @@ import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
+import { AboutMission } from '../../blocks/AboutMission/config'
 import { Archive } from '../../blocks/ArchiveBlock/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
 import { ComplaintFormBlock } from '../../blocks/ComplaintFormBlock/config'
 import { ContactFormBlock } from '../../blocks/ContactFormBlock/config'
 import { Content } from '../../blocks/Content/config'
+import { CoreServices } from '../../blocks/CoreServices/config'
 // import { FormBlock } from '../../blocks/Form/config' // Removed - replaced with custom forms
 import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { MediaSpace } from '../../blocks/MediaSpace/config'
+import { NewsAnnouncements } from '../../blocks/NewsAnnouncements/config'
+import { PartnersSection } from '../../blocks/PartnersSection/config'
 import { hero } from '@/heros/config'
 import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
@@ -60,16 +65,14 @@ export const Pages: CollectionConfig<'pages'> = {
     },
     livePreview: {
       url: ({ data, req, locale }) => {
-
         // Check if French title exists for slug generation
         const frenchTitle = data?.title && typeof data.title === 'object' && 'fr' in data.title 
-          ? data.title.fr 
+          ? String(data.title.fr || '') 
           : typeof data?.title === 'string' 
           ? data.title 
           : null
         
-        
-        if (!frenchTitle || !frenchTitle.trim()) {
+        if (!frenchTitle || (typeof frenchTitle === 'string' && !frenchTitle.trim())) {
           return '' // Return empty string to disable preview for pages without French title
         }
 
@@ -78,7 +81,6 @@ export const Pages: CollectionConfig<'pages'> = {
         if (!slug) {
           return '' // Return empty string if no slug is available
         }
-
 
         const path = generatePreviewPath({
           slug,
@@ -91,16 +93,14 @@ export const Pages: CollectionConfig<'pages'> = {
       },
     },
     preview: (data, { req, locale }) => {
-
       // Check if French title exists for slug generation
       const frenchTitle = data?.title && typeof data.title === 'object' && 'fr' in data.title 
-        ? data.title.fr 
+        ? String(data.title.fr || '') 
         : typeof data?.title === 'string' 
         ? data.title 
         : null
       
-      
-      if (!frenchTitle || typeof frenchTitle !== 'string' || !frenchTitle.trim()) {
+      if (!frenchTitle || (typeof frenchTitle === 'string' && !frenchTitle.trim())) {
         return '' // Return empty string to disable preview for pages without French title
       }
 
@@ -109,7 +109,6 @@ export const Pages: CollectionConfig<'pages'> = {
       if (!slug) {
         return '' // Return empty string if no slug is available
       }
-
 
       const path = generatePreviewPath({
         slug,
@@ -141,7 +140,19 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, ComplaintFormBlock, ContactFormBlock, Content, MediaBlock, Archive],
+              blocks: [
+                AboutMission,
+                Archive,
+                CallToAction,
+                ComplaintFormBlock,
+                ContactFormBlock,
+                Content,
+                CoreServices,
+                MediaBlock,
+                MediaSpace,
+                NewsAnnouncements,
+                PartnersSection,
+              ],
               required: true,
               localized: true,
               admin: {

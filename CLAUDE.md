@@ -4,38 +4,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**HAPA Website** - Official website for Haute Autorité de la Presse et de l'Audiovisuel (Mauritania's media regulatory authority)
+**HAPA Website** - Official government website for Mauritania's media regulatory authority (Haute Autorité de la Presse et de l'Audiovisuel).
 
-This is a production-ready government website built with modern web technologies and full bilingual support (French/Arabic with RTL). The project uses Payload CMS as a headless CMS with Next.js 15 for the frontend.
+Production-ready bilingual government website with French/Arabic support and RTL layout. Built with Payload CMS 3.44.0 headless CMS and Next.js 15 with next-intl for internationalization.
 
-**Tech Stack:**
-- Payload CMS 3.44.0 (TypeScript-first headless CMS with localization)
-- Next.js 15.3.3 with App Router and server-side rendering
-- Neon PostgreSQL (managed serverless database via Vercel adapter)
-- Vercel Pro (hosting, CDN & deployment)
-- Tailwind CSS with HAPA government branding
-- TypeScript with strict mode enabled
-- Vercel Blob storage for media files
+**Critical Architecture Components:**
+- **CMS**: Payload CMS with localized collections and block-based page builder
+- **Internationalization**: next-intl routing with French (default) and Arabic (RTL) support
+- **Frontend**: Next.js 15 App Router with locale-based routing (`/fr/`, `/ar/`)
+- **Database**: Neon PostgreSQL with Vercel adapter
+- **Storage**: Vercel Blob for media files
 
 ## Essential Commands
 
-### Development
-- `pnpm install` - Install dependencies
-- `pnpm dev` - Start local development server at http://localhost:3000
-- `pnpm payload` - Access Payload admin interface
-- `pnpm generate:types` - Generate TypeScript types from collections (run after schema changes)
-- `pnpm generate:importmap` - Generate import map for Payload admin
+### Development Workflow
+- `pnpm dev` - Start development server (http://localhost:3000 → redirects to /fr)
+- `pnpm generate:types` - **REQUIRED after schema changes** - Regenerate TypeScript types
+- `pnpm payload migrate` - Apply database schema changes (select "+" to accept)
+- `pnpm lint` & `pnpm lint:fix` - Code quality checks and fixes
 
-### Building & Deployment
-- `pnpm build` - Build production application with automatic sitemap generation
-- `pnpm start` - Start production server locally
-- `pnpm lint` - Run ESLint checks
-- `pnpm lint:fix` - Fix linting issues automatically
-- `pnpm ci` - Run database migrations and build (used in CI/CD pipeline)
+### Content Management
+- Admin panel: http://localhost:3000/admin
+- Frontend: http://localhost:3000/fr (French), http://localhost:3000/ar (Arabic RTL)
 
-### Database Operations
-- `pnpm payload migrate` - Run database migrations (select "+" to accept schema changes)
-- `pnpm payload seed` - Seed database with sample content (development only)
+### Production
+- `pnpm build` - Production build with automatic sitemap generation
+- `pnpm ci` - Database migrations + build (used in CI/CD)
 
 ### Neon CLI Database Management
 - `neonctl auth` - Authenticate with Neon (required once, opens browser)
@@ -45,102 +39,70 @@ This is a production-ready government website built with modern web technologies
 - `neonctl connection-string <branch> --project-id <project-id>` - Get connection string
 - Direct queries via Node.js scripts with connection string for debugging
 
-## Quick Start Guide
+## Architecture Overview
 
-1. **Install dependencies**: `pnpm install`
-2. **Set up environment**: Copy `.env.example` to `.env` and configure:
-   ```env
-   POSTGRES_URL=your_neon_database_url
-   PAYLOAD_SECRET=your_secure_random_string
-   NEXT_PUBLIC_SERVER_URL=http://localhost:3000
-   BLOB_READ_WRITE_TOKEN=your_vercel_blob_token
-   ```
-3. **Run migrations**: `pnpm payload migrate`
-4. **Generate types**: `pnpm generate:types`
-5. **Start development**: `pnpm dev`
-6. **Access the application**: 
-   - Frontend: http://localhost:3000 (automatically redirects to /fr)
-   - French content: http://localhost:3000/fr
-   - Arabic content: http://localhost:3000/ar (automatic RTL layout)
-   - Admin panel: http://localhost:3000/admin
+### Page Structure & Routing
+- **Dynamic Pages**: `app/(frontend)/[locale]/[slug]/page.tsx` - All localized pages
+- **Hero System**: `src/heros/RenderHero.tsx` - Dynamic hero component resolver
+- **Block System**: `src/blocks/RenderBlocks.tsx` - CMS content blocks renderer
+- **Internationalization**: `src/i18n/navigation.ts` - next-intl routing utilities
 
-## Project Architecture
+### Content Management Flow
+1. **Collections** (`src/collections/`) define data structure with localization
+2. **Admin interface** creates/edits bilingual content with side-by-side editing
+3. **Static homepage** (`src/endpoints/seed/home-static.ts`) provides fallback content
+4. **Dynamic rendering** combines hero + blocks for each page
 
-### Directory Structure
-```
-src/
-├── app/
-│   ├── (frontend)/[locale]/        # Localized public pages (/fr, /ar)
-│   │   ├── layout.tsx             # Locale-specific layout with RTL support
-│   │   ├── [slug]/                # Dynamic pages (About, Legal, etc.)
-│   │   └── posts/                 # News articles and press releases
-│   └── (payload)/                 # Payload CMS admin interface
-│       ├── admin/                 # Admin panel routes
-│       └── api/                   # API endpoints
-├── collections/                   # Payload CMS collections with localization
-│   ├── Pages/                     # Static pages (About, Legal info)
-│   ├── Posts/                     # News articles, press releases
-│   ├── Categories.ts              # Content categorization
-│   ├── Feedback.ts                # Contact form submissions
-│   ├── Media.ts                   # File uploads with Vercel Blob
-│   └── Users/                     # Admin user accounts
-├── components/                    # React components
-│   ├── LocaleHandler/             # Client-side locale detection and HTML attributes
-│   ├── LanguageSwitcher/          # Bilingual navigation component
-│   ├── RichText/                  # Lexical editor renderer
-│   └── ui/                        # Reusable UI components
-├── blocks/                        # Content blocks for page builder
-│   ├── Banner/                    # Hero sections
-│   ├── Content/                   # Rich text content
-│   ├── Form/                      # Contact forms
-│   └── MediaBlock/                # Media displays
-├── utilities/                     # Helper functions and utilities
-│   ├── locale.ts                  # Core locale management
-│   ├── translations.ts            # UI string translations
-│   ├── generateMeta.ts            # SEO metadata generation
-│   └── getGlobals.ts              # Cached global data fetching
-└── payload.config.ts              # Main CMS configuration
-```
+**Block System Architecture:**
+- All blocks registered in `src/blocks/RenderBlocks.tsx`
+- Block configs in `src/collections/Pages/index.ts` determine admin interface
+- Each block: `Component.tsx` (React) + `config.ts` (Payload schema)
 
-### Key Files and Their Purpose
+**Hero System Architecture:**
+- Hero types registered in `src/heros/RenderHero.tsx`
+- Hero configs in `src/heros/config.ts` define admin options
+- Homepage uses `homepageHero` type with bilingual content
 
-**Configuration Files:**
-- `src/payload.config.ts` - Main Payload CMS configuration with localization setup
-- `next.config.mjs` - Next.js configuration with redirects and image optimization
-- `vercel.json` - Vercel deployment configuration with cron jobs
+**Internationalization Stack:**
+- `src/i18n/routing.ts` - Locale configuration (fr/ar)
+- `src/i18n/navigation.ts` - **ALWAYS import Link from here, not next/link**
+- `src/utilities/locale.ts` - Core locale utilities and direction detection
+- `src/utilities/translations.ts` - UI string translations
 
-**Core Utility Files:**
-- `src/utilities/locale.ts` - Locale definitions and validation (`['fr', 'ar']`)
-- `src/utilities/translations.ts` - Translation system with UI strings
-- `src/utilities/generateMeta.ts` - SEO metadata generation per locale
+## Development Workflow
 
-**Critical Components:**
-- `src/components/LocaleHandler/index.tsx` - Updates HTML `dir` and `lang` attributes
-- `src/components/LanguageSwitcher/index.tsx` - Language navigation component
-- `src/app/(frontend)/[locale]/layout.tsx` - Main layout with locale validation
+### Adding New Content Blocks
+1. Create block component: `src/blocks/YourBlock/Component.tsx`
+2. Create block config: `src/blocks/YourBlock/config.ts`
+3. Register in `src/blocks/RenderBlocks.tsx` (import + add to blockComponents)
+4. Register in `src/collections/Pages/index.ts` (import + add to blocks array)
+5. Run `pnpm generate:types` to update TypeScript types
 
-## Internationalization System
+### Adding New Hero Types
+1. Create hero component: `src/heros/YourHero/index.tsx`
+2. Register in `src/heros/RenderHero.tsx` (import + add to heroes object)
+3. Add option in `src/heros/config.ts`
+4. Run `pnpm generate:types` to update types
 
-### Locale Configuration
-- **French (fr)**: Default language for content creation and URL slugs
-- **Arabic (ar)**: Full translation support with automatic RTL layout
-- **URL Structure**: Root `/` redirects to `/fr`, supports `/fr/page` and `/ar/page`
-- **Fallback**: Arabic content automatically falls back to French when missing
+### Adding Translations
+1. Add keys to both `fr` and `ar` objects in `src/utilities/translations.ts`
+2. Use `getTranslation(key, locale)` in components
+3. Get locale from `useParams()` and cast to `Locale` type
 
-### Content Localization
-All content collections support bilingual content through:
-- `localized: true` fields in Payload collections
-- Side-by-side editing interface in admin panel
-- Automatic slug generation from French titles
-- Separate SEO metadata per language
+## Critical Development Rules
 
-### RTL Support
-- Automatic `dir="rtl"` attribute for Arabic content
-- Mirrored layout elements (navigation, buttons, images)
-- Proper text alignment and reading flow
-- Arabic typography with appropriate fonts
+### Internationalization Requirements
+- **ALWAYS** import `Link` from `@/i18n/navigation`, never from `next/link`
+- **ALWAYS** run `pnpm generate:types` after schema changes
+- French content required first (generates slugs), Arabic translation optional with fallback
+- Use `useParams()` to get locale, cast as `Locale` type
+- Support RTL layout: use `getLocaleDirection(locale)` for `dir` attribute
 
-## Content Management
+### Bilingual Content Workflow
+1. **Create French first** - Required for slug generation and fallback
+2. **Add Arabic translation** - Optional, falls back to French if missing  
+3. **Test both locales** - Check /fr/ and /ar/ URLs, verify RTL layout
+4. **Use translations** - `getTranslation(key, locale)` for UI strings
 
 ### Collections Overview
 - **Pages**: Static content (About HAPA, Legal information) with block-based layout
@@ -193,27 +155,19 @@ The project uses a custom forms system built with React Hook Form + Zod + Shadcn
 3. Generate new types with `pnpm generate:types`
 4. Update components to use new fields
 
-### Database Debugging with Neon CLI
-When debugging database issues, use the Neon CLI for direct access:
+### Database & Type Safety
+- **Schema changes**: Update `src/collections/` → `pnpm payload migrate` → `pnpm generate:types`
+- **New blocks/heroes**: Register in both Component file and config arrays
+- **Localized fields**: Add `localized: true` to field definitions
 
-1. **Authentication**: Run `neonctl auth` once (opens browser for OAuth)
-2. **Project Access**: Use project ID `damp-snow-64638673` for HAPA project
-3. **Database Structure**: 
-   - Database: `neondb` 
-   - Production branch: `br-floral-frog-a20lonlx`
-   - Development branch: `br-dawn-recipe-a20o2l0x`
-4. **Direct Queries**: Create Node.js scripts with pg client for complex debugging
-5. **Schema Cleanup**: Drop conflicting tables when removing Payload plugins
+## Environment Setup
 
-**Example Debug Script Pattern:**
-```javascript
-import pkg from 'pg';
-const { Client } = pkg;
-
-const client = new Client({
-  connectionString: process.env.POSTGRES_URL,
-  ssl: { rejectUnauthorized: false }
-});
+Copy `.env.example` to `.env` with:
+```env
+POSTGRES_URL=postgresql://...           # Neon database connection  
+PAYLOAD_SECRET=...                      # Payload CMS encryption key
+NEXT_PUBLIC_SERVER_URL=http://localhost:3000    # Public URL
+BLOB_READ_WRITE_TOKEN=...              # Vercel Blob storage token
 ```
 
 ## Performance and SEO
@@ -232,98 +186,19 @@ const client = new Client({
 - Hreflang tags for language variants
 - Performance target: PageSpeed score ≥ 90
 
-## Environment Variables
-
-### Required Variables
-```env
-POSTGRES_URL=postgresql://...           # Neon database connection
-PAYLOAD_SECRET=...                      # Payload CMS encryption key
-NEXT_PUBLIC_SERVER_URL=...             # Public URL (http://localhost:3000 for dev)
-BLOB_READ_WRITE_TOKEN=...              # Vercel Blob storage token
-```
-
-### Optional Variables
-```env
-RESEND_API_KEY=...                     # Email notifications
-CRON_SECRET=...                        # Vercel cron job authentication
-```
-
-## Brand Guidelines
-
-### HAPA Brand Colors
+## HAPA Brand Colors
 Defined in `src/app/(frontend)/globals.css`:
-- **Primary Blue**: `#065986` - Government authority color
-- **Secondary Gold**: `#D4A574` - Official accent color
-- **Supporting Green**: `#2D5A27` - Regulatory theme color
+- **Primary**: `#138B3A` (HAPA Green)
+- **Secondary**: `#E6E619` (HAPA Yellow)  
+- **Accent**: `#0F7A2E` (HAPA Dark Green)
 
-### Typography
-- **Primary Font**: Geist font family
-- **Arabic Support**: Proper Arabic typography with correct line height
-- **Responsive Scaling**: Mobile-first approach with proper text sizing
-
-## Testing and Quality Assurance
-
-### Development Testing
-1. **Bilingual Functionality**: Test both French and Arabic content display
-2. **RTL Layout**: Verify Arabic content shows properly with RTL direction
-3. **Language Switching**: Test navigation between locales
-4. **Admin Interface**: Verify content editing in both languages
-5. **Performance**: Check Core Web Vitals for both languages
-
-### Before Deployment
-1. Run `pnpm lint` to check for code issues
-2. Run `pnpm build` to verify production build
-3. Test all pages in both languages
-4. Verify mobile responsiveness
-5. Check SEO metadata generation
-
-## Common Development Tasks
-
-### Adding a New Page
-1. Create content in admin panel at `/admin` → Pages
-2. Add French title and content (required for slug generation)
-3. Switch to Arabic tab and add translation
-4. Preview in both languages
-5. Publish to make available at `/fr/slug` and `/ar/slug`
-
-### Modifying Content Structure
-1. Update collection definitions in `src/collections/`
-2. Run `pnpm payload migrate` to apply schema changes
-3. Generate new TypeScript types with `pnpm generate:types`
-4. Update components to handle new fields
-5. Test with existing content
-
-### Adding New UI Text
-1. Add translations to `src/utilities/translations.ts`
-2. Use `getTranslation(locale, key)` in components
-3. Test with both French and Arabic
-4. Verify RTL layout if text affects layout
-
-## Deployment
-
-### Production Environment
-- **Platform**: Vercel Pro with global CDN
-- **Database**: Neon PostgreSQL (managed, serverless)
-- **Domain**: www.hapa.mr with SSL certificate
-- **Storage**: Vercel Blob for media files
-
-### Deployment Process
-1. **Staging**: Automatic deployment on pull requests
-2. **Production**: Manual deployment from main branch
-3. **Migrations**: Automatic database migrations via `pnpm ci`
-4. **Monitoring**: Performance and error tracking enabled
-
-## Documentation
-
-### Essential Documentation
-- **docs/DEVELOPMENT_GUIDE.md** - Development patterns, common mistakes, and current improvements
-- **docs/MULTILINGUAL_SLUG_IMPROVEMENTS.md** - Detailed tracking of slug generation enhancements
-
-### Development Best Practices
-1. **Check docs/DEVELOPMENT_GUIDE.md first** for common patterns and mistakes
-2. **Update documentation** when you learn something new or fix an issue
-3. **Focus on practical examples** with working code snippets
-4. **Test bilingual functionality** (French/Arabic) for all changes
+## Testing Checklist
+- [ ] French content displays at `/fr/*` URLs
+- [ ] Arabic content displays at `/ar/*` URLs with RTL layout
+- [ ] Language navigation works correctly
+- [ ] Admin panel accessible at `/admin`
+- [ ] `pnpm lint` passes without errors
+- [ ] `pnpm build` completes successfully
 
 ## Database Management & Debugging
 
@@ -391,10 +266,33 @@ When making schema changes that affect Payload collections:
 3. **Schema sync**: Let Payload dev mode auto-sync after manual cleanup
 4. **Type generation**: Always run `pnpm generate:types` after schema changes
 
-## Commit Guidelines
+### Database Debugging with Neon CLI
+When debugging database issues, use the Neon CLI for direct access:
 
-### Commit Practices
-- Do not mention claude code on the commit
+1. **Authentication**: Run `neonctl auth` once (opens browser for OAuth)
+2. **Project Access**: Use project ID `damp-snow-64638673` for HAPA project
+3. **Database Structure**: 
+   - Database: `neondb` 
+   - Production branch: `br-floral-frog-a20lonlx`
+   - Development branch: `br-dawn-recipe-a20o2l0x`
+4. **Direct Queries**: Create Node.js scripts with pg client for complex debugging
+5. **Schema Cleanup**: Drop conflicting tables when removing Payload plugins
+
+**Example Debug Script Pattern:**
+```javascript
+import pkg from 'pg';
+const { Client } = pkg;
+
+const client = new Client({
+  connectionString: process.env.POSTGRES_URL,
+  ssl: { rejectUnauthorized: false }
+});
+```
+
+## Commit Guidelines
+- Never mention "claude code" in commit messages
+- Test bilingual functionality before committing
+- Run `pnpm generate:types` after schema changes
 
 ## Project Status
 

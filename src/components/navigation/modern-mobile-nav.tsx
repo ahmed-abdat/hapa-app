@@ -27,6 +27,7 @@ import {
   type NavigationItem,
 } from "./navigation-items";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 export function ModernMobileNav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -88,19 +89,27 @@ export function ModernMobileNav() {
                 <Link
                   key={subTitle}
                   href={`/${validLocale}${subItem.href}`}
-                  className="flex select-none gap-4 rounded-md p-3 leading-none outline-none transition-colors hover:bg-primary/5 hover:text-primary focus:bg-primary/10 focus:text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 ml-4"
+                  className={cn(
+                    "flex select-none gap-3 rounded-md p-3 leading-none outline-none transition-colors hover:bg-primary/5 hover:text-primary focus:bg-primary/10 focus:text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 min-w-0",
+                    validLocale === "ar" ? "mr-4" : "ml-4"
+                  )}
                   onClick={closeSheet}
                 >
-                  {subItem.icon && (
-                    <subItem.icon className="w-4 h-4 text-muted-foreground mt-0.5" />
-                  )}
-                  <div className="flex flex-col gap-1">
-                    <div className="text-sm font-medium">{subTitle}</div>
-                    {subDescription && (
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        {subDescription}
-                      </p>
-                    )}
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="w-2 h-2 bg-primary/60 rounded-full flex-shrink-0" />
+                    <div className="flex flex-col gap-1 flex-1 min-w-0">
+                      <div className="text-sm font-medium leading-tight truncate">{subTitle}</div>
+                      {subDescription && (
+                        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                          {subDescription}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="w-4 h-4 text-muted-foreground flex-shrink-0 ml-2">
+                    <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={validLocale === "ar" ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"} />
+                    </svg>
                   </div>
                 </Link>
               );
@@ -129,7 +138,8 @@ export function ModernMobileNav() {
       </SheetTrigger>
       <SheetContent
         side={validLocale === "ar" ? "left" : "right"}
-        className={`flex flex-col w-80 p-0 bg-gradient-to-b from-background to-background/95 backdrop-blur-sm`}
+        className={`flex flex-col w-[320px] max-w-[85vw] p-0 bg-gradient-to-b from-background to-background/95 backdrop-blur-sm`}
+        dir={validLocale === "ar" ? "rtl" : "ltr"}
       >
         <SheetHeader className="p-6 bg-gradient-to-r from-primary to-primary/80">
           <SheetTitle asChild>
