@@ -6,19 +6,17 @@
       "env": {}
     },
     "exa-search": {
-      "url": "https://server.smithery.ai/exa/mcp",
-      "transport": "http",
+      "command": "npx",
+      "args": ["-y", "@smithery/exa-mcp-server"],
       "env": {
-        "API_KEY": "${EXA_API_KEY}",
-        "PROFILE": "${EXA_PROFILE}"
+        "EXA_API_KEY": "${EXA_API_KEY}"
       }
     },
     "brave-search": {
-      "url": "https://server.smithery.ai/@smithery-ai/brave-search/mcp",
-      "transport": "http",
+      "command": "npx",
+      "args": ["-y", "@smithery/brave-search-mcp-server"],
       "env": {
-        "API_KEY": "${BRAVE_API_KEY}",
-        "PROFILE": "${BRAVE_PROFILE}"
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
       }
     }
   }
