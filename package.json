@@ -21,7 +21,7 @@
     "@aws-sdk/client-s3": "^3.850.0",
     "@hookform/resolvers": "^5.1.1",
     "@payloadcms/admin-bar": "3.44.0",
-    "@payloadcms/db-vercel-postgres": "3.44.0",
+    "@payloadcms/db-postgres": "^3.44.0",
     "@payloadcms/email-resend": "3.44.0",
     "@payloadcms/live-preview-react": "3.44.0",
     "@payloadcms/next": "3.44.0",

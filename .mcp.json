@@ -2,21 +2,28 @@
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
       "env": {}
     },
     "exa-search": {
       "command": "npx",
-      "args": ["-y", "@smithery/exa-mcp-server"],
+      "args": [
+        "-y",
+        "@smithery/exa-mcp-server"
+      ],
       "env": {
-        "EXA_API_KEY": "${EXA_API_KEY}"
+        "EXA_API_KEY": "551969a1-ab37-4057-a335-04d7e3aa227d"
       }
     },
     "brave-search": {
-      "command": "npx",
-      "args": ["-y", "@smithery/brave-search-mcp-server"],
+      "type": "stdio",
+      "command": "npx -y @modelcontextprotocol/server-brave-search",
+      "args": [],
       "env": {
-        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+        "BRAVE_API_KEY": "BSAh51dgFymBpolr2WbCV5W-GnkQ0cK"
       }
     }
   }

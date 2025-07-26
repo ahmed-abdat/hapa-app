@@ -5,6 +5,7 @@ Comprehensive testing suite for the HAPA website using Playwright for end-to-end
 ## 🎯 Overview
 
 The HAPA website testing suite provides:
+
 - **Category Integration Testing**: Validates all new category functionality
 - **Website Crawling**: Discovers and tests all pages automatically
 - **API Testing**: Validates GraphQL, REST APIs, and form submissions
@@ -90,6 +91,7 @@ CI=true                             # Enables CI-specific settings
 Tests the comprehensive category system implementation:
 
 #### Task A: Core Category Routes
+
 - ✅ `/[locale]/posts/category/[slug]` routes
 - ✅ Pagination: `/[locale]/posts/category/[slug]/page/[pageNumber]`
 - ✅ Bilingual support (French/Arabic + RTL)
@@ -97,12 +99,14 @@ Tests the comprehensive category system implementation:
 - ✅ SEO metadata generation
 
 #### Task B: Posts Page Filtering
+
 - ✅ Category filter UI component
 - ✅ URL parameter filtering: `/posts?category=slug`
 - ✅ Filter persistence during pagination
 - ✅ Clear/reset filter functionality
 
 #### Task C: Government Publication Routes
+
 - ✅ `/[locale]/publications/[category]` routes
 - ✅ `/[locale]/news` routes
 - ✅ Empty states for missing categories
@@ -113,18 +117,21 @@ Tests the comprehensive category system implementation:
 Comprehensive site discovery and validation:
 
 #### Site Discovery
+
 - 🔍 **Auto-discovery**: Finds all internal links
 - 🌐 **Multi-locale**: Tests French and Arabic routes
 - 📊 **Performance**: Measures load times and sizes
 - 🔗 **Link validation**: Identifies broken links
 
 #### Performance Testing
+
 - ⚡ **Core Web Vitals**: FCP, LCP, loading metrics
 - 📱 **Mobile testing**: Responsive design validation
 - 🌐 **Network conditions**: Slow 3G simulation
 - 🚀 **Concurrent requests**: Multi-page load testing
 
 #### SEO & Accessibility
+
 - 🔍 **Meta tags**: Title, description, hreflang validation
 - ♿ **Accessibility**: Basic WCAG compliance checks
 - 🗺️ **Sitemaps**: XML sitemap validation
@@ -135,18 +142,21 @@ Comprehensive site discovery and validation:
 Backend and integration validation:
 
 #### Payload CMS APIs
+
 - 🎮 **GraphQL**: Schema and query validation
 - 📊 **REST endpoints**: Media, admin routes
 - 🗺️ **Sitemaps**: Dynamic sitemap generation
 - 🔐 **Admin interface**: Login and access validation
 
 #### Custom Forms
+
 - 📝 **Contact forms**: Submission validation
 - 🔍 **Form validation**: Required field checking
 - 🚀 **API endpoints**: Direct form submission testing
 - ✅ **Response handling**: Success/error scenarios
 
 #### Security & Internationalization
+
 - 🔒 **Security headers**: CSP, X-Frame-Options
 - 🛡️ **Vulnerability testing**: Basic XSS/injection checks
 - 🌐 **CORS validation**: Cross-origin policy checks
@@ -170,6 +180,7 @@ pnpm test:report
 ### Performance Metrics
 
 The crawler collects and reports:
+
 - **Load times**: Page load performance
 - **Bundle sizes**: Resource optimization
 - **Core Web Vitals**: User experience metrics
@@ -197,19 +208,19 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      
+          node-version: "20"
+
       - name: Install dependencies
         run: pnpm install
-      
+
       - name: Install Playwright browsers
         run: pnpm test:install
-      
+
       - name: Run E2E tests
         run: pnpm test
         env:
           CI: true
-      
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
@@ -238,9 +249,10 @@ PLAYWRIGHT_BASE_URL=https://hapa.mr pnpm test:category
 Before running category tests, ensure:
 
 - [ ] Payload admin categories created:
-  - [ ] `decisions` → "Décisions et communiqués" / "قرارات وبيانات"
+
+  - [ ] `decisions` → "Décisions et communiqués" / "قرارات و بيانات"
   - [ ] `reports` → "Rapports" / "تقارير"
-  - [ ] `laws` → "Lois et règlements" / "قوانين وتشريعات"
+  - [ ] `laws` → "Lois et règlements" / "قوانين و تشريعات"
   - [ ] `publications` → "Publications et éditions" / "إصدرات ومنشورات"
   - [ ] `news` → "Actualités" / "الأخبار"
 
@@ -250,15 +262,17 @@ Before running category tests, ensure:
 ### Expected Test Results
 
 #### Task A Routes
+
 ```
 ✅ /fr/posts/category/news
-✅ /ar/posts/category/news  
+✅ /ar/posts/category/news
 ✅ /fr/posts/category/decisions
 ✅ /ar/posts/category/decisions
 ✅ Pagination: /fr/posts/category/news/page/2
 ```
 
 #### Task B Filtering
+
 ```
 ✅ /fr/posts?category=news
 ✅ /ar/posts?category=decisions
@@ -267,6 +281,7 @@ Before running category tests, ensure:
 ```
 
 #### Task C Publications
+
 ```
 ✅ /fr/publications/decisions
 ✅ /ar/publications/decisions
@@ -280,6 +295,7 @@ Before running category tests, ensure:
 ### Common Issues
 
 #### Tests Failing with 404s
+
 ```bash
 # Check categories exist in Payload admin
 # Visit: http://localhost:3000/admin -> Categories
@@ -289,6 +305,7 @@ Before running category tests, ensure:
 ```
 
 #### Performance Test Failures
+
 ```bash
 # Increase timeout for slow environments
 # Edit playwright.config.ts:
@@ -296,6 +313,7 @@ Before running category tests, ensure:
 ```
 
 #### Browser Installation Issues
+
 ```bash
 # Reinstall browsers
 pnpm test:install --force
@@ -366,7 +384,7 @@ curl -X POST http://localhost:3000/next/seed
 
 ### Overall Website Health
 
-- [ ] >95% pages load successfully
+- [ ] > 95% pages load successfully
 - [ ] <3s average load time
 - [ ] No critical accessibility violations
 - [ ] Security headers present
@@ -380,6 +398,7 @@ curl -X POST http://localhost:3000/next/seed
 This testing suite provides comprehensive validation for the HAPA website, ensuring quality, performance, and accessibility across all features. The category integration tests specifically validate that Tasks A, B, and C work correctly with proper bilingual support and government-compliant functionality.
 
 **Next Steps:**
+
 1. Run initial test suite: `pnpm test`
 2. Set up CI/CD integration
 3. Monitor test results and maintain

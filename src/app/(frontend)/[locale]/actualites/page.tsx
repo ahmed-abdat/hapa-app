@@ -7,8 +7,10 @@ import { getPayload } from "payload";
 import React from "react";
 import { isValidLocale } from "@/utilities/locale";
 import { notFound } from "next/navigation";
+import type { Category, Post } from "@/payload-types";
 
-export const dynamic = "force-static";
+// Force dynamic rendering to avoid database connectivity issues during build
+export const dynamic = "force-dynamic";
 export const revalidate = 600;
 
 type Args = {
@@ -24,37 +26,61 @@ export default async function ActualitesPage({ params: paramsPromise }: Args) {
     notFound();
   }
 
-  const payload = await getPayload({ config: configPromise });
+  let categoryResult: { docs: Category[] } = { docs: [] };
+  let posts: { docs: Post[], totalDocs: number, totalPages: number, page: number } = { docs: [], totalDocs: 0, totalPages: 1, page: 1 };
 
-  // Find the actualites category
-  const categoryResult = await payload.find({
-    collection: "categories",
-    where: { slug: { equals: "actualites" } },
-    limit: 1,
-    locale,
-  });
+  try {
+    const payload = await getPayload({ config: configPromise });
 
-  // Find posts in actualites category
-  const posts = await payload.find({
-    collection: "posts",
-    depth: 1,
-    limit: 12,
-    locale,
-    overrideAccess: false,
-    where:
-      categoryResult.docs.length > 0
-        ? { categories: { in: [categoryResult.docs[0].id] } }
-        : { id: { equals: "nonexistent" } }, // Return empty if category doesn't exist
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      categories: true,
-      meta: true,
-      publishedAt: true,
-      createdAt: true,
-    },
-  });
+    // Try to find the actualites category
+    try {
+      categoryResult = await payload.find({
+        collection: "categories",
+        where: { slug: { equals: "actualites" } },
+        limit: 1,
+        locale,
+      });
+    } catch (error) {
+      console.error("Error finding actualites category:", error instanceof Error ? error.message : 'Unknown error');
+      // Continue with empty categoryResult
+    }
+
+    // Find posts in actualites category
+    try {
+      const postsResult = await payload.find({
+        collection: "posts",
+        depth: 1,
+        limit: 12,
+        locale,
+        overrideAccess: false,
+        where:
+          categoryResult.docs.length > 0
+            ? { categories: { in: [categoryResult.docs[0].id] } }
+            : { id: { equals: "nonexistent" } }, // Return empty if category doesn't exist
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          categories: true,
+          meta: true,
+          publishedAt: true,
+          createdAt: true,
+        },
+      });
+      posts = {
+        docs: postsResult.docs,
+        totalDocs: postsResult.totalDocs,
+        totalPages: postsResult.totalPages,
+        page: postsResult.page || 1
+      };
+    } catch (error) {
+      console.error("Error finding posts in actualites category:", error instanceof Error ? error.message : 'Unknown error');
+      // Continue with empty posts
+    }
+  } catch (error) {
+    console.error("Error connecting to Payload:", error instanceof Error ? error.message : 'Unknown error');
+    // Continue with empty data
+  }
 
   const categoryTitle =
     categoryResult.docs.length > 0

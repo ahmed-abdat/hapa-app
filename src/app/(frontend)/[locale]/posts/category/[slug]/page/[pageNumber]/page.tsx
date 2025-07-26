@@ -8,7 +8,8 @@ import React from "react";
 import { isValidLocale } from "@/utilities/locale";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-static";
+// Force dynamic rendering to avoid database connectivity issues during build
+export const dynamic = "force-dynamic";
 export const revalidate = 600;
 
 type Args = {
@@ -66,6 +67,7 @@ export default async function CategoryPaginationPage({
       slug: true,
       categories: true,
       meta: true,
+      createdAt: true,
     },
   });
 
@@ -155,12 +157,7 @@ export async function generateMetadata({
 }
 
 export async function generateStaticParams() {
-  // Generate first few pages for common categories
-  return [
-    { locale: "fr", slug: "news", pageNumber: "1" },
-    { locale: "fr", slug: "news", pageNumber: "2" },
-    { locale: "ar", slug: "news", pageNumber: "1" },
-    { locale: "ar", slug: "news", pageNumber: "2" },
-    // Add more as categories are created in admin
-  ];
+  // Skip static generation during build - render pages on demand
+  // This avoids database connectivity issues during the build process
+  return [];
 }

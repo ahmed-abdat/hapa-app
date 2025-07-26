@@ -8,7 +8,8 @@ import React from "react";
 import { isValidLocale } from "@/utilities/locale";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-static";
+// Force dynamic rendering to avoid database connectivity issues during build
+export const dynamic = "force-dynamic";
 export const revalidate = 600;
 
 type Args = {
@@ -56,6 +57,7 @@ export default async function CategoryPage({ params: paramsPromise }: Args) {
       slug: true,
       categories: true,
       meta: true,
+      createdAt: true,
     },
   });
 

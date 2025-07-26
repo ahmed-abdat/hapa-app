@@ -11,6 +11,8 @@ import { notFound } from "next/navigation";
 import { isValidLocale } from "@/utilities/locale";
 
 export const revalidate = 600;
+// Force dynamic rendering to avoid database connectivity issues during build
+export const dynamic = 'force-dynamic'
 
 type Args = {
   params: Promise<{
@@ -80,31 +82,7 @@ export async function generateMetadata({
 }
 
 export async function generateStaticParams() {
-  try {
-    const payload = await getPayload({ config: configPromise });
-    const { totalDocs } = await payload.count({
-      collection: "posts",
-      overrideAccess: false,
-    });
-
-    const totalPages = Math.ceil(totalDocs / 12);
-    const locales = ["fr", "ar"];
-
-    const pages: { pageNumber: string; locale: string }[] = [];
-
-    for (const locale of locales) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push({ pageNumber: String(i), locale });
-      }
-    }
-
-    return pages;
-  } catch (error) {
-    console.error('Error generating static params for posts pagination:', error)
-    // Return minimal params to allow build to continue
-    return [
-      { pageNumber: '1', locale: 'fr' },
-      { pageNumber: '1', locale: 'ar' }
-    ]
-  }
+  // Skip static generation during build - render pages on demand
+  // This avoids database connectivity issues during the build process  
+  return [];
 }

@@ -4,7 +4,6 @@ import { getServerSideURL } from './getURL'
 
 const collectionPrefixMap: Partial<Record<CollectionSlug, string>> = {
   posts: '/posts',
-  pages: '',
 }
 
 type Props = {

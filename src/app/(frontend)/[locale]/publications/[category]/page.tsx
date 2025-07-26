@@ -18,12 +18,13 @@ type Args = {
   }>;
 };
 
-// Category mapping for publications (using French-based slugs)
+// Category mapping for publications - matches actual database slugs and navigation
 const categoryMappings: Record<string, { fr: string; ar: string }> = {
-  decisions: { fr: "Décisions et communiqués", ar: "قرارات وبيانات" },
+  decisions: { fr: "Décisions et communiqués", ar: "قرارات و بيانات" },
   rapports: { fr: "Rapports", ar: "تقارير" },
-  "lois-et-reglements": { fr: "Lois et règlements", ar: "قوانين وتشريعات" },
-  publications: { fr: "Publications et éditions", ar: "إصدرات ومنشورات" },
+  "lois-et-reglements": { fr: "Lois et règlements", ar: "قوانين و تشريعات" },
+  "qwanyn-w-tshryaat": { fr: "Lois et règlements", ar: "قوانين و تشريعات" }, // Arabic slug variant
+  publications: { fr: "Publications", ar: "إصدارات" },
   actualites: { fr: "Actualités", ar: "الأخبار" },
 };
 
