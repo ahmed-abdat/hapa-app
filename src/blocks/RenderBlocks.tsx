@@ -1,38 +1,54 @@
 import React, { Fragment } from 'react'
 
-import type { Page } from '@/payload-types'
-
 import { AboutMissionBlock } from '@/blocks/AboutMission/Component'
 import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
+import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
+import { CodeBlock } from '@/blocks/Code/Component'
 import { ComplaintFormBlock } from '@/blocks/ComplaintFormBlock/Component'
 import { ContactFormBlock } from '@/blocks/ContactFormBlock/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { CoreServicesBlock } from '@/blocks/CoreServices/Component'
-// import { FormBlock } from '@/blocks/Form/Component' // Removed - replaced with custom forms
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { MediaSpaceBlock } from '@/blocks/MediaSpace/Component'
 import { NewsAnnouncementsBlock } from '@/blocks/NewsAnnouncements/Component'
 import { NewsAnnouncementsRichBlock } from '@/blocks/NewsAnnouncements/ComponentRich'
 import { PartnersSectionBlock } from '@/blocks/PartnersSection/Component'
 
+// Define available block types
+type BlockType = 
+  | { blockType: 'aboutMission'; [key: string]: unknown }
+  | { blockType: 'archive'; [key: string]: unknown }
+  | { blockType: 'banner'; [key: string]: unknown }
+  | { blockType: 'code'; [key: string]: unknown }
+  | { blockType: 'complaintForm'; [key: string]: unknown }
+  | { blockType: 'contactForm'; [key: string]: unknown }
+  | { blockType: 'content'; [key: string]: unknown }
+  | { blockType: 'coreServices'; [key: string]: unknown }
+  | { blockType: 'cta'; [key: string]: unknown }
+  | { blockType: 'mediaBlock'; [key: string]: unknown }
+  | { blockType: 'mediaSpace'; [key: string]: unknown }
+  | { blockType: 'newsAnnouncements'; layoutVariant?: string; [key: string]: unknown }
+  | { blockType: 'partnersSection'; [key: string]: unknown }
+
 const blockComponents = {
   aboutMission: AboutMissionBlock,
   archive: ArchiveBlock,
+  banner: BannerBlock,
+  code: CodeBlock,
   complaintForm: ComplaintFormBlock,
   contactForm: ContactFormBlock,
   content: ContentBlock,
   coreServices: CoreServicesBlock,
   cta: CallToActionBlock,
-  // formBlock: FormBlock, // Removed - replaced with custom forms
   mediaBlock: MediaBlock,
   mediaSpace: MediaSpaceBlock,
   newsAnnouncements: NewsAnnouncementsBlock,
   partnersSection: PartnersSectionBlock,
-}
+} as const
 
 export const RenderBlocks: React.FC<{
-  blocks: Page['layout'][0][]
+  blocks: BlockType[]
   locale?: 'fr' | 'ar'
 }> = (props) => {
   const { blocks, locale = 'fr' } = props
@@ -52,21 +68,21 @@ export const RenderBlocks: React.FC<{
             
             return (
               <div className={index === 0 ? "pt-8 sm:pt-12 md:pt-24" : "pt-8 sm:pt-12 md:pt-24"} key={index}>
-                {/* @ts-expect-error there may be some mismatch between the expected types here */}
-                <Block {...block} disableInnerContainer />
+                {/* @ts-expect-error Block props may not match exactly */}
+                <Block {...block} />
               </div>
             )
           }
 
           // Handle other block types normally
           if (blockType && blockType in blockComponents) {
-            const Block = blockComponents[blockType]
+            const Block = blockComponents[blockType as keyof typeof blockComponents]
 
             if (Block) {
               return (
                 <div className={index === 0 ? "pt-8 sm:pt-12 md:pt-24" : "pt-8 sm:pt-12 md:pt-24"} key={index}>
-                  {/* @ts-expect-error there may be some mismatch between the expected types here */}
-                  <Block {...block} locale={locale} disableInnerContainer />
+                  {/* @ts-expect-error Block props may not match exactly */}
+                  <Block {...block} locale={locale} />
                 </div>
               )
             }

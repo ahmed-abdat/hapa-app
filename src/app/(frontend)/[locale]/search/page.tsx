@@ -7,7 +7,7 @@ import React from "react";
 import { Search } from "@/search/Component";
 import PageClient from "./page.client";
 import { CardPostData } from "@/components/Card";
-import { t } from "@/utilities/translations";
+import { getTranslations } from 'next-intl/server';
 import { isValidLocale } from "@/utilities/locale";
 import { notFound } from "next/navigation";
 
@@ -29,6 +29,8 @@ export default async function Page({
   if (!isValidLocale(locale)) {
     notFound();
   }
+  
+  const t = await getTranslations();
 
   const payload = await getPayload({ config: configPromise });
 
@@ -93,7 +95,7 @@ export default async function Page({
           locale={locale}
         />
       ) : (
-        <div className="container">{t("noResults", locale)}</div>
+        <div className="container">{t("noResults")}</div>
       )}
     </div>
   );

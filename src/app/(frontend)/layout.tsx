@@ -15,6 +15,8 @@ import { mergeOpenGraph } from "@/utilities/mergeOpenGraph";
 import { draftMode } from "next/headers";
 import { StagewiseToolbar } from "@stagewise/toolbar-next";
 import ReactPlugin from "@stagewise-plugins/react";
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 
 import "./globals.css";
 import { getServerSideURL } from "@/utilities/getURL";
@@ -25,6 +27,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const { isEnabled } = await draftMode();
+  const messages = await getMessages();
 
   return (
     <html
@@ -50,25 +53,27 @@ export default async function RootLayout({
       </head>
       <body suppressHydrationWarning>
         <Providers>
-          <LocaleHandler />
-          <AdminBar
-            adminBarProps={{
-              preview: isEnabled,
-            }}
-          />
-
-          <Header />
-          {children}
-          <Footer />
-
-          {/* Stagewise toolbar for AI-powered editing - only loads in development */}
-          {process.env.NODE_ENV === "development" && (
-            <StagewiseToolbar
-              config={{
-                plugins: [ReactPlugin],
+          <NextIntlClientProvider messages={messages}>
+            <LocaleHandler />
+            <AdminBar
+              adminBarProps={{
+                preview: isEnabled,
               }}
             />
-          )}
+
+            <Header />
+            {children}
+            <Footer />
+
+            {/* Stagewise toolbar for AI-powered editing - only loads in development */}
+            {process.env.NODE_ENV === "development" && (
+              <StagewiseToolbar
+                config={{
+                  plugins: [ReactPlugin],
+                }}
+              />
+            )}
+          </NextIntlClientProvider>
         </Providers>
       </body>
     </html>

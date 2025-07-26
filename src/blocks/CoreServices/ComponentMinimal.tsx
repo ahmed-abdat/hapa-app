@@ -14,7 +14,7 @@ import {
   ArrowRight,
   ArrowLeft,
 } from "lucide-react";
-import { getTranslation, translations } from "@/utilities/translations";
+import { useTranslations } from 'next-intl';
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
 
 type CoreServicesMinimalProps = {
@@ -92,6 +92,7 @@ export const CoreServicesMinimalBlock: React.FC<CoreServicesMinimalProps> = ({
   const locale = (params?.locale as Locale) || "fr";
   const direction = getLocaleDirection(locale);
   const isRtl = direction === "rtl";
+  const t = useTranslations();
 
   return (
     <section
@@ -108,10 +109,10 @@ export const CoreServicesMinimalBlock: React.FC<CoreServicesMinimalProps> = ({
           className="text-center mb-8 sm:mb-12"
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            {title || getTranslation("coreServices", locale)}
+            {title || t('coreServices')}
           </h2>
           <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            {description || getTranslation("coreServicesDesc", locale)}
+            {description || t('coreServicesDesc')}
           </p>
         </motion.div>
 
@@ -143,16 +144,10 @@ export const CoreServicesMinimalBlock: React.FC<CoreServicesMinimalProps> = ({
                     {/* Content */}
                     <div className="flex-grow min-w-0">
                       <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors duration-300">
-                        {getTranslation(
-                          service.titleKey as keyof typeof translations.fr,
-                          locale
-                        )}
+                        {t(service.titleKey as any)}
                       </h3>
                       <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                        {getTranslation(
-                          service.descKey as keyof typeof translations.fr,
-                          locale
-                        )}
+                        {t(service.descKey as any)}
                       </p>
                     </div>
 
@@ -180,13 +175,13 @@ export const CoreServicesMinimalBlock: React.FC<CoreServicesMinimalProps> = ({
           className="text-center mt-8 sm:mt-12"
         >
           <p className="text-gray-600 mb-4">
-            {getTranslation("needHelp", locale)}
+            {t('needHelp')}
           </p>
           <Link 
             href="/contact"
             className="inline-flex items-center gap-2 text-primary font-semibold hover:text-primary/80 transition-colors duration-300"
           >
-            <span>{getTranslation("contactSupport", locale)}</span>
+            <span>{t('contactSupport')}</span>
             {isRtl ? (
               <ArrowLeft className="h-4 w-4" />
             ) : (

@@ -8,6 +8,8 @@ import {
   Phone,
   Home,
   User,
+  ClipboardList,
+  AlertTriangle,
 } from "lucide-react";
 
 export interface NavigationItem {
@@ -113,6 +115,34 @@ export const navigationItems: NavigationItem[] = [
           ar: "الإطار القانوني والتنظيمي",
         },
         icon: Gavel,
+      },
+    ],
+  },
+  {
+    title: { fr: "Services", ar: "خدمات" },
+    description: {
+      fr: "Services publics et formulaires",
+      ar: "الخدمات العامة والنماذج",
+    },
+    icon: ClipboardList,
+    items: [
+      {
+        title: { fr: "Signalement de contenu médiatique", ar: "تبليغ عن محتوى إعلامي" },
+        href: "/forms/media-content-report",
+        description: {
+          fr: "Signaler un contenu médiatique inapproprié",
+          ar: "الإبلاغ عن محتوى إعلامي غير مناسب",
+        },
+        icon: AlertTriangle,
+      },
+      {
+        title: { fr: "Plainte concernant un contenu médiatique", ar: "شكوى بخصوص محتوى إعلامي" },
+        href: "/forms/media-content-complaint",
+        description: {
+          fr: "Déposer une plainte officielle concernant un contenu médiatique",
+          ar: "تقديم شكوى رسمية بخصوص محتوى إعلامي",
+        },
+        icon: MessageCircle,
       },
     ],
   },

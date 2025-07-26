@@ -65,11 +65,11 @@ export const ArchiveBlock: React.FC<ArchiveBlockProps> = async (props) => {
 
   return (
     <div className="my-16" id={`block-${id}`}>
-      {introContent && (
+      {introContent ? (
         <div className="container mb-16">
           <RichText className="ms-0 max-w-[48rem]" data={introContent as any} enableGutter={false} />
         </div>
-      )}
+      ) : null}
       <CollectionArchive posts={posts} locale={locale} />
     </div>
   )

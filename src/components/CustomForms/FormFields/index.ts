@@ -1,3 +1,5 @@
 export { FormInput } from './FormInput'
 export { FormTextarea } from './FormTextarea'
 export { FormSelect } from './FormSelect'
+export { FormCheckboxGroup } from './FormCheckboxGroup'
+export { FormRadioGroup } from './FormRadioGroup'

@@ -6,10 +6,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowLeft, Shield, Users, FileText } from "lucide-react";
+import { useTranslations } from 'next-intl';
 import { useHeaderTheme } from "@/providers/HeaderTheme";
 import { AdvancedGradientButton } from "@/components/magicui/advanced-gradient-button";
 import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
-import { getTranslation } from "@/utilities/translations";
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
 
 // Simple static homepage hero component
@@ -18,6 +18,7 @@ export const HomepageHero: React.FC = () => {
   const params = useParams();
   const locale = (params?.locale as Locale) || "fr";
   const direction = getLocaleDirection(locale);
+  const t = useTranslations();
 
   useEffect(() => {
     setHeaderTheme("dark");
@@ -57,7 +58,7 @@ export const HomepageHero: React.FC = () => {
                 className="space-y-6"
               >
                 <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight text-white">
-                  {getTranslation("heroTitle", locale)}
+                  {t("heroTitle")}
                 </h1>
                 <div className="w-20 h-1 bg-gradient-to-r from-secondary to-accent mx-auto lg:ms-0" />
               </motion.div>
@@ -69,7 +70,7 @@ export const HomepageHero: React.FC = () => {
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto lg:mx-0"
               >
-                {getTranslation("heroSubtitle", locale)}
+                {t("heroSubtitle")}
               </motion.p>
 
               {/* CTA Buttons */}
@@ -84,7 +85,7 @@ export const HomepageHero: React.FC = () => {
                     className="px-6 py-4 text-sm font-semibold lg:text-base"
                     gradientColor="rgba(15, 122, 46, 0.6)"
                   >
-                    <span>{getTranslation("applyLicense", locale)}</span>
+                    <span>{t("applyLicense")}</span>
                     {locale === "ar" ? (
                       <ArrowLeft className="h-4 w-4 ml-2 group-hover:-translate-x-1 transition-transform" />
                     ) : (
@@ -95,7 +96,7 @@ export const HomepageHero: React.FC = () => {
 
                 <Link href="/contact">
                   <InteractiveHoverButton className="px-8 py-4 w-auto">
-                    {getTranslation("contactHapa", locale)}
+                    {t("contactHapa")}
                   </InteractiveHoverButton>
                 </Link>
               </motion.div>
@@ -112,7 +113,7 @@ export const HomepageHero: React.FC = () => {
                 <div className="space-y-6">
                   <div className="text-center mb-6">
                     <h3 className="text-lg font-semibold text-white mb-2">
-                      {getTranslation("keyStatistics", locale)}
+                      {t("keyStatistics")}
                     </h3>
                     <div className="w-12 h-0.5 bg-secondary mx-auto"></div>
                   </div>
@@ -125,7 +126,7 @@ export const HomepageHero: React.FC = () => {
                       <div>
                         <div className="text-2xl font-bold text-white">450+</div>
                         <div className="text-sm text-gray-300">
-                          {getTranslation("registeredJournalists", locale)}
+                          {t("registeredJournalists")}
                         </div>
                       </div>
                     </div>
@@ -137,7 +138,7 @@ export const HomepageHero: React.FC = () => {
                       <div>
                         <div className="text-2xl font-bold text-white">40+</div>
                         <div className="text-sm text-gray-300">
-                          {getTranslation("mediaOperators", locale)}
+                          {t("mediaOperators")}
                         </div>
                       </div>
                     </div>
@@ -149,7 +150,7 @@ export const HomepageHero: React.FC = () => {
                       <div>
                         <div className="text-2xl font-bold text-white">89%</div>
                         <div className="text-sm text-gray-300">
-                          {getTranslation("complaintsResolved", locale)}
+                          {t("complaintsResolved")}
                         </div>
                       </div>
                     </div>
@@ -166,7 +167,7 @@ export const HomepageHero: React.FC = () => {
               >
                 <div className="inline-flex items-center gap-2 text-sm text-gray-300">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <span>{getTranslation("officialRegulatory", locale)}</span>
+                  <span>{t("officialRegulatory")}</span>
                 </div>
               </motion.div>
             </div>

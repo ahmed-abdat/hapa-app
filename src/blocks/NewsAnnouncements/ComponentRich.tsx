@@ -17,7 +17,7 @@ import {
   ChevronLeft,
   Zap,
 } from "lucide-react";
-import { getTranslation } from "@/utilities/translations";
+import { useTranslations } from 'next-intl';
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
 import type { Post } from "@/payload-types";
 
@@ -28,6 +28,7 @@ type NewsAnnouncementsRichProps = {
   showFeatured?: boolean;
   maxPosts?: number;
   showUrgentBanner?: boolean;
+  disableInnerContainer?: boolean;
 };
 
 // Mock data for development - replace with actual posts from CMS
@@ -207,11 +208,13 @@ export const NewsAnnouncementsRichBlock: React.FC<NewsAnnouncementsRichProps> = 
   showFeatured = true,
   maxPosts = 6,
   showUrgentBanner = true,
+  disableInnerContainer,
 }) => {
   const params = useParams();
   const locale = (params?.locale as Locale) || "fr";
   const direction = getLocaleDirection(locale);
   const isRtl = direction === "rtl";
+  const t = useTranslations();
 
   const featuredPost = showFeatured ? posts[0] : null;
   const regularPosts = showFeatured ? posts.slice(1, maxPosts) : posts.slice(0, maxPosts);
@@ -238,7 +241,7 @@ export const NewsAnnouncementsRichBlock: React.FC<NewsAnnouncementsRichProps> = 
                   <div className="flex items-center gap-2">
                     <AlertCircle className="h-5 w-5 animate-pulse" />
                     <span className="font-bold text-sm sm:text-base">
-                      {getTranslation("urgentAnnouncements", locale)}
+                      {t("urgentAnnouncements")}
                     </span>
                   </div>
                 </div>
@@ -290,10 +293,10 @@ export const NewsAnnouncementsRichBlock: React.FC<NewsAnnouncementsRichProps> = 
           className="text-center mb-8 sm:mb-12 md:mb-16"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6">
-            {title || getTranslation("newsAnnouncements", locale)}
+            {title || t("newsAnnouncements")}
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            {description || getTranslation("newsAnnouncementsDesc", locale)}
+            {description || t("newsAnnouncementsDesc")}
           </p>
           <div className="w-20 sm:w-24 h-1 sm:h-1.5 bg-gradient-to-r from-primary via-accent to-secondary mx-auto mt-6 sm:mt-8 rounded-full" />
         </motion.div>
@@ -310,7 +313,7 @@ export const NewsAnnouncementsRichBlock: React.FC<NewsAnnouncementsRichProps> = 
             <div className="flex items-center gap-2 mb-6">
               <Star className="h-5 w-5 text-primary" />
               <span className="text-primary font-semibold text-sm uppercase tracking-wide">
-                {getTranslation("featured", locale)}
+                {t("featured")}
               </span>
             </div>
             
@@ -324,7 +327,7 @@ export const NewsAnnouncementsRichBlock: React.FC<NewsAnnouncementsRichProps> = 
                     <div className="absolute top-4 left-4">
                       <div className="bg-primary text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
                         <Star className="h-3 w-3" />
-                        {getTranslation("featured", locale)}
+                        {t("featured")}
                       </div>
                     </div>
                   </div>
@@ -354,7 +357,7 @@ export const NewsAnnouncementsRichBlock: React.FC<NewsAnnouncementsRichProps> = 
                     
                     <div className="flex items-center justify-between">
                       <span className="text-primary font-semibold text-lg">
-                        {getTranslation("readMore", locale)}
+                        {t("readMore")}
                       </span>
                       <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
                         {isRtl ? (
@@ -419,7 +422,7 @@ export const NewsAnnouncementsRichBlock: React.FC<NewsAnnouncementsRichProps> = 
                     
                     <div className="flex items-center justify-between">
                       <span className="text-primary font-medium text-sm">
-                        {getTranslation("readMore", locale)}
+                        {t("readMore")}
                       </span>
                       <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-all duration-300">
                         {isRtl ? (
@@ -448,7 +451,7 @@ export const NewsAnnouncementsRichBlock: React.FC<NewsAnnouncementsRichProps> = 
             href="/posts"
             className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-accent text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-base hover:shadow-lg hover:scale-105 transition-all duration-300"
           >
-            <span>{getTranslation("viewAllNews", locale)}</span>
+            <span>{t("viewAllNews")}</span>
             <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/20 flex items-center justify-center">
               {isRtl ? (
                 <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />

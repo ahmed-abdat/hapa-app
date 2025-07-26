@@ -10,7 +10,7 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
-import { CustomFormSubmissions } from './collections/CustomFormSubmissions'
+import { MediaContentSubmissions } from './collections/MediaContentSubmissions'
 import { Media } from './collections/Media'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
@@ -148,10 +148,10 @@ export default buildConfig({
       
       // Enhanced error handling - supported by standard PostgreSQL adapter
       maxUses: 7500, // Rotate connections to prevent memory leaks
-      testOnBorrow: true, // Validate connections before use
+      // testOnBorrow: true, // Not supported by all pool configs
     },
   }),
-  collections: [Posts, Media, Categories, CustomFormSubmissions, Users],
+  collections: [Posts, Media, Categories, MediaContentSubmissions, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [],
   plugins: [

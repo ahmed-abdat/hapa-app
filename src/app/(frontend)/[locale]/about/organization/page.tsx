@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getLocaleDirection, type Locale } from '@/utilities/locale'
-import { getTranslation } from '@/utilities/translations'
+import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import BackToTopButton from './BackToTopButton'
 
@@ -19,20 +19,21 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
   }
   
   const direction = getLocaleDirection(locale as Locale)
+  const t = await getTranslations()
   
   const organizationData = {
     fr: {
-      title: getTranslation('organization', 'fr'),
-      subtitle: getTranslation('organizationStructure', 'fr'),
-      intro: getTranslation('legalFrameworkTitle', 'fr'),
+      title: t('organization'),
+      subtitle: t('organizationStructure'),
+      intro: t('legalFrameworkTitle'),
       
       governingCouncil: {
-        title: getTranslation('councilAuthority', 'fr'),
+        title: t('councilAuthority'),
         description: "L'Autorité Supérieure est dirigée par un organe délibérant appelé le Conseil de l'Autorité Supérieure."
       },
       
       composition: {
-        title: getTranslation('councilComposition', 'fr'),
+        title: t('councilComposition'),
         description: "Le Conseil de l'Autorité Supérieure se compose de neuf (9) membres, nommés par décret du Président de la République selon la répartition suivante :",
         members: [
           {
@@ -54,7 +55,7 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
       },
       
       qualifications: {
-        title: getTranslation('requiredQualifications', 'fr'),
+        title: t('requiredQualifications'),
         description: "Les membres doivent répondre aux critères suivants :",
         criteria: [
           "Diplôme universitaire (Bac + 3 minimum) en communication ou domaine connexe",
@@ -65,44 +66,44 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
       },
       
       mandate: {
-        title: getTranslation('mandateDuration', 'fr'),
+        title: t('mandateDuration'),
         president: "Le Président : mandat de 4 ans, renouvelable une fois",
         members: "Les membres : mandat de 4 ans, non renouvelable",
         replacement: "En cas de remplacement, le nouveau membre termine le mandat de son prédécesseur"
       },
       
       oath: {
-        title: getTranslation('investmentOath', 'fr'),
+        title: t('investmentOath'),
         description: "Avant d'entrer en fonction, les membres prêtent serment devant la Cour Suprême :",
         text: "« Je jure devant Dieu Tout-Puissant d'accomplir ma mission en toute loyauté et de l'exercer avec détachement, impartialité et intégrité conformément à la constitution et aux lois de la République Islamique de Mauritanie, et de préserver le secret des délibérations même après la fin de mes fonctions. »"
       },
       
       functioning: {
-        title: getTranslation('councilFunctioning', 'fr'),
+        title: t('councilFunctioning'),
         meetings: "Réunions mensuelles ordinaires sur convocation du président ou des deux tiers des membres",
         quorum: "Quorum de 6 membres minimum pour délibérer",
         decisions: "Décisions à la majorité simple, voix prépondérante du président en cas d'égalité"
       },
       
       confidentiality: {
-        title: getTranslation('confidentialityEthics', 'fr'),
+        title: t('confidentialityEthics'),
         description: "Les membres sont tenus au secret professionnel pendant et après leur mandat concernant les faits, actes et informations dont ils ont eu connaissance dans l'exercice de leurs fonctions."
       },
       
-      backToTop: getTranslation('backToTop', 'fr')
+      backToTop: t('backToTop')
     },
     ar: {
-      title: getTranslation('organization', 'ar'),
-      subtitle: getTranslation('organizationStructure', 'ar'),
-      intro: getTranslation('legalFrameworkTitle', 'ar'),
+      title: t('organization'),
+      subtitle: t('organizationStructure'),
+      intro: t('legalFrameworkTitle'),
       
       governingCouncil: {
-        title: getTranslation('councilAuthority', 'ar'),
+        title: t('councilAuthority'),
         description: "يدير السلطة العليا جهاز للمداولة يدعى مجلس السلطة العليا."
       },
       
       composition: {
-        title: getTranslation('councilComposition', 'ar'),
+        title: t('councilComposition'),
         description: "يتكون مجلس السلطة العليا للصحافة والسمعيات البصرية من تسعة (9) أعضاء، يتم تعيينهم بمرسوم صادر عن رئيس الجمهورية على النحو التالي:",
         members: [
           {
@@ -124,7 +125,7 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
       },
       
       qualifications: {
-        title: getTranslation('requiredQualifications', 'ar'),
+        title: t('requiredQualifications'),
         description: "يتم اختيار رئيس وأعضاء السلطة العليا وفقًا للمعايير التالية:",
         criteria: [
           "الحصول على باكلوريا + 3 سنوات على الأقل في تخصص الإعلام أو إحدى التخصصات ذات الصلة",
@@ -135,31 +136,31 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
       },
       
       mandate: {
-        title: getTranslation('mandateDuration', 'ar'),
+        title: t('mandateDuration'),
         president: "الرئيس: فترة انتداب مدتها 4 سنوات قابلة للتجديد مرة واحدة",
         members: "الأعضاء: فترة انتداب مدتها 4 سنوات غير قابلة للتجديد",
         replacement: "يكمل الأعضاء المعينون في محل الأعضاء المنتهية عضويتهم فترة انتداب من يحلون محلهم"
       },
       
       oath: {
-        title: getTranslation('investmentOath', 'ar'),
+        title: t('investmentOath'),
         description: "يؤدي رئيس وأعضاء السلطة العليا، قبل توليهم مهامهم القسم التالي أمام المحكمة العليا:",
         text: "«أقسم بالله العلي العظيم أن أؤدي مهمتي بكل أمانة وأن أمارسها بكل تجرد وحياد ونزاهة وفق دستور وقوانين الجمهورية الإسلامية الموريتانية، وأن أحافظ على سرية المداولات حتى بعد انتهاء مهاميَ»"
       },
       
       functioning: {
-        title: getTranslation('councilFunctioning', 'ar'),
+        title: t('councilFunctioning'),
         meetings: "يجتمع مجلس السلطة العليا في دورة عادية كل شهر على الأقل بدعوة من رئيسه أو ثلثي أعضائه",
         quorum: "لا يمكنه التداول إلا بحضور ستة (6) من أعضائه على الأقل",
         decisions: "يتخذ القرارات بالأغلبية البسيطة للأعضاء الحاضرين ويكون صوت الرئيس مرجحا في حالة تعادل الأصوات"
       },
       
       confidentiality: {
-        title: getTranslation('confidentialityEthics', 'ar'),
+        title: t('confidentialityEthics'),
         description: "يلزم أعضاء السلطة العليا والأمين العام بالحفاظ على السرية المهنية بمناسبة مزاولة وظائفهم وبعد نهاية مأموريتهم فيما يخص الوقائع والأفعال والمعلومات التي اطلعوا عليها لدى السلطة العليا."
       },
       
-      backToTop: getTranslation('backToTop', 'ar')
+      backToTop: t('backToTop')
     }
   }
   
@@ -339,7 +340,7 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-primary">
-                      {getTranslation('professionalQualifications', locale as Locale)}
+                      {t('professionalQualifications')}
                     </h3>
                   </div>
                 </div>

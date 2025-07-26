@@ -5,7 +5,7 @@ import type { Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 import { formatAuthors } from '@/utilities/formatAuthors'
-import { t } from '@/utilities/translations'
+import { useTranslations } from 'next-intl'
 import { type Locale } from '@/utilities/locale'
 
 export const PostHero: React.FC<{
@@ -13,6 +13,7 @@ export const PostHero: React.FC<{
   locale: Locale
 }> = ({ post, locale }) => {
   const { categories, heroImage, populatedAuthors, publishedAt, title } = post
+  const t = useTranslations()
 
   const hasAuthors =
     populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
@@ -46,7 +47,7 @@ export const PostHero: React.FC<{
                 {categories.map((category) => {
                   if (typeof category === 'object' && category !== null) {
                     const { title: categoryTitle } = category
-                    const titleToUse = categoryTitle || t('untitledCategory', locale)
+                    const titleToUse = categoryTitle || t('untitledCategory')
 
                     return (
                       <span 
@@ -72,7 +73,7 @@ export const PostHero: React.FC<{
                   dateTime={publishedAt}
                   className="text-sm text-white/90 font-medium flex items-center gap-1"
                 >
-                  <span className="text-white/60">{t('datePublished', locale)}:</span>
+                  <span className="text-white/60">{t('datePublished')}:</span>
                   {formatDateTime(publishedAt)}
                 </time>
               </>
@@ -83,7 +84,7 @@ export const PostHero: React.FC<{
               <>
                 <div className="w-1 h-1 bg-white/40 rounded-full hidden md:block" />
                 <div className="flex items-center gap-1 text-sm">
-                  <span className="text-white/60">{t('author', locale)}:</span>
+                  <span className="text-white/60">{t('author')}:</span>
                   <span className="text-white/90 font-medium">
                     {formatAuthors(populatedAuthors)}
                   </span>

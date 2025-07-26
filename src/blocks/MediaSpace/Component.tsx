@@ -13,7 +13,7 @@ import {
   ArrowLeft,
   Building,
 } from "lucide-react";
-import { getTranslation, translations } from "@/utilities/translations";
+import { useTranslations } from "next-intl";
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
 
 type MediaSpaceProps = {
@@ -100,6 +100,7 @@ export const MediaSpaceBlock: React.FC<MediaSpaceProps> = ({
   const locale = (params?.locale as Locale) || "fr";
   const direction = getLocaleDirection(locale);
   const isRtl = direction === "rtl";
+  const t = useTranslations();
 
   return (
     <section
@@ -118,11 +119,11 @@ export const MediaSpaceBlock: React.FC<MediaSpaceProps> = ({
           <div className="flex items-center justify-center mb-6">
             <Building className="h-8 w-8 sm:h-10 sm:w-10 text-primary mr-3" />
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900">
-              {title || getTranslation("mediaSpace", locale)}
+              {title || t("mediaSpace")}
             </h2>
           </div>
           <p className="text-lg sm:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            {description || getTranslation("mediaSpaceDesc", locale)}
+            {description || t("mediaSpaceDesc")}
           </p>
           <div className="w-32 h-1.5 bg-gradient-to-r from-primary via-accent to-secondary mx-auto mt-8 rounded-full" />
         </motion.div>
@@ -164,10 +165,7 @@ export const MediaSpaceBlock: React.FC<MediaSpaceProps> = ({
                           {category.count}
                         </div>
                         <div className="text-sm text-gray-500 font-medium">
-                          {getTranslation(
-                            category.countKey as keyof typeof translations.fr,
-                            locale
-                          )}
+                          {t(category.countKey)}
                         </div>
                       </div>
                     </div>
@@ -175,23 +173,17 @@ export const MediaSpaceBlock: React.FC<MediaSpaceProps> = ({
                     {/* Content */}
                     <div className="flex-grow relative z-10">
                       <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4 group-hover:text-primary transition-colors duration-300 ease-out line-clamp-2">
-                        {getTranslation(
-                          category.titleKey as keyof typeof translations.fr,
-                          locale
-                        )}
+                        {t(category.titleKey)}
                       </h3>
                       <p className="text-gray-600 leading-relaxed text-sm sm:text-base line-clamp-3">
-                        {getTranslation(
-                          category.descKey as keyof typeof translations.fr,
-                          locale
-                        )}
+                        {t(category.descKey)}
                       </p>
                     </div>
 
                     {/* CTA */}
                     <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200/50 relative z-10">
                       <span className="text-primary font-semibold text-sm sm:text-base group-hover:text-accent transition-colors duration-300">
-                        {getTranslation("viewDirectory", locale)}
+                        {t("viewDirectory")}
                       </span>
                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:scale-[1.05] transition-all duration-300 ease-out">
                         {isRtl ? (
@@ -221,7 +213,7 @@ export const MediaSpaceBlock: React.FC<MediaSpaceProps> = ({
             className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-primary to-accent text-white rounded-2xl font-semibold text-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-out"
           >
             <Building className="h-5 w-5" />
-            {getTranslation("viewAllMedia", locale)}
+            {t("viewAllMedia")}
             {isRtl ? (
               <ArrowLeft className="h-5 w-5" />
             ) : (

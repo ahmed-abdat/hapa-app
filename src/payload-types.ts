@@ -70,7 +70,7 @@ export interface Config {
     posts: Post;
     media: Media;
     categories: Category;
-    'custom-form-submissions': CustomFormSubmission;
+    'media-content-submissions': MediaContentSubmission;
     users: User;
     redirects: Redirect;
     search: Search;
@@ -84,7 +84,7 @@ export interface Config {
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
-    'custom-form-submissions': CustomFormSubmissionsSelect<false> | CustomFormSubmissionsSelect<true>;
+    'media-content-submissions': MediaContentSubmissionsSelect<false> | MediaContentSubmissionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
@@ -261,57 +261,59 @@ export interface User {
   password?: string | null;
 }
 /**
- * Toutes les soumissions des formulaires personnalisés. Cliquez sur une soumission pour voir les détails complets.
+ * Manage media content reports and complaints submitted through the website forms
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "custom-form-submissions".
+ * via the `definition` "media-content-submissions".
  */
-export interface CustomFormSubmission {
+export interface MediaContentSubmission {
   id: number;
-  /**
-   * Type de formulaire soumis par l'utilisateur
-   */
-  formType: 'contact' | 'complaint' | 'document-request';
-  /**
-   * Toutes les données soumises par l'utilisateur au format JSON
-   */
-  submissionData:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  /**
-   * Statut de traitement de la soumission
-   */
-  status: 'new' | 'reviewed' | 'in-progress' | 'responded' | 'closed';
-  /**
-   * Langue utilisée pour soumettre le formulaire
-   */
+  title?: string | null;
+  formType: 'report' | 'complaint';
+  submittedAt: string;
   locale: 'fr' | 'ar';
+  submissionStatus: 'pending' | 'reviewing' | 'resolved' | 'dismissed';
+  priority?: ('low' | 'medium' | 'high' | 'urgent') | null;
+  complainantInfo?: {
+    fullName?: string | null;
+    emailAddress?: string | null;
+    phoneNumber?: string | null;
+    whatsappNumber?: string | null;
+    profession?: string | null;
+    relationshipToContent?: string | null;
+  };
+  contentInfo?: {
+    mediaType?: string | null;
+    mediaTypeOther?: string | null;
+    programName?: string | null;
+    broadcastDateTime?: string | null;
+    linkScreenshot?: string | null;
+  };
+  reasons?:
+    | {
+        reason?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  reasonOther?: string | null;
+  description?: string | null;
+  attachmentTypes?:
+    | {
+        type?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  attachmentOther?: string | null;
   /**
-   * Informations sur le navigateur de l'utilisateur
-   */
-  userAgent?: string | null;
-  /**
-   * Adresse IP de l'utilisateur (pour la sécurité)
-   */
-  ipAddress?: string | null;
-  /**
-   * Notes internes sur cette soumission (actions prises, réponses envoyées, etc.)
+   * Internal notes for tracking and follow-up
    */
   adminNotes?: string | null;
-  /**
-   * Administrateur qui a traité cette soumission
-   */
-  reviewedBy?: (number | null) | User;
-  /**
-   * Date et heure de traitement de la soumission
-   */
-  reviewedAt?: string | null;
+  resolution?: {
+    resolvedAt?: string | null;
+    resolvedBy?: string | null;
+    resolutionNotes?: string | null;
+    actionTaken?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -479,8 +481,8 @@ export interface PayloadLockedDocument {
         value: number | Category;
       } | null)
     | ({
-        relationTo: 'custom-form-submissions';
-        value: number | CustomFormSubmission;
+        relationTo: 'media-content-submissions';
+        value: number | MediaContentSubmission;
       } | null)
     | ({
         relationTo: 'users';
@@ -613,18 +615,58 @@ export interface CategoriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "custom-form-submissions_select".
+ * via the `definition` "media-content-submissions_select".
  */
-export interface CustomFormSubmissionsSelect<T extends boolean = true> {
+export interface MediaContentSubmissionsSelect<T extends boolean = true> {
+  title?: T;
   formType?: T;
-  submissionData?: T;
-  status?: T;
+  submittedAt?: T;
   locale?: T;
-  userAgent?: T;
-  ipAddress?: T;
+  submissionStatus?: T;
+  priority?: T;
+  complainantInfo?:
+    | T
+    | {
+        fullName?: T;
+        emailAddress?: T;
+        phoneNumber?: T;
+        whatsappNumber?: T;
+        profession?: T;
+        relationshipToContent?: T;
+      };
+  contentInfo?:
+    | T
+    | {
+        mediaType?: T;
+        mediaTypeOther?: T;
+        programName?: T;
+        broadcastDateTime?: T;
+        linkScreenshot?: T;
+      };
+  reasons?:
+    | T
+    | {
+        reason?: T;
+        id?: T;
+      };
+  reasonOther?: T;
+  description?: T;
+  attachmentTypes?:
+    | T
+    | {
+        type?: T;
+        id?: T;
+      };
+  attachmentOther?: T;
   adminNotes?: T;
-  reviewedBy?: T;
-  reviewedAt?: T;
+  resolution?:
+    | T
+    | {
+        resolvedAt?: T;
+        resolvedBy?: T;
+        resolutionNotes?: T;
+        actionTaken?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

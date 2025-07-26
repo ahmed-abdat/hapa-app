@@ -1,37 +1,36 @@
 'use client'
 
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import React from 'react'
-import { usePathname } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { PhoneIcon, MailIcon, MapPinIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
-// import { CMSLink } from '@/components/Link'
-// import { getTranslation } from '@/utilities/translations'
-import { isValidLocale, defaultLocale } from '@/utilities/locale'
+import { type Locale } from '@/utilities/locale'
 
 interface FooterProps {
   footerData?: unknown // Optional footer data for compatibility (not used)
 }
 
 export function Footer({ footerData }: FooterProps = {}) {
-  const pathname = usePathname()
-  const currentLocale = pathname.split('/')[1]
-  const validLocale = isValidLocale(currentLocale) ? currentLocale : defaultLocale
+  const params = useParams()
+  const locale = (params?.locale as Locale) || 'fr'
+  const t = useTranslations()
 
   // Static navigation items instead of CMS-managed ones
   const defaultNavItems = [
     {
-      href: `/${validLocale}/about`,
-      label: validLocale === 'ar' ? 'حول الهيئة' : 'À propos'
+      href: `/${locale}/about`,
+      label: t('about')
     },
     {
-      href: `/${validLocale}/actualites`,
-      label: validLocale === 'ar' ? 'الأخبار' : 'Actualités'
+      href: `/${locale}/actualites`,
+      label: t('news')
     },
     {
-      href: `/${validLocale}/contact`,
-      label: validLocale === 'ar' ? 'اتصل بنا' : 'Contact'
+      href: `/${locale}/contact`,
+      label: t('contact')
     }
   ]
 
@@ -42,7 +41,7 @@ export function Footer({ footerData }: FooterProps = {}) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Organization Info */}
           <div className="lg:col-span-2">
-            <Link className="flex items-center gap-x-4 mb-6 group" href={`/${validLocale}`}>
+            <Link className="flex items-center gap-x-4 mb-6 group" href={`/${locale}`}>
               {/* HAPA Official Logo */}
               <div className="relative">
                 <div className="w-16 h-16 bg-white/10 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow p-2">
@@ -58,39 +57,24 @@ export function Footer({ footerData }: FooterProps = {}) {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-white mb-1">
-                  {validLocale === 'ar' 
-                    ? 'الهيئة العليا للصحافة والإعلام' 
-                    : 'HAPA'
-                  }
+                  {locale === 'ar' ? t('hapaFullName') : 'HAPA'}
                 </h3>
                 <p className="text-secondary text-sm font-medium">
-                  {validLocale === 'ar' 
-                    ? 'الهيئة العليا للصحافة والإعلام' 
-                    : 'Haute Autorité de la Presse et de l\'Audiovisuel'
-                  }
+                  {t('hapaFullName')}
                 </p>
                 <p className="text-white/80 text-xs mt-1">
-                  {validLocale === 'ar' 
-                    ? 'الجمهورية الإسلامية الموريتانية' 
-                    : 'République Islamique de Mauritanie'
-                  }
+                  {t('islamicRepublicMauritania')}
                 </p>
               </div>
             </Link>
             <p className="text-white/90 text-sm leading-relaxed mb-6">
-              {validLocale === 'ar' 
-                ? 'الهيئة المستقلة المكلفة بتنظيم ومراقبة وسائل الإعلام في الجمهورية الإسلامية الموريتانية.'
-                : 'L\'autorité indépendante chargée de la régulation et du contrôle des médias en République Islamique de Mauritanie.'
-              }
+              {t('footerAboutHapa')}
             </p>
             <div className="flex flex-col gap-3 text-sm">
               <div className="flex items-center gap-x-3 text-white/90">
                 <MapPinIcon className="w-5 h-5 text-secondary" />
                 <span>
-                  {validLocale === 'ar' 
-                    ? 'نواكشوط، موريتانيا' 
-                    : 'Nouakchott, Mauritanie'
-                  }
+                  {t('nouakchottMauritania')}
                 </span>
               </div>
               <div className="flex items-center gap-x-3 text-white/90">
@@ -107,7 +91,7 @@ export function Footer({ footerData }: FooterProps = {}) {
           {/* Quick Links */}
           <div>
             <h4 className="text-lg font-semibold text-secondary mb-4 border-b-2 border-secondary/30 pb-2">
-              {validLocale === 'ar' ? 'روابط سريعة' : 'Liens rapides'}
+              {t('quickLinks')}
             </h4>
             <nav className="flex flex-col gap-2">
               {defaultNavItems.map((item, i) => (
@@ -125,32 +109,32 @@ export function Footer({ footerData }: FooterProps = {}) {
           {/* Services */}
           <div>
             <h4 className="text-lg font-semibold text-secondary mb-4 border-b-2 border-secondary/30 pb-2">
-              {validLocale === 'ar' ? 'الخدمات' : 'Services'}
+              {t('services')}
             </h4>
             <nav className="flex flex-col gap-2 text-sm">
               <Link 
-                href={`/${validLocale}/services/complaints`}
+                href={`/${locale}/forms/media-content-report`}
                 className="text-white/80 hover:text-secondary transition-colors duration-200 hover:translate-x-1 rtl:hover:-translate-x-1"
               >
-                {validLocale === 'ar' ? 'الشكاوى والمطالبات' : 'Plaintes et réclamations'}
+                {locale === 'fr' ? 'Signalement de contenu' : 'تبليغ عن المحتوى'}
               </Link>
               <Link 
-                href={`/${validLocale}/services/authorization`}
+                href={`/${locale}/forms/media-content-complaint`}
                 className="text-white/80 hover:text-secondary transition-colors duration-200 hover:translate-x-1 rtl:hover:-translate-x-1"
               >
-                {validLocale === 'ar' ? 'طلبات الترخيص' : 'Demandes d\'autorisation'}
+                {locale === 'fr' ? 'Plainte officielle' : 'شكوى رسمية'}
               </Link>
               <Link 
-                href={`/${validLocale}/decisions`}
+                href={`/${locale}/contact`}
                 className="text-white/80 hover:text-secondary transition-colors duration-200 hover:translate-x-1 rtl:hover:-translate-x-1"
               >
-                {validLocale === 'ar' ? 'القرارات واللوائح' : 'Décisions et règlements'}
+                {t('contact')}
               </Link>
               <Link 
-                href={`/${validLocale}/statistics`}
+                href={`/${locale}/publications/decisions`}
                 className="text-white/80 hover:text-secondary transition-colors duration-200 hover:translate-x-1 rtl:hover:-translate-x-1"
               >
-                {validLocale === 'ar' ? 'الإحصائيات القطاعية' : 'Statistiques sectorielles'}
+                {locale === 'fr' ? 'Décisions et communiqués' : 'قرارات وبيانات'}
               </Link>
             </nav>
           </div>
@@ -163,33 +147,33 @@ export function Footer({ footerData }: FooterProps = {}) {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <p className="text-white/80 text-sm">
-                © 2024 HAPA - {validLocale === 'ar' ? 'جميع الحقوق محفوظة' : 'Tous droits réservés'}
+                © 2024 HAPA - {t('allRightsReserved')}
               </p>
               <div className="flex items-center gap-x-2">
                 <div className="w-2 h-2 bg-secondary rounded-full"></div>
                 <span className="text-white/60 text-xs">
-                  {validLocale === 'ar' ? 'الموقع الرسمي' : 'Site officiel'}
+                  {t('officialWebsite')}
                 </span>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm text-white/80">
               <Link 
-                href={`/${validLocale}/legal`}
+                href={`/${locale}/legal`}
                 className="hover:text-secondary transition-colors duration-200"
               >
-                {validLocale === 'ar' ? 'الإشعارات القانونية' : 'Mentions légales'}
+                {t('legalNotices')}
               </Link>
               <Link 
-                href={`/${validLocale}/privacy`}
+                href={`/${locale}/privacy`}
                 className="hover:text-secondary transition-colors duration-200"
               >
-                {validLocale === 'ar' ? 'سياسة الخصوصية' : 'Politique de confidentialité'}
+                {t('privacyPolicy')}
               </Link>
               <Link 
-                href={`/${validLocale}/accessibility`}
+                href={`/${locale}/accessibility`}
                 className="hover:text-secondary transition-colors duration-200"
               >
-                {validLocale === 'ar' ? 'إمكانية الوصول' : 'Accessibilité'}
+                {t('accessibility')}
               </Link>
             </div>
           </div>

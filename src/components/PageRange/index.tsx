@@ -1,6 +1,6 @@
 import React from "react";
+import { useTranslations } from 'next-intl'
 import { type Locale } from '@/utilities/locale'
-import { t } from '@/utilities/translations'
 
 export const PageRange: React.FC<{
   className?: string;
@@ -23,6 +23,7 @@ export const PageRange: React.FC<{
     totalDocs,
     locale = 'fr',
   } = props;
+  const t = useTranslations();
 
   let indexStart = (currentPage ? currentPage - 1 : 1) * (limit || 1) + 1;
   if (totalDocs && indexStart > totalDocs) indexStart = 0;
@@ -38,16 +39,16 @@ export const PageRange: React.FC<{
     
     switch (collection) {
       case 'posts':
-        return isPlural ? t('posts', locale) : t('post', locale);
+        return isPlural ? t('posts') : t('post');
       default:
-        return isPlural ? t('elements', locale) : t('element', locale);
+        return isPlural ? t('elements') : t('element');
     }
   };
 
   if (typeof totalDocs === "undefined" || totalDocs === 0) {
     return (
       <div className={[className, "text-sm text-muted-foreground"].filter(Boolean).join(" ")}>
-        {t('noResults', locale)}
+        {t('noResults')}
       </div>
     );
   }
@@ -59,7 +60,7 @@ export const PageRange: React.FC<{
     
     return (
       <div className={[className, "text-sm text-muted-foreground"].filter(Boolean).join(" ")}>
-        {t('showing', locale)} {indexStart}{indexStart > 0 ? ` - ${indexEnd}` : ""} {t('of', locale)} {totalDocs} {label}
+        {t('showing')} {indexStart}{indexStart > 0 ? ` - ${indexEnd}` : ""} {t('of')} {totalDocs} {label}
       </div>
     );
   }
