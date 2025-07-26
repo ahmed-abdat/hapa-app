@@ -4,6 +4,7 @@ import React from "react";
 import { useParams } from "next/navigation";
 import { motion, Variants } from "framer-motion";
 import { Link } from "@/i18n/navigation";
+import Image from "next/image";
 import {
   Calendar,
   ArrowRight,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 import { getTranslation } from "@/utilities/translations";
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
+import { getMediaUrl } from "@/utilities/getMediaUrl";
 import type { Post } from "@/payload-types";
 
 type NewsAnnouncementsProps = {
@@ -22,39 +24,6 @@ type NewsAnnouncementsProps = {
   maxPosts?: number;
 };
 
-// Mock data for development - replace with actual posts from CMS
-const mockPosts: Partial<Post>[] = [
-  {
-    id: 1,
-    title: "Nouvelles réglementations pour les médias audiovisuels",
-    meta: {
-      description: "La HAPA annonce de nouvelles directives pour améliorer la qualité du contenu audiovisuel en Mauritanie."
-    },
-    publishedAt: "2025-01-20T10:00:00.000Z",
-    slug: "nouvelles-reglementations-medias-audiovisuels",
-    _status: "published"
-  },
-  {
-    id: 2, 
-    title: "Formation professionnelle pour les journalistes",
-    meta: {
-      description: "Programme de formation continue pour renforcer les compétences des professionnels des médias."
-    },
-    publishedAt: "2025-01-18T14:30:00.000Z",
-    slug: "formation-professionnelle-journalistes",
-    _status: "published"
-  },
-  {
-    id: 3,
-    title: "Rapport annuel sur la liberté de la presse",
-    meta: {
-      description: "Publication du rapport annuel 2024 sur l'état de la liberté de la presse en Mauritanie."
-    },
-    publishedAt: "2025-01-15T09:00:00.000Z",
-    slug: "rapport-annuel-liberte-presse-2024",
-    _status: "published"
-  }
-];
 
 // Removed unused urgentAnnouncements data
 
@@ -93,12 +62,13 @@ const formatDate = (dateString: string, locale: Locale): string => {
   return date.toLocaleDateString(localeCode, options);
 };
 
+
 // Removed unused getTimeAgo function
 
 export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
   title,
   description,
-  posts = mockPosts,
+  posts = [],
   showFeatured: _showFeatured = true,
   maxPosts = 6,
 }) => {
@@ -136,44 +106,60 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
 
 
         {/* News Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
-        >
-          {posts.slice(0, maxPosts).map((post, index) => (
+        {posts && posts.length > 0 ? (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+          >
+            {posts.slice(0, maxPosts).map((post, index) => (
             <motion.div
               key={post.id || index}
               variants={itemVariants}
-              className="group"
+              className="group h-full"
             >
-              <Link href={`/posts/${post.slug}`} className="block">
-                <div className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-100 hover:border-primary/30">
-                  {/* Image placeholder */}
-                  <div className="h-32 sm:h-40 bg-gradient-to-br from-primary/10 to-accent/20 flex items-center justify-center">
-                    <FileText className="h-8 w-8 text-primary/40" />
+              <Link href={`/posts/${post.slug}`} className="block h-full">
+                <div className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-100 hover:border-primary/30 h-full flex flex-col">
+                  {/* Image section - consistent height */}
+                  <div className="h-40 sm:h-48 bg-gradient-to-br from-primary/10 to-accent/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+                    {post.heroImage && typeof post.heroImage === 'object' && 'url' in post.heroImage && post.heroImage.url ? (
+                      <Image 
+                        src={getMediaUrl(post.heroImage.url, post.heroImage.updatedAt)} 
+                        alt={post.heroImage.alt || (typeof post.title === 'object' ? (post.title[locale] || post.title.fr) : post.title)}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover"
+                        loading="lazy"
+                        placeholder="blur"
+                        blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAEXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAVlpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KTMInWQAAAVBJREFUWAnt1rEKgkAUhmHPU9B7OLWFYw"
+                      />
+                    ) : (
+                      <FileText className="h-10 w-10 text-primary/40" />
+                    )}
                   </div>
                   
-                  {/* Content */}
-                  <div className="p-4 sm:p-6">
-                    <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                  {/* Content section - flex grow to fill remaining space */}
+                  <div className="p-4 sm:p-6 flex flex-col flex-grow">
+                    <div className="flex items-center gap-2 text-xs text-gray-500 mb-3 flex-shrink-0">
                       <Calendar className="h-3 w-3" />
                       <span>{post.publishedAt ? formatDate(post.publishedAt, locale) : ''}</span>
                     </div>
                     
-                    <h3 className="font-bold text-lg sm:text-xl text-gray-900 mb-3 group-hover:text-primary transition-colors duration-300 line-clamp-2">
-                      {typeof post.title === 'object' ? post.title[locale] : post.title}
+                    <h3 className="font-bold text-lg sm:text-xl text-gray-900 mb-3 group-hover:text-primary transition-colors duration-300 line-clamp-2 flex-shrink-0">
+                      {typeof post.title === 'object' ? post.title[locale] || post.title.fr : post.title}
                     </h3>
                     
-                    <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-4">
-                      {post.meta?.description && typeof post.meta.description === 'object' 
-                        ? post.meta.description[locale]
-                        : post.meta?.description}
-                    </p>
+                    {((post.meta?.description && typeof post.meta.description === 'object' && (post.meta.description[locale] || post.meta.description.fr)) || (typeof post.meta?.description === 'string' && post.meta.description)) && (
+                      <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-4 flex-grow">
+                        {post.meta?.description && typeof post.meta.description === 'object' 
+                          ? post.meta.description[locale] || post.meta.description.fr
+                          : post.meta?.description}
+                      </p>
+                    )}
                     
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between flex-shrink-0 mt-auto">
                       <span className="text-primary font-medium text-sm">
                         {getTranslation("readMore", locale)}
                       </span>
@@ -189,8 +175,16 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
                 </div>
               </Link>
             </motion.div>
-          ))}
-        </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          /* No posts available fallback */
+          <div className="text-center py-8">
+            <p className="text-gray-500 text-lg">
+              {locale === 'ar' ? 'لا توجد أخبار متاحة حالياً' : 'Aucune actualité disponible pour le moment'}
+            </p>
+          </div>
+        )}
 
         {/* View All Button */}
         <motion.div

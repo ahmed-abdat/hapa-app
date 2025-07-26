@@ -22,12 +22,12 @@ export default async function HomePage({ params: paramsPromise }: Args) {
 
   const payload = await getPayload({ config: configPromise })
 
-  // Get latest posts for the news section
+  // Get latest 6 posts for the news section (2 rows of 3 on desktop)
   let latestPosts: Post[] = []
   try {
     const postsResult = await payload.find({
       collection: 'posts',
-      depth: 1,
+      depth: 2,
       limit: 6,
       sort: '-publishedAt',
       locale,
@@ -55,6 +55,7 @@ export default async function HomePage({ params: paramsPromise }: Args) {
       blockType: 'newsAnnouncements' as const,
       layoutVariant: 'simple',
       posts: latestPosts,
+      maxPosts: 6,
       title: locale === 'ar' ? 'آخر الأخبار والإعلانات' : 'Actualités et Annonces',
     },
     {
