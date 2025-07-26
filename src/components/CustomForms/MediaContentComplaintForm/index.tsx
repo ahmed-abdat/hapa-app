@@ -114,14 +114,14 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
       title: t('mediaContentComplaintTitle'),
       description: t('mediaContentComplaintDesc'),
       submitButtonText: t('submitComplaint'),
-      successMessage: t('submissionSuccess'),
+      successMessage: t('submissionSuccess', { type: t('complaintForm') }),
       errorMessage: t('submissionError'),
     },
     ar: {
       title: t('mediaContentComplaintTitle'),
       description: t('mediaContentComplaintDesc'),
       submitButtonText: t('submitComplaint'),
-      successMessage: t('submissionSuccess'),
+      successMessage: t('submissionSuccess', { type: t('complaintForm') }),
       errorMessage: t('submissionError'),
     },
   }

@@ -254,10 +254,10 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
                       <Icon className="h-8 w-8 text-white" />
                     </div>
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                      {t(value.titleKey)}
+                      {t(value.titleKey as any)}
                     </h4>
                     <p className="text-gray-600 text-sm leading-relaxed">
-                      {t(value.descKey)}
+                      {t(value.descKey as any)}
                     </p>
                   </div>
                 </motion.div>
@@ -303,7 +303,7 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
                       {achievement.number}
                     </div>
                     <div className="text-white/90 text-sm sm:text-base">
-                      {t(achievement.labelKey)}
+                      {t(achievement.labelKey as any)}
                     </div>
                   </motion.div>
                 );

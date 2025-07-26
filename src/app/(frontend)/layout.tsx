@@ -80,46 +80,4 @@ export default async function RootLayout({
   );
 }
 
-export const metadata: Metadata = {
-  metadataBase: new URL(getServerSideURL()),
-  title: {
-    default: "HAPA - Haute Autorité de la Presse et de l'Audiovisuel",
-    template: "%s | HAPA"
-  },
-  description: "Site officiel de la Haute Autorité de la Presse et de l'Audiovisuel de Mauritanie. Régulation et supervision des médias mauritaniens.",
-  keywords: ["HAPA", "Mauritanie", "Presse", "Audiovisuel", "Média", "Régulation"],
-  authors: [{ name: "HAPA", url: "https://hapa.mr" }],
-  creator: "HAPA",
-  publisher: "HAPA",
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  openGraph: mergeOpenGraph({
-    title: "HAPA - Haute Autorité de la Presse et de l'Audiovisuel",
-    description: "Site officiel de la Haute Autorité de la Presse et de l'Audiovisuel de Mauritanie",
-    siteName: "HAPA",
-    locale: "fr_MR",
-    type: "website",
-  }),
-  twitter: {
-    card: "summary_large_image",
-    title: "HAPA - Haute Autorité de la Presse et de l'Audiovisuel",
-    description: "Site officiel de la Haute Autorité de la Presse et de l'Audiovisuel de Mauritanie",
-    creator: "@HAPA_MR",
-  },
-  alternates: {
-    canonical: getServerSideURL(),
-    languages: {
-      'fr': `${getServerSideURL()}/fr`,
-      'ar': `${getServerSideURL()}/ar`,
-    },
-  },
-};
+// Metadata is now handled by locale-specific layout at /[locale]/layout.tsx

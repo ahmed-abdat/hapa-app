@@ -165,7 +165,7 @@ export const MediaSpaceBlock: React.FC<MediaSpaceProps> = ({
                           {category.count}
                         </div>
                         <div className="text-sm text-gray-500 font-medium">
-                          {t(category.countKey)}
+                          {t(category.countKey as any)}
                         </div>
                       </div>
                     </div>
@@ -173,10 +173,10 @@ export const MediaSpaceBlock: React.FC<MediaSpaceProps> = ({
                     {/* Content */}
                     <div className="flex-grow relative z-10">
                       <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4 group-hover:text-primary transition-colors duration-300 ease-out line-clamp-2">
-                        {t(category.titleKey)}
+                        {t(category.titleKey as any)}
                       </h3>
                       <p className="text-gray-600 leading-relaxed text-sm sm:text-base line-clamp-3">
-                        {t(category.descKey)}
+                        {t(category.descKey as any)}
                       </p>
                     </div>
 

@@ -58,6 +58,18 @@ export default buildConfig({
       },
       // Load custom CSS styles
       providers: ['@/components/AdminProvider/index.tsx'],
+      // Custom navigation links
+      afterNavLinks: ['@/components/admin/MediaSubmissionsNavLink/index.tsx'],
+      // Custom admin views
+      views: {
+        'media-submissions': {
+          Component: '@/components/admin/MediaSubmissionsDashboard/PayloadView.tsx',
+          path: '/media-submissions',
+          meta: {
+            title: 'Soumissions Médiatiques - HAPA Admin',
+          },
+        },
+      },
     },
     importMap: {
       baseDir: path.resolve(dirname),

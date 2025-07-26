@@ -21,10 +21,12 @@ import { ForceLocaleMessage as ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { default as default_f29f68a77f206966bf4b9f0b29ef1b8d } from '@/components/AdminLogo/index.tsx'
+import { default as default_72eb201fc2d392d6c14f43c2a06897d8 } from '@/components/admin/MediaSubmissionsNavLink/index.tsx'
 import { default as default_bb163149bb2f5ec0480c98bcc5e9bc47 } from '@/components/BeforeDashboard/index.tsx'
 import { default as default_2b8a0745141004fb388d207202b9bc59 } from '@/components/BeforeLogin/index.tsx'
 import { default as default_d358d65a9cea1b8d5f3eeb59f16692e3 } from '@/components/AdminProvider/index.tsx'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
+import { default as default_21245ea77e9e99a8375b265cddbecf60 } from '@/components/admin/MediaSubmissionsDashboard/PayloadView.tsx'
 
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -50,8 +52,10 @@ export const importMap = {
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@/components/AdminLogo/index.tsx#default": default_f29f68a77f206966bf4b9f0b29ef1b8d,
+  "@/components/admin/MediaSubmissionsNavLink/index.tsx#default": default_72eb201fc2d392d6c14f43c2a06897d8,
   "@/components/BeforeDashboard/index.tsx#default": default_bb163149bb2f5ec0480c98bcc5e9bc47,
   "@/components/BeforeLogin/index.tsx#default": default_2b8a0745141004fb388d207202b9bc59,
   "@/components/AdminProvider/index.tsx#default": default_d358d65a9cea1b8d5f3eeb59f16692e3,
-  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
+  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
+  "@/components/admin/MediaSubmissionsDashboard/PayloadView.tsx#default": default_21245ea77e9e99a8375b265cddbecf60
 }

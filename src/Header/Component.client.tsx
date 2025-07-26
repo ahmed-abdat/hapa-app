@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from 'next-intl';
 
 import { ModernHeader } from "@/components/navigation/modern-header";
 import { ModernMobileNav } from "@/components/navigation/modern-mobile-nav";
@@ -21,6 +22,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   const [theme, setTheme] = useState<string | null>(null);
   const { headerTheme, setHeaderTheme } = useHeaderTheme();
   const pathname = usePathname();
+  const t = useTranslations();
 
   // Extract current locale from pathname
   const currentLocale = pathname.split("/")[1];
@@ -68,9 +70,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
                   HAPA
                 </h1>
                 <p className="hidden md:block text-sm lg:text-sm text-gray-600 font-medium">
-                  {validLocale === "ar"
-                    ? "الهيئة العليا للصحافة والإعلام"
-                    : "Haute Autorité de la Presse et de l'Audiovisuel"}
+                  {t('organizationName')}
                 </p>
 
               </div>
@@ -91,7 +91,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
               <Link href={`/${validLocale}/search`}>
                 <Search className="w-5 h-5" />
                 <span className="sr-only">
-                  {validLocale === "ar" ? "البحث" : "Rechercher"}
+                  {t('searchButton')}
                 </span>
               </Link>
             </Button>
