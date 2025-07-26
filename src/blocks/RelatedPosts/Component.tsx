@@ -7,7 +7,7 @@ import type { Post } from '@/payload-types'
 import { Card } from '../../components/Card'
 import { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 import { type Locale } from '@/utilities/locale'
-import { getTranslation } from '@/utilities/translations'
+import { getTranslations } from 'next-intl/server'
 
 export type RelatedPostsProps = {
   className?: string
@@ -16,10 +16,12 @@ export type RelatedPostsProps = {
   locale: Locale
 }
 
-export const RelatedPosts: React.FC<RelatedPostsProps> = (props) => {
+export const RelatedPosts: React.FC<RelatedPostsProps> = async (props) => {
   const { className, docs, introContent, locale } = props
 
   if (!docs || docs.length === 0) return null
+  
+  const t = await getTranslations()
 
   return (
     <section className={clsx('w-full', className)}>
@@ -27,10 +29,10 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = (props) => {
         {/* Section Header */}
         <div className="mb-8 text-center">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3">
-            {getTranslation('relatedPosts', locale)}
+            {t('relatedPosts')}
           </h2>
           <p className="text-muted-foreground text-sm sm:text-base lg:text-lg max-w-2xl mx-auto">
-            {getTranslation('relatedPostsDesc', locale)}
+            {t('relatedPostsDesc')}
           </p>
         </div>
 

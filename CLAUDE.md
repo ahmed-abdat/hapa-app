@@ -292,7 +292,7 @@ const client = new Client({
 ```
 
 ## Commit Guidelines
-- Never mention "claude code" in commit messages
+- **Commit Message Rule**: Never mention "claude code" in commit messages
 - Test bilingual functionality before committing
 - Run `pnpm generate:types` after schema changes
 

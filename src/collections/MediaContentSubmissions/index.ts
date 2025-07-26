@@ -555,25 +555,6 @@ export const MediaContentSubmissions: CollectionConfig = {
       ],
     },
 
-    // Raw submission data (for reference)
-    {
-      name: 'rawSubmissionData',
-      type: 'json',
-      label: {
-        en: 'Raw Submission Data',
-        fr: 'Données Brutes de Soumission',
-        ar: 'البيانات الخام للإرسال',
-      },
-      admin: {
-        readOnly: true,
-        position: 'sidebar',
-        description: {
-          en: 'Complete form submission data for technical reference',
-          fr: 'Données complètes de soumission du formulaire pour référence technique',
-          ar: 'البيانات الكاملة لإرسال النموذج للمرجع التقني',
-        },
-      },
-    },
   ],
   hooks: {
     beforeChange: [
@@ -585,10 +566,10 @@ export const MediaContentSubmissions: CollectionConfig = {
           }
           
           // Auto-set priority based on reasons
-          if (data.rawSubmissionData?.reasons) {
-            const urgentReasons = ['hateSpeech', 'misinformation', 'fakeNews']
-            const hasUrgentReason = data.rawSubmissionData.reasons.some((reason: string) => 
-              urgentReasons.includes(reason)
+          if (data.reasons && Array.isArray(data.reasons)) {
+            const urgentReasons = ['Discours de haine / Incitation à la violence', 'Désinformation / Informations mensongères', 'Désinformation / Fake news']
+            const hasUrgentReason = data.reasons.some((reasonObj: any) => 
+              urgentReasons.includes(reasonObj.reason)
             )
             if (hasUrgentReason) {
               data.priority = 'high'

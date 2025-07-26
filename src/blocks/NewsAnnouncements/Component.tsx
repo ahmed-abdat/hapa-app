@@ -11,10 +11,27 @@ import {
   ArrowLeft,
   FileText
 } from "lucide-react";
-import { getTranslation } from "@/utilities/translations";
+import { useTranslations } from 'next-intl';
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
 import { getMediaUrl } from "@/utilities/getMediaUrl";
 import type { Post } from "@/payload-types";
+
+// Helper function to handle both localized and non-localized titles
+const getLocalizedTitle = (title: string | { fr: string; ar?: string }, locale: Locale): string => {
+  if (typeof title === 'string') {
+    return title;
+  }
+  return title[locale] || title.fr || '';
+};
+
+// Helper function to handle both localized and non-localized descriptions
+const getLocalizedDescription = (description: string | { fr: string; ar?: string } | null | undefined, locale: Locale): string => {
+  if (!description) return '';
+  if (typeof description === 'string') {
+    return description;
+  }
+  return description[locale] || description.fr || '';
+};
 
 type NewsAnnouncementsProps = {
   title?: string;
@@ -76,6 +93,7 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
   const locale = (params?.locale as Locale) || "fr";
   const direction = getLocaleDirection(locale);
   const isRtl = direction === "rtl";
+  const t = useTranslations();
 
   // Remove unused variables
   // const featuredPost = posts[0];
@@ -96,10 +114,10 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
           className="text-center mb-8 sm:mb-12 md:mb-16"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6">
-            {title || getTranslation("newsAnnouncements", locale)}
+            {title || t("newsAnnouncements")}
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            {description || getTranslation("newsAnnouncementsDesc", locale)}
+            {description || t("newsAnnouncementsDesc")}
           </p>
           <div className="w-20 sm:w-24 h-1 sm:h-1.5 bg-gradient-to-r from-primary via-accent to-secondary mx-auto mt-6 sm:mt-8 rounded-full" />
         </motion.div>
@@ -127,7 +145,7 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
                     {post.heroImage && typeof post.heroImage === 'object' && 'url' in post.heroImage && post.heroImage.url ? (
                       <Image 
                         src={getMediaUrl(post.heroImage.url, post.heroImage.updatedAt)} 
-                        alt={post.heroImage.alt || (typeof post.title === 'object' ? (post.title[locale] || post.title.fr) : post.title)}
+                        alt={post.heroImage.alt || getLocalizedTitle(post.title, locale)}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         className="object-cover"
@@ -148,20 +166,18 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
                     </div>
                     
                     <h3 className="font-bold text-lg sm:text-xl text-gray-900 mb-3 group-hover:text-primary transition-colors duration-300 line-clamp-2 flex-shrink-0">
-                      {typeof post.title === 'object' ? post.title[locale] || post.title.fr : post.title}
+                      {getLocalizedTitle(post.title, locale)}
                     </h3>
                     
-                    {((post.meta?.description && typeof post.meta.description === 'object' && (post.meta.description[locale] || post.meta.description.fr)) || (typeof post.meta?.description === 'string' && post.meta.description)) && (
+                    {getLocalizedDescription(post.meta?.description, locale) && (
                       <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-4 flex-grow">
-                        {post.meta?.description && typeof post.meta.description === 'object' 
-                          ? post.meta.description[locale] || post.meta.description.fr
-                          : post.meta?.description}
+                        {getLocalizedDescription(post.meta?.description, locale)}
                       </p>
                     )}
                     
                     <div className="flex items-center justify-between flex-shrink-0 mt-auto">
                       <span className="text-primary font-medium text-sm">
-                        {getTranslation("readMore", locale)}
+                        {t("readMore")}
                       </span>
                       <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-all duration-300">
                         {isRtl ? (
@@ -198,7 +214,7 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
             href="/posts"
             className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-accent text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-sm sm:text-base hover:shadow-lg hover:scale-105 transition-all duration-300"
           >
-            <span>{getTranslation("viewAllNews", locale)}</span>
+            <span>{t("viewAllNews")}</span>
             <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/20 flex items-center justify-center">
               {isRtl ? (
                 <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />

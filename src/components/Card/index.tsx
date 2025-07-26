@@ -1,7 +1,7 @@
 'use client'
 import { cn } from '@/utilities/ui'
 import useClickableCard from '@/utilities/useClickableCard'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import React from 'react'
 import { motion, type Variants } from 'framer-motion'
 import { Calendar, ArrowRight, ArrowLeft, Eye } from 'lucide-react'
@@ -9,7 +9,7 @@ import { Calendar, ArrowRight, ArrowLeft, Eye } from 'lucide-react'
 import type { Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
-import { t } from '@/utilities/translations'
+import { useTranslations } from 'next-intl'
 import { type Locale, getLocaleDirection } from '@/utilities/locale'
 
 export type CardPostData = Pick<Post, 'id' | 'slug' | 'categories' | 'meta' | 'title' | 'publishedAt' | 'createdAt'>
@@ -25,6 +25,7 @@ export const Card: React.FC<{
 }> = (props) => {
   const { card, link } = useClickableCard({})
   const { className, doc, relationTo, showCategories, title: titleFromProps, locale = 'fr' } = props
+  const t = useTranslations()
 
   const { slug, categories, meta, title, publishedAt, createdAt } = doc || {}
   const { description, image: metaImage } = meta || {}
@@ -118,7 +119,7 @@ export const Card: React.FC<{
             transition={{ duration: 0.3 }}
           >
             <Eye className="h-8 w-8 mb-2 text-primary/40" />
-            <span className="text-xs font-medium">{t('noImage', locale)}</span>
+            <span className="text-xs font-medium">{t('noImage')}</span>
           </motion.div>
         )}
         {metaImage && typeof metaImage !== 'string' && (
@@ -146,7 +147,7 @@ export const Card: React.FC<{
               {categories?.slice(0, 2).map((category) => {
                 if (typeof category === 'object') {
                   const { title: titleFromCategory } = category
-                  const categoryTitle = titleFromCategory || t('untitledCategory', locale)
+                  const categoryTitle = titleFromCategory || t('untitledCategory')
 
                   return (
                     <motion.span 
@@ -246,7 +247,7 @@ export const Card: React.FC<{
           transition={{ delay: 0.4 }}
         >
           <span className="text-primary font-semibold text-sm group-hover:text-accent transition-colors duration-300">
-            {t('readMore', locale)}
+            {t('readMore')}
           </span>
           
           <motion.div 
@@ -273,7 +274,7 @@ export const Card: React.FC<{
             <div className="flex flex-wrap gap-1">
               {categories?.slice(0, 2).map((category) => {
                 if (typeof category === 'object') {
-                  const categoryTitle = category.title || t('untitledCategory', locale)
+                  const categoryTitle = category.title || t('untitledCategory')
                   return (
                     <span 
                       key={category.id}

@@ -314,18 +314,6 @@ export interface MediaContentSubmission {
     resolutionNotes?: string | null;
     actionTaken?: string | null;
   };
-  /**
-   * Complete form submission data for technical reference
-   */
-  rawSubmissionData?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -679,7 +667,6 @@ export interface MediaContentSubmissionsSelect<T extends boolean = true> {
         resolutionNotes?: T;
         actionTaken?: T;
       };
-  rawSubmissionData?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getLocaleDirection, type Locale } from '@/utilities/locale'
-import { getTranslation } from '@/utilities/translations'
 import { notFound } from 'next/navigation'
 import BackToTopButton from './BackToTopButton'
 
@@ -19,18 +19,19 @@ export default async function MissionPage({ params: paramsPromise }: Args) {
   }
   
   const direction = getLocaleDirection(locale as Locale)
+  const t = await getTranslations()
   
   const missionData = {
     fr: {
       title: "Mission HAPA",
       subtitle: "Notre Mission et Vision",
-      aboutUs: getTranslation('hapaAbout', 'fr'),
+      aboutUs: t('hapaAbout'),
       aboutContent: `La Haute Autorité de la Presse et de l'Audiovisuel a été créée en vertu de l'ordonnance n° 034-2006 du 20 octobre 2006.
 
 Il s'agit d'une institution indépendante chargée de la régulation et du développement du paysage médiatique national, dans le but de promouvoir les valeurs du travail journalistique professionnel, sur la base d'un code juridique solide et d'un cadre législatif clair, cherchant à sécuriser et renforcer la liberté d'expression et à en faire un acquis national et un choix stratégique fondamental constituant un pilier central de la pratique démocratique.
 
 La Haute Autorité de la Presse et de l'Audiovisuel est l'organisme responsable de la régulation et du contrôle du secteur de la communication en veillant à l'application des législations et règlements relatifs à la presse, à la communication audiovisuelle et aux médias numériques.`,
-      missionsTitle: getTranslation('missionAndResponsibilities', 'fr'),
+      missionsTitle: t('missionAndResponsibilities'),
       missions: [
         "Veiller à l'application de la législation et des règlements relatifs à la presse et à la communication audiovisuelle et aux médias numériques dans des conditions non discriminatoires garantissant l'équité, l'objectivité et la transparence",
         "Contribuer à garantir le respect de l'éthique professionnelle par les entreprises et institutions de radiodiffusion privées, publiques et associatives",
@@ -43,12 +44,12 @@ La Haute Autorité de la Presse et de l'Audiovisuel est l'organisme responsable 
         "Encourager et promouvoir une concurrence saine entre les médias publics et privés",
         "Contribuer à l'autorégulation du secteur de la presse et de l'édition"
       ],
-      backToTop: getTranslation('backToTop', 'fr')
+      backToTop: t('backToTop')
     },
     ar: {
       title: "مهمة الهابا",
       subtitle: "مهمتنا ورؤيتنا",
-      aboutUs: getTranslation('hapaAbout', 'ar'),
+      aboutUs: t('hapaAbout'),
       aboutContent: `أنشأت السلطة العليا للصحافة والسمعيات البصرية بموجب الأمر القانوني رقم: 034-2006 الصادر بتاريخ 20 أكتوبر 2006.
 
 وهي هيئة مؤسسية مستقلة، تعنى بضبط وتطوير المشهد الإعلامي الوطني؛ بغية التمكين لقيم العمل الصحفي المهني، انطلاقا من مدونة قانونية محكمة، واستئناسا بمرجعية تشريعية واضحة، تسعى إلى تأمين وتحصين حرية التعبير وتجسيدها مكسبا وطنيا وخيارا استراتيجيا أساسيا؛ يشكل ركيزة محورية للممارسة الديمقراطية.
@@ -56,7 +57,7 @@ La Haute Autorité de la Presse et de l'Audiovisuel est l'organisme responsable 
 والسلطة العليا للصحافة والسمعيات البصرية هي الهيئة المسؤولة عن ضبط ورقابة قطاع الاتصال من خلال السهر على تطبيق التشريعات والنظم المتعلقة بالصحافة والاتصال السمعي البصري والإعلام الرقمي.
 
 وقد نصت المادة الثانية من هذا القانون على أنه: "يتم إنشاء سلطة إدارية مستقلة لتنظيم الصحافة والسمعيات البصرية لدى رئيس الجمهورية تدعى السلطة العليا للصحافة والسمعيات البصرية اختصارا "السلطة العليا" يوجد مقرها بنواكشوط، وتتمتع بالشخصية الاعتبارية وبالاستقلالية المالية".`,
-      missionsTitle: getTranslation('missionAndResponsibilities', 'ar'),
+      missionsTitle: t('missionAndResponsibilities'),
       missions: [
         "السهر على تطبيق التشريع والنظم المتعلقة بالصحافة والاتصال السمعي البصري والإعلام الرقمي وذلك في ظروف غير تمييزية تضمن الإنصاف والموضوعية والشفافية",
         "الإسهام في ضمان احترام أخلاقيات المهنة من قبل الشركات والمؤسسات الإذاعية والتلفزيونية الخصوصية والعمومية والجمعوية، ومن طرف الصحف والنشرات الدورية العمومية والخصوصية",
@@ -90,7 +91,7 @@ La Haute Autorité de la Presse et de l'Audiovisuel est l'organisme responsable 
         "ضمان استقلال المؤسسات الصحفية والإعلامية، وحيادها، وتعددها، وتنوعها بشكل متوازن",
         "ممارسة النشاط الاقتصادي في مجالي الصحافة والإعلام على نحو لا يؤدى إلى منع حرية المنافسة أو تقييدها"
       ],
-      backToTop: getTranslation('backToTop', 'ar')
+      backToTop: t('backToTop')
     }
   }
   
@@ -174,7 +175,7 @@ La Haute Autorité de la Presse et de l'Audiovisuel est l'organisme responsable 
                   <div className="space-y-2">
                     <h3 className="text-xl font-semibold text-primary">2006</h3>
                     <p className="text-gray-600 text-sm">
-                      {getTranslation('establishedYear', locale as Locale)}
+                      {t('establishedYear')}
                     </p>
                   </div>
                 </div>

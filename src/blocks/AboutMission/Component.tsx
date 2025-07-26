@@ -3,6 +3,7 @@
 import React from "react";
 import { useParams } from "next/navigation";
 import { motion, Variants } from "framer-motion";
+import { useTranslations } from 'next-intl';
 import { 
   Shield, 
   Eye, 
@@ -13,7 +14,6 @@ import {
   BookOpen,
   CheckCircle
 } from "lucide-react";
-import { getTranslation, translations } from "@/utilities/translations";
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
 import { Media } from "@/components/Media";
 import type { Media as MediaType } from "@/payload-types";
@@ -111,6 +111,7 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
   const params = useParams();
   const locale = (params?.locale as Locale) || "fr";
   const direction = getLocaleDirection(locale);
+  const t = useTranslations();
 
   return (
     <section
@@ -127,10 +128,10 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
           className="text-center mb-8 sm:mb-12 md:mb-16"
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-            {title || getTranslation("aboutHapa", locale)}
+            {title || t("aboutHapa")}
           </h2>
           <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            {description || getTranslation("aboutHapaDesc", locale)}
+            {description || t("aboutHapaDesc")}
           </p>
           <div className="w-24 h-1.5 bg-gradient-to-r from-primary via-accent to-secondary mx-auto mt-8 rounded-full" />
         </motion.div>
@@ -147,28 +148,28 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
           >
             <div className="space-y-4">
               <h3 className="text-2xl md:text-3xl font-bold text-gray-900">
-                {getTranslation("ourMission", locale)}
+                {t("ourMission")}
               </h3>
               <p className="text-lg text-gray-600 leading-relaxed">
-                {getTranslation("ourMissionDesc", locale)}
+                {t("ourMissionDesc")}
               </p>
             </div>
 
             <div className="space-y-4">
               <h3 className="text-2xl md:text-3xl font-bold text-gray-900">
-                {getTranslation("ourVision", locale)}
+                {t("ourVision")}
               </h3>
               <p className="text-lg text-gray-600 leading-relaxed">
-                {getTranslation("ourVisionDesc", locale)}
+                {t("ourVisionDesc")}
               </p>
             </div>
 
             <div className="space-y-4">
               <h3 className="text-2xl md:text-3xl font-bold text-gray-900">
-                {getTranslation("ourMandate", locale)}
+                {t("ourMandate")}
               </h3>
               <p className="text-lg text-gray-600 leading-relaxed">
-                {getTranslation("ourMandateDesc", locale)}
+                {t("ourMandateDesc")}
               </p>
             </div>
           </motion.div>
@@ -207,11 +208,11 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
                     <div className="text-2xl font-bold text-primary">15+</div>
-                    <div className="text-sm text-gray-600">{getTranslation("yearsExperience", locale)}</div>
+                    <div className="text-sm text-gray-600">{t("yearsExperience")}</div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-accent">89%</div>
-                    <div className="text-sm text-gray-600">{getTranslation("successRate", locale)}</div>
+                    <div className="text-sm text-gray-600">{t("successRate")}</div>
                   </div>
                 </div>
               </motion.div>
@@ -232,10 +233,10 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
             className="text-center mb-12"
           >
             <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              {getTranslation("ourValues", locale)}
+              {t("ourValues")}
             </h3>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              {getTranslation("ourValuesDesc", locale)}
+              {t("ourValuesDesc")}
             </p>
           </motion.div>
 
@@ -253,10 +254,10 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
                       <Icon className="h-8 w-8 text-white" />
                     </div>
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                      {getTranslation(value.titleKey as keyof typeof translations.fr, locale)}
+                      {t(value.titleKey)}
                     </h4>
                     <p className="text-gray-600 text-sm leading-relaxed">
-                      {getTranslation(value.descKey as keyof typeof translations.fr, locale)}
+                      {t(value.descKey)}
                     </p>
                   </div>
                 </motion.div>
@@ -276,10 +277,10 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
           >
             <div className="text-center mb-8">
               <h3 className="text-3xl md:text-4xl font-bold mb-4">
-                {getTranslation("ourImpact", locale)}
+                {t("ourImpact")}
               </h3>
               <p className="text-xl opacity-90 max-w-3xl mx-auto">
-                {getTranslation("ourImpactDesc", locale)}
+                {t("ourImpactDesc")}
               </p>
             </div>
             
@@ -302,7 +303,7 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
                       {achievement.number}
                     </div>
                     <div className="text-white/90 text-sm sm:text-base">
-                      {getTranslation(achievement.labelKey as keyof typeof translations.fr, locale)}
+                      {t(achievement.labelKey)}
                     </div>
                   </motion.div>
                 );

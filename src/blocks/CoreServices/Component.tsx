@@ -14,7 +14,7 @@ import {
   ArrowRight,
   ArrowLeft,
 } from "lucide-react";
-import { getTranslation, translations } from "@/utilities/translations";
+import { useTranslations } from 'next-intl';
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
 
 type CoreServicesProps = {
@@ -110,6 +110,7 @@ export const CoreServicesBlock: React.FC<CoreServicesProps> = ({
   const locale = (params?.locale as Locale) || "fr";
   const direction = getLocaleDirection(locale);
   const isRtl = direction === "rtl";
+  const t = useTranslations();
 
   return (
     <section
@@ -126,10 +127,10 @@ export const CoreServicesBlock: React.FC<CoreServicesProps> = ({
           className="text-center mb-8 sm:mb-12 md:mb-16"
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-            {title || getTranslation("coreServices", locale)}
+            {title || t('coreServices')}
           </h2>
           <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            {description || getTranslation("coreServicesDesc", locale)}
+            {description || t('coreServicesDesc')}
           </p>
           <div className="w-24 h-1.5 bg-gradient-to-r from-primary via-accent to-secondary mx-auto mt-8 rounded-full" />
         </motion.div>
@@ -164,23 +165,17 @@ export const CoreServicesBlock: React.FC<CoreServicesProps> = ({
                     {/* Content */}
                     <div className="flex-grow">
                       <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 group-hover:text-primary transition-colors duration-300 ease-out">
-                        {getTranslation(
-                          service.titleKey as keyof typeof translations.fr,
-                          locale
-                        )}
+                        {t(service.titleKey as any)}
                       </h3>
                       <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                        {getTranslation(
-                          service.descKey as keyof typeof translations.fr,
-                          locale
-                        )}
+                        {t(service.descKey as any)}
                       </p>
                     </div>
 
                     {/* CTA */}
                     <div className="flex items-center justify-between mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-200/40">
                       <span className="text-primary font-medium text-sm sm:text-base">
-                        {getTranslation("learnMore", locale)}
+                        {t('learnMore')}
                       </span>
                       <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:scale-[1.02] transition-all duration-300 ease-out">
                         {isRtl ? (

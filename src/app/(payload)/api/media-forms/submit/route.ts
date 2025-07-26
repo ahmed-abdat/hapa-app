@@ -65,11 +65,11 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
 
     // Prepare data for Payload collection
     const collectionData = {
-      formType: submissionData.formType,
+      formType: submissionData.formType as 'report' | 'complaint',
       submittedAt: submissionData.submittedAt,
-      locale: submissionData.locale,
-      submissionStatus: 'pending',
-      priority: 'medium',
+      locale: ['fr', 'ar'].includes(submissionData.locale) ? submissionData.locale as 'fr' | 'ar' : 'fr',
+      submissionStatus: 'pending' as 'pending' | 'reviewing' | 'resolved' | 'dismissed',
+      priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent',
       
       // For complaints, include complainant information
       ...(submissionData.formType === 'complaint' && {
@@ -105,9 +105,6 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
       // Attachments
       attachmentTypes: submissionData.attachmentTypes?.map(type => ({ type: formatAttachmentType(type) })) || [],
       attachmentOther: submissionData.attachmentOther || '',
-
-      // Store raw submission data for reference
-      rawSubmissionData: submissionData,
     }
 
     // Create the submission in Payload
@@ -122,7 +119,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
         message: submissionData.formType === 'report' 
           ? 'Report submitted successfully' 
           : 'Complaint submitted successfully',
-        submissionId: result.id,
+        submissionId: result.id.toString(),
       },
       { status: 201 }
     )

@@ -11,10 +11,10 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 const config = withPayload(
     withNextIntl({
       eslint: {
-        ignoreDuringBuilds: true,
+        ignoreDuringBuilds: false,
       },
       typescript: {
-        ignoreBuildErrors: true,
+        ignoreBuildErrors: false,
       },
       // Suppress hydration warnings from browser extensions
       reactStrictMode: false,

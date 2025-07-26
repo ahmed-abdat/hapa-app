@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getLocaleDirection, type Locale } from '@/utilities/locale'
-import { getTranslation } from '@/utilities/translations'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import BackToTopButton from './BackToTopButton'
@@ -20,24 +20,25 @@ export default async function PresidentPage({ params: paramsPromise }: Args) {
   }
   
   const direction = getLocaleDirection(locale as Locale)
+  const t = await getTranslations()
   
   const presidentData = {
     fr: {
-      title: getTranslation('presidentMessage', 'fr'),
-      name: getTranslation('presidentName', 'fr'),
-      position: getTranslation('presidentTitle', 'fr'),
+      title: t('presidentMessage'),
+      name: t('presidentName'),
+      position: t('presidentTitle'),
       content: `La Haute Autorité de la Presse et de l'Audiovisuel œuvre à l'accomplissement de ses missions dans la régulation et le développement du paysage médiatique national, en garantissant la liberté de communication audiovisuelle et l'expression des courants de pensée et d'opinion dans le respect des valeurs civilisationnelles et des constantes nationales et des lois de référence de la République, dans le but d'assurer le droit du citoyen à l'information.
 
 Et œuvrant à sécuriser et professionnaliser la liberté d'expression et à l'incarner comme acquis national et choix stratégique fondamental, constituant un pilier central de la pratique démocratique et un levier puissant pour le développement, à travers la veille à l'application des législations et systèmes relatifs à la presse et à la communication audiovisuelle et aux médias numériques, et le renforcement de la régulation et du contrôle des contenus médiatiques.
 
 L'Autorité Supérieure veille dans ce contexte à consacrer les libertés et l'engagement aux principes d'éthique, de responsabilité et de professionnalisme, et travaille de manière indépendante avec les acteurs médiatiques privés, publics et associatifs pour permettre à tous les citoyens d'exercer leur droit à l'information, et à sécuriser l'accès à des services d'information pluralistes et compétitifs répondant aux aspirations d'une opinion publique nationale qui s'est positionnée dans l'action médiatique à travers des moyens et supports qui évoluent à un rythme accéléré.`,
-      readMore: getTranslation('readMore', 'fr'),
-      backToTop: getTranslation('backToTop', 'fr')
+      readMore: t('readMore'),
+      backToTop: t('backToTop')
     },
     ar: {
-      title: getTranslation('presidentMessage', 'ar'),
-      name: getTranslation('presidentName', 'ar'),
-      position: getTranslation('presidentTitle', 'ar'),
+      title: t('presidentMessage'),
+      name: t('presidentName'),
+      position: t('presidentTitle'),
       content: `تعمل السلطة العليا للصحافة والسمعيات البصرية على أداء مهامها في ضبط وتطوير المشهد الإعلامي الوطني، وضمان حرية الاتصال السمعي البصري، والتعبير عن تيارات الفكر والرأي في إطار احترام القيم الحضارية والثوابت الوطنية والقوانين المرجعية للجمهورية، بغية ضمان حق المواطن في المعلومة.
 
 وعملا على تأمين وتمهين حرية التعبير وتجسيدها مكسبا وطنيا وخيارا استراتيجيا أساسيا، يشكل ركيزة محورية للممارسة الديمقراطية ورافعة قوية للتنمية، من خلال السهر على تطبيق التشريعات والنظم المتعلقة بالصحافة والاتصال السمعي البصري والإعلام الرقمي، وتعزيز ضبط ورقابة المضامين الإعلامية.
@@ -67,8 +68,8 @@ L'Autorité Supérieure veille dans ce contexte à consacrer les libertés et l'
 والسلطة العليا للصحافة والسمعيات البصرية عضو فاعل في العديد من الهيئات الضبطية الإقليمية والقارية والدولية، وتعمل باطراد على تعميق العلاقات وتعزيز الشراكات مع نظيراتها في المنطقة وعلى المستوى الدولي، من خلال تبادل الخبرات والتجارب وتعزيز آليات التشاور وآفاق التعاون في جميع المجالات المرتبطة بمهامها في ضبط وتطوير المشهد الإعلامي الوطني.
 
 وسيتم العمل في المرحلة القادمة على تعزيز المكاسب وتدعيمها، واستشراف الآفاق المرتبطة بتوطيدها، والتطلع إلى كسب وتحقيق الرهانات المتعددة على المستويات المؤسسية والقانونية والاجتماعية والاقتصادية، سبيلا إلى التمهين والتمكين لقيم العمل الصحفي الناضج، وترسيخ مبادئ التعددية والحرية والمهنية، عبر الشراكة البناءة والتعاون المثمر مع مختلف الفاعلين والمهنيين والشركاء في حقل الاتصال والإعلام.`,
-      readMore: getTranslation('readMore', 'ar'),
-      backToTop: getTranslation('backToTop', 'ar')
+      readMore: t('readMore'),
+      backToTop: t('backToTop')
     }
   }
   

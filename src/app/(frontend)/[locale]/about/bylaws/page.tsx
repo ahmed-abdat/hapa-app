@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import { generateMeta } from '@/utilities/generateMeta'
 import { getLocaleDirection, type Locale } from '@/utilities/locale'
-import { getTranslation } from '@/utilities/translations'
 import { notFound } from 'next/navigation'
 import BackToTopButton from './BackToTopButton'
 
@@ -19,12 +19,13 @@ export default async function BylawsPage({ params: paramsPromise }: Args) {
   }
   
   const direction = getLocaleDirection(locale as Locale)
+  const t = await getTranslations()
   
   const bylawsData = {
     fr: {
-      title: getTranslation('internalRegulations', 'fr'),
-      subtitle: getTranslation('regulatoryFramework', 'fr'),
-      intro: getTranslation('organizedSystem', 'fr'),
+      title: t('internalRegulations'),
+      subtitle: t('regulatoryFramework'),
+      intro: t('organizedSystem'),
       
       chapters: [
         {
@@ -83,12 +84,12 @@ export default async function BylawsPage({ params: paramsPromise }: Args) {
         }
       ],
       
-      backToTop: getTranslation('backToTop', 'fr')
+      backToTop: t('backToTop')
     },
     ar: {
-      title: getTranslation('internalRegulations', 'ar'),
-      subtitle: getTranslation('regulatoryFramework', 'ar'),
-      intro: getTranslation('organizedSystem', 'ar'),
+      title: t('internalRegulations'),
+      subtitle: t('regulatoryFramework'),
+      intro: t('organizedSystem'),
       
       chapters: [
         {
@@ -283,7 +284,7 @@ export default async function BylawsPage({ params: paramsPromise }: Args) {
         }
       ],
       
-      backToTop: getTranslation('backToTop', 'ar')
+      backToTop: t('backToTop')
     }
   }
   
@@ -380,25 +381,25 @@ export default async function BylawsPage({ params: paramsPromise }: Args) {
               <div className="text-center">
                 <div className="text-3xl font-bold text-secondary">{content.chapters.length}</div>
                 <div className="text-white/80 text-sm mt-1">
-                  {getTranslation('chapters', locale as Locale)}
+                  {t('chapters')}
                 </div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-secondary">30</div>
                 <div className="text-white/80 text-sm mt-1">
-                  {getTranslation('articles', locale as Locale)}
+                  {t('articles')}
                 </div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-secondary">2008</div>
                 <div className="text-white/80 text-sm mt-1">
-                  {getTranslation('adoptionYear', locale as Locale)}
+                  {t('adoptionYear')}
                 </div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-secondary">26</div>
                 <div className="text-white/80 text-sm mt-1">
-                  {getTranslation('lawNumber', locale as Locale)}
+                  {t('lawNumber')}
                 </div>
               </div>
             </div>
@@ -411,11 +412,11 @@ export default async function BylawsPage({ params: paramsPromise }: Args) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-8 mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              {getTranslation('exploreChapters', locale as Locale)}
+              {t('exploreChapters')}
             </h2>
             <div className="w-24 h-1 bg-primary mx-auto"></div>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              {getTranslation('clickChapterDescription', locale as Locale)}
+              {t('clickChapterDescription')}
             </p>
           </div>
           
@@ -433,7 +434,7 @@ export default async function BylawsPage({ params: paramsPromise }: Args) {
                     </div>
                     <div className="flex-1">
                       <div className="text-sm font-medium text-gray-500 mb-1">
-                        {getTranslation('chapter', locale as Locale)} {index + 1}
+                        {t('chapter')} {index + 1}
                       </div>
                       <h3 className="text-lg font-bold text-gray-900 group-hover:text-primary transition-colors duration-300">
                         {chapter.title}
@@ -447,7 +448,7 @@ export default async function BylawsPage({ params: paramsPromise }: Args) {
                   
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                     <span className="text-sm text-gray-500">
-                      {chapter.articles.length} {getTranslation('articles', locale as Locale)}
+                      {chapter.articles.length} {t('articles')}
                     </span>
                     <svg className="w-5 h-5 text-primary group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={locale === 'ar' ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"} />
@@ -478,7 +479,7 @@ export default async function BylawsPage({ params: paramsPromise }: Args) {
                     </div>
                     <div className="text-left">
                       <div className="text-sm font-medium text-gray-500 mb-1">
-                        {getTranslation('chapter', locale as Locale)} {chapterIndex + 1}
+                        {t('chapter')} {chapterIndex + 1}
                       </div>
                       <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
                         {chapter.title}
@@ -556,11 +557,11 @@ export default async function BylawsPage({ params: paramsPromise }: Args) {
               </svg>
             </div>
             <h2 className="text-3xl md:text-4xl font-bold">
-              {getTranslation('internalRegulationsInForce', locale as Locale)}
+              {t('internalRegulationsInForce')}
             </h2>
             <div className="w-32 h-1 bg-secondary mx-auto"></div>
             <p className="text-white/90 text-lg max-w-2xl mx-auto leading-relaxed">
-              {getTranslation('adoptedByLaw', locale as Locale)}
+              {t('adoptedByLaw')}
             </p>
           </div>
         </div>

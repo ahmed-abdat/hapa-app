@@ -63,7 +63,7 @@ export function CategoryFilter({
             key={category.id}
             variant={selectedCategory === category.slug ? "default" : "outline"}
             size="sm"
-            onClick={() => handleCategorySelect(category.slug)}
+            onClick={() => handleCategorySelect(category.slug ?? '')}
           >
             {category.title}
           </Button>

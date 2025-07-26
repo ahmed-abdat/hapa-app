@@ -26,7 +26,7 @@ export function BaseForm<T extends FieldValues = FieldValues>({
   const config = translations[locale] || translations['fr'] // Fallback to French if locale not found
 
   return (
-    <div className={`max-w-2xl mx-auto p-6 bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>
+    <div className={`max-w-2xl mx-auto p-6 bg-white rounded-lg border border-primary/20 shadow-sm ${className}`}>
       {/* Form Header */}
       <div className="mb-8">
         <h2 className="text-2xl font-semibold text-gray-900 mb-2">
@@ -47,7 +47,7 @@ export function BaseForm<T extends FieldValues = FieldValues>({
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="w-full bg-primary hover:bg-accent disabled:bg-primary/60 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">

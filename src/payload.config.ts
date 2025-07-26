@@ -148,7 +148,7 @@ export default buildConfig({
       
       // Enhanced error handling - supported by standard PostgreSQL adapter
       maxUses: 7500, // Rotate connections to prevent memory leaks
-      testOnBorrow: true, // Validate connections before use
+      // testOnBorrow: true, // Not supported by all pool configs
     },
   }),
   collections: [Posts, Media, Categories, MediaContentSubmissions, Users],

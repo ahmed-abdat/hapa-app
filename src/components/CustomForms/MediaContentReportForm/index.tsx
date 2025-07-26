@@ -91,11 +91,15 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
       title: t('mediaContentReportTitle'),
       description: t('mediaContentReportDesc'),
       submitButtonText: t('submitReport'),
+      successMessage: t('submissionSuccess'),
+      errorMessage: t('submissionError'),
     },
     ar: {
       title: t('mediaContentReportTitle'),
       description: t('mediaContentReportDesc'),
       submitButtonText: t('submitReport'),
+      successMessage: t('submissionSuccess'),
+      errorMessage: t('submissionError'),
     },
   }
 

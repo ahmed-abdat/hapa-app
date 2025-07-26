@@ -9,7 +9,7 @@ import {
   Globe,
   Handshake
 } from "lucide-react";
-import { getTranslation } from "@/utilities/translations"; 
+import { useTranslations } from "next-intl"; 
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
 
 type Partner = {
@@ -123,6 +123,7 @@ export const PartnersSectionBlock: React.FC<PartnersSectionProps> = ({
   const params = useParams();
   const locale = (params?.locale as Locale) || "fr";
   const direction = getLocaleDirection(locale);
+  const t = useTranslations();
 
   return (
     <section
@@ -139,10 +140,10 @@ export const PartnersSectionBlock: React.FC<PartnersSectionProps> = ({
           className="text-center mb-8 sm:mb-12 md:mb-16"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6">
-            {title || getTranslation("partnersAndTrust", locale)}
+            {title || t("partnersAndTrust")}
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            {description || getTranslation("partnersAndTrustDesc", locale)}
+            {description || t("partnersAndTrustDesc")}
           </p>
           <div className="w-20 sm:w-24 h-1 sm:h-1.5 bg-gradient-to-r from-primary via-accent to-secondary mx-auto mt-6 sm:mt-8 rounded-full" />
         </motion.div>
@@ -164,7 +165,7 @@ export const PartnersSectionBlock: React.FC<PartnersSectionProps> = ({
                   <Award className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
                 <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-                  {getTranslation("certifications", locale)}
+                  {t("certifications")}
                 </h3>
               </div>
               
@@ -190,7 +191,7 @@ export const PartnersSectionBlock: React.FC<PartnersSectionProps> = ({
                   <Globe className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
                 <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-                  {getTranslation("internationalStandards", locale)}
+                  {t("internationalStandards")}
                 </h3>
               </div>
               
@@ -200,7 +201,7 @@ export const PartnersSectionBlock: React.FC<PartnersSectionProps> = ({
                     UNESCO Media Freedom Standards
                   </h4>
                   <p className="text-xs sm:text-sm text-gray-600">
-                    {getTranslation("unescoCompliance", locale)}
+                    {t("unescoCompliance")}
                   </p>
                 </div>
                 <div className="p-4 bg-white/60 rounded-xl">
@@ -208,7 +209,7 @@ export const PartnersSectionBlock: React.FC<PartnersSectionProps> = ({
                     African Union Media Guidelines  
                   </h4>
                   <p className="text-xs sm:text-sm text-gray-600">
-                    {getTranslation("auMediaCompliance", locale)}
+                    {t("auMediaCompliance")}
                   </p>
                 </div>
                 <div className="p-4 bg-white/60 rounded-xl">
@@ -216,7 +217,7 @@ export const PartnersSectionBlock: React.FC<PartnersSectionProps> = ({
                     European Broadcasting Standards
                   </h4>
                   <p className="text-xs sm:text-sm text-gray-600">
-                    {getTranslation("euBroadcastingCompliance", locale)}
+                    {t("euBroadcastingCompliance")}
                   </p>
                 </div>
               </div>
@@ -234,10 +235,10 @@ export const PartnersSectionBlock: React.FC<PartnersSectionProps> = ({
           >
             <div className="text-center mb-8 sm:mb-12">
               <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                {getTranslation("ourPartners", locale)}
+                {t("ourPartners")}
               </h3>
               <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
-                {getTranslation("ourPartnersDesc", locale)}
+                {t("ourPartnersDesc")}
               </p>
             </div>
 
