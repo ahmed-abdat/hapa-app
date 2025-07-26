@@ -3,27 +3,14 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
+import { useParams } from 'next/navigation'
 import { contactFormSchema, ContactFormData } from '../schemas'
 import { FormTranslations, FormSubmissionResponse } from '../types'
 import { BaseForm } from '../BaseForm'
 import { FormInput, FormTextarea } from '../FormFields'
+import { type Locale } from '@/utilities/locale'
 
-const translations: FormTranslations = {
-  fr: {
-    title: 'Formulaire de Contact',
-    description: 'Contactez-nous pour toute question ou demande d\'information concernant les services de HAPA.',
-    submitButtonText: 'Envoyer le message',
-    successMessage: 'Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.',
-    errorMessage: 'Une erreur est survenue lors de l\'envoi de votre message. Veuillez réessayer.'
-  },
-  ar: {
-    title: 'نموذج الاتصال',
-    description: 'اتصل بنا لأي سؤال أو طلب معلومات حول خدمات الهيئة العليا للصحافة والإعلام.',
-    submitButtonText: 'إرسال الرسالة',
-    successMessage: 'تم إرسال رسالتك بنجاح. سنرد عليك في أقرب وقت ممكن.',
-    errorMessage: 'حدث خطأ أثناء إرسال رسالتك. يرجى المحاولة مرة أخرى.'
-  }
-}
 
 interface ContactFormProps {
   locale: 'fr' | 'ar'
@@ -34,6 +21,7 @@ interface ContactFormProps {
 export function ContactForm({ locale, onSuccess, onError }: ContactFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const t = useTranslations()
 
   const methods = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
@@ -74,7 +62,7 @@ export function ContactForm({ locale, onSuccess, onError }: ContactFormProps) {
     } catch (_error) {
       // Form submission error - handled via error callback
       setSubmitStatus('error')
-      onError?.(translations[locale].errorMessage)
+      onError?.(t('submissionError'))
     } finally {
       setIsLoading(false)
     }
@@ -85,23 +73,38 @@ export function ContactForm({ locale, onSuccess, onError }: ContactFormProps) {
       <BaseForm
         methods={methods}
         onSubmit={handleSubmit}
-        translations={translations}
+        translations={{
+          fr: {
+            title: t('contactFormTitle'),
+            description: t('contactFormDesc'),
+            submitButtonText: t('sendMessage'),
+            successMessage: t('contactFormSuccess'),
+            errorMessage: t('submissionError')
+          },
+          ar: {
+            title: t('contactFormTitle'),
+            description: t('contactFormDesc'),
+            submitButtonText: t('sendMessage'),
+            successMessage: t('contactFormSuccess'),
+            errorMessage: t('submissionError')
+          }
+        }}
         locale={locale}
         isLoading={isLoading}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormInput
             name="name"
-            label={locale === 'fr' ? 'Nom complet' : 'الاسم الكامل'}
-            placeholder={locale === 'fr' ? 'Votre nom complet' : 'اسمك الكامل'}
+            label={t('nameLabel')}
+            placeholder={t('namePlaceholder')}
             required
           />
           
           <FormInput
             name="email"
             type="email"
-            label={locale === 'fr' ? 'Adresse email' : 'عنوان البريد الإلكتروني'}
-            placeholder={locale === 'fr' ? 'votre@email.com' : 'your@email.com'}
+            label={t('emailLabel')}
+            placeholder={t('emailPlaceholder')}
             required
           />
         </div>
@@ -110,22 +113,22 @@ export function ContactForm({ locale, onSuccess, onError }: ContactFormProps) {
           <FormInput
             name="phone"
             type="tel"
-            label={locale === 'fr' ? 'Numéro de téléphone' : 'رقم الهاتف'}
-            placeholder={locale === 'fr' ? '+222 XX XX XX XX' : '+222 XX XX XX XX'}
+            label={t('phoneLabel')}
+            placeholder={t('phonePlaceholder')}
           />
           
           <FormInput
             name="subject"
-            label={locale === 'fr' ? 'Sujet' : 'الموضوع'}
-            placeholder={locale === 'fr' ? 'Sujet de votre message' : 'موضوع رسالتك'}
+            label={t('subjectLabel')}
+            placeholder={t('subjectPlaceholder')}
             required
           />
         </div>
 
         <FormTextarea
           name="message"
-          label={locale === 'fr' ? 'Message' : 'الرسالة'}
-          placeholder={locale === 'fr' ? 'Décrivez votre demande en détail...' : 'اصف طلبك بالتفصيل...'}
+          label={t('messageLabel')}
+          placeholder={t('messagePlaceholder')}
           rows={6}
           maxLength={2000}
           required
@@ -139,7 +142,7 @@ export function ContactForm({ locale, onSuccess, onError }: ContactFormProps) {
             <div className="text-green-400">✓</div>
             <div className="ml-3">
               <p className="text-sm text-green-800">
-                {translations[locale].successMessage}
+                {t('contactFormSuccess')}
               </p>
             </div>
           </div>
@@ -153,7 +156,7 @@ export function ContactForm({ locale, onSuccess, onError }: ContactFormProps) {
             <div className="text-red-400">⚠</div>
             <div className="ml-3">
               <p className="text-sm text-red-800">
-                {translations[locale].errorMessage}
+                {t('submissionError')}
               </p>
             </div>
           </div>
