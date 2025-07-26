@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter, usePathname } from '@/i18n/navigation'
 import { type Locale } from '@/utilities/locale'
 import Image from 'next/image'
 import {
@@ -25,10 +25,8 @@ export const LanguageSwitcher: React.FC<Props> = ({ currentLocale }) => {
   const pathname = usePathname()
 
   const handleLocaleChange = (newLocale: string) => {
-    const segments = pathname.split('/')
-    segments[1] = newLocale
-    const newPath = segments.join('/')
-    router.push(newPath)
+    // Use next-intl's router for proper locale handling
+    router.replace(pathname, { locale: newLocale as Locale })
   }
 
   const currentLanguage = languages.find((lang) => lang.code === currentLocale)
