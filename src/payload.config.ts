@@ -10,7 +10,7 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
-import { CustomFormSubmissions } from './collections/CustomFormSubmissions'
+import { MediaContentSubmissions } from './collections/MediaContentSubmissions'
 import { Media } from './collections/Media'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
@@ -151,7 +151,7 @@ export default buildConfig({
       testOnBorrow: true, // Validate connections before use
     },
   }),
-  collections: [Posts, Media, Categories, CustomFormSubmissions, Users],
+  collections: [Posts, Media, Categories, MediaContentSubmissions, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [],
   plugins: [
