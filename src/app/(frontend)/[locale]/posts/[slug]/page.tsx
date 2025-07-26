@@ -16,38 +16,13 @@ import { generateMeta } from "@/utilities/generateMeta";
 import PageClient from "./page.client";
 import { LivePreviewListener } from "@/components/LivePreviewListener";
 
+// Force dynamic rendering to avoid database connectivity issues during build
+export const dynamic = 'force-dynamic'
+
 export async function generateStaticParams() {
-  try {
-    const payload = await getPayload({ config: configPromise });
-    const posts = await payload.find({
-      collection: "posts",
-      draft: false,
-      limit: 10, // Only generate static pages for top 10 most recent posts
-      overrideAccess: false,
-      pagination: false,
-      sort: '-publishedAt', // Sort by most recent first
-      select: {
-        slug: true,
-      },
-    });
-
-    const locales = ["fr", "ar"];
-    const params: { locale: string; slug: string }[] = [];
-
-    posts.docs.forEach(({ slug }) => {
-      if (slug) {
-        locales.forEach((locale) => {
-          params.push({ locale, slug });
-        });
-      }
-    });
-
-    return params;
-  } catch (error) {
-    console.error('Error generating static params for posts:', error);
-    // Return empty array to skip static generation - pages will be rendered on demand
-    return [];
-  }
+  // Skip static generation during build - render pages on demand
+  // This avoids database connectivity issues during the build process
+  return [];
 }
 
 type Args = {

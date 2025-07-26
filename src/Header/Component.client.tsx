@@ -12,7 +12,7 @@ import { ModernMobileNav } from "@/components/navigation/modern-mobile-nav";
 import { isValidLocale, defaultLocale } from "@/utilities/locale";
 
 interface HeaderClientProps {
-  data?: any; // Optional data parameter for compatibility (not used)
+  data?: unknown; // Optional data parameter for compatibility (not used)
 }
 
 export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {

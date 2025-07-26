@@ -6,14 +6,12 @@ import React from 'react'
 import { usePathname } from 'next/navigation'
 import { PhoneIcon, MailIcon, MapPinIcon } from 'lucide-react'
 
-import type { Footer } from '@/payload-types'
-
-import { CMSLink } from '@/components/Link'
+// import { CMSLink } from '@/components/Link'
 // import { getTranslation } from '@/utilities/translations'
 import { isValidLocale, defaultLocale } from '@/utilities/locale'
 
 interface FooterProps {
-  footerData?: Footer
+  footerData?: unknown // Optional footer data for compatibility (not used)
 }
 
 export function Footer({ footerData }: FooterProps = {}) {

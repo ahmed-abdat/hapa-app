@@ -25,8 +25,8 @@ const httpsAgent = new https.Agent({
   keepAliveMsecs: 30000, // Keep alive for 30 seconds
   timeout: 45000, // Increased timeout for large file operations
   
-  // Enhanced timeout handling
-  freeSocketTimeout: 15000, // Close unused sockets after 15s
+  // Enhanced timeout handling (commented out - not supported in this version)
+  // freeSocketTimeout: 15000, // Close unused sockets after 15s
   
   // SSL optimization for R2 endpoints
   servername: process.env.R2_ACCOUNT_ID ? `${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com` : undefined,
@@ -69,12 +69,12 @@ export function getR2Client() {
       connectionTimeout: 15000, // Better cold start handling
     },
     
-    // Client-side configuration optimizations
-    clientConfig: {
-      region: 'auto',
-      // Disable unnecessary AWS features for R2
-      disableHostPrefix: true,
-    }
+    // Client-side configuration optimizations (commented out - not supported)
+    // clientConfig: {
+    //   region: 'auto',
+    //   // Disable unnecessary AWS features for R2
+    //   disableHostPrefix: true,
+    // }
   })
 }
 

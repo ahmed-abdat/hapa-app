@@ -8,7 +8,8 @@ import React from "react";
 import { isValidLocale } from "@/utilities/locale";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-static";
+// Force dynamic rendering to avoid database connectivity issues during build
+export const dynamic = "force-dynamic";
 export const revalidate = 600;
 
 type Args = {
@@ -19,12 +20,14 @@ type Args = {
   }>;
 };
 
-// Category mapping for publications
+// Category mapping for publications - matches actual database slugs and navigation
 const categoryMappings: Record<string, { fr: string; ar: string }> = {
-  decisions: { fr: "Décisions et communiqués", ar: "قرارات وبيانات" },
-  reports: { fr: "Rapports", ar: "تقارير" },
-  laws: { fr: "Lois et règlements", ar: "قوانين وتشريعات" },
-  publications: { fr: "Publications et éditions", ar: "إصدرات ومنشورات" },
+  decisions: { fr: "Décisions et communiqués", ar: "قرارات و بيانات" },
+  rapports: { fr: "Rapports", ar: "تقارير" },
+  "lois-et-reglements": { fr: "Lois et règlements", ar: "قوانين و تشريعات" },
+  "qwanyn-w-tshryaat": { fr: "Lois et règlements", ar: "قوانين و تشريعات" }, // Arabic slug variant
+  publications: { fr: "Publications", ar: "إصدارات" },
+  actualites: { fr: "Actualités", ar: "الأخبار" },
 };
 
 export default async function PublicationCategoryPaginationPage({
@@ -84,6 +87,7 @@ export default async function PublicationCategoryPaginationPage({
       slug: true,
       categories: true,
       meta: true,
+      createdAt: true,
     },
   });
 
@@ -180,18 +184,7 @@ export async function generateMetadata({
 }
 
 export async function generateStaticParams() {
-  // Generate first few pages for all publication categories
-  const categories = ["decisions", "reports", "laws", "publications"];
-  const locales = ["fr", "ar"];
-  const pageNumbers = ["1", "2", "3"]; // Generate first 3 pages
-
-  return categories.flatMap((category) =>
-    locales.flatMap((locale) =>
-      pageNumbers.map((pageNumber) => ({
-        locale,
-        category,
-        pageNumber,
-      }))
-    )
-  );
+  // Skip static generation during build - render pages on demand
+  // This avoids database connectivity issues during the build process
+  return [];
 }

@@ -19,7 +19,10 @@ export async function POST(): Promise<Response> {
   try {
     // Create a Payload request object to pass to the Local API for transactions
     // At this point you should pass in a user, locale, and any other context you need for the Local API
-    const payloadReq = await createLocalReq({ user }, payload)
+    const payloadReq = await createLocalReq({ user: user ? { 
+      ...user, 
+      sessions: user.sessions?.filter(Boolean) || []
+    } : undefined }, payload)
 
     await seed({ payload, req: payloadReq })
 

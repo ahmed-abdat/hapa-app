@@ -6,7 +6,7 @@ import { s3Storage } from '@payloadcms/storage-s3'
 import { getR2StorageConfig } from './r2-client'
 
 /**
- * Get storage configuration - R2 primary, local fallback only
+ * Get storage configuration - R2 only, no fallback
  */
 export function getStorageConfig() {
   const useR2 = Boolean(
@@ -30,10 +30,11 @@ export function getStorageConfig() {
         disableLocalStorage: true,
       })
     } catch (error) {
-      console.warn('R2 Storage initialization failed, using Vercel Blob fallback:', error instanceof Error ? error.message : error)
-      return null
+      console.error('R2 Storage initialization failed:', error instanceof Error ? error.message : error)
+      throw error // Fail fast if R2 is not configured properly
     }
   } else {
-    return null
+    console.error('R2 Storage environment variables not configured. Required: R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, R2_ACCOUNT_ID')
+    throw new Error('R2 Storage not configured - deployment will fail')
   }
 }

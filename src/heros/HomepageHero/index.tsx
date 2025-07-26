@@ -7,21 +7,13 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowLeft, Shield, Users, FileText } from "lucide-react";
 import { useHeaderTheme } from "@/providers/HeaderTheme";
-import { CMSLink } from "@/components/Link";
-import { Media } from "@/components/Media";
-import RichText from "@/components/RichText";
 import { AdvancedGradientButton } from "@/components/magicui/advanced-gradient-button";
 import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
 import { getTranslation } from "@/utilities/translations";
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
 
-import type { Page } from "@/payload-types";
-
-export const HomepageHero: React.FC<Page["hero"]> = ({
-  links,
-  media,
-  richText,
-}) => {
+// Simple static homepage hero component
+export const HomepageHero: React.FC = () => {
   const { setHeaderTheme } = useHeaderTheme();
   const params = useParams();
   const locale = (params?.locale as Locale) || "fr";
@@ -37,20 +29,16 @@ export const HomepageHero: React.FC<Page["hero"]> = ({
       data-theme="dark"
       dir={direction}
     >
-      {/* Background Media with sophisticated overlay */}
+      {/* Background Image */}
       <div className="absolute inset-0">
-        {media && typeof media === "object" ? (
-          <Media fill imgClassName="object-cover" priority resource={media} />
-        ) : (
-          <Image
-            src="/hero.png"
-            alt="HAPA Office"
-            fill
-            className="object-cover"
-            priority
-          />
-        )}
-        {/* Strong black overlay with subtle primary gradient */}
+        <Image
+          src="/hero.png"
+          alt="HAPA Office"
+          fill
+          className="object-cover"
+          priority
+        />
+        {/* Overlay */}
         <div className="absolute inset-0 bg-black/30"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-accent/20"></div>
       </div>
@@ -71,7 +59,6 @@ export const HomepageHero: React.FC<Page["hero"]> = ({
                 <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight text-white">
                   {getTranslation("heroTitle", locale)}
                 </h1>
-
                 <div className="w-20 h-1 bg-gradient-to-r from-secondary to-accent mx-auto lg:ms-0" />
               </motion.div>
 
@@ -85,18 +72,6 @@ export const HomepageHero: React.FC<Page["hero"]> = ({
                 {getTranslation("heroSubtitle", locale)}
               </motion.p>
 
-              {/* Rich Text Content (if provided) */}
-              {richText && (
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.5 }}
-                  className="prose prose-lg prose-invert max-w-none"
-                >
-                  <RichText data={richText} enableGutter={false} />
-                </motion.div>
-              )}
-
               {/* CTA Buttons */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -107,7 +82,7 @@ export const HomepageHero: React.FC<Page["hero"]> = ({
                 <Link href="/services/media-licensing">
                   <AdvancedGradientButton
                     className="px-6 py-4 text-sm font-semibold lg:text-base"
-                    gradientColor="rgba(15, 122, 46, 0.6)" // HAPA accent color
+                    gradientColor="rgba(15, 122, 46, 0.6)"
                   >
                     <span>{getTranslation("applyLicense", locale)}</span>
                     {locale === "ar" ? (
@@ -124,20 +99,6 @@ export const HomepageHero: React.FC<Page["hero"]> = ({
                   </InteractiveHoverButton>
                 </Link>
               </motion.div>
-
-              {/* Additional CMS Links */}
-              {Array.isArray(links) && links.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.7 }}
-                  className="flex flex-wrap gap-4 justify-center lg:justify-start"
-                >
-                  {links.map(({ link }, i) => (
-                    <CMSLink key={i} {...link} />
-                  ))}
-                </motion.div>
-              )}
             </div>
 
             {/* Right Side: Quick Stats */}
@@ -162,9 +123,7 @@ export const HomepageHero: React.FC<Page["hero"]> = ({
                         <Users className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <div className="text-2xl font-bold text-white">
-                          450+
-                        </div>
+                        <div className="text-2xl font-bold text-white">450+</div>
                         <div className="text-sm text-gray-300">
                           {getTranslation("registeredJournalists", locale)}
                         </div>

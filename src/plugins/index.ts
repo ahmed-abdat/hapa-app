@@ -25,7 +25,7 @@ const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
 
 export const plugins: Plugin[] = [
   redirectsPlugin({
-    collections: ['pages', 'posts'],
+    collections: ['posts'], // 'pages' temporarily removed for fresh start
     overrides: {
       labels: {
         singular: {

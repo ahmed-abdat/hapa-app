@@ -1,5 +1,5 @@
 // import { s3Storage } from '@payloadcms/storage-s3' // Using getStorageConfig instead
-import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
+import { postgresAdapter } from '@payloadcms/db-postgres'
 import { resendAdapter } from '@payloadcms/email-resend'
 import { fr } from '@payloadcms/translations/languages/fr'
 import { ar } from '@payloadcms/translations/languages/ar'
@@ -12,7 +12,6 @@ import { fileURLToPath } from 'url'
 import { Categories } from './collections/Categories'
 import { CustomFormSubmissions } from './collections/CustomFormSubmissions'
 import { Media } from './collections/Media'
-import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
 import { plugins } from './plugins'
@@ -128,19 +127,16 @@ export default buildConfig({
   },
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
-  db: vercelPostgresAdapter({
+  db: postgresAdapter({
     pool: {
-      // Use Neon pooled connection for production (enables 10K+ concurrent connections)
-      connectionString: process.env.NODE_ENV === 'production' 
-        ? (process.env.POSTGRES_URL_POOLED || process.env.POSTGRES_URL?.replace('.aws.neon.tech', '-pooler.aws.neon.tech'))
-        : process.env.POSTGRES_URL || '',
+      // Use Neon connection string directly (already pooled in .env.local)
+      connectionString: process.env.POSTGRES_URL || '',
       
-      // Optimized pooling settings for Neon + Vercel
+      // Optimized pooling settings for Neon + PostgreSQL adapter
       max: process.env.NODE_ENV === 'production' ? 15 : 10, // Higher limit for production
       min: 3, // Keep more connections warm
       idleTimeoutMillis: 20000, // Faster cleanup for better resource management
       connectionTimeoutMillis: 8000, // Increased for cold starts and latency
-      // acquireTimeoutMillis: 10000, // Not supported by VercelPostgresPoolConfig
       
       // Neon-optimized timeouts (aligned with PgBouncer settings)
       statement_timeout: 15000, // Slightly higher for complex queries
@@ -150,12 +146,12 @@ export default buildConfig({
       keepAlive: true,
       keepAliveInitialDelayMillis: 10000, // Initial delay before first keepalive probe
       
-      // Enhanced error handling (commented - not supported by VercelPostgresPoolConfig)
-      // maxUses: 7500, // Rotate connections to prevent memory leaks
-      // testOnBorrow: true, // Validate connections before use
+      // Enhanced error handling - supported by standard PostgreSQL adapter
+      maxUses: 7500, // Rotate connections to prevent memory leaks
+      testOnBorrow: true, // Validate connections before use
     },
   }),
-  collections: [Pages, Posts, Media, Categories, CustomFormSubmissions, Users],
+  collections: [Posts, Media, Categories, CustomFormSubmissions, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [],
   plugins: [

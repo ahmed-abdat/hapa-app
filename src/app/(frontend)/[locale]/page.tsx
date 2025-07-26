@@ -1,8 +1,113 @@
-import PageTemplate, { generateMetadata } from './[slug]/page'
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { isValidLocale, type Locale } from '@/utilities/locale'
+import { HomepageHero } from '@/heros/HomepageHero'
+import { RenderBlocks } from '@/blocks/RenderBlocks'
+import configPromise from '@payload-config'
+import { getPayload } from 'payload'
+import type { Post } from '@/payload-types'
 
-// Re-export the page component and metadata generation for the home route
-export default PageTemplate
-export { generateMetadata }
+type Args = {
+  params: Promise<{
+    locale: Locale
+  }>
+}
+
+export default async function HomePage({ params: paramsPromise }: Args) {
+  const { locale } = await paramsPromise
+  
+  if (!isValidLocale(locale)) {
+    notFound()
+  }
+
+  const payload = await getPayload({ config: configPromise })
+
+  // Get latest posts for the news section
+  let latestPosts: Post[] = []
+  try {
+    const postsResult = await payload.find({
+      collection: 'posts',
+      depth: 1,
+      limit: 6,
+      sort: '-publishedAt',
+      locale,
+      where: {
+        _status: {
+          equals: 'published',
+        },
+      },
+    })
+    latestPosts = postsResult.docs
+  } catch (error) {
+    console.error('Error fetching posts for home page:', error)
+    // Continue with empty posts array
+  }
+
+  // All blocks from the original home page design
+  const blocks = [
+    {
+      blockType: 'aboutMission' as const,
+    },
+    {
+      blockType: 'mediaSpace' as const,
+    },
+    {
+      blockType: 'newsAnnouncements' as const,
+      layoutVariant: 'simple',
+      posts: latestPosts,
+      title: locale === 'ar' ? 'آخر الأخبار والإعلانات' : 'Actualités et Annonces',
+    },
+    {
+      blockType: 'partnersSection' as const,
+    },
+    {
+      blockType: 'coreServices' as const,
+    },
+  ]
+
+  return (
+    <div className="pb-24">
+      {/* Hero Section - Simple static component */}
+      <HomepageHero />
+
+      {/* Main Content Blocks */}
+      <RenderBlocks blocks={blocks} locale={locale} />
+    </div>
+  )
+}
+
+export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
+  const { locale } = await paramsPromise
+  
+  if (!isValidLocale(locale)) {
+    return {}
+  }
+
+  const title = locale === 'ar' 
+    ? 'هابا - الهيئة العليا للصحافة والسمعي البصري'
+    : 'HAPA - Haute Autorité de la Presse et de l\'Audiovisuel'
+    
+  const description = locale === 'ar'
+    ? 'الهيئة العليا للصحافة والسمعي البصري في موريتانيا - الجهة المنظمة للإعلام'
+    : 'Haute Autorité de la Presse et de l\'Audiovisuel en Mauritanie - Autorité de régulation des médias'
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      locale: locale === 'ar' ? 'ar_MR' : 'fr_MR',
+    },
+    alternates: {
+      languages: {
+        'fr': '/fr',
+        'ar': '/ar',
+      },
+    },
+  }
+}
 
 // Generate static params for home page with locales
 export async function generateStaticParams() {
