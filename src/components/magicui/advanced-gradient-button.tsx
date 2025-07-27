@@ -36,7 +36,7 @@ const AdvancedGradientButton = React.forwardRef<HTMLButtonElement, AdvancedGradi
             }}
           />
         </span>
-        <div className="relative z-10 flex items-center space-x-2">
+        <div className="relative z-10 flex items-center justify-center gap-2">
           {children}
         </div>
       </button>

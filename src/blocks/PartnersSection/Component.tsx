@@ -249,29 +249,48 @@ export const PartnersSectionBlock: React.FC<PartnersSectionProps> = ({
                   variants={itemVariants}
                   className="group"
                 >
-                  <a 
-                    href={partner.url && partner.url !== "#" ? partner.url : undefined}
-                    target={partner.url && partner.url !== "#" ? "_blank" : undefined}
-                    rel={partner.url && partner.url !== "#" ? "noopener noreferrer" : undefined}
-                    className="block bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.01]"
-                  >
-                    {/* Partner Logo */}
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto bg-white rounded-xl flex items-center justify-center overflow-hidden transition-all duration-200">
-                      {partner.logoPath ? (
-                        <Image
-                          src={partner.logoPath}
-                          alt={`${partner.name} logo`}
-                          width={96}
-                          height={96}
-                          className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-200"
-                          unoptimized
-                        />
-                      ) : (
-                        <Handshake className="h-8 w-8 sm:h-10 sm:w-10 text-gray-400 group-hover:text-primary transition-colors duration-200" />
-                      )}
+                  {partner.url && partner.url !== "#" ? (
+                    <a 
+                      href={partner.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.01]"
+                    >
+                      {/* Partner Logo */}
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto bg-white rounded-xl flex items-center justify-center overflow-hidden transition-all duration-200">
+                        {partner.logoPath ? (
+                          <Image
+                            src={partner.logoPath}
+                            alt={`${partner.name} logo`}
+                            width={96}
+                            height={96}
+                            className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-200"
+                            unoptimized
+                          />
+                        ) : (
+                          <Handshake className="h-8 w-8 sm:h-10 sm:w-10 text-gray-400 group-hover:text-primary transition-colors duration-200" />
+                        )}
+                      </div>
+                    </a>
+                  ) : (
+                    <div className="block bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center shadow-sm">
+                      {/* Partner Logo */}
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto bg-white rounded-xl flex items-center justify-center overflow-hidden transition-all duration-200">
+                        {partner.logoPath ? (
+                          <Image
+                            src={partner.logoPath}
+                            alt={`${partner.name} logo`}
+                            width={96}
+                            height={96}
+                            className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-200"
+                            unoptimized
+                          />
+                        ) : (
+                          <Handshake className="h-8 w-8 sm:h-10 sm:w-10 text-gray-400 group-hover:text-primary transition-colors duration-200" />
+                        )}
+                      </div>
                     </div>
-                    
-                  </a>
+                  )}
                 </motion.div>
               ))}
             </div>

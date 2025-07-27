@@ -66,9 +66,9 @@ export const HomepageHero: React.FC = () => {
       {/* Content */}
       <div className="relative z-10 flex min-h-screen items-center pt-[10.4rem] pb-20">
         <div className="hapa-container pt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center min-h-[80vh]">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center min-h-[80vh]">
             {/* Main Content */}
-            <div className="lg:col-span-7 space-y-8 text-center lg:text-start">
+            <div className="lg:col-span-8 space-y-8 lg:space-y-10 text-center lg:text-start">
               {/* Title */}
               <MotionDiv
                 initial={{ opacity: 0, y: 30 }}
@@ -97,24 +97,24 @@ export const HomepageHero: React.FC = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
-                className="flex sm:flex-row items-center justify-center lg:justify-start gap-4"
+                className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-4 sm:gap-6 w-full max-w-sm sm:max-w-none mx-auto lg:mx-0"
               >
-                <Link href="/services/media-licensing">
+                <Link href="/forms/media-content-report" className="w-full sm:w-auto">
                   <AdvancedGradientButton
-                    className="px-6 py-4 text-sm font-semibold lg:text-base"
+                    className="w-full sm:w-auto px-8 py-4 sm:px-10 sm:py-5 text-base font-semibold lg:text-lg justify-center min-h-[56px] lg:min-h-[60px]"
                     gradientColor="rgba(15, 122, 46, 0.6)"
                   >
                     <span>{t("applyLicense")}</span>
                     {locale === "ar" ? (
-                      <ArrowLeft className="h-4 w-4 ml-2 group-hover:-translate-x-1 transition-transform" />
+                      <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                     ) : (
-                      <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     )}
                   </AdvancedGradientButton>
                 </Link>
 
-                <Link href="/contact">
-                  <InteractiveHoverButton className="px-6 py-4">
+                <Link href="/contact" className="w-full sm:w-auto">
+                  <InteractiveHoverButton className="w-full sm:w-auto px-8 py-4 sm:px-10 sm:py-5 justify-center bg-white/15 border-white/50 hover:bg-white/25 backdrop-blur-md text-base lg:text-lg font-semibold min-h-[56px] lg:min-h-[60px]">
                     {t("contactHapa")}
                   </InteractiveHoverButton>
                 </Link>
@@ -122,18 +122,18 @@ export const HomepageHero: React.FC = () => {
             </div>
 
             {/* Right Side: Quick Stats */}
-            <div className="lg:col-span-5 space-y-6">
+            <div className="lg:col-span-4 space-y-6">
               <MotionDiv
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
-                className="bg-white/10 backdrop-blur-sm rounded-xl p-8 border border-white/20 shadow-lg"
+                className="bg-white/15 backdrop-blur-md rounded-xl p-6 sm:p-8 border border-white/30 shadow-xl"
               >
                 <div className="space-y-6">
                   <div className="text-center mb-6">
-                    <h3 className="text-lg font-semibold text-white mb-2">
+                    <h2 className="text-lg font-semibold text-white mb-2">
                       {t("keyStatistics")}
-                    </h3>
+                    </h2>
                     <div className="w-12 h-0.5 bg-secondary mx-auto"></div>
                   </div>
 
