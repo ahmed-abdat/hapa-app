@@ -20,10 +20,10 @@ export const PostHero: React.FC<{
 
   // Calculate responsive title size based on title length
   const getTitleClass = (titleLength: number) => {
-    if (titleLength > 100) return "text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
-    if (titleLength > 60) return "text-2xl md:text-4xl lg:text-4xl xl:text-5xl"
-    if (titleLength > 30) return "text-3xl md:text-4xl lg:text-4xl xl:text-5xl"
-    return "text-3xl md:text-4xl lg:text-4xl xl:text-5xl"
+    if (titleLength > 100) return "text-2xl md:text-3xl lg:text-4xl "
+    if (titleLength > 60) return "text-2xl md:text-4xl lg:text-4xl "
+    if (titleLength > 30) return "text-3xl md:text-4xl lg:text-4xl "
+    return "text-3xl md:text-4xl lg:text-4xl "
   }
 
   const titleClass = getTitleClass(title?.length || 0)
