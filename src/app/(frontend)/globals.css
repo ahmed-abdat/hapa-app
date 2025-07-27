@@ -168,14 +168,11 @@
   @apply bg-primary/20 text-primary;
 }
 
-/* Firefox scrollbar support */
-* {
+/* Firefox scrollbar support - more targeted selector */
+html {
   scrollbar-width: thin;
   scrollbar-color: hsl(var(--primary) / 0.5) transparent;
-}
-
-html {
-  opacity: 0;
+  opacity: 0; /* FOUC prevention */
 }
 
 /* Simple Arabic Typography - Applied via Tailwind classes */
@@ -211,4 +208,81 @@ html[data-theme='light'] {
   font-family: 'Amiri', 'Noto Sans Arabic', 'Times New Roman', serif;
   font-feature-settings: "liga" 1, "kern" 1;
   text-rendering: optimizeLegibility;
+}
+
+/* Fix for Payload RichText component prose styling */
+.payload-richtext {
+  color: hsl(var(--foreground));
+}
+
+.payload-richtext h1,
+.payload-richtext h2,
+.payload-richtext h3,
+.payload-richtext h4,
+.payload-richtext h5,
+.payload-richtext h6 {
+  color: hsl(var(--foreground));
+}
+
+.payload-richtext p,
+.payload-richtext div,
+.payload-richtext span {
+  color: hsl(var(--foreground));
+}
+
+.payload-richtext strong,
+.payload-richtext b,
+.payload-richtext em,
+.payload-richtext i {
+  color: hsl(var(--foreground));
+}
+
+.payload-richtext blockquote {
+  color: hsl(var(--foreground));
+}
+
+.payload-richtext a {
+  color: hsl(var(--primary));
+}
+
+.payload-richtext ul,
+.payload-richtext ol,
+.payload-richtext li {
+  color: hsl(var(--foreground));
+}
+
+/* Ensure prose elements use proper colors with targeted selectors */
+.prose {
+  color: hsl(var(--foreground));
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  color: hsl(var(--foreground));
+}
+
+.prose p,
+.prose div,
+.prose span,
+.prose li {
+  color: hsl(var(--foreground));
+}
+
+.prose strong,
+.prose b,
+.prose em,
+.prose i {
+  color: hsl(var(--foreground));
+}
+
+.prose a {
+  color: hsl(var(--primary));
+}
+
+.prose blockquote {
+  color: hsl(var(--foreground));
 }

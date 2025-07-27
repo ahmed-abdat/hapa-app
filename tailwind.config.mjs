@@ -255,6 +255,7 @@ const config = {
         DEFAULT: {
           css: [
             {
+              // CSS Variables for better performance and consistency
               '--tw-prose-body': 'hsl(var(--foreground))',
               '--tw-prose-headings': 'hsl(var(--foreground))',
               '--tw-prose-lead': 'hsl(var(--foreground))',
@@ -271,35 +272,52 @@ const config = {
               '--tw-prose-pre-bg': 'hsl(var(--muted))',
               '--tw-prose-th-borders': 'hsl(var(--border))',
               '--tw-prose-td-borders': 'hsl(var(--border))',
-              color: 'hsl(var(--foreground))',
+              
+              // Performance-optimized element styles using CSS variables
+              color: 'var(--tw-prose-body)',
               h1: {
-                color: 'hsl(var(--foreground))',
+                color: 'var(--tw-prose-headings)',
                 fontWeight: 'normal',
                 marginBottom: '0.25em',
               },
               h2: {
-                color: 'hsl(var(--foreground))',
+                color: 'var(--tw-prose-headings)',
               },
               h3: {
-                color: 'hsl(var(--foreground))',
+                color: 'var(--tw-prose-headings)',
               },
               h4: {
-                color: 'hsl(var(--foreground))',
+                color: 'var(--tw-prose-headings)',
               },
               h5: {
-                color: 'hsl(var(--foreground))',
+                color: 'var(--tw-prose-headings)',
               },
               h6: {
-                color: 'hsl(var(--foreground))',
+                color: 'var(--tw-prose-headings)',
               },
               p: {
-                color: 'hsl(var(--foreground))',
+                color: 'var(--tw-prose-body)',
               },
-              strong: {
-                color: 'hsl(var(--foreground))',
+              'strong, b': {
+                color: 'var(--tw-prose-bold)',
+              },
+              'em, i': {
+                color: 'var(--tw-prose-body)',
+              },
+              a: {
+                color: 'var(--tw-prose-links)',
+                textDecoration: 'underline',
+                fontWeight: '500',
               },
               blockquote: {
-                color: 'hsl(var(--foreground))',
+                color: 'var(--tw-prose-quotes)',
+                borderLeftColor: 'var(--tw-prose-quote-borders)',
+              },
+              'ul, ol': {
+                color: 'var(--tw-prose-body)',
+              },
+              'li': {
+                color: 'var(--tw-prose-body)',
               },
               'blockquote p:first-of-type::before': {
                 content: 'none',

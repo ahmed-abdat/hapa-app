@@ -26,7 +26,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
 import { getMediaUrl } from "@/utilities/getMediaUrl";
 import { getCachedPosts } from "@/utilities/cached-queries";
-import type { Post } from "@/payload-types";
+import type { Post, Category } from "@/payload-types";
 
 // Helper function to handle both localized and non-localized titles
 const getLocalizedTitle = (title: string | { fr: string; ar?: string }, locale: Locale): string => {
@@ -202,6 +202,33 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
                     {/* Enhanced gradient overlay on image */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     
+                    {/* Category badges */}
+                    {post.categories && Array.isArray(post.categories) && post.categories.length > 0 && (
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <div className="flex gap-2 flex-wrap">
+                          {post.categories.slice(0, 2).map((category) => {
+                            if (typeof category === 'object' && category !== null) {
+                              const categoryTitle = category.title || t('untitledCategory')
+                              return (
+                                <span 
+                                  key={category.id}
+                                  className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-primary/90 backdrop-blur-md text-white border border-white/20 hover:bg-primary transition-colors duration-200"
+                                >
+                                  {categoryTitle}
+                                </span>
+                              )
+                            }
+                            return null
+                          })}
+                          {post.categories.length > 2 && (
+                            <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-accent/90 backdrop-blur-md text-white border border-white/20">
+                              +{post.categories.length - 2}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    
                     {/* Modern corner accent */}
                     <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-secondary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
@@ -211,7 +238,7 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
                     {/* Publication Date with Icon */}
                     <div className="flex items-center gap-2 text-xs text-gray-500 mb-3 flex-shrink-0">
                       <Calendar className="h-3.5 w-3.5 text-primary/60" />
-                      <time dateTime={post.publishedAt} className="font-medium">
+                      <time dateTime={post.publishedAt || undefined} className="font-medium">
                         {post.publishedAt ? formatDate(post.publishedAt, locale) : ''}
                       </time>
                     </div>
