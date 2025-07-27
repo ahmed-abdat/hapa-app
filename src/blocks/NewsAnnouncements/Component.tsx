@@ -178,9 +178,12 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
               className="group h-full"
             >
               <Link href={`/posts/${post.slug}`} className="block h-full">
-                <div className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-100 hover:border-primary/30 h-full flex flex-col">
+                <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border border-gray-100/80 hover:border-primary/30 h-full flex flex-col group relative backdrop-blur-sm">
+                  {/* Modern gradient overlay for depth */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                  
                   {/* Image section - consistent height */}
-                  <div className="h-40 sm:h-48 bg-gradient-to-br from-primary/10 to-accent/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+                  <div className="relative h-40 sm:h-48 bg-gradient-to-br from-primary/10 to-accent/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
                     {post.heroImage && typeof post.heroImage === 'object' && 'url' in post.heroImage && post.heroImage.url ? (
                       <Image 
                         src={getMediaUrl(post.heroImage.url, post.heroImage.updatedAt)} 
@@ -195,38 +198,53 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
                     ) : (
                       <FileText className="h-10 w-10 text-primary/40" />
                     )}
+                    
+                    {/* Enhanced gradient overlay on image */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    {/* Modern corner accent */}
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-secondary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                   
                   {/* Content section - flex grow to fill remaining space */}
-                  <div className="p-4 sm:p-6 flex flex-col flex-grow">
+                  <div className="p-4 sm:p-6 flex flex-col flex-grow relative">
+                    {/* Publication Date with Icon */}
                     <div className="flex items-center gap-2 text-xs text-gray-500 mb-3 flex-shrink-0">
-                      <Calendar className="h-3 w-3" />
-                      <span>{post.publishedAt ? formatDate(post.publishedAt, locale) : ''}</span>
+                      <Calendar className="h-3.5 w-3.5 text-primary/60" />
+                      <time dateTime={post.publishedAt} className="font-medium">
+                        {post.publishedAt ? formatDate(post.publishedAt, locale) : ''}
+                      </time>
                     </div>
                     
-                    <h3 className="font-bold text-lg sm:text-xl text-gray-900 mb-3 group-hover:text-primary transition-colors duration-300 line-clamp-2 flex-shrink-0">
+                    {/* Enhanced Title */}
+                    <h3 className="font-bold text-lg sm:text-xl leading-tight tracking-tight text-gray-900 mb-3 group-hover:text-primary transition-colors duration-300 line-clamp-2 flex-shrink-0">
                       {getLocalizedTitle(post.title, locale)}
                     </h3>
                     
+                    {/* Enhanced Description */}
                     {getLocalizedDescription(post.meta?.description, locale) && (
                       <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-4 flex-grow">
                         {getLocalizedDescription(post.meta?.description, locale)}
                       </p>
                     )}
                     
-                    <div className="flex items-center justify-between flex-shrink-0 mt-auto">
-                      <span className="text-primary font-medium text-sm">
+                    {/* Modern Read More Section */}
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-100 group-hover:border-primary/20 transition-colors duration-300 flex-shrink-0 mt-auto">
+                      <span className="text-primary font-semibold text-sm group-hover:text-accent transition-colors duration-300">
                         {t("readMore")}
                       </span>
-                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-all duration-300">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 group-hover:bg-primary transition-all duration-300 group-hover:scale-110">
                         {isRtl ? (
-                          <ArrowLeft className="h-3 w-3 text-primary group-hover:text-white transition-colors duration-300" />
+                          <ArrowLeft className="h-4 w-4 text-primary group-hover:text-white transition-colors duration-300" />
                         ) : (
-                          <ArrowRight className="h-3 w-3 text-primary group-hover:text-white transition-colors duration-300" />
+                          <ArrowRight className="h-4 w-4 text-primary group-hover:text-white transition-colors duration-300" />
                         )}
                       </div>
                     </div>
                   </div>
+                  
+                  {/* Subtle HAPA brand accent line */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
               </Link>
             </MotionDiv>
