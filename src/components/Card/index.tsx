@@ -190,14 +190,19 @@ export const Card: React.FC<{
           >
             <Calendar className="h-3.5 w-3.5 text-primary/60" />
             <time dateTime={publicationDate} className="font-medium">
-              {new Date(publicationDate).toLocaleDateString(
-                locale === 'ar' ? 'ar-MA' : 'fr-FR',
-                {
+              {locale === 'ar' ? 
+                new Date(publicationDate).toLocaleDateString('ar-MA', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  numberingSystem: 'latn' // Force Latin numerals (0-9)
+                }) :
+                new Date(publicationDate).toLocaleDateString('fr-FR', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
-                }
-              )}
+                })
+              }
             </time>
           </motion.div>
         )}

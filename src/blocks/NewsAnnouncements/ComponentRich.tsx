@@ -152,14 +152,25 @@ const urgentBannerVariants: Variants = {
 
 const formatDate = (dateString: string, locale: Locale): string => {
   const date = new Date(dateString);
-  const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  };
   
-  const localeCode = locale === 'ar' ? 'ar-MR' : 'fr-MR';
-  return date.toLocaleDateString(localeCode, options);
+  if (locale === 'ar') {
+    // For Arabic, use Arabic month names but regular numerals
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      numberingSystem: 'latn' // Force Latin numerals (0-9) instead of Arabic-Indic
+    };
+    return date.toLocaleDateString('ar-MR', options);
+  } else {
+    // For French, standard formatting
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    };
+    return date.toLocaleDateString('fr-MR', options);
+  }
 };
 
 const getTimeAgo = (dateString: string, locale: Locale): string => {
