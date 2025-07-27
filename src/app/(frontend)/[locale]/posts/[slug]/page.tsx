@@ -16,13 +16,42 @@ import { generateMeta } from "@/utilities/generateMeta";
 import PageClient from "./page.client";
 import { LivePreviewListener } from "@/components/LivePreviewListener";
 
-// Force dynamic rendering to avoid database connectivity issues during build
-export const dynamic = 'force-dynamic'
+// Use ISR for better performance with automatic revalidation
+export const revalidate = 300 // 5 minutes - good balance for news content
 
 export async function generateStaticParams() {
-  // Skip static generation during build - render pages on demand
-  // This avoids database connectivity issues during the build process
-  return [];
+  // Generate static params for most popular posts at build time
+  try {
+    const payload = await getPayload({ config: configPromise });
+    
+    const posts = await payload.find({
+      collection: 'posts',
+      limit: 20, // Generate top 20 posts at build time
+      sort: '-publishedAt',
+      where: {
+        _status: { equals: 'published' }
+      },
+      locale: 'fr', // Generate French versions first
+      select: {
+        slug: true,
+      },
+    });
+
+    // Generate params for both locales
+    const params = [];
+    for (const post of posts.docs) {
+      if (post.slug) {
+        params.push({ locale: 'fr', slug: post.slug });
+        params.push({ locale: 'ar', slug: post.slug });
+      }
+    }
+    
+    return params;
+  } catch (error) {
+    // Fallback to empty array if database connection fails during build
+    console.warn('Failed to generate static params for posts:', error);
+    return [];
+  }
 }
 
 type Args = {

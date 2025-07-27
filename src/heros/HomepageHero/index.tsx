@@ -3,8 +3,29 @@
 import React, { useEffect } from "react";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import { ArrowRight, ArrowLeft, Shield, Users, FileText } from "lucide-react";
+
+// Dynamically import motion components for better bundle splitting
+const MotionDiv = dynamic(() => 
+  import('framer-motion').then(mod => ({ 
+    default: mod.motion.div 
+  })), 
+  { 
+    loading: () => <div className="opacity-0" />,
+    ssr: false
+  }
+);
+
+const MotionP = dynamic(() => 
+  import('framer-motion').then(mod => ({ 
+    default: mod.motion.p 
+  })), 
+  { 
+    loading: () => <p className="opacity-0" />,
+    ssr: false
+  }
+);
 import { useTranslations, useLocale } from 'next-intl';
 import { useHeaderTheme } from "@/providers/HeaderTheme";
 import { AdvancedGradientButton } from "@/components/magicui/advanced-gradient-button";
@@ -49,7 +70,7 @@ export const HomepageHero: React.FC = () => {
             {/* Main Content */}
             <div className="lg:col-span-7 space-y-8 text-center lg:text-start">
               {/* Title */}
-              <motion.div
+              <MotionDiv
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
@@ -59,24 +80,24 @@ export const HomepageHero: React.FC = () => {
                   {t("heroTitle")}
                 </h1>
                 <div className="w-20 h-1 bg-gradient-to-r from-secondary to-accent mx-auto lg:ms-0" />
-              </motion.div>
+              </MotionDiv>
 
               {/* Description */}
-              <motion.p
+              <MotionP
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
                 className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto lg:mx-0"
               >
                 {t("heroSubtitle")}
-              </motion.p>
+              </MotionP>
 
               {/* CTA Buttons */}
-              <motion.div
+              <MotionDiv
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
-                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
+                className="flex sm:flex-row items-center justify-center lg:justify-start gap-4"
               >
                 <Link href="/services/media-licensing">
                   <AdvancedGradientButton
@@ -93,16 +114,16 @@ export const HomepageHero: React.FC = () => {
                 </Link>
 
                 <Link href="/contact">
-                  <InteractiveHoverButton className="px-8 py-4 w-auto">
+                  <InteractiveHoverButton className="px-6 py-4">
                     {t("contactHapa")}
                   </InteractiveHoverButton>
                 </Link>
-              </motion.div>
+              </MotionDiv>
             </div>
 
             {/* Right Side: Quick Stats */}
             <div className="lg:col-span-5 space-y-6">
-              <motion.div
+              <MotionDiv
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.8 }}
@@ -154,10 +175,10 @@ export const HomepageHero: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </MotionDiv>
 
               {/* Trust Badge */}
-              <motion.div
+              <MotionDiv
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 1 }}
@@ -167,7 +188,7 @@ export const HomepageHero: React.FC = () => {
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                   <span>{t("officialRegulatory")}</span>
                 </div>
-              </motion.div>
+              </MotionDiv>
             </div>
           </div>
         </div>

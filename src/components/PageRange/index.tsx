@@ -54,13 +54,9 @@ export const PageRange: React.FC<{
   }
 
   if (totalDocs > 0) {
-    const plural = getCollectionLabel(true);
-    const singular = getCollectionLabel(false);
-    const label = totalDocs > 1 ? plural : singular;
-    
     return (
       <div className={[className, "text-sm text-muted-foreground"].filter(Boolean).join(" ")}>
-        {t('showing')} {indexStart}{indexStart > 0 ? ` - ${indexEnd}` : ""} {t('of')} {totalDocs} {label}
+        {t('showing')} {indexStart}{indexStart > 0 ? ` - ${indexEnd}` : ""}
       </div>
     );
   }

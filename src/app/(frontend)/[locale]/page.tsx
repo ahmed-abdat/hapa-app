@@ -72,7 +72,7 @@ export default async function HomePage({ params: paramsPromise }: Args) {
   ]
 
   return (
-    <div className="pb-24">
+    <div className="pb-24 overflow-hidden">
       {/* Hero Section - Simple static component */}
       <HomepageHero />
 

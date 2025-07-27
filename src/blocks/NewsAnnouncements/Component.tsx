@@ -1,8 +1,36 @@
 "use client";
 
 import React from "react";
-import { motion, Variants } from "framer-motion";
+import dynamic from "next/dynamic";
 import { Link } from "@/i18n/navigation";
+
+// Dynamically import motion components and types
+const MotionDiv = dynamic(() => 
+  import('framer-motion').then(mod => ({ 
+    default: mod.motion.div 
+  })), 
+  { 
+    loading: () => <div className="opacity-0" />,
+    ssr: false
+  }
+);
+
+// Import Variants type separately to avoid bundling framer-motion on the server
+type Variants = {
+  hidden: { opacity: number; y?: number; x?: number }
+  visible: { 
+    opacity: number; 
+    y?: number; 
+    x?: number;
+    transition?: {
+      duration?: number;
+      delay?: number;
+      ease?: number[] | string;
+      staggerChildren?: number;
+      delayChildren?: number;
+    }
+  }
+};
 import Image from "next/image";
 import {
   Calendar,
@@ -13,6 +41,7 @@ import {
 import { useTranslations, useLocale } from 'next-intl';
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
 import { getMediaUrl } from "@/utilities/getMediaUrl";
+import { getCachedPosts } from "@/utilities/cached-queries";
 import type { Post } from "@/payload-types";
 
 // Helper function to handle both localized and non-localized titles
@@ -107,7 +136,7 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
     >
       <div className="hapa-container">
         {/* Section Header */}
-        <motion.div
+        <MotionDiv
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
@@ -121,12 +150,12 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
             {description || t("newsAnnouncementsDesc")}
           </p>
           <div className="w-20 sm:w-24 h-1 sm:h-1.5 bg-gradient-to-r from-primary via-accent to-secondary mx-auto mt-6 sm:mt-8 rounded-full" />
-        </motion.div>
+        </MotionDiv>
 
 
         {/* News Grid */}
         {posts && posts.length > 0 ? (
-          <motion.div
+          <MotionDiv
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -134,7 +163,7 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
             className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid-spacing"
           >
             {posts.slice(0, maxPosts).map((post, index) => (
-            <motion.div
+            <MotionDiv
               key={post.id || index}
               variants={itemVariants}
               className="group h-full"
@@ -191,9 +220,9 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
                   </div>
                 </div>
               </Link>
-            </motion.div>
+            </MotionDiv>
             ))}
-          </motion.div>
+          </MotionDiv>
         ) : (
           /* No posts available fallback */
           <div className="text-center py-8">
@@ -204,7 +233,7 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
         )}
 
         {/* View All Button */}
-        <motion.div
+        <MotionDiv
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4, ease: [0.25, 1, 0.5, 1] }}
@@ -224,7 +253,7 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
               )}
             </div>
           </Link>
-        </motion.div>
+        </MotionDiv>
       </div>
     </section>
   );

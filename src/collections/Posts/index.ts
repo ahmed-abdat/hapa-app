@@ -264,6 +264,7 @@ export const Posts: CollectionConfig<'posts'> = {
     {
       name: 'publishedAt',
       type: 'date',
+      index: true, // Add database index for faster date-based queries
       admin: {
         date: {
           pickerAppearance: 'dayAndTime',

@@ -11,22 +11,37 @@ export const revalidatePost: CollectionAfterChangeHook<Post> = ({
 }) => {
   if (!context.disableRevalidate) {
     if (doc._status === 'published') {
-      const path = `/posts/${doc.slug}`
-
-      payload.logger.info(`Revalidating post at path: ${path}`)
-
-      revalidatePath(path)
+      // Revalidate specific post page for both locales
+      revalidatePath(`/fr/posts/${doc.slug}`)
+      revalidatePath(`/ar/posts/${doc.slug}`)
+      
+      // Revalidate posts listing pages for both locales
+      revalidatePath('/fr/posts')
+      revalidatePath('/ar/posts')
+      
+      // Revalidate homepage for both locales (affects news blocks)
+      revalidatePath('/fr')
+      revalidatePath('/ar')
+      
       revalidateTag('posts-sitemap')
+      revalidateTag('posts-collection')
+
+      payload.logger.info(`Revalidated post: ${doc.slug} and related pages`)
     }
 
     // If the post was previously published, we need to revalidate the old path
-    if (previousDoc._status === 'published' && doc._status !== 'published') {
-      const oldPath = `/posts/${previousDoc.slug}`
-
-      payload.logger.info(`Revalidating old post at path: ${oldPath}`)
-
-      revalidatePath(oldPath)
+    if (previousDoc?._status === 'published' && doc._status !== 'published') {
+      revalidatePath(`/fr/posts/${previousDoc.slug}`)
+      revalidatePath(`/ar/posts/${previousDoc.slug}`)
+      revalidatePath('/fr/posts')
+      revalidatePath('/ar/posts')
+      revalidatePath('/fr')
+      revalidatePath('/ar')
+      
       revalidateTag('posts-sitemap')
+      revalidateTag('posts-collection')
+
+      payload.logger.info(`Revalidated unpublished post: ${previousDoc.slug}`)
     }
   }
   return doc
@@ -34,10 +49,20 @@ export const revalidatePost: CollectionAfterChangeHook<Post> = ({
 
 export const revalidateDelete: CollectionAfterDeleteHook<Post> = ({ doc, req: { context } }) => {
   if (!context.disableRevalidate) {
-    const path = `/posts/${doc?.slug}`
-
-    revalidatePath(path)
+    // Revalidate deleted post pages for both locales
+    revalidatePath(`/fr/posts/${doc?.slug}`)
+    revalidatePath(`/ar/posts/${doc?.slug}`)
+    
+    // Revalidate posts listing pages for both locales
+    revalidatePath('/fr/posts')
+    revalidatePath('/ar/posts')
+    
+    // Revalidate homepage for both locales
+    revalidatePath('/fr')
+    revalidatePath('/ar')
+    
     revalidateTag('posts-sitemap')
+    revalidateTag('posts-collection')
   }
 
   return doc

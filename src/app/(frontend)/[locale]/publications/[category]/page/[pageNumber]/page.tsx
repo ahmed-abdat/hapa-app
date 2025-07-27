@@ -2,6 +2,7 @@ import type { Metadata } from "next/types";
 import { CollectionArchive } from "@/components/CollectionArchive";
 import { PageRange } from "@/components/PageRange";
 import { Pagination } from "@/components/Pagination";
+import { PublicationsCategoryHero } from "@/heros/PublicationsCategoryHero";
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
 import React from "react";
@@ -97,52 +98,60 @@ export default async function PublicationCategoryPaginationPage({
   }
 
   return (
-    <div className="py-8">
-      {/* Category Header */}
-      <div className="container mb-16">
-        <div className="prose dark:prose-invert max-w-none">
-          <h1>{categoryData.title}</h1>
-          <p className="text-muted-foreground">
-            {locale === "ar" ? "الصفحة" : "Page"} {currentPage}{" "}
-            {locale === "ar" ? "من" : "de"} {posts.totalPages} -{" "}
-            {posts.totalDocs} {locale === "ar" ? "مقال" : "articles"}
-          </p>
-        </div>
-      </div>
+    <div className="pb-24">
+      {/* Category Hero Section */}
+      <PublicationsCategoryHero 
+        locale={locale}
+        categoryTitle={categoryData.title}
+        categorySlug={category}
+        totalDocs={posts.totalDocs}
+      />
 
-      {/* Posts Count */}
-      <div className="container mb-8">
-        <PageRange
-          collection="posts"
-          currentPage={posts.page}
-          limit={12}
-          totalDocs={posts.totalDocs}
-        />
-      </div>
-
-      {/* Posts Grid or Empty State */}
-      {posts.docs.length > 0 ? (
-        <CollectionArchive posts={posts.docs} locale={locale} />
-      ) : (
-        <div className="container">
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">
-              {locale === "ar"
-                ? "لا توجد مقالات في هذه الفئة حاليًا"
-                : "Aucun article dans cette catégorie pour le moment"}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Pagination */}
+      {/* Content Section */}
       <div className="container">
-        {posts.totalPages > 1 && posts.page && (
-          <Pagination
-            page={posts.page}
-            totalPages={posts.totalPages}
-            basePath={`/${locale}/publications/${category}`}
+        {/* Posts Count */}
+        <div className="mb-6">
+          <PageRange
+            collection="posts"
+            currentPage={posts.page}
+            limit={12}
+            totalDocs={posts.totalDocs}
+            locale={locale}
           />
+        </div>
+
+        {/* Posts Grid or Empty State */}
+        {posts.docs.length > 0 ? (
+          <CollectionArchive posts={posts.docs} locale={locale} />
+        ) : (
+          <div className="text-center py-16">
+            <div className="max-w-md mx-auto">
+              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                {locale === "ar" ? "لا توجد وثائق" : "Aucun document"}
+              </h3>
+              <p className="text-gray-600">
+                {locale === "ar"
+                  ? "لا توجد وثائق في هذه الفئة حاليًا. تحقق لاحقًا للحصول على تحديثات."
+                  : "Aucun document dans cette catégorie pour le moment. Revenez plus tard pour les mises à jour."}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {posts.totalPages > 1 && posts.page && (
+          <div className="mt-12">
+            <Pagination
+              page={posts.page}
+              totalPages={posts.totalPages}
+              basePath={`/${locale}/publications/${category}`}
+            />
+          </div>
         )}
       </div>
     </div>

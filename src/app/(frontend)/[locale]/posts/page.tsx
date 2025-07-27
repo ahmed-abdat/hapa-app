@@ -11,8 +11,8 @@ import PageClient from "./page.client";
 import { isValidLocale } from "@/utilities/locale";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 600;
+// Use ISR for posts listing with shorter revalidation
+export const revalidate = 180; // 3 minutes for posts listing
 
 type Args = {
   params: Promise<{

@@ -255,8 +255,8 @@ const config = {
         DEFAULT: {
           css: [
             {
-              '--tw-prose-body': 'var(--text)',
-              '--tw-prose-headings': 'var(--text)',
+              '--tw-prose-body': 'hsl(var(--foreground))',
+              '--tw-prose-headings': 'hsl(var(--foreground))',
               h1: {
                 fontWeight: 'normal',
                 marginBottom: '0.25em',
