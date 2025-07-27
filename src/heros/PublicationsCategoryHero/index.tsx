@@ -54,9 +54,28 @@ export const PublicationsCategoryHero: React.FC<PublicationsCategoryHeroProps> =
   // Get the appropriate icon for the category
   const IconComponent = categoryIcons[categorySlug] || FileText;
   
-  // Get category description
-  const description = categoryDescriptions[locale]?.[categorySlug as keyof typeof categoryDescriptions.fr] || 
-    (locale === 'ar' ? 'تصفح مجموعتنا من الوثائق والمنشورات.' : 'Parcourez notre collection de documents et publications.');
+  // Get category description with proper fallback handling
+  const getDescription = (): string => {
+    // Handle the Arabic specific mapping for lois-et-reglements
+    if (locale === 'ar' && categorySlug === 'lois-et-reglements') {
+      return categoryDescriptions.ar['qwanyn-w-tshryaat'] || 'تصفح مجموعتنا من الوثائق والمنشورات.';
+    }
+    
+    // Handle French specific mapping for qwanyn-w-tshryaat  
+    if (locale === 'fr' && categorySlug === 'qwanyn-w-tshryaat') {
+      return categoryDescriptions.fr['lois-et-reglements'] || 'Parcourez notre collection de documents et publications.';
+    }
+    
+    // Direct lookup for other categories
+    const descriptions = categoryDescriptions[locale];
+    const directDesc = (descriptions as any)[categorySlug];
+    if (directDesc) return directDesc;
+    
+    // Fallback
+    return locale === 'ar' ? 'تصفح مجموعتنا من الوثائق والمنشورات.' : 'Parcourez notre collection de documents et publications.';
+  };
+  
+  const description = getDescription();
 
   useEffect(() => {
     setHeaderTheme("light");

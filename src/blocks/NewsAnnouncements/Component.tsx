@@ -15,22 +15,6 @@ const MotionDiv = dynamic(() =>
   }
 );
 
-// Import Variants type separately to avoid bundling framer-motion on the server
-type Variants = {
-  hidden: { opacity: number; y?: number; x?: number }
-  visible: { 
-    opacity: number; 
-    y?: number; 
-    x?: number;
-    transition?: {
-      duration?: number;
-      delay?: number;
-      ease?: number[] | string;
-      staggerChildren?: number;
-      delayChildren?: number;
-    }
-  }
-};
 import Image from "next/image";
 import {
   Calendar,
@@ -71,9 +55,8 @@ type NewsAnnouncementsProps = {
 };
 
 
-// Removed unused urgentAnnouncements data
-
-const containerVariants: Variants = {
+// Animation configurations as simple objects
+const containerAnimation = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -84,7 +67,7 @@ const containerVariants: Variants = {
   },
 };
 
-const itemVariants: Variants = {
+const itemAnimation = {
   hidden: { opacity: 0, y: 30 },
   visible: {
     opacity: 1,
@@ -156,16 +139,31 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
         {/* News Grid */}
         {posts && posts.length > 0 ? (
           <MotionDiv
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
+            initial={{ opacity: 0 }}
+            whileInView={{ 
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.2,
+              }
+            }}
             viewport={{ once: true, margin: "-50px" }}
             className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid-spacing"
           >
             {posts.slice(0, maxPosts).map((post, index) => (
             <MotionDiv
               key={post.id || index}
-              variants={itemVariants}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 0.6,
+                  ease: [0.25, 1, 0.5, 1],
+                  delay: index * 0.1,
+                }
+              }}
+              viewport={{ once: true, margin: "-50px" }}
               className="group h-full"
             >
               <Link href={`/posts/${post.slug}`} className="block h-full">

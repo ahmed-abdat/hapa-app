@@ -136,28 +136,28 @@ export const getCachedCategories = cache(
 )
 
 /**
- * Cached homepage content
+ * Cached homepage content - Disabled as no homepage global exists
  */
-export const getCachedHomepage = cache(
-  async ({ locale = 'fr' }: { locale?: Locale } = {}) => {
-    try {
-      const payload = await getPayload({ config: configPromise })
+// export const getCachedHomepage = cache(
+//   async ({ locale = 'fr' }: { locale?: Locale } = {}) => {
+//     try {
+//       const payload = await getPayload({ config: configPromise })
 
-      const result = await payload.findGlobal({
-        slug: 'homepage',
-        locale,
-        depth: 2,
-      })
+//       const result = await payload.findGlobal({
+//         slug: 'homepage',
+//         locale,
+//         depth: 2,
+//       })
 
-      return result
-    } catch (error) {
-      console.error('Error fetching cached homepage:', error)
-      return null
-    }
-  },
-  ['homepage-cache'],
-  {
-    revalidate: 600, // 10 minutes cache
-    tags: ['homepage-global'],
-  }
-)
+//       return result
+//     } catch (error) {
+//       console.error('Error fetching cached homepage:', error)
+//       return null
+//     }
+//   },
+//   ['homepage-cache'],
+//   {
+//     revalidate: 600, // 10 minutes cache
+//     tags: ['homepage-global'],
+//   }
+// )
