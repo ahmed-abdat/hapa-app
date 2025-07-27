@@ -169,6 +169,7 @@ export const Posts: CollectionConfig<'posts'> = {
       type: 'text',
       required: true,
       localized: true,
+      index: true, // Add database index for search queries
     },
     {
       type: 'tabs',
@@ -332,4 +333,11 @@ export const Posts: CollectionConfig<'posts'> = {
     },
     maxPerDoc: 50,
   },
+  // Add compound indexes for common query patterns
+  indexes: [
+    {
+      fields: ['_status', 'publishedAt'],
+      unique: false,
+    },
+  ],
 }

@@ -99,7 +99,7 @@ export const Card: React.FC<{
       viewport={{ once: true, margin: "-50px" }}
       whileHover="hover"
       className={cn(
-        'group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 hover:cursor-pointer border border-gray-100/80 hover:border-primary/30',
+        'group relative bg-gradient-to-br from-gray-50/80 to-gray-100/50 backdrop-blur-sm rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 hover:cursor-pointer border border-gray-200/60 hover:border-primary/30',
         'hover:-translate-y-2 backdrop-blur-sm',
         className,
       )}
@@ -110,10 +110,10 @@ export const Card: React.FC<{
       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
       
       {/* Image Section with Enhanced Animations */}
-      <div className="relative w-full aspect-[16/10] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="relative w-full aspect-[16/10] overflow-hidden bg-gradient-to-br from-gray-100/60 to-gray-200/40">
         {!metaImage && (
           <motion.div 
-            className="flex flex-col items-center justify-center h-full text-gray-400 bg-gradient-to-br from-primary/5 to-accent/10"
+            className="flex flex-col items-center justify-center h-full text-gray-400 bg-gradient-to-br from-primary/10 to-accent/15"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}

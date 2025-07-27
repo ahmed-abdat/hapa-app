@@ -31,6 +31,7 @@ export const Categories: CollectionConfig = {
       type: 'text',
       required: true,
       localized: true,
+      index: true, // Add database index for filtering and search
     },
     ...slugField(),
   ],

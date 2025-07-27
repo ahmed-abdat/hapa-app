@@ -104,7 +104,7 @@ export const HomepageHero: React.FC = () => {
                     className="w-full sm:w-auto px-8 py-4 sm:px-10 sm:py-5 text-base font-semibold lg:text-lg justify-center min-h-[56px] lg:min-h-[60px]"
                     gradientColor="rgba(15, 122, 46, 0.6)"
                   >
-                    <span>{t("applyLicense")}</span>
+                    <span>{t("reportMediaContent")}</span>
                     {locale === "ar" ? (
                       <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                     ) : (

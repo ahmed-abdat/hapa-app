@@ -47,13 +47,16 @@ export default async function HomePage({ params: paramsPromise }: Args) {
     // Continue with empty posts array
   }
 
-  // All blocks from the original home page design
+  // Optimized homepage structure following UX best practices
   const blocks = [
     {
       blockType: 'aboutMission' as const,
     },
     {
-      blockType: 'mediaSpace' as const,
+      blockType: 'mediaReportingCTA' as const,
+    },
+    {
+      blockType: 'coreServices' as const,
     },
     {
       blockType: 'newsAnnouncements' as const,
@@ -64,10 +67,10 @@ export default async function HomePage({ params: paramsPromise }: Args) {
       description: locale === 'ar' ? 'ابق على اطلاع على آخر التحديثات التنظيمية والإعلانات الرسمية من الهيئة العليا للصحافة والإعلام.' : 'Restez informé des dernières mises à jour réglementaires et annonces officielles de HAPA.',
     },
     {
-      blockType: 'partnersSection' as const,
+      blockType: 'mediaSpace' as const,
     },
     {
-      blockType: 'coreServices' as const,
+      blockType: 'partnersSection' as const,
     },
   ]
 

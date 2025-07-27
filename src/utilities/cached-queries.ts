@@ -7,6 +7,7 @@ import type { Locale } from './locale'
 /**
  * Cached posts fetcher with automatic revalidation
  * Uses Next.js unstable_cache for optimal performance
+ * Enhanced with depth limits and select fields optimization
  */
 export const getCachedPosts = cache(
   async ({
@@ -86,7 +87,22 @@ export const getCachedPostBySlug = cache(
         },
         limit: 1,
         locale,
-        depth: 2,
+        depth: 2, // Keep depth 2 for full post content
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          publishedAt: true,
+          createdAt: true,
+          heroImage: true,
+          categories: true,
+          content: true, // Include content for full post view
+          meta: {
+            title: true,
+            description: true,
+            image: true,
+          },
+        },
       })
 
       return result.docs[0] || null
@@ -115,6 +131,7 @@ export const getCachedCategories = cache(
         limit: 100,
         sort: 'title',
         locale,
+        depth: 1, // Add depth limit for performance
         select: {
           id: true,
           title: true,

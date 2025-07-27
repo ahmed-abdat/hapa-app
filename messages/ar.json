@@ -23,7 +23,7 @@
   "noImage": "لا توجد صورة",
   "heroTitle": "السلطة العليا للصحافة والسمعيات البصرية",
   "heroSubtitle": "السلطة الوطنية التي تضمن التوازن بين حرية الصحافة والمسؤولية الإعلامية في الجمهورية الإسلامية الموريتانية",
-  "applyLicense": "تقديم طلب",
+  "reportMediaContent": "الإبلاغ عن محتوى",
   "contactHapa": "اتصل بنا",
   "registeredJournalists": "صحفيون معتمدون (2024)",
   "complaintsResolved": "ملفات معالجة (2023)",
@@ -309,5 +309,26 @@
   "contactFormSuccess": "تم إرسال رسالتك بنجاح. سنرد عليك في أقرب وقت ممكن.",
   "contentReporting": "تبليغ عن المحتوى",
   "officialComplaintService": "شكوى رسمية",
-  "decisionsAndCommuniques": "قرارات وبيانات"
+  "decisionsAndCommuniques": "قرارات وبيانات",
+  
+  "mediaReportingCTATitle": "خدمات الإبلاغ والشكاوى",
+  "mediaReportingCTASubtitle": "احم نزاهة المشهد الإعلامي الموريتاني من خلال الإبلاغ عن المحتوى غير المطابق",
+  "reportContentCardTitle": "الإبلاغ عن محتوى",
+  "reportContentCardDesc": "أبلغ بسرعة عن أي محتوى إعلامي يُعتبر مخالفاً للقوانين أو الآداب العامة",
+  "reportContentCardFeatures": [
+    "معالجة خلال 24-48 ساعة",
+    "إجراء مبسط",
+    "ضمان السرية"
+  ],
+  "complaintCardTitle": "تقديم شكوى رسمية",
+  "complaintCardDesc": "قدم شكوى رسمية مع متابعة شخصية ورد رسمي مكتوب",
+  "complaintCardFeatures": [
+    "رد رسمي خلال 7 أيام",
+    "حماية قانونية كاملة",
+    "متابعة شخصية"
+  ],
+  "startReport": "بدء الإبلاغ",
+  "fileComplaint": "تقديم شكوى",
+  "ctaHelpText": "لا تعرف أي خدمة تختار؟",
+  "ctaHelpLink": "اطلع على دليل المساعدة"
 }

@@ -126,11 +126,12 @@ export default async function ActualitesPage({ params: paramsPromise }: Args) {
           />
         )}
 
-        {posts.totalPages > 1 && posts.page && (
+        {posts.totalDocs > 12 && (
           <Pagination
-            page={posts.page}
-            totalPages={posts.totalPages}
-            basePath={`/${locale}/actualites`}
+            totalItems={posts.totalDocs}
+            itemsPerPage={12}
+            currentPage={posts.page || 1}
+            className="mt-8"
           />
         )}
       </div>

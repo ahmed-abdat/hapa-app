@@ -178,6 +178,11 @@ export default buildConfig({
   ].filter((plugin): plugin is NonNullable<typeof plugin> => Boolean(plugin)),
   secret: process.env.PAYLOAD_SECRET,
   sharp,
+  // Performance optimizations
+  maxDepth: 5, // Limit query depth for performance
+  graphQL: {
+    maxComplexity: 100, // Prevent complex GraphQL queries
+  },
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },

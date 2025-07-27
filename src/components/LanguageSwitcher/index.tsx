@@ -26,7 +26,7 @@ type Props = {
 }
 
 export const LanguageSwitcher: React.FC<Props> = ({ label, className }) => {
-  const t = useTranslations('LocaleSwitcher')
+  const t = useTranslations()
   const currentLocale = useLocale() as Locale
   const router = useRouter()
   const pathname = usePathname()
@@ -56,7 +56,7 @@ export const LanguageSwitcher: React.FC<Props> = ({ label, className }) => {
       <Select defaultValue={currentLocale} onValueChange={onSelectChange}>
         <SelectTrigger 
           className="w-[100px] lg:w-[120px] h-8 lg:h-9 border-gray-200 bg-white hover:bg-gray-50 focus:ring-primary"
-          aria-label={label || t('select-language')}
+          aria-label={label || t('LocaleSwitcher.select-language')}
         >
           <SelectValue>
             {currentLanguage && (

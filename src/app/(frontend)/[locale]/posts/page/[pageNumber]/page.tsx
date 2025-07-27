@@ -64,8 +64,13 @@ export default async function Page({ params: paramsPromise }: Args) {
       <CollectionArchive posts={posts.docs} locale={locale} />
 
       <div className="container">
-        {posts?.page && posts?.totalPages > 1 && (
-          <Pagination page={posts.page} totalPages={posts.totalPages} />
+        {posts?.totalDocs && posts.totalDocs > 12 && (
+          <Pagination
+            totalItems={posts.totalDocs}
+            itemsPerPage={12}
+            currentPage={posts.page || 1}
+            className="mt-8"
+          />
         )}
       </div>
     </div>

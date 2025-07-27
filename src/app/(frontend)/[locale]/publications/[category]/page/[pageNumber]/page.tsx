@@ -144,12 +144,12 @@ export default async function PublicationCategoryPaginationPage({
         )}
 
         {/* Pagination */}
-        {posts.totalPages > 1 && posts.page && (
+        {posts.totalDocs > 12 && (
           <div className="mt-12">
             <Pagination
-              page={posts.page}
-              totalPages={posts.totalPages}
-              basePath={`/${locale}/publications/${category}`}
+              totalItems={posts.totalDocs}
+              itemsPerPage={12}
+              currentPage={posts.page || 1}
             />
           </div>
         )}

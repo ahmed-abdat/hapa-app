@@ -8,6 +8,26 @@ const dirname = path.dirname(__filename)
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
+// Security headers for enhanced protection
+const securityHeaders = [
+  {
+    key: 'X-Frame-Options',
+    value: 'DENY'
+  },
+  {
+    key: 'X-Content-Type-Options',
+    value: 'nosniff'
+  },
+  {
+    key: 'Referrer-Policy',
+    value: 'strict-origin-when-cross-origin'
+  },
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=(), payment=()'
+  }
+]
+
 const config = withPayload(
     withNextIntl({
       eslint: {
@@ -19,14 +39,40 @@ const config = withPayload(
       // Suppress hydration warnings from browser extensions
       reactStrictMode: false,
       experimental: {
-        fullySpecified: true,
+        // Package import optimization for better performance (Next.js 15 best practice)
+        optimizePackageImports: [
+          '@radix-ui/react-icons',
+          '@radix-ui/react-accordion',
+          '@radix-ui/react-checkbox',
+          '@radix-ui/react-dialog',
+          '@radix-ui/react-label',
+          '@radix-ui/react-navigation-menu',
+          '@radix-ui/react-scroll-area',
+          '@radix-ui/react-select',
+          '@radix-ui/react-separator',
+          '@radix-ui/react-slot',
+          '@radix-ui/react-tabs',
+          'lucide-react',
+          '@hookform/resolvers',
+        ],
+        // React Compiler for better performance (React 19 feature)
+        reactCompiler: false, // Enable when ready for production
         serverActions: {
           bodySizeLimit: '5mb',
         },
+        // CSS chunking optimization (Next.js 15 default best practice)
+        cssChunking: true,
         // Static generation optimization for database-driven content
         staticGenerationRetryCount: 3, // Retry failed page generation up to 3 times
         staticGenerationMaxConcurrency: 6, // Process up to 6 pages per worker (reduced from default)
         staticGenerationMinPagesPerWorker: 10, // Start new worker after 10 pages (reduced from default)
+      },
+      // Turbopack configuration for enhanced performance
+      turbopack: {
+        // Module resolution optimizations
+        resolveAlias: {
+          // Common alias optimizations for the project structure
+        },
       },
       env: {
         PAYLOAD_CORE_DEV: 'true',
@@ -78,6 +124,15 @@ const config = withPayload(
         ]
 
         return webpackConfig
+      },
+      // Security headers
+      async headers() {
+        return [
+          {
+            source: '/:path*',
+            headers: securityHeaders,
+          },
+        ]
       },
     }),
     { configPath: path.resolve(dirname, 'src/payload.config.ts') },

@@ -14,6 +14,7 @@ import { MediaSpaceBlock } from '@/blocks/MediaSpace/Component'
 import { NewsAnnouncementsBlock } from '@/blocks/NewsAnnouncements/Component'
 import { NewsAnnouncementsRichBlock } from '@/blocks/NewsAnnouncements/ComponentRich'
 import { PartnersSectionBlock } from '@/blocks/PartnersSection/Component'
+import { MediaReportingCTA } from '@/components/MediaReportingCTA'
 
 // Define available block types
 type BlockType = 
@@ -27,6 +28,7 @@ type BlockType =
   | { blockType: 'coreServices'; [key: string]: unknown }
   | { blockType: 'cta'; [key: string]: unknown }
   | { blockType: 'mediaBlock'; [key: string]: unknown }
+  | { blockType: 'mediaReportingCTA'; [key: string]: unknown }
   | { blockType: 'mediaSpace'; [key: string]: unknown }
   | { blockType: 'newsAnnouncements'; layoutVariant?: string; [key: string]: unknown }
   | { blockType: 'partnersSection'; [key: string]: unknown }
@@ -42,6 +44,7 @@ const blockComponents = {
   coreServices: CoreServicesBlock,
   cta: CallToActionBlock,
   mediaBlock: MediaBlock,
+  mediaReportingCTA: MediaReportingCTA,
   mediaSpace: MediaSpaceBlock,
   newsAnnouncements: NewsAnnouncementsBlock,
   partnersSection: PartnersSectionBlock,

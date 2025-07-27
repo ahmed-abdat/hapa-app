@@ -10,7 +10,7 @@
   "noImage": "Aucune image",
   "heroTitle": "Haute Autorité de la Presse et de l'Audiovisuel",
   "heroSubtitle": "L'autorité nationale garantissant l'équilibre entre liberté de presse et responsabilité médiatique en République Islamique de Mauritanie",
-  "applyLicense": "Déposer une Demande",
+  "reportMediaContent": "Signaler un Contenu",
   "contactHapa": "Nous Contacter",
   "registeredJournalists": "Journalistes agréés (2024)",
   "complaintsResolved": "Dossiers traités (2023)",
@@ -309,5 +309,26 @@
   "contactFormSuccess": "Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.",
   "contentReporting": "Signalement de contenu",
   "officialComplaintService": "Plainte officielle",
-  "decisionsAndCommuniques": "Décisions et communiqués"
+  "decisionsAndCommuniques": "Décisions et communiqués",
+  
+  "mediaReportingCTATitle": "Services de Signalement et Plaintes",
+  "mediaReportingCTASubtitle": "Protégez l'intégrité du paysage médiatique mauritanien en signalant les contenus non conformes",
+  "reportContentCardTitle": "Signaler un Contenu",
+  "reportContentCardDesc": "Signalez rapidement tout contenu médiatique jugé contraire aux lois ou à l'éthique publique",
+  "reportContentCardFeatures": [
+    "Traitement sous 24-48h",
+    "Procédure simplifiée",
+    "Confidentialité garantie"
+  ],
+  "complaintCardTitle": "Déposer une Plainte Officielle", 
+  "complaintCardDesc": "Déposez une plainte formelle avec suivi personnalisé et réponse officielle écrite",
+  "complaintCardFeatures": [
+    "Réponse officielle sous 7 jours",
+    "Protection légale complète",
+    "Suivi personnalisé"
+  ],
+  "startReport": "Commencer le Signalement",
+  "fileComplaint": "Déposer une Plainte",
+  "ctaHelpText": "Vous ne savez pas quel service choisir ?",
+  "ctaHelpLink": "Consultez notre guide d'aide"
 }

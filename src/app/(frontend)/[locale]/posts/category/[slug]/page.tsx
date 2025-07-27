@@ -88,11 +88,12 @@ export default async function CategoryPage({ params: paramsPromise }: Args) {
 
       {/* Pagination */}
       <div className="container">
-        {posts.totalPages > 1 && posts.page && (
+        {posts.totalDocs > 12 && (
           <Pagination
-            page={posts.page}
-            totalPages={posts.totalPages}
-            basePath={`/${locale}/posts/category/${slug}`}
+            totalItems={posts.totalDocs}
+            itemsPerPage={12}
+            currentPage={posts.page || 1}
+            className="mt-8"
           />
         )}
       </div>
