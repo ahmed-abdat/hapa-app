@@ -1,19 +1,15 @@
-"use client";
-
 import React from "react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations, useLocale } from 'next-intl';
-import { type Locale, getLocaleDirection } from "@/utilities/locale";
-import { ArrowRight, ArrowLeft, AlertTriangle, MessageCircle, Clock, Shield, CheckCircle, HelpCircle } from "lucide-react";
+import { ArrowRight, ArrowLeft, AlertTriangle, MessageCircle, CheckCircle, HelpCircle } from "lucide-react";
 
 export const MediaReportingCTA: React.FC = () => {
   const t = useTranslations();
-  const locale = useLocale() as Locale;
-  const direction = getLocaleDirection(locale);
-  const isRtl = direction === 'rtl';
+  const locale = useLocale();
+  const isRtl = locale === 'ar';
 
   return (
-    <section className="section-spacing bg-gradient-to-br from-gray-50 via-white to-primary/5" dir={direction}>
+    <section className="section-spacing bg-gradient-to-br from-gray-50 via-white to-primary/5">
       <div className="hapa-container">
         {/* Header */}
         <div className="text-center max-w-4xl mx-auto mb-16">
