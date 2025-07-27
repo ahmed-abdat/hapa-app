@@ -127,17 +127,17 @@ export const PartnersSectionBlock: React.FC<PartnersSectionProps> = ({
 
   return (
     <section
-      className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30"
+      className="section-spacing bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30"
       dir={direction}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="hapa-container">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
           viewport={{ once: true, margin: "-100px" }}
-          className="text-center mb-8 sm:mb-12 md:mb-16"
+          className="header-spacing"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6">
             {title || t("partnersAndTrust")}

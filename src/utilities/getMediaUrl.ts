@@ -1,4 +1,4 @@
-import { getClientSideURL } from '@/utilities/getURL'
+import { getServerSideURL } from '@/utilities/getURL'
 
 /**
  * Processes media resource URL to ensure proper formatting
@@ -14,7 +14,8 @@ export const getMediaUrl = (url: string | null | undefined, cacheTag?: string | 
     return cacheTag ? `${url}?${cacheTag}` : url
   }
 
-  // Otherwise prepend client-side URL
-  const baseUrl = getClientSideURL()
+  // Always use server-side URL to prevent hydration mismatches
+  // This ensures consistent URLs between server and client rendering
+  const baseUrl = getServerSideURL()
   return cacheTag ? `${baseUrl}${url}?${cacheTag}` : `${baseUrl}${url}`
 }

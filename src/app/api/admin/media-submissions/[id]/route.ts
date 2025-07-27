@@ -62,7 +62,7 @@ export async function PATCH(
       submission: updatedSubmission,
     })
   } catch (error) {
-    console.error('Error updating media submission:', error)
+    // Error handled in response
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
       { status: 500 }

@@ -96,17 +96,17 @@ export const CoreServicesMinimalBlock: React.FC<CoreServicesMinimalProps> = ({
 
   return (
     <section
-      className="py-12 sm:py-16 md:py-20 bg-white"
+      className="section-spacing bg-white"
       dir={direction}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="hapa-container">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
           viewport={{ once: true, margin: "-100px" }}
-          className="text-center mb-8 sm:mb-12"
+          className="header-spacing-sm"
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
             {title || t('coreServices')}

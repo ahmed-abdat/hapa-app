@@ -30,11 +30,11 @@ export function getStorageConfig() {
         disableLocalStorage: true,
       })
     } catch (error) {
-      console.error('R2 Storage initialization failed:', error instanceof Error ? error.message : error)
+      // R2 Storage initialization failed
       throw error // Fail fast if R2 is not configured properly
     }
   } else {
-    console.error('R2 Storage environment variables not configured. Required: R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, R2_ACCOUNT_ID')
+    // R2 Storage environment variables not configured
     throw new Error('R2 Storage not configured - deployment will fail')
   }
 }

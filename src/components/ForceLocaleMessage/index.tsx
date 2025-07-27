@@ -33,7 +33,7 @@ export const ForceLocaleMessage: React.FC = () => {
         router.replace(`?${newSearchParams.toString()}`)
       }
     } catch (err) {
-      console.error('Error during locale redirection:', err)
+      // Error during locale redirection
       setError('Failed to redirect to French locale')
     }
   }, [isClient, isNewDocument, currentLocale, router, searchParams, error])

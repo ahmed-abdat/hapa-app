@@ -13,10 +13,10 @@ export const CollectionArchive: React.FC<Props> = (props) => {
   const { posts, locale } = props
 
   return (
-    <div className={cn('container')}>
+    <div className={cn('hapa-container')}>
       <div>
-        {/* Enhanced responsive grid with better spacing and card sizing */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+        {/* Enhanced responsive grid: 1 column mobile, 2 columns tablet/laptop, 3 columns desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid-spacing">
           {posts?.map((result) => {
             if (typeof result === 'object' && result !== null) {
               return (

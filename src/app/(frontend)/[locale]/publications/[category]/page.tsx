@@ -44,35 +44,41 @@ export default async function PublicationCategoryPage({
 
   const payload = await getPayload({ config: configPromise });
 
-  // 1. Find category by slug (using the category parameter)
+  // Optimized approach based on Payload best practices and Context7 documentation
+  
+  // 1. Query category with performance optimizations
   const categoryResult = await payload.find({
     collection: "categories",
     where: { slug: { equals: category } },
-    limit: 1,
+    limit: 1, // Payload best practice: limit 1 for unique fields
+    depth: 0, // Performance optimization: don't populate relationships
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+    },
     locale,
   });
 
-  // If category doesn't exist in CMS, create empty state
-  const categoryData =
-    categoryResult.docs.length > 0
-      ? categoryResult.docs[0]
-      : {
-          id: "",
-          title: categoryMappings[category][locale as "fr" | "ar"],
-          slug: category,
-        };
+  // Use actual category data or fall back to static mapping
+  const categoryData = categoryResult.docs.length > 0
+    ? categoryResult.docs[0]
+    : {
+        id: `static-${category}`,
+        title: categoryMappings[category][locale as "fr" | "ar"],
+        slug: category,
+      };
 
-  // 2. Find posts in this category (using existing ArchiveBlock pattern)
+  // 2. Query posts with optimized where clause and select fields
   const posts = await payload.find({
     collection: "posts",
-    depth: 1,
+    depth: 1, // Limited depth for performance
     limit: 12,
     locale,
     overrideAccess: false,
-    where:
-      categoryResult.docs.length > 0
-        ? { categories: { in: [categoryData.id] } }
-        : { id: { equals: "nonexistent" } }, // Return empty if category doesn't exist
+    where: categoryResult.docs.length > 0
+      ? { categories: { in: [categoryData.id] } } // Use relationship query if category exists
+      : { id: { equals: "nonexistent" } }, // Return empty if category doesn't exist in DB
     select: {
       title: true,
       slug: true,

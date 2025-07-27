@@ -70,8 +70,8 @@ export default async function MediaContentReportPage({ params }: PageProps) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             {/* Quick Process */}
             <div className="bg-white rounded-xl shadow-lg p-6 border border-primary/20">
-              <div className="flex items-center mb-4">
-                <div className="bg-primary/10 rounded-lg p-3 mr-4">
+              <div className="flex items-center mb-4 gap-x-2">
+                <div className="bg-primary/10 rounded-lg p-3 flex items-center justify-center gap-x-2">
                   <Clock className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">
@@ -85,8 +85,8 @@ export default async function MediaContentReportPage({ params }: PageProps) {
 
             {/* Confidential */}
             <div className="bg-white rounded-xl shadow-lg p-6 border border-primary/20">
-              <div className="flex items-center mb-4">
-                <div className="bg-primary/10 rounded-lg p-3 mr-4">
+              <div className="flex items-center mb-4 gap-x-2">
+                <div className="bg-primary/10 rounded-lg p-3 flex items-center justify-center gap-x-2">
                   <Shield className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">
@@ -100,8 +100,8 @@ export default async function MediaContentReportPage({ params }: PageProps) {
 
             {/* Follow-up */}
             <div className="bg-white rounded-xl shadow-lg p-6 border border-primary/20">
-              <div className="flex items-center mb-4">
-                <div className="bg-primary/10 rounded-lg p-3 mr-4">
+              <div className="flex items-center mb-4 gap-x-2">
+                <div className="bg-primary/10 rounded-lg p-3 flex items-center justify-center gap-x-2">
                   <CheckCircle className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">

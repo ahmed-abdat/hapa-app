@@ -48,6 +48,10 @@
   "declarationConsent": "Déclaration et consentement",
   
   "mediaType": "Type de média",
+  
+  "LocaleSwitcher": {
+    "select-language": "Choisir la langue"
+  },
   "television": "Télévision",
   "radio": "Radio",
   "website": "Site web",
@@ -258,6 +262,9 @@
   
   "organizationName": "Haute Autorité de la Presse et de l'Audiovisuel",
   "searchButton": "Rechercher",
+  "LocaleSwitcher": {
+    "select-language": "Choisir une langue"
+  },
   "searchPlaceholder": "Rechercher",
   "siteDescription": "Site officiel de la Haute Autorité de la Presse et de l'Audiovisuel de Mauritanie. Régulation et supervision des médias mauritaniens.",
   "siteKeywords": "HAPA, Mauritanie, Presse, Audiovisuel, Média, Régulation",
@@ -279,6 +286,19 @@
   "addAdminNotes": "Ajouter des notes administratives...",
   "search": "Recherche",
   "searchResults": "Résultats de recherche",
+  "searchPlaceholder": "Rechercher dans nos contenus...",
+  "searchHint": "Essayez 'actualités', 'décisions', ou 'licences'",
+  "searchSuggestions": "Suggestions de recherche",
+  "recentSearches": "Recherches récentes",
+  "popularSearches": "Recherches populaires",
+  "quickResults": "Résultats rapides",
+  "searchStats": "{count} résultat{plural} pour \"{query}\"",
+  "noResultsTitle": "Aucun résultat trouvé",
+  "noResultsText": "Aucun résultat trouvé pour \"{query}\". Essayez de modifier votre recherche.",
+  "searchTips": "Conseils de recherche",
+  "trySearching": "Essayez de rechercher :",
+  "clearSearch": "Effacer la recherche",
+  "searchHistory": "Historique de recherche",
   "nameLabel": "Nom complet",
   "namePlaceholder": "Votre nom complet",
   "emailLabel": "Adresse email",
@@ -292,5 +312,8 @@
   "sendMessage": "Envoyer le message",
   "contactFormTitle": "Formulaire de Contact",
   "contactFormDesc": "Contactez-nous pour toute question ou demande d'information concernant les services de HAPA.",
-  "contactFormSuccess": "Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais."
+  "contactFormSuccess": "Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.",
+  "contentReporting": "Signalement de contenu",
+  "officialComplaintService": "Plainte officielle",
+  "decisionsAndCommuniques": "Décisions et communiqués"
 }

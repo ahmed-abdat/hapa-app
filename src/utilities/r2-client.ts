@@ -9,9 +9,7 @@ import https from 'https'
 // This is necessary because R2 sometimes has SSL certificate issues in development
 const isR2DevMode = process.env.NODE_ENV !== 'production'
 
-if (isR2DevMode) {
-  console.log('🔧 R2 configured for development with relaxed SSL validation')
-}
+// R2 development mode configuration
 
 // Create optimized HTTPS agent for R2 with enhanced performance and security
 const httpsAgent = new https.Agent({

@@ -144,23 +144,28 @@ export default buildConfig({
       // Use Neon connection string directly (already pooled in .env.local)
       connectionString: process.env.POSTGRES_URL || '',
       
-      // Optimized pooling settings for Neon + PostgreSQL adapter
-      max: process.env.NODE_ENV === 'production' ? 15 : 10, // Higher limit for production
-      min: 3, // Keep more connections warm
-      idleTimeoutMillis: 20000, // Faster cleanup for better resource management
-      connectionTimeoutMillis: 8000, // Increased for cold starts and latency
+      // Optimized pooling settings for better timeout handling
+      max: process.env.NODE_ENV === 'production' ? 15 : 5, // Reduced for better resource management
+      min: 0, // Allow pool to scale down completely when idle
+      idleTimeoutMillis: 10000, // Faster idle timeout to free connections
+      connectionTimeoutMillis: 8000, // Reduced connection timeout
+      // acquireTimeoutMillis: 10000, // Property doesn't exist in PoolConfig
       
-      // Neon-optimized timeouts (aligned with PgBouncer settings)
-      statement_timeout: 15000, // Slightly higher for complex queries
-      query_timeout: 15000, // Match statement timeout
+      // Reduced query timeouts to fail fast on problematic queries
+      statement_timeout: 10000, // 10 second timeout for statements
+      query_timeout: 10000, // Match statement timeout
       
       // Connection health and performance
       keepAlive: true,
-      keepAliveInitialDelayMillis: 10000, // Initial delay before first keepalive probe
+      keepAliveInitialDelayMillis: 3000, // Faster initial keepalive
       
-      // Enhanced error handling - supported by standard PostgreSQL adapter
-      maxUses: 7500, // Rotate connections to prevent memory leaks
-      // testOnBorrow: true, // Not supported by all pool configs
+      // Enhanced error handling for Neon
+      maxUses: 5000, // More frequent connection rotation
+      application_name: 'hapa-website', // Help identify connections in Neon dashboard
+      
+      // Retry configuration for unstable connections
+      // max_retry_attempts: 2, // Property doesn't exist in PoolConfig
+      // retry_delay: 500, // Property doesn't exist in PoolConfig
     },
   }),
   collections: [Posts, Media, Categories, MediaContentSubmissions, Users],

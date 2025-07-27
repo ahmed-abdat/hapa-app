@@ -44,7 +44,6 @@ export const beforeSyncWithSearch: BeforeSync = async ({ req, originalDoc, searc
         populatedCategories.push(doc)
       } else {
         // Category not found during search sync
-        console.warn(`Search sync: Category not found for ${collection}:${id}`)
       }
     }
 

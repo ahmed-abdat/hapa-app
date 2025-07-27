@@ -221,10 +221,10 @@ export const NewsAnnouncementsRichBlock: React.FC<NewsAnnouncementsRichProps> = 
 
   return (
     <section
-      className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-gray-50 via-white to-green-50/20"
+      className="section-spacing bg-gradient-to-br from-gray-50 via-white to-green-50/20"
       dir={direction}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="hapa-container">
         {/* Urgent Announcements Banner */}
         {showUrgentBanner && urgentAnnouncements.length > 0 && (
           <motion.div
@@ -290,7 +290,7 @@ export const NewsAnnouncementsRichBlock: React.FC<NewsAnnouncementsRichProps> = 
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
           viewport={{ once: true, margin: "-100px" }}
-          className="text-center mb-8 sm:mb-12 md:mb-16"
+          className="header-spacing"
         >
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6">
             {title || t("newsAnnouncements")}
@@ -380,7 +380,7 @@ export const NewsAnnouncementsRichBlock: React.FC<NewsAnnouncementsRichProps> = 
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid-spacing"
         >
           {regularPosts.map((post, index) => (
             <motion.div

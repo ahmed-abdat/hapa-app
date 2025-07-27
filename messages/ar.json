@@ -5,6 +5,19 @@
   "untitledCategory": "فئة بدون عنوان",
   "readMore": "اقرأ المزيد",
   "search": "البحث",
+  "searchPlaceholder": "ابحث في محتوياتنا...",
+  "searchHint": "جرب 'أخبار', 'قرارات', أو 'تراخيص'",
+  "searchSuggestions": "اقتراحات البحث", 
+  "recentSearches": "البحثات الأخيرة",
+  "popularSearches": "البحثات الشائعة",
+  "quickResults": "نتائج سريعة",
+  "searchStats": "{count} نتيجة للبحث عن \"{query}\"",
+  "noResultsTitle": "لم يتم العثور على نتائج",
+  "noResultsText": "لم يتم العثور على نتائج للبحث عن \"{query}\". حاول تعديل البحث.",
+  "searchTips": "نصائح البحث",
+  "trySearching": "جرب البحث عن:",
+  "clearSearch": "مسح البحث",
+  "searchHistory": "تاريخ البحث",
   "noResults": "لم يتم العثور على نتائج",
   "loading": "جاري التحميل...",
   "noImage": "لا توجد صورة",
@@ -48,6 +61,10 @@
   "declarationConsent": "الإقرار والموافقة",
   
   "mediaType": "نوع الوسيلة الإعلامية",
+  
+  "LocaleSwitcher": {
+    "select-language": "اختر اللغة"
+  },
   "television": "تلفزيون",
   "radio": "إذاعة",
   "website": "موقع الكتروني",
@@ -258,6 +275,9 @@
   
   "organizationName": "الهيئة العليا للصحافة والإعلام",
   "searchButton": "البحث",
+  "LocaleSwitcher": {
+    "select-language": "اختر اللغة"
+  },
   "searchPlaceholder": "البحث",
   "siteDescription": "الموقع الرسمي للهيئة العليا للصحافة والإعلام في موريتانيا. تنظيم وإشراف على وسائل الإعلام الموريتانية.",
   "siteKeywords": "هابا، موريتانيا، صحافة، إعلام، وسائل الإعلام، تنظيم",
@@ -292,5 +312,8 @@
   "sendMessage": "إرسال الرسالة",
   "contactFormTitle": "نموذج الاتصال",
   "contactFormDesc": "اتصل بنا لأي سؤال أو طلب معلومات حول خدمات الهيئة العليا للصحافة والإعلام.",
-  "contactFormSuccess": "تم إرسال رسالتك بنجاح. سنرد عليك في أقرب وقت ممكن."
+  "contactFormSuccess": "تم إرسال رسالتك بنجاح. سنرد عليك في أقرب وقت ممكن.",
+  "contentReporting": "تبليغ عن المحتوى",
+  "officialComplaintService": "شكوى رسمية",
+  "decisionsAndCommuniques": "قرارات وبيانات"
 }

@@ -80,22 +80,22 @@ L'Autorité Supérieure veille dans ce contexte à consacrer les libertés et l'
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary to-accent text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
             {/* Text Content */}
             <div className="space-y-8">
               <div className="space-y-4">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
                   {content.title}
                 </h1>
                 <div className="w-24 h-1 bg-secondary"></div>
               </div>
               
               <div className="space-y-3">
-                <h2 className="text-2xl md:text-3xl font-semibold text-secondary">
+                <h2 className="text-xl md:text-2xl font-semibold text-secondary">
                   {content.name}
                 </h2>
-                <p className="text-lg md:text-xl text-white/90 leading-relaxed">
+                <p className="text-base md:text-lg text-white/90 leading-relaxed">
                   {content.position}
                 </p>
               </div>
@@ -103,14 +103,14 @@ L'Autorité Supérieure veille dans ce contexte à consacrer les libertés et l'
             
             {/* President Image */}
             <div className="relative">
-              <div className="aspect-[3/4] relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20">
+              <div className="aspect-[3/4] sm:aspect-square relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20 max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
                 <Image
                   src="/president-image.jpg"
                   alt={content.name}
                   fill
                   className="object-cover"
                   priority
-                  sizes="(max-width: 768px) 100vw, 50vw"
+                  sizes="(max-width: 640px) 80vw, (max-width: 768px) 60vw, 50vw"
                 />
               </div>
               {/* Decorative Elements */}
@@ -124,7 +124,7 @@ L'Autorité Supérieure veille dans ce contexte à consacrer les libertés et l'
 
       {/* Main Content */}
       <section className="relative bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <div className="prose prose-lg prose-primary max-w-none">
             <div className="text-gray-700 leading-relaxed space-y-6 text-base md:text-lg">
               {content.content.split('\n\n').map((paragraph, index) => {

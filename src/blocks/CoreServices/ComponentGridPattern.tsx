@@ -114,7 +114,7 @@ export const CoreServicesGridPatternBlock: React.FC<CoreServicesGridPatternProps
 
   return (
     <section
-      className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-gray-50 via-white to-blue-50/30 relative overflow-hidden"
+      className="section-spacing bg-gradient-to-br from-gray-50 via-white to-blue-50/30 relative overflow-hidden"
       dir={direction}
     >
       {/* Grid Pattern Background */}
@@ -122,7 +122,7 @@ export const CoreServicesGridPatternBlock: React.FC<CoreServicesGridPatternProps
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#065986_1px,transparent_1px),linear-gradient(to_bottom,#065986_1px,transparent_1px)] bg-[size:20px_20px]" />
       </div>
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div className="hapa-container relative">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}

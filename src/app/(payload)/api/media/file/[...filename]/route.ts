@@ -73,7 +73,7 @@ export async function GET(
     return NextResponse.redirect(r2Url)
     
   } catch (error) {
-    console.error('Error serving media file:', error)
+    // Error serving media file
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

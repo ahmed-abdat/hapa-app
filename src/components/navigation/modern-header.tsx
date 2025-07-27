@@ -10,10 +10,11 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { SearchIcon } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
+import { usePathname } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { isValidLocale, defaultLocale } from "@/utilities/locale";
+import { type Locale } from "@/utilities/locale";
 import {
   navigationItems,
   getNavigationItemText,
@@ -23,12 +24,7 @@ import { cn } from "@/lib/utils";
 
 export function ModernHeader() {
   const pathname = usePathname();
-
-  // Extract current locale from pathname
-  const currentLocale = pathname.split("/")[1];
-  const validLocale = isValidLocale(currentLocale)
-    ? currentLocale
-    : defaultLocale;
+  const validLocale = useLocale() as Locale;
 
   const renderNavigationItem = (item: NavigationItem) => {
     const title = getNavigationItemText(item, validLocale, "title");
@@ -38,7 +34,7 @@ export function ModernHeader() {
         <NavigationMenuItem key={title}>
           <NavigationMenuLink asChild>
             <Link
-              href={`/${validLocale}${item.href === "/" ? "" : item.href}`}
+              href={item.href}
               className={cn(
                 "group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-header-x py-2 text-sm font-medium transition-colors hover:bg-primary/10 hover:text-primary focus:bg-primary/15 focus:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
                 pathname ===
@@ -90,13 +86,13 @@ export function ModernHeader() {
                     className="bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg transition-all duration-200 text-sm"
                     asChild
                   >
-                    <Link href={`/${validLocale}${
+                    <Link href={
                       title === "تعريف" || title === "À propos" 
                         ? "/about/mission" 
                         : title === "إصدارات" || title === "Publications"
                         ? "/publications/decisions"
                         : "/about/mission"
-                    }`}>
+                    }>
                       {validLocale === "ar" ? "المزيد" : "En savoir plus"}
                     </Link>
                   </Button>
@@ -121,7 +117,7 @@ export function ModernHeader() {
                       asChild
                       className="flex items-center justify-between hover:bg-gray-50 hover:text-primary py-2 lg:py-3 px-3 lg:px-4 rounded-lg group transition-all duration-200 border border-transparent hover:border-primary/20 hover:shadow-sm min-h-0"
                     >
-                      <Link href={`/${validLocale}${subItem.href}`} className="flex items-center justify-between w-full min-w-0">
+                      <Link href={subItem.href || "#"} className="flex items-center justify-between w-full min-w-0">
                         <div className="flex items-center gap-3 min-w-0 flex-1">
                           <div className="w-2 h-2 bg-primary/60 rounded-full group-hover:bg-primary transition-colors flex-shrink-0" />
                           <div className="flex flex-col min-w-0 flex-1">
@@ -133,7 +129,7 @@ export function ModernHeader() {
                             )}
                           </div>
                         </div>
-                        <div className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors flex-shrink-0 ml-2">
+                        <div className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors flex-shrink-0 ms-2">
                           <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={validLocale === "ar" ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"} />
                           </svg>
@@ -168,16 +164,16 @@ export function ModernHeader() {
         {/* Search */}
         <Button variant="ghost" size="sm" asChild>
           <Link
-            href={`/${validLocale}/search`}
+            href="/search"
             aria-label={validLocale === "ar" ? "بحث" : "Rechercher"}
-            className="focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:bg-primary/10"
+            className="focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:bg-primary/10 text-primary"
           >
-            <SearchIcon className="w-4 h-4" />
+            <SearchIcon className="w-4 h-4 text-primary" />
           </Link>
         </Button>
 
         {/* Language Switcher */}
-        <LanguageSwitcher currentLocale={validLocale} />
+        <LanguageSwitcher />
       </div>
     </div>
   );

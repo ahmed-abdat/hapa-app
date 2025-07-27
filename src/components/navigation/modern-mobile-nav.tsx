@@ -16,14 +16,15 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Menu, ArrowRight, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { isValidLocale, defaultLocale } from "@/utilities/locale";
+import { useLocale } from 'next-intl';
+import { type Locale } from "@/utilities/locale";
 import {
   navigationItems,
   getNavigationItemText,
+  hasHref,
   type NavigationItem,
 } from "./navigation-items";
 import { useState } from "react";
@@ -31,13 +32,9 @@ import { cn } from "@/lib/utils";
 
 export function ModernMobileNav() {
   const [isOpen, setIsOpen] = useState(false);
-  const pathname = usePathname();
-
-  // Extract current validLocale from pathname
-  const currentLocale = pathname.split("/")[1];
-  const validLocale = isValidLocale(currentLocale)
-    ? currentLocale
-    : defaultLocale;
+  
+  // Get locale from next-intl context (proper way)
+  const validLocale = useLocale() as Locale;
 
   const closeSheet = () => setIsOpen(false);
 
@@ -48,7 +45,7 @@ export function ModernMobileNav() {
       return (
         <Link
           key={title}
-          href={`/${validLocale}${item.href === "/" ? "" : item.href}`}
+          href={item.href}
           className="flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg hover:bg-primary/5 hover:text-primary focus:bg-primary/10 focus:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
           onClick={closeSheet}
         >
@@ -76,6 +73,8 @@ export function ModernMobileNav() {
           </AccordionTrigger>
           <AccordionContent className="mt-2 pb-2">
             {item.items?.map((subItem) => {
+              if (!hasHref(subItem)) return null; // Skip items without href
+              
               const subTitle = getNavigationItemText(
                 subItem,
                 validLocale,
@@ -88,7 +87,7 @@ export function ModernMobileNav() {
               return (
                 <Link
                   key={subTitle}
-                  href={`/${validLocale}${subItem.href}`}
+                  href={subItem.href}
                   className={cn(
                     "flex select-none gap-3 rounded-md p-3 leading-none outline-none transition-colors hover:bg-primary/5 hover:text-primary focus:bg-primary/10 focus:text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 min-w-0",
                     validLocale === "ar" ? "mr-4" : "ml-4"
@@ -144,7 +143,7 @@ export function ModernMobileNav() {
         <SheetHeader className="p-6 bg-gradient-to-r from-primary to-primary/80">
           <SheetTitle asChild>
             <Link
-              href={`/${validLocale}`}
+              href="/"
               className={`flex items-center gap-3 text-white`}
               onClick={closeSheet}
             >
@@ -191,7 +190,7 @@ export function ModernMobileNav() {
             </h3>
             <nav className="space-y-2">
               <Link
-                href={`/${validLocale}/services`}
+                href="/services"
                 className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl hover:bg-primary/5 hover:text-primary focus:bg-primary/10 focus:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-200 active:scale-95"
                 onClick={closeSheet}
               >
@@ -214,7 +213,7 @@ export function ModernMobileNav() {
               </Link>
 
               <Link
-                href={`/${validLocale}/search`}
+                href="/search"
                 className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl hover:bg-primary/5 hover:text-primary focus:bg-primary/10 focus:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-200 active:scale-95"
                 onClick={closeSheet}
               >
@@ -246,7 +245,7 @@ export function ModernMobileNav() {
             <span className="text-sm font-medium text-primary">
               {validLocale === "ar" ? "اللغة" : "Langue"}
             </span>
-            <LanguageSwitcher currentLocale={validLocale} />
+            <LanguageSwitcher />
           </div>
 
           <Separator className="bg-primary/10" />

@@ -104,24 +104,21 @@ export const MediaSpaceBlock: React.FC<MediaSpaceProps> = ({
 
   return (
     <section
-      className="py-16 sm:py-20 md:py-24 bg-gradient-to-br from-white via-gray-50/50 to-primary/5"
+      className="section-spacing-lg bg-gradient-to-br from-white via-gray-50/50 to-primary/5"
       dir={direction}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="hapa-container">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
           viewport={{ once: true, margin: "-100px" }}
-          className="text-center mb-12 sm:mb-16 md:mb-20"
+          className="header-spacing"
         >
-          <div className="flex items-center justify-center mb-6">
-            <Building className="h-8 w-8 sm:h-10 sm:w-10 text-primary mr-3" />
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4">
               {title || t("mediaSpace")}
             </h2>
-          </div>
           <p className="text-lg sm:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
             {description || t("mediaSpaceDesc")}
           </p>

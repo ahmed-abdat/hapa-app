@@ -3,9 +3,8 @@
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import React from 'react'
-import { useParams } from 'next/navigation'
 import { PhoneIcon, MailIcon, MapPinIcon } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 
 import { type Locale } from '@/utilities/locale'
 
@@ -14,22 +13,21 @@ interface FooterProps {
 }
 
 export function Footer({ footerData }: FooterProps = {}) {
-  const params = useParams()
-  const locale = (params?.locale as Locale) || 'fr'
+  const locale = useLocale() as Locale
   const t = useTranslations()
 
   // Static navigation items instead of CMS-managed ones
   const defaultNavItems = [
     {
-      href: `/${locale}/about`,
+      href: `/about`,
       label: t('about')
     },
     {
-      href: `/${locale}/actualites`,
+      href: `/actualites`,
       label: t('news')
     },
     {
-      href: `/${locale}/contact`,
+      href: `/contact`,
       label: t('contact')
     }
   ]
@@ -37,11 +35,11 @@ export function Footer({ footerData }: FooterProps = {}) {
   return (
     <footer className="mt-auto bg-gradient-to-br from-accent via-accent/95 to-accent/90 text-white">
       {/* Main Footer Content */}
-      <div className="container mx-auto px-4 lg:px-8 py-12 lg:py-16">
+      <div className="hapa-container py-12 lg:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Organization Info */}
           <div className="lg:col-span-2">
-            <Link className="flex items-center gap-x-4 mb-6 group" href={`/${locale}`}>
+            <Link className="flex items-center gap-x-4 mb-6 group" href={`/`}>
               {/* HAPA Official Logo */}
               <div className="relative">
                 <div className="w-16 h-16 bg-white/10 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow p-2">
@@ -113,28 +111,28 @@ export function Footer({ footerData }: FooterProps = {}) {
             </h4>
             <nav className="flex flex-col gap-2 text-sm">
               <Link 
-                href={`/${locale}/forms/media-content-report`}
+                href={`/forms/media-content-report`}
                 className="text-white/80 hover:text-secondary transition-colors duration-200 hover:translate-x-1 rtl:hover:-translate-x-1"
               >
-                {locale === 'fr' ? 'Signalement de contenu' : 'تبليغ عن المحتوى'}
+                {t('contentReporting')}
               </Link>
               <Link 
-                href={`/${locale}/forms/media-content-complaint`}
+                href={`/forms/media-content-complaint`}
                 className="text-white/80 hover:text-secondary transition-colors duration-200 hover:translate-x-1 rtl:hover:-translate-x-1"
               >
-                {locale === 'fr' ? 'Plainte officielle' : 'شكوى رسمية'}
+                {t('officialComplaintService')}
               </Link>
               <Link 
-                href={`/${locale}/contact`}
+                href={`/contact`}
                 className="text-white/80 hover:text-secondary transition-colors duration-200 hover:translate-x-1 rtl:hover:-translate-x-1"
               >
                 {t('contact')}
               </Link>
               <Link 
-                href={`/${locale}/publications/decisions`}
+                href={`/publications/decisions`}
                 className="text-white/80 hover:text-secondary transition-colors duration-200 hover:translate-x-1 rtl:hover:-translate-x-1"
               >
-                {locale === 'fr' ? 'Décisions et communiqués' : 'قرارات وبيانات'}
+                {t('decisionsAndCommuniques')}
               </Link>
             </nav>
           </div>
@@ -143,7 +141,7 @@ export function Footer({ footerData }: FooterProps = {}) {
 
       {/* Bottom Footer */}
       <div className="border-t border-white/20 bg-accent/20">
-        <div className="container mx-auto px-4 lg:px-8 py-4">
+        <div className="hapa-container py-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <p className="text-white/80 text-sm">
@@ -158,19 +156,19 @@ export function Footer({ footerData }: FooterProps = {}) {
             </div>
             <div className="flex items-center gap-4 text-sm text-white/80">
               <Link 
-                href={`/${locale}/legal`}
+                href={`/legal`}
                 className="hover:text-secondary transition-colors duration-200"
               >
                 {t('legalNotices')}
               </Link>
               <Link 
-                href={`/${locale}/privacy`}
+                href={`/privacy`}
                 className="hover:text-secondary transition-colors duration-200"
               >
                 {t('privacyPolicy')}
               </Link>
               <Link 
-                href={`/${locale}/accessibility`}
+                href={`/accessibility`}
                 className="hover:text-secondary transition-colors duration-200"
               >
                 {t('accessibility')}

@@ -26,6 +26,11 @@ export interface NavigationItem {
   items?: NavigationItem[];
 }
 
+// Type guard to check if an item has an href
+export function hasHref(item: NavigationItem): item is NavigationItem & { href: string } {
+  return item.href !== undefined;
+}
+
 export const navigationItems: NavigationItem[] = [
   {
     title: { fr: "Accueil", ar: "الرئيسية" },

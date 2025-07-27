@@ -35,7 +35,7 @@ export const Card: React.FC<{
     const hasCategories = categories && Array.isArray(categories) && categories.length > 0
     const titleToUse = titleFromProps || title
     const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
-    const href = `/${locale}/${relationTo}/${slug}`
+    const href = `/${relationTo}/${slug}`
     const direction = getLocaleDirection(locale)
     const isRtl = direction === 'rtl'
     const publicationDate = publishedAt || createdAt

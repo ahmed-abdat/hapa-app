@@ -1,16 +1,15 @@
 "use client";
 import { useHeaderTheme } from "@/providers/HeaderTheme";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 import { ModernHeader } from "@/components/navigation/modern-header";
 import { ModernMobileNav } from "@/components/navigation/modern-mobile-nav";
-import { isValidLocale, defaultLocale } from "@/utilities/locale";
 
 interface HeaderClientProps {
   data?: unknown; // Optional data parameter for compatibility (not used)
@@ -23,12 +22,9 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   const { headerTheme, setHeaderTheme } = useHeaderTheme();
   const pathname = usePathname();
   const t = useTranslations();
-
-  // Extract current locale from pathname
-  const currentLocale = pathname.split("/")[1];
-  const validLocale = isValidLocale(currentLocale)
-    ? currentLocale
-    : defaultLocale;
+  
+  // Get locale from next-intl context (server-side aware)
+  const locale = useLocale();
 
   useEffect(() => {
     setHeaderTheme(null);
@@ -49,7 +45,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
           {/* Logo and Organization Info */}
           <div className="flex items-center gap-6">
             <Link
-              href={`/${validLocale}`}
+              href="/"
               className="flex items-center gap-3 hover:opacity-80 transition-opacity group"
             >
               {/* Official Government Seal/Logo */}
@@ -88,7 +84,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
               className="hover:bg-primary/10 hover:text-primary transition-colors"
               asChild
             >
-              <Link href={`/${validLocale}/search`}>
+              <Link href="/search">
                 <Search className="w-5 h-5" />
                 <span className="sr-only">
                   {t('searchButton')}

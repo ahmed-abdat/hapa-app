@@ -68,8 +68,7 @@ export const RenderBlocks: React.FC<{
             
             return (
               <div className={index === 0 ? "pt-8 sm:pt-12 md:pt-24" : "pt-8 sm:pt-12 md:pt-24"} key={index}>
-                {/* @ts-expect-error Block props may not match exactly */}
-                <Block {...block} />
+                <Block {...block} locale={locale} />
               </div>
             )
           }

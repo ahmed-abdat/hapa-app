@@ -21,9 +21,9 @@ export default getRequestConfig(async ({requestLocale}) => {
     // Best practice: Handle missing translations gracefully
     onError(error) {
       if (error.code === IntlErrorCode.MISSING_MESSAGE) {
-        console.warn('Missing translation:', error.message);
+        // Missing translation - will use default
       } else {
-        console.error('Translation error:', error);
+        // Translation error - will use default
       }
     },
 

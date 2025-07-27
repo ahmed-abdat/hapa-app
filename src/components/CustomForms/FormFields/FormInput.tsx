@@ -35,7 +35,7 @@ export function FormInput({
         type={type}
         placeholder={placeholder}
         disabled={disabled}
-        className={`w-full ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'}`}
+        className={`w-full h-12 px-4 rounded-lg border-2 transition-all duration-200 ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-primary focus:ring-primary/20'} focus:ring-4`}
         aria-invalid={error ? 'true' : 'false'}
         aria-describedby={error ? `${name}-error` : undefined}
       />

@@ -60,6 +60,19 @@ const config = {
     'pb-12',
     'mt-8',
     'mb-8',
+    // Design System Spacing
+    'py-section-sm',
+    'py-section',
+    'py-section-md', 
+    'py-section-lg',
+    'mb-content-sm',
+    'mb-content',
+    'mb-content-lg',
+    'gap-grid-sm',
+    'gap-grid',
+    'px-container-sm',
+    'px-container',
+    'px-container-lg',
     // Line clamp utilities
     'line-clamp-1',
     'line-clamp-2',
@@ -113,19 +126,19 @@ const config = {
     container: {
       center: true,
       padding: {
-        '2xl': '2rem',
-        DEFAULT: '1rem',
-        lg: '2rem',
-        md: '2rem',
-        sm: '1rem',
-        xl: '2rem',
+        'DEFAULT': '1rem',     // px-4 - mobile
+        'sm': '1rem',          // px-4 - small screens
+        'md': '1.5rem',        // px-6 - medium screens  
+        'lg': '2rem',          // px-8 - large screens
+        'xl': '2rem',          // px-8 - extra large screens
+        '2xl': '2rem',         // px-8 - 2xl screens
       },
       screens: {
-        '2xl': '86rem',
-        lg: '64rem',
-        md: '48rem',
-        sm: '40rem',
-        xl: '80rem',
+        'sm': '40rem',         // 640px
+        'md': '48rem',         // 768px  
+        'lg': '64rem',         // 1024px
+        'xl': '80rem',         // 1280px
+        '2xl': '86rem',        // 1376px
       },
     },
     extend: {
@@ -139,11 +152,26 @@ const config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       spacing: {
+        // Legacy header spacing (maintain compatibility)
         'header-x': '1rem',        // 16px - consistent horizontal spacing
         'header-y': '1rem',        // 16px - consistent vertical spacing
         'nav-gap': '0.5rem',       // 8px - navigation items gap
         'section-gap': '1.5rem',   // 24px - section spacing
         'action-gap': '1rem',      // 16px - action items gap
+        
+        // New Design System Spacing
+        'section-sm': '3rem',      // 48px - small section padding
+        'section': '4rem',         // 64px - default section padding (py-16)
+        'section-md': '5rem',      // 80px - medium section padding (py-20)
+        'section-lg': '6rem',      // 96px - large section padding (py-24)
+        'content-sm': '2rem',      // 32px - small content spacing (mb-8)
+        'content': '3rem',         // 48px - default content spacing (mb-12)
+        'content-lg': '4rem',      // 64px - large content spacing (mb-16)
+        'grid-sm': '1.5rem',       // 24px - small grid gap (gap-6)
+        'grid': '2rem',            // 32px - default grid gap (gap-8)
+        'container-sm': '1rem',    // 16px - small container padding (px-4)
+        'container': '1.5rem',     // 24px - medium container padding (px-6)
+        'container-lg': '2rem',    // 32px - large container padding (px-8)
       },
       colors: {
         accent: {

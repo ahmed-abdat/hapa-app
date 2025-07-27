@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useParams } from "next/navigation";
 import { motion, Variants } from "framer-motion";
 import { Link } from "@/i18n/navigation";
 import {
@@ -14,7 +13,7 @@ import {
   ArrowRight,
   ArrowLeft,
 } from "lucide-react";
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
 
 type CoreServicesProps = {
@@ -106,25 +105,24 @@ export const CoreServicesBlock: React.FC<CoreServicesProps> = ({
   title,
   description,
 }) => {
-  const params = useParams();
-  const locale = (params?.locale as Locale) || "fr";
+  const locale = useLocale() as Locale;
   const direction = getLocaleDirection(locale);
   const isRtl = direction === "rtl";
   const t = useTranslations();
 
   return (
     <section
-      className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-gray-50 via-white to-blue-50/30"
+      className="section-spacing bg-gradient-to-br from-gray-50 via-white to-blue-50/30"
       dir={direction}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="hapa-container">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
           viewport={{ once: true, margin: "-100px" }}
-          className="text-center mb-8 sm:mb-12 md:mb-16"
+          className="header-spacing"
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
             {title || t('coreServices')}
@@ -141,7 +139,7 @@ export const CoreServicesBlock: React.FC<CoreServicesProps> = ({
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-spacing-sm max-w-6xl mx-auto"
         >
           {services.map((service, index) => {
             const Icon = service.icon;

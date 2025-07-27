@@ -20,6 +20,10 @@ export default async function HomePage({ params: paramsPromise }: Args) {
     notFound()
   }
 
+  // Enable static rendering
+  const { setRequestLocale } = await import('next-intl/server')
+  setRequestLocale(locale)
+
   const payload = await getPayload({ config: configPromise })
 
   // Get latest 6 posts for the news section (2 rows of 3 on desktop)
@@ -39,7 +43,7 @@ export default async function HomePage({ params: paramsPromise }: Args) {
     })
     latestPosts = postsResult.docs
   } catch (error) {
-    console.error('Error fetching posts for home page:', error)
+    // Error fetching posts - continue with empty array
     // Continue with empty posts array
   }
 
@@ -57,6 +61,7 @@ export default async function HomePage({ params: paramsPromise }: Args) {
       posts: latestPosts,
       maxPosts: 6,
       title: locale === 'ar' ? 'آخر الأخبار والإعلانات' : 'Actualités et Annonces',
+      description: locale === 'ar' ? 'ابق على اطلاع على آخر التحديثات التنظيمية والإعلانات الرسمية من الهيئة العليا للصحافة والإعلام.' : 'Restez informé des dernières mises à jour réglementaires et annonces officielles de HAPA.',
     },
     {
       blockType: 'partnersSection' as const,

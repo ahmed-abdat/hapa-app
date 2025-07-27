@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useParams } from "next/navigation";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowLeft, Shield, Users, FileText } from "lucide-react";
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useHeaderTheme } from "@/providers/HeaderTheme";
 import { AdvancedGradientButton } from "@/components/magicui/advanced-gradient-button";
 import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
@@ -15,8 +14,7 @@ import { type Locale, getLocaleDirection } from "@/utilities/locale";
 // Simple static homepage hero component
 export const HomepageHero: React.FC = () => {
   const { setHeaderTheme } = useHeaderTheme();
-  const params = useParams();
-  const locale = (params?.locale as Locale) || "fr";
+  const locale = useLocale() as Locale;
   const direction = getLocaleDirection(locale);
   const t = useTranslations();
 
@@ -46,7 +44,7 @@ export const HomepageHero: React.FC = () => {
 
       {/* Content */}
       <div className="relative z-10 flex min-h-screen items-center pt-[10.4rem] pb-20">
-        <div className="container mx-auto px-4">
+        <div className="hapa-container pt-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center min-h-[80vh]">
             {/* Main Content */}
             <div className="lg:col-span-7 space-y-8 text-center lg:text-start">
