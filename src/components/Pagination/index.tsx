@@ -122,7 +122,6 @@ export const Pagination: React.FC<PaginationProps> = ({
             hasPrevPage 
               ? 'text-gray-700 hover:text-primary hover:bg-primary/5 hover:border-primary/30 active:scale-95' 
               : 'text-gray-400 cursor-not-allowed opacity-50',
-            isRtl && 'flex-row-reverse'
           )}
           aria-label={locale === 'ar' ? 'الصفحة السابقة' : 'Page précédente'}
         >
@@ -187,7 +186,6 @@ export const Pagination: React.FC<PaginationProps> = ({
             hasNextPage 
               ? 'text-gray-700 hover:text-primary hover:bg-primary/5 hover:border-primary/30 active:scale-95' 
               : 'text-gray-400 cursor-not-allowed opacity-50',
-            isRtl && 'flex-row-reverse'
           )}
           aria-label={locale === 'ar' ? 'الصفحة التالية' : 'Page suivante'}
         >
@@ -206,7 +204,6 @@ export const Pagination: React.FC<PaginationProps> = ({
       {totalPages >= 10 && (
         <div className={cn(
           'flex items-center gap-2 text-xs text-gray-500',
-          isRtl && 'flex-row-reverse'
         )}>
           <label htmlFor="page-jump" className="font-medium">
             {locale === 'ar' ? 'الذهاب إلى الصفحة:' : 'Aller à la page:'}

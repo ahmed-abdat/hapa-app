@@ -27,11 +27,11 @@ export const MediaReportingCTA: React.FC = () => {
           <div className="group relative bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             {/* Card Header */}
             <div className="bg-gradient-to-br from-orange-500 to-red-500 p-6 text-white">
-              <div className={`flex items-center gap-4 ${isRtl ? 'flex-row-reverse' : ''}`}>
+              <div className={`flex items-center gap-4`}>
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                   <AlertTriangle className="w-6 h-6" />
                 </div>
-                <div className={isRtl ? 'text-right' : 'text-left'}>
+                <div>
                   <h3 className="text-xl font-bold">
                     {t("reportContentCardTitle")}
                   </h3>
@@ -42,18 +42,18 @@ export const MediaReportingCTA: React.FC = () => {
 
             {/* Card Content */}
             <div className="p-6 space-y-6">
-              <p className={`text-gray-600 leading-relaxed ${isRtl ? 'text-right' : 'text-left'}`}>
+              <p className={`text-gray-600 leading-relaxed`}>
                 {t("reportContentCardDesc")}
               </p>
 
               {/* Features */}
               <div className="space-y-3">
                 {(t.raw("reportContentCardFeatures") as string[]).map((feature, index) => (
-                  <div key={index} className={`flex items-center gap-3 ${isRtl ? 'flex-row-reverse' : ''}`}>
+                  <div key={index} className={`flex items-center gap-3`}>
                     <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
                       <CheckCircle className="w-3 h-3 text-green-600" />
                     </div>
-                    <span className={`text-sm text-gray-700 ${isRtl ? 'text-right' : 'text-left'}`}>
+                    <span className={`text-sm text-gray-700`}>
                       {feature}
                     </span>
                   </div>
@@ -65,7 +65,7 @@ export const MediaReportingCTA: React.FC = () => {
                 href="/forms/media-content-report" 
                 className="block w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 text-center group-hover:shadow-lg"
               >
-                <span className={`flex items-center justify-center gap-2 ${isRtl ? 'flex-row-reverse' : ''}`}>
+                <span className={`flex items-center justify-center gap-2`}>
                   <span>{t("startReport")}</span>
                   {isRtl ? (
                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -81,11 +81,11 @@ export const MediaReportingCTA: React.FC = () => {
           <div className="group relative bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             {/* Card Header */}
             <div className="bg-gradient-to-br from-primary to-accent p-6 text-white">
-              <div className={`flex items-center gap-4 ${isRtl ? 'flex-row-reverse' : ''}`}>
+              <div className={`flex items-center gap-4`}>
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                   <MessageCircle className="w-6 h-6" />
                 </div>
-                <div className={isRtl ? 'text-right' : 'text-left'}>
+                <div>
                   <h3 className="text-xl font-bold">
                     {t("complaintCardTitle")}
                   </h3>
@@ -96,18 +96,18 @@ export const MediaReportingCTA: React.FC = () => {
 
             {/* Card Content */}
             <div className="p-6 space-y-6">
-              <p className={`text-gray-600 leading-relaxed ${isRtl ? 'text-right' : 'text-left'}`}>
+              <p className={`text-gray-600 leading-relaxed`}>
                 {t("complaintCardDesc")}
               </p>
 
               {/* Features */}
               <div className="space-y-3">
                 {(t.raw("complaintCardFeatures") as string[]).map((feature, index) => (
-                  <div key={index} className={`flex items-center gap-3 ${isRtl ? 'flex-row-reverse' : ''}`}>
+                  <div key={index} className={`flex items-center gap-3`}>
                     <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
                       <CheckCircle className="w-3 h-3 text-green-600" />
                     </div>
-                    <span className={`text-sm text-gray-700 ${isRtl ? 'text-right' : 'text-left'}`}>
+                    <span className={`text-sm text-gray-700`}>
                       {feature}
                     </span>
                   </div>
@@ -119,7 +119,7 @@ export const MediaReportingCTA: React.FC = () => {
                 href="/forms/media-content-complaint" 
                 className="block w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 text-center group-hover:shadow-lg"
               >
-                <span className={`flex items-center justify-center gap-2 ${isRtl ? 'flex-row-reverse' : ''}`}>
+                <span className={`flex items-center justify-center gap-2`}>
                   <span>{t("fileComplaint")}</span>
                   {isRtl ? (
                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />

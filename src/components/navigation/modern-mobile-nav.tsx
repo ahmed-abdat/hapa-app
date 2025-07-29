@@ -18,7 +18,7 @@ import {
 import { Menu, ArrowRight, ArrowLeft } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { LanguageSwitcherSuspense } from "@/components/LanguageSwitcher/LanguageSwitcherSuspense";
 import { useLocale } from 'next-intl';
 import { type Locale } from "@/utilities/locale";
 import {
@@ -245,7 +245,7 @@ export function ModernMobileNav() {
             <span className="text-sm font-medium text-primary">
               {validLocale === "ar" ? "اللغة" : "Langue"}
             </span>
-            <LanguageSwitcher />
+            <LanguageSwitcherSuspense />
           </div>
 
           <Separator className="bg-primary/10" />

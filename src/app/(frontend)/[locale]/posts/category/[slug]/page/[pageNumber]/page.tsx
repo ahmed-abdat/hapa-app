@@ -1,7 +1,7 @@
 import type { Metadata } from "next/types";
 import { CollectionArchive } from "@/components/CollectionArchive";
 import { PageRange } from "@/components/PageRange";
-import { Pagination } from "@/components/Pagination";
+import { PaginationSuspense } from "@/components/Pagination/PaginationSuspense";
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
 import React from "react";
@@ -106,7 +106,7 @@ export default async function CategoryPaginationPage({
       {/* Pagination */}
       <div className="container">
         {posts.totalDocs > 12 && (
-          <Pagination
+          <PaginationSuspense
             totalItems={posts.totalDocs}
             itemsPerPage={12}
             currentPage={posts.page || 1}

@@ -1,7 +1,7 @@
 import type { Metadata } from "next/types";
 import { CollectionArchive } from "@/components/CollectionArchive";
 import { PageRange } from "@/components/PageRange";
-import { Pagination } from "@/components/Pagination";
+import { PaginationSuspense } from "@/components/Pagination/PaginationSuspense";
 import { PublicationsCategoryHero } from "@/heros/PublicationsCategoryHero";
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
@@ -139,7 +139,7 @@ export default async function PublicationCategoryPage({
         {/* Pagination */}
         {posts.totalDocs > 12 && (
           <div className="mt-12">
-            <Pagination
+            <PaginationSuspense
               totalItems={posts.totalDocs}
               itemsPerPage={12}
               currentPage={posts.page || 1}

@@ -54,6 +54,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
         <meta name="grammarly-disable-indicator" content="true" />
         <meta name="grammarly-disable-editor" content="true" />
+        <meta name="grammarly-disable" content="true" />
         {/* Preload Arabic fonts for better performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -63,8 +64,9 @@ export default async function LocaleLayout({ children, params }: Props) {
         />
       </head>
       <body
-        suppressHydrationWarning
+        suppressHydrationWarning={true}
         className={cn("overflow-x-hidden", fontClass)}
+        data-grammarly-disable="true"
       >
         <Providers>
           <NextIntlClientProvider locale={locale as Locale} messages={messages}>

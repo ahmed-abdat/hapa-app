@@ -2,8 +2,8 @@ import type { Metadata } from "next/types";
 
 import { CollectionArchive } from "@/components/CollectionArchive";
 import { PageRange } from "@/components/PageRange";
-import { Pagination } from "@/components/Pagination";
-import { CategoryFilter } from "@/components/CategoryFilter";
+import { PaginationSuspense } from "@/components/Pagination/PaginationSuspense";
+import { CategoryFilterSuspense } from "@/components/CategoryFilter/CategoryFilterSuspense";
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
 import React from "react";
@@ -158,7 +158,7 @@ export default async function Page({
         {/* Category Filter Section */}
         <section className="bg-gray-50/50 border-b border-gray-200/50">
           <div className="hapa-container">
-            <CategoryFilter
+            <CategoryFilterSuspense
               categories={allCategories.docs}
               selectedCategory={category}
               locale={locale as Locale}
@@ -184,7 +184,7 @@ export default async function Page({
             <CollectionArchive posts={posts.docs} locale={locale as Locale} />
 
             {/* Pagination - Only shows when there are 10+ posts */}
-            <Pagination
+            <PaginationSuspense
               totalItems={posts.totalDocs}
               itemsPerPage={postsPerPage}
               currentPage={currentPage}

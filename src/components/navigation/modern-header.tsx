@@ -13,7 +13,7 @@ import { SearchIcon } from "lucide-react";
 import { useLocale } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { LanguageSwitcherSuspense } from "@/components/LanguageSwitcher/LanguageSwitcherSuspense";
 import { type Locale } from "@/utilities/locale";
 import {
   navigationItems,
@@ -173,7 +173,7 @@ export function ModernHeader() {
         </Button>
 
         {/* Language Switcher */}
-        <LanguageSwitcher />
+        <LanguageSwitcherSuspense />
       </div>
     </div>
   );

@@ -21,8 +21,8 @@ importers:
         specifier: 3.44.0
         version: 3.44.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@payloadcms/db-postgres':
-        specifier: ^3.44.0
-        version: 3.49.0(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))
+        specifier: 3.44.0
+        version: 3.44.0(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))
       '@payloadcms/email-resend':
         specifier: 3.44.0
         version: 3.44.0(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))
@@ -54,8 +54,8 @@ importers:
         specifier: 3.44.0
         version: 3.44.0(@types/react@19.1.0)(monaco-editor@0.52.2)(next@15.3.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.7.3)
       '@payloadcms/translations':
-        specifier: ^3.47.0
-        version: 3.49.0
+        specifier: 3.44.0
+        version: 3.44.0
       '@payloadcms/ui':
         specifier: 3.44.0
         version: 3.44.0(@types/react@19.1.0)(monaco-editor@0.52.2)(next@15.3.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.7.3)
@@ -1395,15 +1395,15 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@payloadcms/db-postgres@3.49.0':
-    resolution: {integrity: sha512-FNMyzDu/Z4UMDXpro6U7S1+hB+Qae8wC9jUo4riTLEuOI1z3zumksww8mkn9x/pHjqH1oIUk640Gg4nDEYfGWw==}
+  '@payloadcms/db-postgres@3.44.0':
+    resolution: {integrity: sha512-zmA+ZoeW4XWPc1S+3xejUweQxlZwwjxNycXYfKehd2/N2TQEp5mB4k/OsbjquAZuW2jDbT5eDOagodbNN+q8bg==}
     peerDependencies:
-      payload: 3.49.0
+      payload: 3.44.0
 
-  '@payloadcms/drizzle@3.49.0':
-    resolution: {integrity: sha512-TzW4dYkbCvDComS/A/7Fda6xeSwM6dUtTlCNlRGO4OgnPALR64z5GUxGq6MJtqQiZJKlT1MCcp1ZvXSR+z3d9Q==}
+  '@payloadcms/drizzle@3.44.0':
+    resolution: {integrity: sha512-YjIiasyCZsaxdoM6ENShSZMqisZ047lvoIy0K5n+Ypy8j8JbtCmgpm5GmnjCo/5POTz9kAc89FuPa3ZJ0F/6Eg==}
     peerDependencies:
-      payload: 3.49.0
+      payload: 3.44.0
 
   '@payloadcms/email-nodemailer@3.44.0':
     resolution: {integrity: sha512-NOctR0RBjd1QyIyjP78Rk0wsjm5Kr3QCfj5m3JvCreHKtFkTVo/2Dzh5yug32739RHyKvX2hinNxmVFfDSe1hA==}
@@ -1496,9 +1496,6 @@ packages:
 
   '@payloadcms/translations@3.44.0':
     resolution: {integrity: sha512-V1eKnzPXeHgQAN5MdAMScrGbmksgLA/L0V2Jbs4oRcVIojxjCcBeifuXDvzphvwz3jx/Jr5d6MrFgSZK0D7ETA==}
-
-  '@payloadcms/translations@3.49.0':
-    resolution: {integrity: sha512-WVHx4ZvcfTsA98zD3UP6C6BQ8aFph+OYz8IwHqSuWiD2K2dkd91EEpnjHnF+/FEeBebKOdtjQ3ODJTHknUwVBw==}
 
   '@payloadcms/ui@3.44.0':
     resolution: {integrity: sha512-+GYRr972ijagO2TEiAgwMvQohwO1OTmzQ8Fq01OjKm+HUD26lMqfkAJxc6jnTE1HNvfypv4Duojfx5FODhQeMg==}
@@ -2568,6 +2565,10 @@ packages:
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
+  buffer-writer@2.0.0:
+    resolution: {integrity: sha512-a7ZpuTZU1TRtnwyCNW3I5dc0wWNC3VR9S++Ewyk2HHZdrO3CQJqSpd+95Us590V6AL7JqUAH2IwZ/398PmNFgw==}
+    engines: {node: '>=4'}
+
   buffer@4.9.2:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
 
@@ -2805,8 +2806,8 @@ packages:
     resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
     engines: {node: '>=12'}
 
-  drizzle-kit@0.31.4:
-    resolution: {integrity: sha512-tCPWVZWZqWVx2XUsVpJRnH9Mx0ClVOf5YUHerZ5so1OKSlqww4zy1R5ksEdGRcO3tM3zj0PYN6V48TbQCL1RfA==}
+  drizzle-kit@0.31.1:
+    resolution: {integrity: sha512-PUjYKWtzOzPtdtQlTHQG3qfv4Y0XT8+Eas6UbxCmxTj7qgMf+39dDujf1BP1I+qqZtw9uzwTh8jYtkMuCq+B0Q==}
     hasBin: true
 
   drizzle-orm@0.44.2:
@@ -3970,6 +3971,9 @@ packages:
   package-json-from-dist@1.0.1:
     resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
 
+  packet-reader@1.0.0:
+    resolution: {integrity: sha512-HAKu/fG3HpHFO0AA8WE8q2g+gBJaZ9MG7fcKk+IJPLTGAD6Psw4443l+9DGRbOIh3/aXr7Phy0TjilYivJo5XQ==}
+
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
     engines: {node: '>=6'}
@@ -4047,6 +4051,15 @@ packages:
   pg-types@4.0.2:
     resolution: {integrity: sha512-cRL3JpS3lKMGsKaWndugWQoLOCoP+Cic8oseVcbr0qhPzYD5DWXK+RZ9LY9wxRf7RQia4SCwQlXk0q6FCPrVng==}
     engines: {node: '>=10'}
+
+  pg@8.11.3:
+    resolution: {integrity: sha512-+9iuvG8QfaaUrrph+kpF24cXkH1YOOUeArRNYIxq1viYHZagBxrTno7cecY1Fa44tJeZvaoG+Djpkc3JwehN5g==}
+    engines: {node: '>= 8.0.0'}
+    peerDependencies:
+      pg-native: '>=3.0.1'
+    peerDependenciesMeta:
+      pg-native:
+        optional: true
 
   pg@8.16.3:
     resolution: {integrity: sha512-enxc1h0jA/aq5oSDMvqyW3q89ra6XIIDZgCX9vkMrnz5DFTw/Ny3Li2lFQ+pt3L6MCgm/5o2o8HW9hiJji+xvw==}
@@ -6377,15 +6390,15 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  '@payloadcms/db-postgres@3.49.0(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))':
+  '@payloadcms/db-postgres@3.44.0(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))':
     dependencies:
-      '@payloadcms/drizzle': 3.49.0(@types/pg@8.10.2)(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))(pg@8.16.3)
+      '@payloadcms/drizzle': 3.44.0(@types/pg@8.10.2)(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))(pg@8.11.3)
       '@types/pg': 8.10.2
       console-table-printer: 2.12.1
-      drizzle-kit: 0.31.4
-      drizzle-orm: 0.44.2(@types/pg@8.10.2)(pg@8.16.3)
+      drizzle-kit: 0.31.1
+      drizzle-orm: 0.44.2(@types/pg@8.10.2)(pg@8.11.3)
       payload: 3.44.0(graphql@16.11.0)(typescript@5.7.3)
-      pg: 8.16.3
+      pg: 8.11.3
       prompts: 2.4.2
       to-snake-case: 1.0.0
       uuid: 10.0.0
@@ -6420,11 +6433,11 @@ snapshots:
       - sqlite3
       - supports-color
 
-  '@payloadcms/drizzle@3.49.0(@types/pg@8.10.2)(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))(pg@8.16.3)':
+  '@payloadcms/drizzle@3.44.0(@types/pg@8.10.2)(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))(pg@8.11.3)':
     dependencies:
       console-table-printer: 2.12.1
       dequal: 2.0.3
-      drizzle-orm: 0.44.2(@types/pg@8.10.2)(pg@8.16.3)
+      drizzle-orm: 0.44.2(@types/pg@8.10.2)(pg@8.11.3)
       payload: 3.44.0(graphql@16.11.0)(typescript@5.7.3)
       prompts: 2.4.2
       to-snake-case: 1.0.0
@@ -6642,10 +6655,6 @@ snapshots:
       - typescript
 
   '@payloadcms/translations@3.44.0':
-    dependencies:
-      date-fns: 4.1.0
-
-  '@payloadcms/translations@3.49.0':
     dependencies:
       date-fns: 4.1.0
 
@@ -7875,6 +7884,8 @@ snapshots:
 
   buffer-from@1.1.2: {}
 
+  buffer-writer@2.0.0: {}
+
   buffer@4.9.2:
     dependencies:
       base64-js: 1.5.1
@@ -8095,7 +8106,7 @@ snapshots:
 
   dotenv@16.4.7: {}
 
-  drizzle-kit@0.31.4:
+  drizzle-kit@0.31.1:
     dependencies:
       '@drizzle-team/brocli': 0.10.2
       '@esbuild-kit/esm-loader': 2.6.5
@@ -8104,10 +8115,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.44.2(@types/pg@8.10.2)(pg@8.16.3):
+  drizzle-orm@0.44.2(@types/pg@8.10.2)(pg@8.11.3):
     optionalDependencies:
       '@types/pg': 8.10.2
-      pg: 8.16.3
+      pg: 8.11.3
 
   dunder-proto@1.0.1:
     dependencies:
@@ -9508,6 +9519,8 @@ snapshots:
 
   package-json-from-dist@1.0.1: {}
 
+  packet-reader@1.0.0: {}
+
   parent-module@1.0.1:
     dependencies:
       callsites: 3.1.0
@@ -9596,6 +9609,10 @@ snapshots:
 
   pg-numeric@1.0.2: {}
 
+  pg-pool@3.10.1(pg@8.11.3):
+    dependencies:
+      pg: 8.11.3
+
   pg-pool@3.10.1(pg@8.16.3):
     dependencies:
       pg: 8.16.3
@@ -9619,6 +9636,18 @@ snapshots:
       postgres-date: 2.1.0
       postgres-interval: 3.0.0
       postgres-range: 1.1.4
+
+  pg@8.11.3:
+    dependencies:
+      buffer-writer: 2.0.0
+      packet-reader: 1.0.0
+      pg-connection-string: 2.9.1
+      pg-pool: 3.10.1(pg@8.11.3)
+      pg-protocol: 1.10.3
+      pg-types: 2.2.0
+      pgpass: 1.0.5
+    optionalDependencies:
+      pg-cloudflare: 1.2.7
 
   pg@8.16.3:
     dependencies:

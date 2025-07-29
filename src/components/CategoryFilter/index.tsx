@@ -61,7 +61,7 @@ export function CategoryFilter({
         <div className={`absolute ${isRtl ? 'left-0' : 'right-0'} top-0 bottom-0 w-8 ${isRtl ? 'bg-gradient-to-r' : 'bg-gradient-to-l'} from-gray-50 to-transparent z-10 pointer-events-none`} />
         
         <ScrollArea className="w-full" type="scroll">
-          <div className={`flex gap-3 pb-4 px-2 ${isRtl ? 'flex-row-reverse' : ''}`} style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className={`flex gap-3 pb-4 px-2 `} style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {/* All Categories Button */}
             <motion.div
               whileHover={{ scale: 1.02 }}
