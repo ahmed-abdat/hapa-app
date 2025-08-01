@@ -11,9 +11,9 @@ interface CategoryFilterSuspenseProps {
 }
 
 // Loading fallback for CategoryFilter
-function CategoryFilterFallback({ locale }: { locale: Locale }) {
+function CategoryFilterFallback() {
   return (
-    <div className="w-full" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="w-full" >
       <div className="animate-pulse">
         {/* Loading skeleton for filter header */}
         <div className="flex items-center gap-2 mb-6">
@@ -35,7 +35,7 @@ function CategoryFilterFallback({ locale }: { locale: Locale }) {
 
 export function CategoryFilterSuspense({ categories, selectedCategory, locale }: CategoryFilterSuspenseProps) {
   return (
-    <Suspense fallback={<CategoryFilterFallback locale={locale} />}>
+      <Suspense fallback={<CategoryFilterFallback />}>
       <CategoryFilter 
         categories={categories}
         selectedCategory={selectedCategory}

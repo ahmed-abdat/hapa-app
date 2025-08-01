@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import {
   Tv,
   UserCheck,
-  MessageSquareWarning,
+  Bell,
   FileText,
   Scale,
   Phone,
@@ -14,7 +14,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { useTranslations, useLocale } from 'next-intl';
-import { type Locale, getLocaleDirection } from "@/utilities/locale";
+import { type Locale } from "@/utilities/locale";
 
 type CoreServicesProps = {
   title?: string;
@@ -41,7 +41,7 @@ const services = [
     hoverColor: "hover:bg-green-100",
   },
   {
-    icon: MessageSquareWarning,
+    icon: Bell,
     titleKey: "publicComplaints",
     descKey: "publicComplaintsDesc",
     href: "/services/complaints",
@@ -106,14 +106,12 @@ export const CoreServicesBlock: React.FC<CoreServicesProps> = ({
   description,
 }) => {
   const locale = useLocale() as Locale;
-  const direction = getLocaleDirection(locale);
-  const isRtl = direction === "rtl";
+  const isRtl = locale === "ar";
   const t = useTranslations();
 
   return (
     <section
       className="section-spacing bg-gradient-to-br from-gray-50 via-white to-blue-50/30"
-      dir={direction}
     >
       <div className="hapa-container">
         {/* Section Header */}
@@ -163,10 +161,10 @@ export const CoreServicesBlock: React.FC<CoreServicesProps> = ({
                     {/* Content */}
                     <div className="flex-grow">
                       <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 group-hover:text-primary transition-colors duration-300 ease-out">
-                        {t(service.titleKey as any)}
+                        {t(String(service.titleKey))}
                       </h3>
                       <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                        {t(service.descKey as any)}
+                        {t(String(service.descKey))}
                       </p>
                     </div>
 

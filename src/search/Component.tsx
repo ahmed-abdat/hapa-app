@@ -12,7 +12,7 @@ import { useDebounce } from "@/utilities/useDebounce";
 import { useRouter, usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { type Locale, getLocaleDirection } from "@/utilities/locale";
+import { type Locale } from "@/utilities/locale";
 import { cn } from "@/utilities/ui";
 import { quickSearch, type QuickSearchResult } from "@/app/actions/search";
 import { Button } from "@/components/ui/button";
@@ -41,8 +41,7 @@ export const Search: React.FC<SearchProps> = ({
   const pathname = usePathname();
   const params = useParams();
   const locale = (params?.locale as Locale) || "fr";
-  const direction = getLocaleDirection(locale);
-  const isRtl = direction === "rtl";
+  const isRtl = locale === "ar";
   const t = useTranslations();
 
   const debouncedValue = useDebounce(value, 300);
@@ -212,7 +211,7 @@ export const Search: React.FC<SearchProps> = ({
   const styles = getVariantStyles();
 
   return (
-    <div className={cn("relative", styles.container)} dir={direction}>
+    <div className={cn("relative", styles.container)}>
       <form onSubmit={handleSubmit} className="relative">
         {/* Search Icon */}
         <SearchIcon
@@ -242,7 +241,6 @@ export const Search: React.FC<SearchProps> = ({
             isFocused && "shadow-lg border-primary/30",
             isRtl && "text-right pr-11 pl-11"
           )}
-          dir={direction}
         />
 
         {/* Clear Button */}
@@ -328,7 +326,6 @@ export const Search: React.FC<SearchProps> = ({
                       <div className="flex-1 min-w-0">
                         <p
                           className="text-sm text-gray-700 truncate"
-                          dir={direction}
                         >
                           {result.title}
                         </p>
@@ -359,7 +356,6 @@ export const Search: React.FC<SearchProps> = ({
             <div className="p-4">
               <h4
                 className="text-sm font-medium text-gray-700 mb-3 flex items-center gap-2"
-                dir={direction}
               >
                 <History className="w-4 h-4 text-gray-500" />
                 {t("recentSearches")}
@@ -370,7 +366,6 @@ export const Search: React.FC<SearchProps> = ({
                     key={index}
                     onClick={() => handleSuggestionClick(query)}
                     className="w-full text-left px-2 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-md transition-colors duration-200"
-                    dir={direction}
                   >
                     <span className="truncate">{query}</span>
                   </button>

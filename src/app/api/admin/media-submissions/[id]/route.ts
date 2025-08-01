@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
+import type { SubmissionStatus, SubmissionPriority } from '@/types/media-forms'
+
+interface SubmissionUpdateData {
+  submissionStatus?: SubmissionStatus
+  priority?: SubmissionPriority
+  adminNotes?: string
+  resolution?: {
+    resolvedAt: string
+    resolvedBy: string
+  }
+}
 
 export async function PATCH(
   req: NextRequest,
@@ -28,7 +39,7 @@ export async function PATCH(
     const { submissionStatus, priority, adminNotes } = body
 
     // Prepare update data
-    const updateData: any = {}
+    const updateData: SubmissionUpdateData = {}
     
     if (submissionStatus !== undefined) {
       updateData.submissionStatus = submissionStatus
@@ -46,7 +57,7 @@ export async function PATCH(
     if (submissionStatus === 'resolved' || submissionStatus === 'dismissed') {
       updateData.resolution = {
         resolvedAt: new Date().toISOString(),
-        resolvedBy: user.email || user.id,
+        resolvedBy: user.email || String(user.id),
       }
     }
 

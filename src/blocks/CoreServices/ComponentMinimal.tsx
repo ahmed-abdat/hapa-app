@@ -7,7 +7,7 @@ import { Link } from "@/i18n/navigation";
 import {
   Tv,
   UserCheck,
-  MessageSquareWarning,
+  Bell,
   FileText,
   Scale,
   Phone,
@@ -15,7 +15,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { useTranslations } from 'next-intl';
-import { type Locale, getLocaleDirection } from "@/utilities/locale";
+import { type Locale } from "@/utilities/locale";
 
 type CoreServicesMinimalProps = {
   title?: string;
@@ -36,7 +36,7 @@ const services = [
     href: "/services/professional-registration",
   },
   {
-    icon: MessageSquareWarning,
+    icon: Bell,
     titleKey: "publicComplaints",
     descKey: "publicComplaintsDesc",
     href: "/services/complaints",
@@ -90,14 +90,12 @@ export const CoreServicesMinimalBlock: React.FC<CoreServicesMinimalProps> = ({
 }) => {
   const params = useParams();
   const locale = (params?.locale as Locale) || "fr";
-  const direction = getLocaleDirection(locale);
-  const isRtl = direction === "rtl";
+  const isRtl = locale === "ar";
   const t = useTranslations();
 
   return (
     <section
       className="section-spacing bg-white"
-      dir={direction}
     >
       <div className="hapa-container">
         {/* Section Header */}

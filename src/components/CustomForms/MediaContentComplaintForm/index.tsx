@@ -13,15 +13,20 @@ import {
   FormInput, 
   FormTextarea, 
   FormCheckboxGroup, 
-  FormRadioGroup 
+  FormRadioGroup,
+  FormSelect,
+  CountryCombobox,
+  TVChannelCombobox,
+  RadioStationCombobox,
+  FormDateTimePicker,
+  FormFileUpload
 } from '../FormFields'
 import { 
-  mediaContentComplaintSchema, 
+  createMediaContentComplaintSchema, 
   type MediaContentComplaintFormData,
   type MediaContentComplaintSubmission 
 } from '@/lib/validations/media-forms'
 import { type Locale } from '@/utilities/locale'
-import { getLocaleDirection } from '@/utilities/locale'
 
 interface MediaContentComplaintFormProps {
   className?: string
@@ -34,14 +39,15 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
   const params = useParams()
   const router = useRouter()
   const locale = (params?.locale as Locale) || 'fr'
-  const direction = getLocaleDirection(locale)
   const t = useTranslations()
 
   const methods = useForm<MediaContentComplaintFormData>({
-    resolver: zodResolver(mediaContentComplaintSchema),
+    resolver: zodResolver(createMediaContentComplaintSchema(t)),
     defaultValues: {
       // Complainant Information
       fullName: '',
+      gender: undefined,
+      country: '',
       phoneNumber: '',
       whatsappNumber: '',
       emailAddress: '',
@@ -51,9 +57,14 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
       // Content Information
       mediaType: undefined,
       mediaTypeOther: '',
+      tvChannel: undefined,
+      tvChannelOther: '',
+      radioStation: undefined,
+      radioStationOther: '',
       programName: '',
       broadcastDateTime: '',
       linkScreenshot: '',
+      screenshotFiles: [],
       // Complaint Reasons
       reasons: [],
       reasonOther: '',
@@ -62,6 +73,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
       // Attachments
       attachmentTypes: [],
       attachmentOther: '',
+      attachmentFiles: [],
       // Declaration and Consent
       acceptDeclaration: false,
       acceptConsent: false,
@@ -70,6 +82,8 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
 
   const { watch } = methods
   const selectedMediaType = watch('mediaType')
+  const selectedTvChannel = watch('tvChannel')
+  const selectedRadioStation = watch('radioStation')
   const selectedReasons = watch('reasons')
   const selectedAttachments = watch('attachmentTypes')
   const selectedRelationship = watch('relationshipToContent')
@@ -90,6 +104,12 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
     { value: 'journalist', label: t('journalist') },
     { value: 'other', label: t('other') },
   ]
+
+  const genderOptions = [
+    { value: 'male', label: t('male') },
+    { value: 'female', label: t('female') },
+  ]
+
 
   const complaintReasonOptions = [
     { value: 'hateSpeech', label: t('hateSpeech') },
@@ -165,7 +185,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
   // Show thank you card if form was submitted successfully
   if (isSubmitted) {
     return (
-      <div dir={direction} className={className}>
+      <div className={className}>
         <ThankYouCard 
           locale={locale}
           formType="complaint"
@@ -176,7 +196,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
   }
 
   return (
-    <div dir={direction} className={className}>
+    <div className={className}>
       <BaseForm
         methods={methods}
         onSubmit={onSubmit}
@@ -198,6 +218,20 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
               name="fullName"
               label={t('fullName')}
               placeholder=""
+              required
+            />
+
+            <FormSelect
+              name="gender"
+              label={t('gender')}
+              options={genderOptions}
+              required
+            />
+
+            <CountryCombobox
+              name="country"
+              label={t('country')}
+              locale={locale}
               required
             />
 
@@ -236,7 +270,6 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
             name="relationshipToContent"
             label={t('relationshipToContent')}
             options={relationshipOptions}
-            direction="vertical"
           />
 
           {selectedRelationship === 'other' && (
@@ -262,7 +295,6 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
             label={t('mediaType')}
             options={mediaTypeOptions}
             required
-            direction="vertical"
           />
 
           {selectedMediaType === 'other' && (
@@ -274,6 +306,44 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
             />
           )}
 
+          {selectedMediaType === 'television' && (
+            <>
+              <TVChannelCombobox
+                name="tvChannel"
+                label={t('tvChannel')}
+                locale={locale}
+                required
+              />
+              {selectedTvChannel === 'other' && (
+                <FormInput
+                  name="tvChannelOther"
+                  label={t('specifyOther')}
+                  placeholder={t('specifyOther')}
+                  required
+                />
+              )}
+            </>
+          )}
+
+          {selectedMediaType === 'radio' && (
+            <>
+              <RadioStationCombobox
+                name="radioStation"
+                label={t('radioStation')}
+                locale={locale}
+                required
+              />
+              {selectedRadioStation === 'other' && (
+                <FormInput
+                  name="radioStationOther"
+                  label={t('specifyOther')}
+                  placeholder={t('specifyOther')}
+                  required
+                />
+              )}
+            </>
+          )}
+
           <FormInput
             name="programName"
             label={t('programName')}
@@ -281,18 +351,27 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
             required
           />
 
-          <FormInput
+          <FormDateTimePicker
             name="broadcastDateTime"
             label={t('broadcastDateTime')}
-            type="date"
+            locale={locale}
             required
           />
 
-          <FormInput
+          <FormTextarea
             name="linkScreenshot"
             label={t('linkScreenshot')}
-            placeholder="https://"
-            type="text"
+            placeholder={t('linkScreenshotPlaceholder')}
+            className="min-h-20"
+          />
+
+          <FormFileUpload
+            name="screenshotFiles"
+            label={t('screenshotFiles')}
+            accept="image/*,.pdf"
+            maxSize={5}
+            multiple
+            locale={locale}
           />
         </div>
 
@@ -309,7 +388,6 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
             label={t('complaintReason')}
             options={complaintReasonOptions}
             required
-            direction="vertical"
           />
 
           {selectedReasons?.includes('other') && (
@@ -349,17 +427,28 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
 
           <FormCheckboxGroup
             name="attachmentTypes"
-            label={t('attachments')}
+            label=""
             options={attachmentOptions}
-            direction="vertical"
           />
 
           {selectedAttachments?.includes('other') && (
-            <FormInput
+            <FormTextarea
               name="attachmentOther"
-              label={t('specifyOther')}
-              placeholder={t('specifyOther')}
+              label={t('attachmentOtherDescription')}
+              placeholder={t('attachmentOtherPlaceholder')}
+              className="min-h-20"
               required
+            />
+          )}
+
+          {selectedAttachments && selectedAttachments.length > 0 && (
+            <FormFileUpload
+              name="attachmentFiles"
+              label={t('attachmentFiles')}
+              accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.wav,.mp4,.mov"
+              maxSize={10}
+              multiple
+              locale={locale}
             />
           )}
         </div>
@@ -373,7 +462,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
           </div>
 
           <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
-            <div className="flex items-start space-x-3 rtl:space-x-reverse">
+            <div className="flex items-start gap-3">
               <input
                 type="checkbox"
                 id="acceptDeclaration"
@@ -382,7 +471,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
               />
               <label htmlFor="acceptDeclaration" className="text-sm text-gray-700 leading-relaxed">
                 {t('declarationText')}
-                <span className="text-red-500 ml-1">*</span>
+                <span className="text-red-500 ms-1">*</span>
               </label>
             </div>
             {methods.formState.errors.acceptDeclaration && (
@@ -391,7 +480,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
               </p>
             )}
 
-            <div className="flex items-start space-x-3 rtl:space-x-reverse">
+            <div className="flex items-start gap-3">
               <input
                 type="checkbox"
                 id="acceptConsent"
@@ -400,7 +489,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
               />
               <label htmlFor="acceptConsent" className="text-sm text-gray-700 leading-relaxed">
                 {t('consentText')}
-                <span className="text-red-500 ml-1">*</span>
+                <span className="text-red-500 ms-1">*</span>
               </label>
             </div>
             {methods.formState.errors.acceptConsent && (

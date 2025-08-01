@@ -78,6 +78,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
             <Header />
             {children}
+            
             {/* Stagewise toolbar for AI-powered editing - only loads in development */}
             {process.env.NODE_ENV === "development" && (
               <StagewiseToolbar

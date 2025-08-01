@@ -13,15 +13,15 @@ import {
   FormInput, 
   FormTextarea, 
   FormCheckboxGroup, 
-  FormRadioGroup 
+  FormRadioGroup,
+  FormFileUpload
 } from '../FormFields'
 import { 
-  mediaContentReportSchema, 
+  createMediaContentReportSchema, 
   type MediaContentReportFormData,
   type MediaContentReportSubmission 
 } from '@/lib/validations/media-forms'
 import { type Locale } from '@/utilities/locale'
-import { getLocaleDirection } from '@/utilities/locale'
 
 interface MediaContentReportFormProps {
   className?: string
@@ -34,22 +34,23 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
   const params = useParams()
   const router = useRouter()
   const locale = (params?.locale as Locale) || 'fr'
-  const direction = getLocaleDirection(locale)
   const t = useTranslations()
 
   const methods = useForm<MediaContentReportFormData>({
-    resolver: zodResolver(mediaContentReportSchema),
+    resolver: zodResolver(createMediaContentReportSchema(t)),
     defaultValues: {
       mediaType: undefined,
       mediaTypeOther: '',
       programName: '',
       broadcastDateTime: '',
       linkScreenshot: '',
+      screenshotFiles: [],
       reasons: [],
       reasonOther: '',
       description: '',
       attachmentTypes: [],
       attachmentOther: '',
+      attachmentFiles: [],
     },
   })
 
@@ -142,7 +143,7 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
   // Show thank you card if form was submitted successfully
   if (isSubmitted) {
     return (
-      <div dir={direction} className={className}>
+      <div className={className}>
         <ThankYouCard 
           locale={locale}
           formType="report"
@@ -153,7 +154,7 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
   }
 
   return (
-    <div dir={direction} className={className}>
+    <div className={className}>
       <BaseForm
         methods={methods}
         onSubmit={onSubmit}
@@ -175,7 +176,6 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
             label={t('mediaType')}
             options={mediaTypeOptions}
             required
-            direction="vertical"
           />
 
           {selectedMediaType === 'other' && (
@@ -201,11 +201,20 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
             required
           />
 
-          <FormInput
+          <FormTextarea
             name="linkScreenshot"
             label={t('linkScreenshot')}
-            placeholder="https://"
-            type="text"
+            placeholder={t('linkScreenshotPlaceholder')}
+            className="min-h-20"
+          />
+
+          <FormFileUpload
+            name="screenshotFiles"
+            label={t('screenshotFiles')}
+            accept="image/*,.pdf"
+            maxSize={5}
+            multiple
+            locale={locale}
           />
         </div>
 
@@ -222,7 +231,6 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
             label={t('reportReason')}
             options={reportReasonOptions}
             required
-            direction="vertical"
           />
 
           {selectedReasons?.includes('other') && (
@@ -262,9 +270,8 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
 
           <FormCheckboxGroup
             name="attachmentTypes"
-            label={t('attachments')}
+            label=""
             options={attachmentOptions}
-            direction="vertical"
           />
 
           {selectedAttachments?.includes('other') && (
@@ -273,6 +280,17 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
               label={t('specifyOther')}
               placeholder={t('specifyOther')}
               required
+            />
+          )}
+
+          {selectedAttachments && selectedAttachments.length > 0 && (
+            <FormFileUpload
+              name="attachmentFiles"
+              label={t('attachmentFiles')}
+              accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.wav,.mp4,.mov"
+              maxSize={10}
+              multiple
+              locale={locale}
             />
           )}
         </div>

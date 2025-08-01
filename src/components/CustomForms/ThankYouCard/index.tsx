@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { CheckCircle, Home, FileText, Clock, Shield } from 'lucide-react'
+import { CheckCircle, Home, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useRouter } from 'next/navigation'
@@ -14,7 +14,6 @@ interface ThankYouCardProps {
 
 export function ThankYouCard({ locale, formType, submissionId }: ThankYouCardProps) {
   const router = useRouter()
-  const isRTL = locale === 'ar'
   const isComplaint = formType === 'complaint'
 
   const getFormTypeLabel = () => {
@@ -63,7 +62,7 @@ export function ThankYouCard({ locale, formType, submissionId }: ThankYouCardPro
   const nextSteps = getNextSteps()
 
   return (
-    <div dir={isRTL ? 'rtl' : 'ltr'} className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto">
       {/* Success Card */}
       <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
         <CardContent className="p-8 text-center">

@@ -3,7 +3,10 @@
 import React from 'react'
 import { useFormContext, Controller } from 'react-hook-form'
 import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { FormFieldProps } from '../types'
+import { useLocale } from 'next-intl'
+import { type Locale } from '@/utilities/locale'
 
 interface RadioOption {
   value: string
@@ -29,13 +32,17 @@ export function FormRadioGroup({
     formState: { errors }
   } = useFormContext()
 
+  const locale = useLocale() as Locale
+  const isRTL = locale === 'ar'
   const error = errors[name]?.message as string | undefined
 
   return (
     <div className={`space-y-3 ${className}`}>
       <Label className="text-sm font-medium text-gray-700">
-        {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
+        <bdi>
+          {label}
+          {required && <span className="text-red-500 ms-1">*</span>}
+        </bdi>
       </Label>
       
       <Controller
@@ -43,31 +50,40 @@ export function FormRadioGroup({
         control={control}
         render={({ field }) => (
           <div className={`
-            ${direction === 'vertical' ? 'space-y-3' : 'flex flex-wrap gap-4'}
             ${error ? 'border border-red-300 rounded p-3 bg-red-50' : ''}
           `}>
-            {options.map((option) => (
-              <div key={option.value} className="flex items-center space-x-2 rtl:space-x-reverse">
-                <input
-                  type="radio"
-                  id={`${name}-${option.value}`}
-                  value={option.value}
-                  checked={field.value === option.value}
-                  disabled={disabled}
-                  onChange={(e) => field.onChange(e.target.value)}
-                  className={`
-                    h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500
-                    ${error ? 'border-red-500' : 'border-gray-300'}
-                  `}
-                />
-                <Label 
-                  htmlFor={`${name}-${option.value}`}
-                  className="text-sm text-gray-700 cursor-pointer select-none"
+            <RadioGroup
+              value={field.value}
+              onValueChange={field.onChange}
+              disabled={disabled}
+              dir={isRTL ? 'rtl' : 'ltr'}
+              className={`
+                ${direction === 'vertical' ? 'space-y-3' : 'flex flex-wrap gap-4'}
+              `}
+            >
+              {options.map((option) => (
+                <div 
+                  key={option.value} 
+                  className="flex items-center gap-2"
+                  dir={isRTL ? 'rtl' : 'ltr'}
                 >
-                  {option.label}
-                </Label>
-              </div>
-            ))}
+                  <RadioGroupItem
+                    value={option.value}
+                    id={`${name}-${option.value}`}
+                    className={`
+                      ${error ? 'border-red-500' : ''}
+                    `}
+                  />
+                  <Label 
+                    htmlFor={`${name}-${option.value}`}
+                    className="text-sm text-gray-700 cursor-pointer select-none"
+                    dir={isRTL ? 'rtl' : 'ltr'}
+                  >
+                    <bdi>{option.label}</bdi>
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
           </div>
         )}
       />

@@ -128,7 +128,6 @@ export const PartnersSectionBlock: React.FC<PartnersSectionProps> = ({
   return (
     <section
       className="section-spacing bg-gradient-to-br from-white via-gray-50/50 to-blue-50/30"
-      dir={direction}
     >
       <div className="hapa-container">
         {/* Section Header */}

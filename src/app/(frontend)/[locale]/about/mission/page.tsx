@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { generateMeta } from '@/utilities/generateMeta'
-import { getLocaleDirection, type Locale } from '@/utilities/locale'
+import { type Locale } from '@/utilities/locale'
 import { notFound } from 'next/navigation'
 import BackToTopButton from './BackToTopButton'
 
@@ -18,7 +18,6 @@ export default async function MissionPage({ params: paramsPromise }: Args) {
     notFound()
   }
   
-  const direction = getLocaleDirection(locale as Locale)
   const t = await getTranslations()
   
   const missionData = {
@@ -98,7 +97,7 @@ La Haute Autorité de la Presse et de l'Audiovisuel est l'organisme responsable 
   const content = missionData[locale as keyof typeof missionData]
   
   return (
-    <article className="min-h-screen pb-24" dir={direction}>
+    <article className="min-h-screen pb-24" >
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary via-accent to-primary text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>

@@ -18,7 +18,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useTranslations } from 'next-intl';
-import { type Locale, getLocaleDirection } from "@/utilities/locale";
+import { type Locale } from "@/utilities/locale";
 import type { Post } from "@/payload-types";
 
 type NewsAnnouncementsRichProps = {
@@ -223,8 +223,7 @@ export const NewsAnnouncementsRichBlock: React.FC<NewsAnnouncementsRichProps> = 
 }) => {
   const params = useParams();
   const locale = (params?.locale as Locale) || "fr";
-  const direction = getLocaleDirection(locale);
-  const isRtl = direction === "rtl";
+  const isRtl = locale === "ar";
   const t = useTranslations();
 
   const featuredPost = showFeatured ? posts[0] : null;
@@ -233,7 +232,6 @@ export const NewsAnnouncementsRichBlock: React.FC<NewsAnnouncementsRichProps> = 
   return (
     <section
       className="section-spacing bg-gradient-to-br from-gray-50 via-white to-green-50/20"
-      dir={direction}
     >
       <div className="hapa-container">
         {/* Urgent Announcements Banner */}

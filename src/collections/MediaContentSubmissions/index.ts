@@ -256,6 +256,30 @@ export const MediaContentSubmissions: CollectionConfig = {
           },
         },
         {
+          name: 'gender',
+          type: 'text',
+          label: {
+            en: 'Gender',
+            fr: 'Genre',
+            ar: 'الجنس',
+          },
+          admin: {
+            readOnly: true,
+          },
+        },
+        {
+          name: 'country',
+          type: 'text',
+          label: {
+            en: 'Country',
+            fr: 'Pays',
+            ar: 'البلد',
+          },
+          admin: {
+            readOnly: true,
+          },
+        },
+        {
           name: 'emailAddress',
           type: 'email',
           label: {
@@ -354,6 +378,19 @@ export const MediaContentSubmissions: CollectionConfig = {
           },
         },
         {
+          name: 'specificChannel',
+          type: 'text',
+          label: {
+            en: 'Specific Channel/Station',
+            fr: 'Chaîne/Station Spécifique',
+            ar: 'القناة/المحطة المحددة',
+          },
+          admin: {
+            readOnly: true,
+            condition: (data) => ['television', 'radio'].includes(data.contentInfo?.mediaType),
+          },
+        },
+        {
           name: 'programName',
           type: 'text',
           label: {
@@ -385,6 +422,29 @@ export const MediaContentSubmissions: CollectionConfig = {
             fr: 'Lien/Capture d\'écran',
             ar: 'رابط/صورة شاشة',
           },
+          admin: {
+            readOnly: true,
+          },
+        },
+        {
+          name: 'screenshotFiles',
+          type: 'array',
+          label: {
+            en: 'Screenshot Files',
+            fr: 'Fichiers de capture d\'écran',
+            ar: 'ملفات صورة الشاشة',
+          },
+          fields: [
+            {
+              name: 'url',
+              type: 'text',
+              label: {
+                en: 'File URL',
+                fr: 'URL du fichier',
+                ar: 'رابط الملف',
+              },
+            },
+          ],
           admin: {
             readOnly: true,
           },
@@ -468,6 +528,30 @@ export const MediaContentSubmissions: CollectionConfig = {
         fr: 'Autre Pièce Jointe',
         ar: 'مرفق آخر',
       },
+      admin: {
+        readOnly: true,
+      },
+    },
+
+    {
+      name: 'attachmentFiles',
+      type: 'array',
+      label: {
+        en: 'Attachment Files',
+        fr: 'Fichiers joints',
+        ar: 'الملفات المرفقة',
+      },
+      fields: [
+        {
+          name: 'url',
+          type: 'text',
+          label: {
+            en: 'File URL',
+            fr: 'URL du fichier',
+            ar: 'رابط الملف',
+          },
+        },
+      ],
       admin: {
         readOnly: true,
       },
@@ -568,7 +652,7 @@ export const MediaContentSubmissions: CollectionConfig = {
           // Auto-set priority based on reasons
           if (data.reasons && Array.isArray(data.reasons)) {
             const urgentReasons = ['Discours de haine / Incitation à la violence', 'Désinformation / Informations mensongères', 'Désinformation / Fake news']
-            const hasUrgentReason = data.reasons.some((reasonObj: any) => 
+            const hasUrgentReason = data.reasons.some((reasonObj: { reason: string }) => 
               urgentReasons.includes(reasonObj.reason)
             )
             if (hasUrgentReason) {

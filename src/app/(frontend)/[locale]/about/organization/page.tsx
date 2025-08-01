@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { generateMeta } from '@/utilities/generateMeta'
-import { getLocaleDirection, type Locale } from '@/utilities/locale'
+import { type Locale } from '@/utilities/locale'
 import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import BackToTopButton from './BackToTopButton'
@@ -18,7 +18,6 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
     notFound()
   }
   
-  const direction = getLocaleDirection(locale as Locale)
   const t = await getTranslations()
   
   const organizationData = {
@@ -192,7 +191,7 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
   }
   
   return (
-    <article className="min-h-screen pb-24" dir={direction}>
+    <article className="min-h-screen pb-24"> 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-accent via-primary to-accent text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>

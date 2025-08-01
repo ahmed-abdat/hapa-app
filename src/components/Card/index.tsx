@@ -10,7 +10,7 @@ import type { Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 import { useTranslations } from 'next-intl'
-import { type Locale, getLocaleDirection } from '@/utilities/locale'
+import { type Locale } from '@/utilities/locale'
 
 export type CardPostData = Pick<Post, 'id' | 'slug' | 'categories' | 'meta' | 'title' | 'publishedAt' | 'createdAt'>
 
@@ -36,8 +36,7 @@ export const Card: React.FC<{
     const titleToUse = titleFromProps || title
     const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
     const href = `/${relationTo}/${slug}`
-    const direction = getLocaleDirection(locale)
-    const isRtl = direction === 'rtl'
+    const isRtl = locale === 'ar'
     const publicationDate = publishedAt || createdAt
     
     // Calculate responsive title size based on title length
@@ -53,14 +52,13 @@ export const Card: React.FC<{
       titleToUse,
       sanitizedDescription,
       href,
-      direction,
       isRtl,
       publicationDate,
       titleClass
     }
   }, [categories, titleFromProps, title, description, locale, relationTo, slug, publishedAt, createdAt])
 
-  const { hasCategories, titleToUse, sanitizedDescription, href, direction, isRtl, publicationDate, titleClass } = computedValues
+  const { hasCategories, titleToUse, sanitizedDescription, href, isRtl, publicationDate, titleClass } = computedValues
 
   // Optimized animation variants - use id-based delay for consistent performance
   const animationDelay = React.useMemo(() => {
@@ -104,7 +102,6 @@ export const Card: React.FC<{
         className,
       )}
       ref={card.ref}
-      dir={direction}
     >
       {/* Modern gradient overlay for depth */}
       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />

@@ -23,7 +23,7 @@ export function FormCheckboxGroup({
   disabled = false,
   className = '',
   options,
-  direction = 'vertical'
+  direction = 'horizontal'
 }: FormCheckboxGroupProps) {
   const {
     control,
@@ -35,8 +35,10 @@ export function FormCheckboxGroup({
   return (
     <div className={`space-y-3 ${className}`}>
       <Label className="text-sm font-medium text-gray-700">
-        {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
+        <bdi>
+          {label}
+          {required && <span className="text-red-500 ms-1">*</span>}
+        </bdi>
       </Label>
       
       <Controller
@@ -48,7 +50,7 @@ export function FormCheckboxGroup({
             ${error ? 'border border-red-300 rounded p-3 bg-red-50' : ''}
           `}>
             {options.map((option) => (
-              <div key={option.value} className="flex items-center space-x-2 rtl:space-x-reverse">
+              <div key={option.value} className="flex items-center gap-2">
                 <Checkbox
                   id={`${name}-${option.value}`}
                   checked={field.value?.includes(option.value) || false}
@@ -70,7 +72,7 @@ export function FormCheckboxGroup({
                   htmlFor={`${name}-${option.value}`}
                   className="text-sm text-gray-700 cursor-pointer select-none"
                 >
-                  {option.label}
+                  <bdi>{option.label}</bdi>
                 </Label>
               </div>
             ))}

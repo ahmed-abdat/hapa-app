@@ -4,7 +4,6 @@ import { useRouter } from '@/i18n/navigation'
 import { useSearchParams } from 'next/navigation'
 import { useLocale } from 'next-intl'
 import { type Locale } from '@/utilities/locale'
-import { getLocaleDirection } from '@/utilities/locale'
 import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
 import React from 'react'
 
@@ -25,9 +24,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   const searchParams = useSearchParams()
   const locale = useLocale() as Locale
   
-  const direction = getLocaleDirection(locale)
-  const isRtl = direction === 'rtl'
-
+  const isRtl = locale === 'ar'
   const totalPages = Math.ceil(totalItems / itemsPerPage)
 
   // Only show pagination if there are 10+ items (best practice)
@@ -98,7 +95,6 @@ export const Pagination: React.FC<PaginationProps> = ({
   return (
     <nav 
       className={cn('flex flex-col items-center gap-4 mt-12', className)}
-      dir={direction}
       role="navigation"
       aria-label={locale === 'ar' ? 'تصفح الصفحات' : 'Navigation des pages'}
     >

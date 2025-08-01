@@ -3,7 +3,6 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/i18n/navigation'
-import { getLocaleDirection } from '@/utilities/locale'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -34,8 +33,7 @@ interface ErrorProps {
 export default function Error({ error, reset }: ErrorProps) {
   const t = useTranslations()
   const locale = useLocale() as 'fr' | 'ar'
-  const direction = getLocaleDirection(locale)
-  const isRTL = direction === 'rtl'
+  const isRTL = locale === 'ar'
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight
 
   const [showDetails, setShowDetails] = useState(false)
@@ -193,7 +191,7 @@ User Agent: ${typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A'}
   ], [t, reloadPage, openUrl, clearCacheAndReload, copyCurrentUrl])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-destructive/5" dir={direction}>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-destructive/5" >
       <div className="hapa-container section-spacing">
         <div className="max-w-4xl mx-auto">
           {/* Header Section */}

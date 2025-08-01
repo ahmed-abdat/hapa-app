@@ -30,8 +30,10 @@ export function FormTextarea({
     <div className={`space-y-2 ${className}`}>
       <div className="flex justify-between items-center">
         <Label htmlFor={name} className="text-sm font-medium text-gray-700">
-          {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          <bdi>
+            {label}
+            {required && <span className="text-red-500 ms-1">*</span>}
+          </bdi>
         </Label>
         {maxLength && (
           <span className="text-xs text-gray-500">

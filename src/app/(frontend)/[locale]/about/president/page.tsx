@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { generateMeta } from '@/utilities/generateMeta'
-import { getLocaleDirection, type Locale } from '@/utilities/locale'
+import { type Locale  } from '@/utilities/locale'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import BackToTopButton from './BackToTopButton'
@@ -19,7 +19,6 @@ export default async function PresidentPage({ params: paramsPromise }: Args) {
     notFound()
   }
   
-  const direction = getLocaleDirection(locale as Locale)
   const t = await getTranslations()
   
   const presidentData = {
@@ -76,7 +75,7 @@ L'Autorité Supérieure veille dans ce contexte à consacrer les libertés et l'
   const content = presidentData[locale as keyof typeof presidentData]
   
   return (
-    <article className="min-h-screen pb-24" dir={direction}>
+    <article className="min-h-screen pb-24" >
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary to-accent text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>

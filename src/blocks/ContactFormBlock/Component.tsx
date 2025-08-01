@@ -4,8 +4,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { ContactForm } from '@/components/CustomForms/ContactForm'
 import { FormSubmissionResponse } from '@/components/CustomForms/types'
-import { MessageCircle, Send, Phone, MapPin, Mail, Clock } from 'lucide-react'
-import { getLocaleDirection } from '@/utilities/locale'
+import { MessageCircle, Send, Phone, MapPin, Mail, Clock } from 'lucide-react'  
 
 interface ContactFormBlockProps {
   locale?: 'fr' | 'ar'
@@ -38,7 +37,6 @@ const content = {
 }
 
 export function ContactFormBlock({ locale = 'fr' }: ContactFormBlockProps) {
-  const direction = getLocaleDirection(locale)
   const t = content[locale]
 
   const handleSuccess = (_response: FormSubmissionResponse) => {
@@ -52,7 +50,7 @@ export function ContactFormBlock({ locale = 'fr' }: ContactFormBlockProps) {
   }
 
   return (
-    <div className="section-spacing-lg bg-gradient-to-br from-gray-50 via-white to-primary/5" dir={direction}>
+    <div className="section-spacing-lg bg-gradient-to-br from-gray-50 via-white to-primary/5">
       <div className="hapa-container">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
           {/* Contact Form - Takes 2/3 of the space */}

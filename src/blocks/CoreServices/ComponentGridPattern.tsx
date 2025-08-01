@@ -7,7 +7,7 @@ import { Link } from "@/i18n/navigation";
 import {
   Tv,
   UserCheck,
-  MessageSquareWarning,
+  Bell,
   FileText,
   Scale,
   Phone,
@@ -15,7 +15,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { useTranslations } from 'next-intl';
-import { type Locale, getLocaleDirection } from "@/utilities/locale";
+import { type Locale } from "@/utilities/locale";
 
 type CoreServicesGridPatternProps = {
   title?: string;
@@ -42,7 +42,7 @@ const services = [
     hoverColor: "hover:bg-green-100",
   },
   {
-    icon: MessageSquareWarning,
+    icon: Bell,
     titleKey: "publicComplaints",
     descKey: "publicComplaintsDesc",
     href: "/services/complaints",
@@ -108,14 +108,12 @@ export const CoreServicesGridPatternBlock: React.FC<CoreServicesGridPatternProps
 }) => {
   const params = useParams();
   const locale = (params?.locale as Locale) || "fr";
-  const direction = getLocaleDirection(locale);
-  const isRtl = direction === "rtl";
+  const isRtl = locale === "ar";
   const t = useTranslations();
 
   return (
     <section
       className="section-spacing bg-gradient-to-br from-gray-50 via-white to-blue-50/30 relative overflow-hidden"
-      dir={direction}
     >
       {/* Grid Pattern Background */}
       <div className="absolute inset-0 opacity-5">

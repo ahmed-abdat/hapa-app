@@ -14,7 +14,7 @@ import {
   Building,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { type Locale, getLocaleDirection } from "@/utilities/locale";
+import { type Locale } from "@/utilities/locale";
 
 type MediaSpaceProps = {
   title?: string;
@@ -98,14 +98,12 @@ export const MediaSpaceBlock: React.FC<MediaSpaceProps> = ({
 }) => {
   const params = useParams();
   const locale = (params?.locale as Locale) || "fr";
-  const direction = getLocaleDirection(locale);
-  const isRtl = direction === "rtl";
+  const isRtl = locale === "ar";
   const t = useTranslations();
 
   return (
     <section
       className="section-spacing-lg bg-gradient-to-br from-white via-gray-50/50 to-primary/5"
-      dir={direction}
     >
       <div className="hapa-container">
         {/* Section Header */}

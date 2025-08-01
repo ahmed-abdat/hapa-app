@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
+import type { PayloadSubmissionData } from '@/types/media-forms'
+
+interface PayloadSubmissionDocument extends PayloadSubmissionData {
+  id: string
+  title: string
+  createdAt: string
+  updatedAt: string
+  adminNotes?: string
+}
 
 export async function GET(req: NextRequest) {
   try {

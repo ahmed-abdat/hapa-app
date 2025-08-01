@@ -9,8 +9,8 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { SearchIcon } from "lucide-react";
-import { useLocale } from "next-intl";
+import { SearchIcon, Bell } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { usePathname } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcherSuspense } from "@/components/LanguageSwitcher/LanguageSwitcherSuspense";
@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 export function ModernHeader() {
   const pathname = usePathname();
   const validLocale = useLocale() as Locale;
+  const t = useTranslations();
 
   const renderNavigationItem = (item: NavigationItem) => {
     const title = getNavigationItemText(item, validLocale, "title");
@@ -93,7 +94,7 @@ export function ModernHeader() {
                         ? "/publications/decisions"
                         : "/about/mission"
                     }>
-                      {validLocale === "ar" ? "المزيد" : "En savoir plus"}
+                      {t('moreInfo')}
                     </Link>
                   </Button>
                 </div>
@@ -165,7 +166,7 @@ export function ModernHeader() {
         <Button variant="ghost" size="sm" asChild>
           <Link
             href="/search"
-            aria-label={validLocale === "ar" ? "بحث" : "Rechercher"}
+            aria-label={t('searchAriaLabel')}
             className="focus:ring-2 focus:ring-primary focus:ring-offset-2 hover:bg-primary/10 text-primary"
           >
             <SearchIcon className="w-4 h-4 text-primary" />
@@ -174,6 +175,19 @@ export function ModernHeader() {
 
         {/* Language Switcher */}
         <LanguageSwitcherSuspense />
+
+        {/* Prominent Report Button */}
+        <Button 
+          className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 text-sm border-0 focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
+          asChild
+        >
+          <Link href="/forms/media-content-report">
+            <span className="flex items-center gap-2">
+              <Bell className="w-4 h-4" />
+              <span>{t('reportMediaContent')}</span>
+            </span>
+          </Link>
+        </Button>
       </div>
     </div>
   );

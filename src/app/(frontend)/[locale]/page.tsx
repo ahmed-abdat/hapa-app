@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 import { isValidLocale, type Locale } from '@/utilities/locale'
 import { HomepageHero } from '@/heros/HomepageHero'
 import { RenderBlocks } from '@/blocks/RenderBlocks'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import type { Post } from '@/payload-types'
+import { getTranslations } from 'next-intl/server'
 
 type Args = {
   params: Promise<{
@@ -23,6 +25,9 @@ export default async function HomePage({ params: paramsPromise }: Args) {
   // Enable static rendering
   const { setRequestLocale } = await import('next-intl/server')
   setRequestLocale(locale)
+
+  // Get server-side translations for HomepageHero
+  const t = await getTranslations({ locale })
 
   const payload = await getPayload({ config: configPromise })
 
@@ -74,10 +79,23 @@ export default async function HomePage({ params: paramsPromise }: Args) {
     },
   ]
 
+  // Create translations object for HomepageHero
+  const heroTranslations = {
+    heroTitle: t('heroTitle'),
+    heroSubtitle: t('heroSubtitle'),
+    reportMediaContent: t('reportMediaContent'),
+    contactHapa: t('contactHapa'),
+    keyStatistics: t('keyStatistics'),
+    registeredJournalists: t('registeredJournalists'),
+    mediaOperators: t('mediaOperators'),
+    complaintsResolved: t('complaintsResolved'),
+    officialRegulatory: t('officialRegulatory'),
+  }
+
   return (
     <div className="pb-24 overflow-hidden">
       {/* Hero Section - Simple static component */}
-      <HomepageHero />
+      <HomepageHero locale={locale} translations={heroTranslations} />
 
       {/* Main Content Blocks */}
       <RenderBlocks blocks={blocks} locale={locale} />

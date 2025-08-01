@@ -4,7 +4,6 @@ import { Link } from '@/i18n/navigation'
 import React, { useState, useEffect } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { useRouter } from 'next/navigation'
-import { getLocaleDirection } from '@/utilities/locale'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -29,8 +28,7 @@ export default function NotFound() {
   const locale = useLocale() as 'fr' | 'ar'
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
-  const direction = getLocaleDirection(locale)
-  const isRTL = direction === 'rtl'
+  const isRTL = locale === 'ar'
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight
 
   // Set page title for 404
@@ -93,7 +91,7 @@ export default function NotFound() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20" dir={direction}>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       {/* Hero Section with 404 */}
       <section className="section-spacing">
         <div className="hapa-container">
@@ -132,8 +130,7 @@ export default function NotFound() {
                       placeholder={t('searchPlaceholder')}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className={`${isRTL ? 'pr-10 text-right' : 'pl-10'}`}
-                      dir={direction}
+                      // className={`${isRTL ? 'pr-10 text-right' : 'pl-10'}`}
                     />
                   </div>
                   <Button type="submit" className="w-full" size="lg">

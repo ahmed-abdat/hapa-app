@@ -276,6 +276,8 @@ export interface MediaContentSubmission {
   priority?: ('low' | 'medium' | 'high' | 'urgent') | null;
   complainantInfo?: {
     fullName?: string | null;
+    gender?: string | null;
+    country?: string | null;
     emailAddress?: string | null;
     phoneNumber?: string | null;
     whatsappNumber?: string | null;
@@ -285,9 +287,16 @@ export interface MediaContentSubmission {
   contentInfo?: {
     mediaType?: string | null;
     mediaTypeOther?: string | null;
+    specificChannel?: string | null;
     programName?: string | null;
     broadcastDateTime?: string | null;
     linkScreenshot?: string | null;
+    screenshotFiles?:
+      | {
+          url?: string | null;
+          id?: string | null;
+        }[]
+      | null;
   };
   reasons?:
     | {
@@ -304,6 +313,12 @@ export interface MediaContentSubmission {
       }[]
     | null;
   attachmentOther?: string | null;
+  attachmentFiles?:
+    | {
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * Internal notes for tracking and follow-up
    */
@@ -628,6 +643,8 @@ export interface MediaContentSubmissionsSelect<T extends boolean = true> {
     | T
     | {
         fullName?: T;
+        gender?: T;
+        country?: T;
         emailAddress?: T;
         phoneNumber?: T;
         whatsappNumber?: T;
@@ -639,9 +656,16 @@ export interface MediaContentSubmissionsSelect<T extends boolean = true> {
     | {
         mediaType?: T;
         mediaTypeOther?: T;
+        specificChannel?: T;
         programName?: T;
         broadcastDateTime?: T;
         linkScreenshot?: T;
+        screenshotFiles?:
+          | T
+          | {
+              url?: T;
+              id?: T;
+            };
       };
   reasons?:
     | T
@@ -658,6 +682,12 @@ export interface MediaContentSubmissionsSelect<T extends boolean = true> {
         id?: T;
       };
   attachmentOther?: T;
+  attachmentFiles?:
+    | T
+    | {
+        url?: T;
+        id?: T;
+      };
   adminNotes?: T;
   resolution?:
     | T

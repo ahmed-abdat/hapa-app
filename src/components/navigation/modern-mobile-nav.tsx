@@ -15,11 +15,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Menu, ArrowRight, ArrowLeft } from "lucide-react";
+import { Menu, ArrowRight, ArrowLeft, Bell } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { LanguageSwitcherSuspense } from "@/components/LanguageSwitcher/LanguageSwitcherSuspense";
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { type Locale } from "@/utilities/locale";
 import {
   navigationItems,
@@ -35,6 +35,7 @@ export function ModernMobileNav() {
   
   // Get locale from next-intl context (proper way)
   const validLocale = useLocale() as Locale;
+  const t = useTranslations();
 
   const closeSheet = () => setIsOpen(false);
 
@@ -131,7 +132,7 @@ export function ModernMobileNav() {
         >
           <Menu className="w-5 h-5" />
           <span className="sr-only">
-            {validLocale === "ar" ? "فتح القائمة" : "Ouvrir le menu"}
+            {t('openMenu')}
           </span>
         </Button>
       </SheetTrigger>
@@ -183,10 +184,25 @@ export function ModernMobileNav() {
 
           <Separator className="my-6 bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
 
+          {/* Prominent Report Button - Mobile */}
+          <div className="mb-6">
+            <Button 
+              className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-4 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-sm border-0 focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
+              asChild
+            >
+              <Link href="/forms/media-content-report" onClick={closeSheet}>
+                <span className="flex items-center gap-2">
+                  <Bell className="w-5 h-5" />
+                  <span>{t('reportMediaContent')}</span>
+                </span>
+              </Link>
+            </Button>
+          </div>
+
           {/* Services and Search */}
           <div className="space-y-4">
             <h3 className="text-sm font-medium text-primary px-2">
-              {validLocale === "ar" ? "الخدمات" : "Services"}
+              {t('services')}
             </h3>
             <nav className="space-y-2">
               <Link
@@ -208,7 +224,7 @@ export function ModernMobileNav() {
                   />
                 </svg>
                 <span className="font-medium">
-                  {validLocale === "ar" ? "الخدمات" : "Services"}
+                  {t('services')}
                 </span>
               </Link>
 
@@ -231,7 +247,7 @@ export function ModernMobileNav() {
                   />
                 </svg>
                 <span className="font-medium">
-                  {validLocale === "ar" ? "بحث" : "Rechercher"}
+                  {t('search')}
                 </span>
               </Link>
             </nav>
@@ -243,7 +259,7 @@ export function ModernMobileNav() {
           {/* Language Switcher */}
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-primary">
-              {validLocale === "ar" ? "اللغة" : "Langue"}
+              {t('language')}
             </span>
             <LanguageSwitcherSuspense />
           </div>

@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { ArrowRight, ArrowLeft, Shield, Users, FileText } from "lucide-react";
+import { ArrowRight, ArrowLeft, Shield, Users, FileText, Bell } from "lucide-react";
 
 // Dynamically import motion components for better bundle splitting
 const MotionDiv = dynamic(() => 
@@ -26,18 +26,31 @@ const MotionP = dynamic(() =>
     ssr: false
   }
 );
-import { useTranslations, useLocale } from 'next-intl';
 import { useHeaderTheme } from "@/providers/HeaderTheme";
 import { AdvancedGradientButton } from "@/components/magicui/advanced-gradient-button";
 import { InteractiveHoverButton } from "@/components/magicui/interactive-hover-button";
 import { type Locale, getLocaleDirection } from "@/utilities/locale";
 
+interface HomepageHeroProps {
+  locale: Locale;
+  translations: {
+    heroTitle: string;
+    heroSubtitle: string;
+    reportMediaContent: string;
+    contactHapa: string;
+    keyStatistics: string;
+    registeredJournalists: string;
+    mediaOperators: string;
+    complaintsResolved: string;
+    officialRegulatory: string;
+  };
+}
+
 // Simple static homepage hero component
-export const HomepageHero: React.FC = () => {
+export const HomepageHero: React.FC<HomepageHeroProps> = ({ locale, translations }) => {
   const { setHeaderTheme } = useHeaderTheme();
-  const locale = useLocale() as Locale;
   const direction = getLocaleDirection(locale);
-  const t = useTranslations();
+  const t = (key: keyof typeof translations) => translations[key];
 
   useEffect(() => {
     setHeaderTheme("dark");
@@ -101,14 +114,15 @@ export const HomepageHero: React.FC = () => {
               >
                 <Link href="/forms/media-content-report" className="w-full sm:w-auto">
                   <AdvancedGradientButton
-                    className="w-full sm:w-auto px-8 py-4 sm:px-10 sm:py-5 text-base font-semibold lg:text-lg justify-center min-h-[56px] lg:min-h-[60px]"
-                    gradientColor="rgba(15, 122, 46, 0.6)"
+                    className="w-full sm:w-auto px-8 py-4 sm:px-10 sm:py-5 text-base font-semibold lg:text-lg justify-center min-h-[56px] lg:min-h-[60px] bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 border-0 shadow-xl hover:shadow-2xl transition-all duration-300"
+                    gradientColor="rgba(249, 115, 22, 0.8)"
                   >
+                    <Bell className={`w-5 h-5 ${locale === "ar" ? "ml-2" : "mr-2"}`} />
                     <span>{t("reportMediaContent")}</span>
                     {locale === "ar" ? (
-                      <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+                      <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
                     ) : (
-                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                     )}
                   </AdvancedGradientButton>
                 </Link>

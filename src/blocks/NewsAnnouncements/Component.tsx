@@ -23,7 +23,7 @@ import {
   FileText
 } from "lucide-react";
 import { useTranslations, useLocale } from 'next-intl';
-import { type Locale, getLocaleDirection } from "@/utilities/locale";
+import { type Locale } from "@/utilities/locale";
 import { getMediaUrl } from "@/utilities/getMediaUrl";
 import { getCachedPosts } from "@/utilities/cached-queries";
 import type { Post, Category } from "@/payload-types";
@@ -115,8 +115,7 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
 }) => {
   const currentLocale = useLocale() as Locale;
   const locale = localeProp || currentLocale;
-  const direction = getLocaleDirection(locale);
-  const isRtl = direction === "rtl";
+  const isRtl = locale === "ar";
   const t = useTranslations();
 
   // Remove unused variables
@@ -126,7 +125,6 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
   return (
     <section
       className="section-spacing bg-gradient-to-br from-gray-50 via-white to-green-50/20"
-      dir={direction}
     >
       <div className="hapa-container">
         {/* Section Header */}

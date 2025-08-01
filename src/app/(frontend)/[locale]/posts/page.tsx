@@ -8,7 +8,7 @@ import configPromise from "@payload-config";
 import { getPayload } from "payload";
 import React from "react";
 import PageClient from "./page.client";
-import { isValidLocale, type Locale, getLocaleDirection } from "@/utilities/locale";
+import { isValidLocale, type Locale } from "@/utilities/locale";
 import { notFound } from "next/navigation";
 import { Calendar, FileText, Filter } from "lucide-react";
 
@@ -36,8 +36,7 @@ export default async function Page({
     notFound();
   }
 
-  const direction = getLocaleDirection(locale as Locale);
-  const isRtl = direction === 'rtl';
+  const isRtl = locale === 'ar';
 
   // Parse page number from search params
   const currentPage = page ? parseInt(page, 10) : 1;
@@ -94,7 +93,7 @@ export default async function Page({
   });
 
   return (
-    <div className="min-h-screen bg-gray-50" dir={direction}>
+    <div className="min-h-screen bg-gray-50" >
       <PageClient />
 
       {/* Modern Hero Section */}

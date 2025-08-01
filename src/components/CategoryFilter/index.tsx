@@ -5,9 +5,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Filter } from 'lucide-react'
 import type { Category } from '@/payload-types'
 import type { Locale } from '@/utilities/locale'
-import { getLocaleDirection } from '@/utilities/locale'
 import { motion } from 'framer-motion'
-import { useTranslations } from 'next-intl'
 
 interface CategoryFilterProps {
   categories: Category[]
@@ -22,10 +20,8 @@ export function CategoryFilter({
 }: CategoryFilterProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const t = useTranslations()
   
-  const direction = getLocaleDirection(locale)
-  const isRtl = direction === 'rtl'
+  const isRtl = locale === 'ar'
 
   const handleCategorySelect = (categorySlug: string) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -43,7 +39,7 @@ export function CategoryFilter({
   const selectedCategoryObj = categories.find(cat => cat.slug === selectedCategory)
 
   return (
-    <div className="w-full" dir={direction}>
+    <div className="w-full">
       {/* Simplified Header - Only show when no category selected */}
       {!selectedCategory && (
         <div className="flex items-center gap-2 text-primary mb-6">

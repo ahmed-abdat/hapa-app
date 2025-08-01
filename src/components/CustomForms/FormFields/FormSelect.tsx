@@ -27,8 +27,10 @@ export function FormSelect({
   return (
     <div className={`space-y-2 ${className}`}>
       <Label htmlFor={name} className="text-sm font-medium text-gray-700">
-        {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
+        <bdi>
+          {label}
+          {required && <span className="text-red-500 ms-1">*</span>}
+        </bdi>
       </Label>
       
       <Select

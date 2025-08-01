@@ -13,7 +13,7 @@ import {
   BookOpen,
   CheckCircle
 } from "lucide-react";
-import { type Locale, getLocaleDirection } from "@/utilities/locale";
+import { type Locale } from "@/utilities/locale";
 import { Media } from "@/components/Media";
 import type { Media as MediaType } from "@/payload-types";
 
@@ -108,13 +108,11 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
   showStats = true,
 }) => {
   const locale = useLocale() as Locale;
-  const direction = getLocaleDirection(locale);
   const t = useTranslations();
 
   return (
     <section
       className="section-spacing bg-gradient-to-br from-white via-gray-50/50 to-green-50/30"
-      dir={direction}
     >
       <div className="hapa-container">
         {/* Section Header */}
@@ -252,10 +250,10 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
                       <Icon className="h-8 w-8 text-white" />
                     </div>
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                      {t(value.titleKey as any)}
+                      {t(String(value.titleKey))}
                     </h4>
                     <p className="text-gray-600 text-sm leading-relaxed">
-                      {t(value.descKey as any)}
+                      {t(String(value.descKey))}
                     </p>
                   </div>
                 </motion.div>
@@ -301,7 +299,7 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
                       {achievement.number}
                     </div>
                     <div className="text-white/90 text-sm sm:text-base">
-                      {t(achievement.labelKey as any)}
+                      {t(String(achievement.labelKey))}
                     </div>
                   </motion.div>
                 );

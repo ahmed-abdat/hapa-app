@@ -5,7 +5,7 @@ import { getTranslations } from 'next-intl/server'
 import { MessageCircle, Shield, Clock, UserCheck } from 'lucide-react'
 
 import { MediaContentComplaintForm } from '@/components/CustomForms/MediaContentComplaintForm'
-import { isValidLocale, type Locale, getLocaleDirection } from '@/utilities/locale'
+import { isValidLocale } from '@/utilities/locale'
 
 interface PageProps {
   params: Promise<{
@@ -41,10 +41,9 @@ export default async function MediaContentComplaintPage({ params }: PageProps) {
   }
 
   const t = await getTranslations()
-  const direction = getLocaleDirection(locale)
 
   return (
-    <div dir={direction} className="min-h-screen bg-gradient-to-br from-primary/5 via-white to-accent/5">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-white to-accent/5">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary to-accent text-white py-16">
         <div className="container mx-auto px-4">

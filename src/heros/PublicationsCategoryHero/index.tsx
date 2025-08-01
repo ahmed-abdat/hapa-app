@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { FileText, BookOpen, Scale, Newspaper, Briefcase } from "lucide-react";
 import { useHeaderTheme } from "@/providers/HeaderTheme";
-import { type Locale, getLocaleDirection } from "@/utilities/locale";
+import { type Locale } from "@/utilities/locale";
 
 interface PublicationsCategoryHeroProps {
   locale: Locale;
@@ -49,7 +49,6 @@ export const PublicationsCategoryHero: React.FC<PublicationsCategoryHeroProps> =
   totalDocs = 0 
 }) => {
   const { setHeaderTheme } = useHeaderTheme();
-  const direction = getLocaleDirection(locale);
   
   // Get the appropriate icon for the category
   const IconComponent = categoryIcons[categorySlug] || FileText;
@@ -84,7 +83,6 @@ export const PublicationsCategoryHero: React.FC<PublicationsCategoryHeroProps> =
   return (
     <div
       className="relative -mt-[10.4rem] min-h-[60vh] overflow-hidden bg-gradient-to-br from-primary/5 via-white to-accent/5"
-      dir={direction}
     >
       {/* Background Pattern */}
       <div className="absolute inset-0">
