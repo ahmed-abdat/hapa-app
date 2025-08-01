@@ -29,10 +29,11 @@ const httpsAgent = new https.Agent({
   // SSL optimization for R2 endpoints
   servername: process.env.R2_ACCOUNT_ID ? `${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com` : undefined,
   
-  // Development-only SSL bypass with proper security boundary
-  checkServerIdentity: process.env.NODE_ENV === 'production' 
-    ? undefined 
-    : () => undefined,
+  // Only set checkServerIdentity in development to bypass SSL issues
+  // In production, omit this property entirely to use default SSL verification
+  ...(process.env.NODE_ENV !== 'production' && {
+    checkServerIdentity: () => undefined,
+  }),
 })
 
 /**
