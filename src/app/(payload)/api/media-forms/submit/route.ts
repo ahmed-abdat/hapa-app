@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { getValidationMessages } from '@/lib/validations/validation-messages'
+import { 
+  createMediaContentReportSchema,
+  createMediaContentComplaintSchema
+} from '@/lib/validations/media-forms'
 import type {
   MediaContentReportSubmission,
   MediaContentComplaintSubmission,
@@ -12,11 +16,74 @@ import type {
   RadioStation
 } from '@/types/media-forms'
 import { getTranslations } from 'next-intl/server'
+import { logger } from '@/utilities/logger'
+
+/**
+ * Rate limiting for form submissions
+ * In production, this should be replaced with Redis or a proper rate limiter
+ */
+const submissionCounts = new Map<string, { count: number; resetTime: number }>()
+const RATE_LIMIT_WINDOW = 60 * 60 * 1000 // 1 hour
+const MAX_SUBMISSIONS_PER_HOUR = 5 // Stricter limit for form submissions
+
+/**
+ * Simple rate limiting check for form submissions
+ */
+function checkSubmissionRateLimit(ip: string): boolean {
+  const now = Date.now()
+  const userLimits = submissionCounts.get(ip)
+  
+  if (!userLimits || now > userLimits.resetTime) {
+    // Reset or create new limit
+    submissionCounts.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW })
+    return true
+  }
+  
+  if (userLimits.count >= MAX_SUBMISSIONS_PER_HOUR) {
+    return false
+  }
+  
+  userLimits.count++
+  return true
+}
+
+/**
+ * Get client IP address
+ */
+function getClientIP(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for')
+  const realIP = request.headers.get('x-real-ip')
+  
+  if (forwarded) {
+    return forwarded.split(',')[0].trim()
+  }
+  
+  if (realIP) {
+    return realIP
+  }
+  
+  return 'unknown'
+}
 
 export async function POST(request: NextRequest): Promise<NextResponse<FormSubmissionResponse>> {
   try {
+    // Check rate limiting first
+    const clientIP = getClientIP(request)
+    if (!checkSubmissionRateLimit(clientIP)) {
+      logger.error('Form submission rate limit exceeded for IP:', clientIP)
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Rate limit exceeded. Maximum 5 form submissions per hour.',
+        },
+        { status: 429 }
+      )
+    }
     const payload = await getPayload({ config })
     const body = await request.json()
+
+    // Log the incoming request body for debugging
+    logger.log('🔍 API received body:', JSON.stringify(body, null, 2))
 
     // Validate the request has required fields
     if (!body.formType || !body.submittedAt || !body.locale) {
@@ -29,7 +96,6 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
       )
     }
 
-    let validationResult
     let submissionData: MediaContentReportSubmission | MediaContentComplaintSubmission
 
     // Get locale from request headers or default to 'fr'
@@ -39,61 +105,66 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
     // Get translations for validation messages
     const t = await getTranslations({ locale })
 
-    // Basic validation for both form types
-    const requiredFields = ['formType', 'mediaType', 'programName', 'broadcastDateTime', 'reasons', 'description']
-    
-    if (body.formType === 'complaint') {
-      // Complaint forms require complainant info
-      requiredFields.push('fullName', 'gender', 'country', 'emailAddress', 'phoneNumber')
-    }
-
-    // Check required fields
-    for (const field of requiredFields) {
-      if (!body[field] || (typeof body[field] === 'string' && body[field].trim() === '')) {
-        return NextResponse.json(
-          {
-            success: false,
-            message: `Missing required field: ${field}`,
-          },
-          { status: 400 }
-        )
-      }
-    }
-
-    // Validate email format if provided
-    if (body.emailAddress) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(body.emailAddress)) {
-        return NextResponse.json(
-          {
-            success: false,
-            message: 'Invalid email address format',
-          },
-          { status: 400 }
-        )
-      }
-    }
-
-    // Validate reasons array
-    if (!Array.isArray(body.reasons) || body.reasons.length === 0) {
+    // Validate form type first
+    if (!body.formType || !['report', 'complaint'].includes(body.formType)) {
       return NextResponse.json(
         {
           success: false,
-          message: 'At least one reason must be selected',
+          message: 'Invalid form type. Must be "report" or "complaint"',
         },
         { status: 400 }
       )
     }
 
-    if (body.formType === 'report') {
-      submissionData = body as MediaContentReportSubmission
-    } else if (body.formType === 'complaint') {
-      submissionData = body as MediaContentComplaintSubmission
-    } else {
+    // Use appropriate Zod schema based on form type
+    try {
+      if (body.formType === 'report') {
+        const reportSchema = createMediaContentReportSchema(t)
+        const validationResult = reportSchema.parse(body)
+        submissionData = {
+          ...validationResult,
+          formType: 'report',
+          submittedAt: body.submittedAt,
+          locale: body.locale
+        } as MediaContentReportSubmission
+      } else {
+        const complaintSchema = createMediaContentComplaintSchema(t)
+        const validationResult = complaintSchema.parse(body)
+        submissionData = {
+          ...validationResult,
+          formType: 'complaint',
+          submittedAt: body.submittedAt,
+          locale: body.locale
+        } as MediaContentComplaintSubmission
+      }
+    } catch (error) {
+      // Debug: Log the validation error details
+      console.error('❌ Validation error caught:', error)
+      
+      // Handle Zod validation errors
+      if (error instanceof Error && 'issues' in error) {
+        const zodError = error as any
+        console.error('🐛 Zod validation issues:', JSON.stringify(zodError.issues, null, 2))
+        
+        const firstIssue = zodError.issues[0]
+        return NextResponse.json(
+          {
+            success: false,
+            message: `Validation error: ${firstIssue.message} (field: ${firstIssue.path.join('.')})`,
+            debug: zodError.issues, // Add debug info
+          },
+          { status: 400 }
+        )
+      }
+      
+      // Log generic errors
+      console.error('❌ Generic validation error:', error)
+      
       return NextResponse.json(
         {
           success: false,
-          message: 'Invalid form type. Must be "report" or "complaint"',
+          message: 'Validation failed',
+          error: error instanceof Error ? error.message : 'Unknown error',
         },
         { status: 400 }
       )
@@ -106,6 +177,11 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
       locale: ['fr', 'ar'].includes(submissionData.locale) ? submissionData.locale as 'fr' | 'ar' : 'fr',
       submissionStatus: 'pending' as 'pending' | 'reviewing' | 'resolved' | 'dismissed',
       priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent',
+      
+      // Top-level fields for better admin visibility
+      mediaType: formatMediaType(submissionData.mediaType, submissionData.mediaTypeOther),
+      specificChannel: getSpecificChannel(submissionData),
+      programName: submissionData.programName,
       
       // For complaints, include complainant information
       ...(submissionData.formType === 'complaint' && {
@@ -270,16 +346,16 @@ function formatTVChannel(channel: string, other?: string): string {
 
 function formatRadioStation(station: string, other?: string): string {
   const stationMap: Record<string, string> = {
-    'radio-mauritanie': 'إذاعة موريتانيا الأم / Radio Mauritanie',
-    'radio-coran': 'إذاعة القرآن الكريم / Radio Coran',
-    'radio-scolaire': 'الإذاعة المدرسية / Radio Scolaire',
-    'radio-jeunesse': 'إذاعة الشباب / Radio Jeunesse',
-    'radio-culture': 'الإذاعة الثقافية / Radio Culture',
-    'radio-sante': 'إذاعة التثقيف الصحي / Radio Éducation à la santé',
-    'radio-rurale': 'الإذاعة الريفية / Radio Rurale',
-    'radio-mauritanides': 'إذاعة موريتانيد / Radio Mauritanides',
-    'radio-koubeni': 'إذاعة كوبني / Radio Koubeni',
-    'radio-tenwir': 'إذاعة التنوير / Radio Tenwir',
+    'radio_mauritanie': 'إذاعة موريتانيا الأم / Radio Mauritanie',
+    'radio_coran': 'إذاعة القرآن الكريم / Radio Coran',
+    'radio_scolaire': 'الإذاعة المدرسية / Radio Scolaire',
+    'radio_jeunesse': 'إذاعة الشباب / Radio Jeunesse',
+    'radio_culture': 'الإذاعة الثقافية / Radio Culture',
+    'radio_sante': 'إذاعة التثقيف الصحي / Radio Éducation à la santé',
+    'radio_rurale': 'الإذاعة الريفية / Radio Rurale',
+    'radio_mauritanides': 'إذاعة موريتانيد / Radio Mauritanides',
+    'radio_koubeni': 'إذاعة كوبني / Radio Koubeni',
+    'radio_tenwir': 'إذاعة التنوير / Radio Tenwir',
     other: other || 'Autre station',
   }
   return stationMap[station] || station

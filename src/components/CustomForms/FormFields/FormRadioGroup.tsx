@@ -53,7 +53,7 @@ export function FormRadioGroup({
             ${error ? 'border border-red-300 rounded p-3 bg-red-50' : ''}
           `}>
             <RadioGroup
-              value={field.value}
+              value={field.value || ''}
               onValueChange={field.onChange}
               disabled={disabled}
               dir={isRTL ? 'rtl' : 'ltr'}

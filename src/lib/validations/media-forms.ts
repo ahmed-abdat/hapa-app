@@ -32,18 +32,18 @@ export const TVChannelEnum = z.enum([
 
 // Radio Stations enum
 export const RadioStationEnum = z.enum([
-  // Radio Mauritanie
-  'radio-mauritanie',
-  'radio-coran',
-  'radio-scolaire',
-  'radio-jeunesse', 
-  'radio-culture',
-  'radio-sante',
-  'radio-rurale',
-  // Other stations
-  'radio-mauritanides',
-  'radio-koubeni',
-  'radio-tenwir',
+  // Radio Mauritanie (state radio network)
+  'radio_mauritanie',
+  'radio_coran',
+  'radio_scolaire',
+  'radio_jeunesse', 
+  'radio_culture',
+  'radio_sante',
+  'radio_rurale',
+  // Private stations
+  'radio_mauritanides',
+  'radio_koubeni',
+  'radio_tenwir',
   'other'
 ])
 
@@ -61,6 +61,7 @@ export const MediaTypeEnum = z.enum([
 export const ReportReasonEnum = z.enum([
   'hateSpeech',
   'misinformation',
+  'fakeNews',
   'privacyViolation',
   'shockingContent',
   'pluralismViolation',
@@ -90,18 +91,57 @@ const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/
 
 // Base content information schema factory (shared between report and complaint)
 const createContentInformationSchema = (validationMessages: ReturnType<typeof getValidationMessages>) => z.object({
-  mediaType: MediaTypeEnum,
-  mediaTypeOther: z.string().optional(),
+  mediaType: z.union([MediaTypeEnum, z.literal('')]).refine((val) => val !== '', validationMessages.required),
+  mediaTypeOther: z.string()
+    .optional()
+    .refine((val) => !val || val.trim().length >= 2, {
+      message: "Veuillez spécifier le type de média"
+    }),
   // Dynamic fields based on media type
-  tvChannel: TVChannelEnum.optional(),
-  tvChannelOther: z.string().optional(),
-  radioStation: RadioStationEnum.optional(),
-  radioStationOther: z.string().optional(),
-  programName: z.string().min(2, validationMessages.required).max(200, validationMessages.max_length(200)),
-  broadcastDateTime: z.string().min(1, validationMessages.required),
-  linkScreenshot: z.string().max(500, validationMessages.max_length(500)).optional().or(z.literal('')),
-  // File upload fields
-  screenshotFiles: z.array(z.string()).optional(), // Array of file URLs
+  tvChannel: z.union([TVChannelEnum, z.literal('')]).optional(),
+  tvChannelOther: z.string()
+    .optional()
+    .refine((val) => !val || val.trim().length >= 2, {
+      message: "Veuillez spécifier la chaîne TV"
+    }),
+  radioStation: z.union([RadioStationEnum, z.literal('')]).optional(),
+  radioStationOther: z.string()
+    .optional()
+    .refine((val) => !val || val.trim().length >= 2, {
+      message: "Veuillez spécifier la station radio"
+    }),
+  programName: z.string()
+    .min(2, validationMessages.required)
+    .max(200, validationMessages.max_length(200))
+    .refine((val) => val.trim().length >= 2 && !/^(undefined|null|[0-9\s]+)$/i.test(val.trim()), {
+      message: "Nom du programme invalide"
+    }),
+  broadcastDateTime: z.string()
+    .min(1, validationMessages.required)
+    .refine((val) => !isNaN(Date.parse(val)), {
+      message: "Date de diffusion invalide"
+    })
+    .refine((val) => new Date(val) <= new Date(), {
+      message: "La date de diffusion ne peut pas être dans le futur"
+    }),
+  linkScreenshot: z.string()
+    .max(500, validationMessages.max_length(500))
+    .optional()
+    .or(z.literal(''))
+    .refine((val) => !val || val === '' || /^https?:\/\/.+/.test(val), {
+      message: "URL invalide - doit commencer par http:// ou https://"
+    }),
+  // File upload fields - accept File objects or empty array
+  screenshotFiles: z.union([
+    z.array(typeof File !== 'undefined' ? z.instanceof(File) : z.any()),
+    z.array(z.string()),
+    z.literal(undefined),
+    z.literal(null)
+  ]).optional().nullable().transform(val => {
+    // Preserve File arrays, only convert empty arrays to undefined
+    if (Array.isArray(val) && val.length === 0) return undefined
+    return val
+  }),
 })
 
 // Base report reason schema factory
@@ -112,15 +152,62 @@ const createReportReasonSchema = (validationMessages: ReturnType<typeof getValid
 
 // Content description schema factory
 const createContentDescriptionSchema = (validationMessages: ReturnType<typeof getValidationMessages>) => z.object({
-  description: z.string().min(50, validationMessages.min_length(50)).max(2000, validationMessages.max_length(2000)),
+  description: z.string()
+    .min(50, validationMessages.min_length(50))
+    .max(2000, validationMessages.max_length(2000))
+    .refine((val) => {
+      // Prevent debug/development text and server logs from being submitted
+      const debugPatterns = [
+        /cross-env/i,
+        /NODE_OPTIONS/i,
+        /next\s+dev/i,
+        /localhost:\d+/i,
+        /console\.log/i,
+        /undefined|null/i,
+        /\$\{.*\}/,
+        /<script/i,
+        /<\/script/i,
+        // Server log patterns
+        /✓\s+Compiled/i,
+        /GET\s+\/api\//i,
+        /POST\s+\/api\//i,
+        /\d+ms$/m,
+        /Deprecation warning/i,
+        /WARN:/i,
+        /ERROR:/i,
+        /INFO:/i,
+        /Generating import map/i,
+        /Fast Refresh/i,
+        /runtime error/i,
+        // Admin interface text
+        /Tout réduire/i,
+        /Afficher tout/i,
+        /Reason \d+/i,
+      ];
+      return !debugPatterns.some(pattern => pattern.test(val));
+    }, {
+      message: "La description contient du contenu invalide (logs serveur, code de débogage, ou texte d'interface admin). Veuillez fournir une description claire du problème de contenu médiatique."
+    })
+    .refine((val) => val.trim().length >= 50, {
+      message: validationMessages.min_length(50)
+    }),
 })
 
 // Attachments schema factory
 const createAttachmentsSchema = (validationMessages: ReturnType<typeof getValidationMessages>) => z.object({
   attachmentTypes: z.array(AttachmentTypeEnum).optional(),
   attachmentOther: z.string().max(1000, validationMessages.max_length(1000)).optional(),
-  // File upload fields for attachments
-  attachmentFiles: z.array(z.string()).optional(), // Array of file URLs
+  // File upload fields for attachments - accept File objects or empty array
+  attachmentFiles: z.union([
+    z.array(typeof File !== 'undefined' ? z.instanceof(File) : z.any()),
+    z.array(z.string()),
+    z.literal(undefined),
+    z.literal(null)
+  ]).optional().nullable().transform(val => {
+    // Preserve File arrays, only convert empty arrays to undefined
+    if (Array.isArray(val) && val.length === 0) return undefined
+    return val
+  }),
 })
 
 // Declaration and consent schema factory (for complaints only)
@@ -165,7 +252,7 @@ export const createMediaContentReportSchema = (t: ReturnType<typeof useTranslati
   }).refine((data) => {
     // If media type is 'television', tvChannel is required
     if (data.mediaType === 'television') {
-      return data.tvChannel && data.tvChannel.trim().length > 0
+      return data.tvChannel !== undefined && data.tvChannel !== ''
     }
     return true
   }, {
@@ -174,7 +261,7 @@ export const createMediaContentReportSchema = (t: ReturnType<typeof useTranslati
   }).refine((data) => {
     // If media type is 'radio', radioStation is required
     if (data.mediaType === 'radio') {
-      return data.radioStation && data.radioStation.trim().length > 0
+      return data.radioStation !== undefined && data.radioStation !== ''
     }
     return true
   }, {
@@ -272,7 +359,7 @@ export const createMediaContentComplaintSchema = (t: ReturnType<typeof useTransl
   }).refine((data) => {
     // If media type is 'television', tvChannel is required
     if (data.mediaType === 'television') {
-      return data.tvChannel && data.tvChannel.trim().length > 0
+      return data.tvChannel !== undefined && data.tvChannel !== ''
     }
     return true
   }, {
@@ -281,7 +368,7 @@ export const createMediaContentComplaintSchema = (t: ReturnType<typeof useTransl
   }).refine((data) => {
     // If media type is 'radio', radioStation is required
     if (data.mediaType === 'radio') {
-      return data.radioStation && data.radioStation.trim().length > 0
+      return data.radioStation !== undefined && data.radioStation !== ''
     }
     return true
   }, {

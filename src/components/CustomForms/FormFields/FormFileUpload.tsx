@@ -3,26 +3,62 @@
 import React, { useState, useRef } from 'react'
 import { useFormContext, Controller } from 'react-hook-form'
 import { useLocale, useTranslations } from 'next-intl'
-import { Upload, X, FileImage, FileText, FileVideo, File } from 'lucide-react'
+import { Upload, X, FileImage, FileText, FileVideo, File, Settings, Check, AlertCircle, Zap, RotateCcw, Wifi, WifiOff } from 'lucide-react'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
 import { type Locale } from '@/utilities/locale'
 import { FormFieldProps } from '../types'
+import { 
+  validateFileSignature, 
+  sanitizeFilename, 
+  generateThumbnail, 
+  isImageFile, 
+  smartCompressImage,
+  formatFileSize,
+  type CompressionResult,
+  type RetryState,
+  createRetryState,
+  updateRetryState,
+  categorizeError,
+  isRetryableError,
+  retryFileUpload,
+  uploadFileWithRetry,
+  sleep
+} from '@/lib/file-upload'
+import { logger } from '@/utilities/logger'
 
 interface FormFileUploadProps extends Omit<FormFieldProps, 'placeholder'> {
   accept?: string
   maxSize?: number // in MB
   multiple?: boolean
   locale?: 'fr' | 'ar'
+  enableCompression?: boolean // Enable/disable compression
+  compressionThreshold?: number // Size threshold in MB for compression
 }
 
-interface UploadedFile {
+interface SelectedFile {
   file: File
-  url: string
-  uploading: boolean
-  uploaded: boolean
+  originalFile?: File // Keep reference to original file
+  previewUrl: string
+  thumbnailUrl?: string
+  thumbnailLoading?: boolean
+  thumbnailError?: string
   error?: string
+  uploading?: boolean
+  uploadProgress?: number
+  // Compression-related fields
+  isCompressed?: boolean
+  compressionResult?: CompressionResult
+  compressing?: boolean
+  compressionError?: string
+  // Retry-related fields
+  retryState?: RetryState
+  retrying?: boolean
+  canRetry?: boolean
+  retryAttempts?: number
+  nextRetryDelay?: number
 }
 
 export function FormFileUpload({
@@ -35,10 +71,13 @@ export function FormFileUpload({
   maxSize = 10, // 10MB default
   multiple = false,
   locale,
+  enableCompression = true, // Enable compression by default
+  compressionThreshold = 2, // 2MB threshold for compression
   ...props
 }: FormFileUploadProps) {
-  const [files, setFiles] = useState<UploadedFile[]>([])
+  const [files, setFiles] = useState<SelectedFile[]>([])
   const [isDragOver, setIsDragOver] = useState(false)
+  const [compressionEnabled, setCompressionEnabled] = useState(enableCompression)
   const fileInputRef = useRef<HTMLInputElement>(null)
   
   const {
@@ -55,27 +94,165 @@ export function FormFileUpload({
 
   const getFileIcon = (file: File) => {
     const type = file.type
-    if (type.startsWith('image/')) return <FileImage className="h-5 w-5" />
     if (type.startsWith('video/')) return <FileVideo className="h-5 w-5" />
     if (type.includes('pdf') || type.includes('document')) return <FileText className="h-5 w-5" />
+    if (type.startsWith('image/')) return <FileImage className="h-5 w-5" />
     return <File className="h-5 w-5" />
   }
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes'
-    const k = 1024
-    const sizes = ['Bytes', 'KB', 'MB', 'GB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  // Retry-related functions
+  const handleRetryUpload = async (fileData: SelectedFile) => {
+    if (!fileData.retryState) return
+    
+    // Update file state to show retrying
+    setFiles(prev => prev.map(f => 
+      f.originalFile === fileData.originalFile 
+        ? { 
+            ...f, 
+            retrying: true, 
+            error: undefined,
+            uploadProgress: 0
+          }
+        : f
+    ))
+
+    try {
+      const result = await retryFileUpload(fileData.file, fileData.retryState)
+      
+      if (result.success) {
+        // Retry succeeded
+        setFiles(prev => prev.map(f => 
+          f.originalFile === fileData.originalFile 
+            ? { 
+                ...f, 
+                retrying: false,
+                error: undefined,
+                retryState: result.retryState,
+                canRetry: false,
+                uploadProgress: 100
+              }
+            : f
+        ))
+      } else {
+        // Retry failed
+        setFiles(prev => prev.map(f => 
+          f.originalFile === fileData.originalFile 
+            ? { 
+                ...f, 
+                retrying: false,
+                error: result.error,
+                retryState: result.retryState,
+                canRetry: result.canRetry || false
+              }
+            : f
+        ))
+      }
+    } catch (error) {
+      // Handle retry error
+      setFiles(prev => prev.map(f => 
+        f.originalFile === fileData.originalFile 
+          ? { 
+              ...f, 
+              retrying: false,
+              error: error instanceof Error ? error.message : 'Retry failed'
+            }
+          : f
+      ))
+    }
   }
 
-  const validateFile = (file: File): string | null => {
-    // Size validation
-    if (file.size > maxSize * 1024 * 1024) {
-      return t('fileTooLarge')
+  const getRetryButtonText = (fileData: SelectedFile): string => {
+    if (!fileData.retryState) return t('retry')
+    
+    const attemptCount = fileData.retryState.attemptCount
+    const maxRetries = fileData.retryState.maxRetries
+    
+    if (attemptCount === 0) {
+      return t('retry')
+    }
+    
+    return t('retryAttempt', { current: attemptCount, max: maxRetries })
+  }
+
+  const getErrorIcon = (failureType?: string) => {
+    switch (failureType) {
+      case 'network':
+        return <WifiOff className="h-4 w-4 text-orange-500" />
+      case 'security':
+        return <AlertCircle className="h-4 w-4 text-red-500" />
+      case 'validation':
+        return <AlertCircle className="h-4 w-4 text-red-500" />
+      case 'server':
+        return <AlertCircle className="h-4 w-4 text-yellow-500" />
+      default:
+        return <AlertCircle className="h-4 w-4 text-red-500" />
+    }
+  }
+
+  const renderFilePreview = (fileData: SelectedFile) => {
+    const { file, thumbnailUrl, thumbnailLoading, thumbnailError } = fileData
+
+    // For image files, show thumbnail if available
+    if (isImageFile(file)) {
+      if (thumbnailLoading) {
+        return (
+          <div className="h-12 w-12 bg-gray-200 rounded-md flex items-center justify-center animate-pulse">
+            <FileImage className="h-5 w-5 text-gray-400" />
+          </div>
+        )
+      }
+
+      if (thumbnailUrl && !thumbnailError) {
+        return (
+          <div className="h-12 w-12 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
+            <img
+              src={thumbnailUrl}
+              alt={`${t('loadingThumbnail')} ${file.name}`}
+              className="h-full w-full object-cover"
+              loading="lazy"
+              onError={() => {
+                // Update file data to show error state
+                setFiles(prev => prev.map(f => 
+                  f.file === file 
+                    ? { ...f, thumbnailError: t('thumbnailError') }
+                    : f
+                ))
+              }}
+            />
+          </div>
+        )
+      }
+
+      // Fallback for thumbnail error or no thumbnail
+      return (
+        <div className="h-12 w-12 bg-gray-100 rounded-md flex items-center justify-center flex-shrink-0">
+          {getFileIcon(file)}
+        </div>
+      )
     }
 
-    // Type validation (basic)
+    // For non-image files, show icon
+    return (
+      <div className="flex items-center justify-center flex-shrink-0">
+        {getFileIcon(file)}
+      </div>
+    )
+  }
+
+
+  const validateFile = async (file: File): Promise<{ error: string | null, retryState?: RetryState }> => {
+    // Size validation
+    if (file.size > maxSize * 1024 * 1024) {
+      return { error: t('fileTooLarge', { maxSize }) }
+    }
+
+    // File name sanitization check
+    const sanitizedName = sanitizeFilename(file.name)
+    if (sanitizedName !== file.name && sanitizedName.length < file.name.length * 0.5) {
+      return { error: t('invalidFileName') }
+    }
+
+    // Type validation (basic MIME type check)
     const allowedTypes = accept.split(',').map(t => t.trim())
     const isValidType = allowedTypes.some(allowedType => {
       if (allowedType.startsWith('.')) {
@@ -89,81 +266,164 @@ export function FormFileUpload({
     })
 
     if (!isValidType) {
-      return t('unsupportedFileType')
+      return { error: t('unsupportedFileType') }
     }
 
-    return null
-  }
-
-  const uploadFile = async (file: File): Promise<string> => {
-    const formData = new FormData()
-    formData.append('file', file)
-
-    const response = await fetch('/api/media/upload', {
-      method: 'POST',
-      body: formData,
-    })
-
-    if (!response.ok) {
-      throw new Error('Upload failed')
+    // Advanced security validation - file signature check
+    try {
+      const isValidSignature = await validateFileSignature(file)
+      if (!isValidSignature) {
+        return { error: t('invalidFileFormat') }
+      }
+    } catch (error) {
+      logger.warn('File signature validation failed:', error)
+      // Create retry state for validation errors that might be transient
+      const fakeError = { message: 'File validation error' }
+      const retryState = updateRetryState(createRetryState(), fakeError)
+      return { 
+        error: t('fileValidationError'),
+        retryState
+      }
     }
 
-    const result = await response.json()
-    return result.url
+    return { error: null }
   }
+
 
   const handleFileSelect = async (selectedFiles: FileList) => {
-    const newFiles: UploadedFile[] = []
+    const newFiles: SelectedFile[] = []
 
+    // Process files sequentially to handle async validation and compression
     for (let i = 0; i < selectedFiles.length; i++) {
-      const file = selectedFiles[i]
-      const validationError = validateFile(file)
-
-      if (validationError) {
-        newFiles.push({
-          file,
-          url: '',
+      const originalFile = selectedFiles[i]
+      
+      // Show loading state for this file
+      const tempFileData: SelectedFile = {
+        file: originalFile,
+        originalFile,
+        previewUrl: '',
+        thumbnailLoading: isImageFile(originalFile),
+        uploading: true,
+        uploadProgress: 0,
+        compressing: false
+      }
+      
+      if (!multiple && i === 0) {
+        setFiles([tempFileData])
+      } else if (multiple) {
+        setFiles(prev => [...prev, tempFileData])
+      }
+      
+      const validationResult = await validateFile(originalFile)
+      if (validationResult.error) {
+        const errorFileData: SelectedFile = {
+          file: originalFile,
+          originalFile,
+          previewUrl: '',
+          error: validationResult.error,
           uploading: false,
-          uploaded: false,
-          error: validationError
-        })
+          thumbnailLoading: false,
+          retryState: validationResult.retryState,
+          canRetry: validationResult.retryState ? isRetryableError(validationResult.retryState.failureType || 'unknown') : false
+        }
+        newFiles.push(errorFileData)
         continue
       }
 
-      newFiles.push({
-        file,
-        url: URL.createObjectURL(file),
-        uploading: true,
-        uploaded: false
-      })
+      // Check if compression is needed and enabled
+      let processedFile = originalFile
+      let compressionResult: CompressionResult | undefined
+      let isCompressed = false
+
+      if (compressionEnabled && 
+          isImageFile(originalFile) && 
+          originalFile.size > compressionThreshold * 1024 * 1024) {
+        
+        // Show compression state
+        setFiles(prevFiles => prevFiles.map(f => 
+          f.file === originalFile 
+            ? { ...f, compressing: true, uploadProgress: 25 }  
+            : f
+        ))
+
+        try {
+          compressionResult = await smartCompressImage(originalFile, compressionThreshold)
+          
+          if (compressionResult.success && compressionResult.compressedFile) {
+            processedFile = compressionResult.compressedFile
+            isCompressed = true
+            
+            // Update progress during compression
+            setFiles(prevFiles => prevFiles.map(f => 
+              f.file === originalFile 
+                ? { ...f, uploadProgress: 75 }  
+                : f
+            ))
+          }
+        } catch (error) {
+          logger.warn('Image compression failed:', error)
+          // Continue with original file if compression fails
+        }
+      }
+
+      let finalFileData: SelectedFile = {
+        file: processedFile,
+        originalFile,
+        previewUrl: URL.createObjectURL(processedFile),
+        uploading: false,
+        thumbnailLoading: false,
+        compressing: false,
+        isCompressed,
+        compressionResult
+      }
+
+      // Generate thumbnail for image files asynchronously
+      if (isImageFile(processedFile)) {
+        finalFileData.thumbnailLoading = true
+        
+        // Generate thumbnail asynchronously without blocking the UI
+        generateThumbnail(processedFile, 100, 100, 0.8).then(thumbnailResult => {
+          setFiles(prevFiles => prevFiles.map(f => {
+            if (f.originalFile === originalFile) {
+              return {
+                ...f,
+                thumbnailLoading: false,
+                thumbnailUrl: thumbnailResult.success ? thumbnailResult.thumbnailUrl : undefined,
+                thumbnailError: thumbnailResult.success ? undefined : (thumbnailResult.error || t('thumbnailError'))
+              }
+            }
+            return f
+          }))
+        }).catch(() => {
+          setFiles(prevFiles => prevFiles.map(f => {
+            if (f.originalFile === originalFile) {
+              return {
+                ...f,
+                thumbnailLoading: false,
+                thumbnailError: t('thumbnailError')
+              }
+            }
+            return f
+          }))
+        })
+      }
+      
+      newFiles.push(finalFileData)
     }
 
+    // Update with all validated files
     if (!multiple) {
       setFiles(newFiles.slice(0, 1))
     } else {
-      setFiles(prev => [...prev, ...newFiles])
+      setFiles(prev => {
+        // Replace loading files with validated ones
+        const nonLoadingFiles = prev.filter(f => !f.uploading)
+        return [...nonLoadingFiles, ...newFiles]
+      })
     }
 
-    // Upload files
-    for (let i = 0; i < newFiles.length; i++) {
-      const fileData = newFiles[i]
-      if (fileData.error) continue
-
-      try {
-        const uploadedUrl = await uploadFile(fileData.file)
-        setFiles(prev => prev.map(f => 
-          f.file === fileData.file 
-            ? { ...f, url: uploadedUrl, uploading: false, uploaded: true }
-            : f
-        ))
-      } catch (error) {
-        setFiles(prev => prev.map(f => 
-          f.file === fileData.file 
-            ? { ...f, uploading: false, uploaded: false, error: t('uploadFailed') }
-            : f
-        ))
-      }
-    }
+    // Update form value with file objects (will be uploaded on form submit)
+    setTimeout(updateFormValue, 100) // Small delay to ensure state is updated
   }
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -187,24 +447,46 @@ export function FormFileUpload({
     }
   }
 
-  const removeFile = (fileToRemove: UploadedFile) => {
-    setFiles(prev => prev.filter(f => f.file !== fileToRemove.file))
-    // Revoke object URL to prevent memory leaks
-    if (fileToRemove.url.startsWith('blob:')) {
-      URL.revokeObjectURL(fileToRemove.url)
+  const removeFile = (fileToRemove: SelectedFile) => {
+    setFiles(prev => prev.filter(f => f.originalFile !== fileToRemove.originalFile))
+    // Revoke object URLs to prevent memory leaks
+    if (fileToRemove.previewUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(fileToRemove.previewUrl)
+    }
+    if (fileToRemove.thumbnailUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(fileToRemove.thumbnailUrl)
     }
   }
 
-  const uploadedUrls = files.filter(f => f.uploaded).map(f => f.url)
-
-  // Update form field when uploaded URLs change
-  React.useEffect(() => {
+  // Update form field when files change (store File objects, not URLs)
+  const updateFormValue = React.useCallback(() => {
+    const validFiles = files.filter(f => !f.error).map(f => f.file)
+    
     if (multiple) {
-      setValue(name, uploadedUrls)
+      setValue(name, validFiles)
     } else {
-      setValue(name, uploadedUrls[0] || '')
+      setValue(name, validFiles[0] || null)
     }
-  }, [uploadedUrls, multiple, name, setValue])
+  }, [files, multiple, name, setValue])
+
+  // Update form value when files change
+  React.useEffect(() => {
+    updateFormValue()
+  }, [updateFormValue])
+
+  // Cleanup all object URLs when component unmounts
+  React.useEffect(() => {
+    return () => {
+      files.forEach(fileData => {
+        if (fileData.previewUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(fileData.previewUrl)
+        }
+        if (fileData.thumbnailUrl?.startsWith('blob:')) {
+          URL.revokeObjectURL(fileData.thumbnailUrl)
+        }
+      })
+    }
+  }, [files])
 
   return (
     <div className={`space-y-2 ${className}`} dir={isRTL ? 'rtl' : 'ltr'}>
@@ -215,6 +497,38 @@ export function FormFileUpload({
         </bdi>
       </Label>
 
+      {/* Compression Toggle */}
+      {enableCompression && (
+        <div className={cn("flex items-center gap-2 p-3 bg-blue-50 rounded-lg border border-blue-200", isRTL && "flex-row-reverse")}>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setCompressionEnabled(!compressionEnabled)}
+              className={cn(
+                "flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors",
+                compressionEnabled
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-gray-300 text-gray-700 hover:bg-gray-400",
+                isRTL && "flex-row-reverse"
+              )}
+            >
+              <Zap className="h-4 w-4" />
+              <bdi>
+                {compressionEnabled ? t('compressionEnabled') : t('compressionDisabled')}
+              </bdi>
+            </button>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-blue-700 font-medium">
+              <bdi>{t('compressionToggleLabel')}</bdi>
+            </p>
+            <p className="text-xs text-blue-600">
+              <bdi>{t('compressionToggleDesc')}</bdi>
+            </p>
+          </div>
+        </div>
+      )}
+
       <Controller
         name={name}
         control={control}
@@ -222,23 +536,37 @@ export function FormFileUpload({
             <div className="space-y-3">
               {/* Upload Area */}
               <div
+                role="button"
+                tabIndex={disabled ? -1 : 0}
+                aria-label={t('fileUploadArea')}
+                aria-describedby={`${name}-instructions ${name}-security-info`}
                 className={cn(
-                  "border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200",
-                  "hover:border-primary/50 hover:bg-primary/5",
-                  isDragOver && "border-primary bg-primary/10",
+                  "border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 cursor-pointer",
+                  "hover:border-primary/50 hover:bg-primary/5 focus:outline-none focus:ring-2 focus:ring-primary/20",
+                  isDragOver && "border-primary bg-primary/10 ring-2 ring-primary/20",
                   error && "border-red-500 bg-red-50",
                   disabled && "opacity-50 cursor-not-allowed"
                 )}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
+                onClick={() => !disabled && fileInputRef.current?.click()}
+                onKeyDown={(e) => {
+                  if ((e.key === 'Enter' || e.key === ' ') && !disabled) {
+                    e.preventDefault()
+                    fileInputRef.current?.click()
+                  }
+                }}
               >
                 <Upload className={cn("h-8 w-8 mx-auto mb-2 text-gray-400", isRTL && "scale-x-[-1]")} />
                 <p className="text-sm text-gray-600 mb-2">
                   <bdi>{t('dragDropText')}</bdi>
                 </p>
-                <p className="text-xs text-gray-500 mb-3">
-                  <bdi>{t('maxSizeText')} ({maxSize}MB)</bdi>
+                <p id={`${name}-instructions`} className="text-xs text-gray-500 mb-1">
+                  <bdi>{t('maxSizeText', { maxSize })}</bdi>
+                </p>
+                <p id={`${name}-security-info`} className="text-xs text-gray-400 mb-3">
+                  <bdi>{t('filesValidatedSecurity')}</bdi>
                 </p>
                 <Button
                   type="button"
@@ -274,7 +602,7 @@ export function FormFileUpload({
                         isRTL && "flex-row-reverse"
                       )}
                     >
-                      {getFileIcon(fileData.file)}
+                      {renderFilePreview(fileData)}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">
                           <bdi>{fileData.file.name}</bdi>
@@ -282,31 +610,103 @@ export function FormFileUpload({
                         <p className="text-xs text-gray-500">
                           <bdi>{formatFileSize(fileData.file.size)}</bdi>
                         </p>
+                        
+                        {/* Compression status */}
+                        {fileData.isCompressed && fileData.compressionResult && (
+                          <p className="text-xs text-blue-600 mt-1 flex items-center gap-1">
+                            <Zap className="h-3 w-3" />
+                            <bdi>
+                              {t('compressionSavings', {
+                                originalSize: formatFileSize(fileData.compressionResult.originalSize),
+                                compressedSize: formatFileSize(fileData.compressionResult.compressedSize),
+                                savings: fileData.compressionResult.savings
+                              })}
+                            </bdi>
+                          </p>
+                        )}
+                        
                         {fileData.error && (
-                          <p className="text-xs text-red-600 mt-1">
-                            <bdi>{fileData.error}</bdi>
-                          </p>
+                          <div className="mt-1">
+                            <div className="flex items-center gap-1">
+                              {getErrorIcon(fileData.retryState?.failureType)}
+                              <p className="text-xs text-red-600">
+                                <bdi>{fileData.error}</bdi>
+                              </p>
+                            </div>
+                            {fileData.retryState && (
+                              <p className="text-xs text-gray-500 mt-1">
+                                <bdi>
+                                  {t('errorType')}: {t(`errorType${fileData.retryState.failureType || 'unknown'}`)}
+                                </bdi>
+                              </p>
+                            )}
+                          </div>
                         )}
-                        {fileData.uploading && (
-                          <p className="text-xs text-blue-600 mt-1">
-                            <bdi>{t('uploading')}</bdi>
-                          </p>
+                        {fileData.compressing && (
+                          <div className="mt-1">
+                            <p className="text-xs text-blue-600 mb-1">
+                              <bdi>{t('compressingImage')}...</bdi>
+                            </p>
+                            <Progress 
+                              value={fileData.uploadProgress || 0} 
+                              className="h-1 animate-pulse"
+                            />
+                          </div>
                         )}
-                        {fileData.uploaded && (
+                        {fileData.uploading && !fileData.compressing && (
+                          <div className="mt-1">
+                            <p className="text-xs text-blue-600 mb-1">
+                              <bdi>{t('validatingFile')}...</bdi>
+                            </p>
+                            <Progress 
+                              value={fileData.uploadProgress || 0} 
+                              className="h-1 animate-pulse"
+                            />
+                          </div>
+                        )}
+                        {!fileData.error && !fileData.uploading && !fileData.compressing && (
                           <p className="text-xs text-green-600 mt-1">
-                            <bdi>{t('uploadSuccess')}</bdi>
+                            <bdi>{t('fileReady')}</bdi>
                           </p>
                         )}
                       </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeFile(fileData)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+                      
+                      {/* Retry and Remove buttons */}
+                      <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+                        {fileData.canRetry && fileData.error && !fileData.retrying && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleRetryUpload(fileData)}
+                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-200"
+                            disabled={fileData.retrying}
+                          >
+                            <RotateCcw className={cn("h-4 w-4", isRTL ? "ms-1" : "me-1")} />
+                            <bdi>{getRetryButtonText(fileData)}</bdi>
+                          </Button>
+                        )}
+                        
+                        {fileData.retrying && (
+                          <div className="flex items-center gap-2 text-blue-600">
+                            <RotateCcw className="h-4 w-4 animate-spin" />
+                            <span className="text-xs">
+                              <bdi>{t('retrying')}...</bdi>
+                            </span>
+                          </div>
+                        )}
+                        
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeFile(fileData)}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          disabled={fileData.retrying}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>

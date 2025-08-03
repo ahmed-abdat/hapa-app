@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getPayloadHMR } from '@payloadcms/next/utilities'
+import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import type { SubmissionStatus, SubmissionPriority } from '@/types/media-forms'
 
@@ -22,7 +22,7 @@ export async function PATCH(
     const { id } = await params
     
     // Get Payload instance
-    const payload = await getPayloadHMR({ config: configPromise })
+    const payload = await getPayload({ config: configPromise })
     
     // Check if user is authenticated
     const { user } = await payload.auth({ headers: req.headers })

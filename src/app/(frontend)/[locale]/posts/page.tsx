@@ -10,7 +10,8 @@ import React from "react";
 import PageClient from "./page.client";
 import { isValidLocale, type Locale } from "@/utilities/locale";
 import { notFound } from "next/navigation";
-import { Calendar, FileText, Filter } from "lucide-react";
+import { Calendar, FileText, Filter, Newspaper } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 // Use ISR for posts listing with shorter revalidation
 export const revalidate = 180; // 3 minutes for posts listing
@@ -36,6 +37,7 @@ export default async function Page({
     notFound();
   }
 
+  const t = await getTranslations();
   const isRtl = locale === 'ar';
 
   // Parse page number from search params
@@ -93,104 +95,117 @@ export default async function Page({
   });
 
   return (
-    <div className="min-h-screen bg-gray-50" >
+    <div className="pb-24">
       <PageClient />
 
-      {/* Modern Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-accent">
-        <div className="absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-black/5" />
-        
-        <div className="relative hapa-container section-spacing">
-          <div className="text-center text-white">
-            {/* Breadcrumb */}
-            <nav className="flex items-center justify-center gap-2 text-sm text-white/80 mb-6" aria-label="Breadcrumb">
-              <span>{locale === 'ar' ? 'الرئيسية' : 'Accueil'}</span>
-              <span className="mx-2">/</span>
-              <span className="text-white font-medium">
-                {selectedCategory ? selectedCategory.title : (locale === 'ar' ? 'المقالات' : 'Articles')}
-              </span>
-            </nav>
+      {/* Hero Section - Matching Publications Design */}
+      <div className="relative -mt-[10.4rem] min-h-[60vh] overflow-hidden bg-gradient-to-br from-primary/5 via-white to-accent/5">
+        {/* Background Pattern */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(19,139,58,0.08)_0%,transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(15,122,46,0.08)_0%,transparent_50%)]" />
+        </div>
 
-            {/* Hero Title */}
-            <div className="max-w-4xl mx-auto">
-              <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight ${isRtl ? 'text-right' : 'text-left'} md:text-center`}>
-                {selectedCategory ? selectedCategory.title : (locale === 'ar' ? 'المقالات والأخبار' : 'Articles et Actualités')}
-              </h1>
-              
-              <p className={`text-lg sm:text-xl md:text-2xl text-white/90 mb-8 leading-relaxed ${isRtl ? 'text-right' : 'text-left'} md:text-center`}>
+        {/* Content */}
+        <div className="relative z-10 flex min-h-[60vh] items-center pt-[10.4rem] pb-12">
+          <div className="hapa-container">
+            <div className="max-w-4xl mx-auto text-center">
+              {/* Category Icon */}
+              <div className="mb-8">
+                <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto">
+                  <Newspaper className="h-10 w-10 text-primary" />
+                </div>
+              </div>
+
+              {/* Title */}
+              <div className="space-y-6 mb-8">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-primary">
+                  {selectedCategory ? selectedCategory.title : t('articlesAndNews')}
+                </h1>
+                <div className="w-20 h-1 bg-gradient-to-r from-secondary to-accent mx-auto" />
+              </div>
+
+              {/* Description */}
+              <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto mb-8">
                 {selectedCategory ? (
                   <>
-                    {locale === 'ar' ? 'استكشف المحتوى في فئة' : 'Explorez le contenu de la catégorie'} <span className="font-semibold">{selectedCategory.title}</span>
+                    {t('exploreContentInCategory')} {selectedCategory.title}
                   </>
                 ) : (
-                  locale === 'ar' 
-                    ? 'ابق على اطلاع على آخر الأخبار والتحديثات التنظيمية من الهيئة العليا للصحافة والإعلام'
-                    : 'Restez informé des dernières actualités et mises à jour réglementaires de HAPA'
+                  t('newsAnnouncementsDesc')
                 )}
               </p>
 
-              {/* Stats */}
-              <div className="flex items-center justify-center gap-8 text-white/80">
-                <div className="flex items-center gap-2">
-                  <FileText className="w-5 h-5" />
-                  <span className="text-sm font-medium">
-                    {posts.totalDocs} {locale === 'ar' ? 'مقال' : 'articles'}
+              {/* Statistics */}
+              {posts.totalDocs > 0 && (
+                <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full shadow-lg border border-gray-100">
+                  <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                    <FileText className="h-4 w-4 text-primary" />
+                  </div>
+                  <span className="text-lg font-semibold text-primary">{posts.totalDocs}</span>
+                  <span className="text-gray-600">
+                    {posts.totalDocs === 1 ? t('article') : t('articles')}
                   </span>
                 </div>
-                {selectedCategory && (
-                  <div className="flex items-center gap-2">
-                    <Filter className="w-5 h-5" />
-                    <span className="text-sm font-medium">
-                      {locale === 'ar' ? 'فئة مختارة' : 'Catégorie sélectionnée'}
-                    </span>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
           </div>
         </div>
+      </div>
 
+      {/* Category Filter Section */}
+      <section className="bg-gray-50/50 border-b border-gray-200/50">
+        <div className="hapa-container">
+          <CategoryFilterSuspense
+            categories={allCategories.docs}
+            selectedCategory={category}
+            locale={locale as Locale}
+          />
+        </div>
       </section>
 
-      {/* Main Content */}
-      <div className="relative">
-        {/* Category Filter Section */}
-        <section className="bg-gray-50/50 border-b border-gray-200/50">
-          <div className="hapa-container">
-            <CategoryFilterSuspense
-              categories={allCategories.docs}
-              selectedCategory={category}
-              locale={locale as Locale}
-            />
-          </div>
-        </section>
+      {/* Content Section */}
+      <div className="container">
+        {/* Posts Count */}
+        <div className="mb-6">
+          <PageRange
+            collection="posts"
+            currentPage={posts.page}
+            limit={12}
+            totalDocs={posts.totalDocs}
+            locale={locale as Locale}
+          />
+        </div>
 
-        {/* Posts Archive Section */}
-        <section className="py-2">
-          <>
-            {/* Page Range */}
-            <div className="mb-6">
-              <PageRange
-                collection="posts"
-                currentPage={posts.page}
-                limit={12}
-                totalDocs={posts.totalDocs}
-                locale={locale as Locale}
-              />
+        {/* Posts Grid or Empty State */}
+        {posts.docs.length > 0 ? (
+          <CollectionArchive posts={posts.docs} locale={locale as Locale} />
+        ) : (
+          <div className="text-center py-16">
+            <div className="max-w-md mx-auto">
+              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Newspaper className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                {t('noArticlesFound')}
+              </h3>
+              <p className="text-gray-600">
+                {t('noArticlesInCategory')}
+              </p>
             </div>
+          </div>
+        )}
 
-            {/* Posts Grid */}
-            <CollectionArchive posts={posts.docs} locale={locale as Locale} />
-
-            {/* Pagination - Only shows when there are 10+ posts */}
+        {/* Pagination */}
+        {posts.totalDocs > 12 && (
+          <div className="mt-12">
             <PaginationSuspense
               totalItems={posts.totalDocs}
               itemsPerPage={postsPerPage}
               currentPage={currentPage}
-              className="mt-8"
             />
-          </>
-        </section>
+          </div>
+        )}
       </div>
     </div>
   );
