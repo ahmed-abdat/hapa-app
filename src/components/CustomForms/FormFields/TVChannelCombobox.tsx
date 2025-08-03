@@ -33,16 +33,16 @@ const tvChannels = [
   { value: 'parlement', label: 'Parlement TV', labelAr: 'البرلمانية', category: 'state' },
   
   // Private channels
-  { value: 'mahdhara', label: 'Al Mahdhara TV', labelAr: 'المحظرة', category: 'private' },
-  { value: 'ousra', label: 'Al Ousra TV', labelAr: 'الأسرة', category: 'private' },
+  { value: 'mahdhara', label: 'Al Mahdhara TV', labelAr: 'قناة المحظرة', category: 'private' },
+  { value: 'ousra', label: 'Al Ousra TV', labelAr: 'قناة الأسرة', category: 'private' },
   { value: 'mourabitoune', label: 'El Mourabitoune', labelAr: 'المرابطون', category: 'private' },
   { value: 'wataniya', label: 'El Wataniya', labelAr: 'الوطنية', category: 'private' },
   { value: 'chinguitt', label: 'Chinguitt', labelAr: 'شنقيط', category: 'private' },
-  { value: 'sahel', label: 'Sahel TV', labelAr: 'الساحل', category: 'private' },
-  { value: 'dava', label: 'DAVA TV', labelAr: 'دافا', category: 'private' },
-  { value: 'medina', label: 'Elmedina TV', labelAr: 'المدينة', category: 'private' },
-  { value: 'sahra24', label: 'Sahra24 TV', labelAr: 'صحراء 24', category: 'private' },
-  { value: 'ghimem', label: 'Ghimem TV', labelAr: 'قمم', category: 'private' },
+  { value: 'sahel', label: 'Sahel TV', labelAr: 'قناة الساحل', category: 'private' },
+  { value: 'dava', label: 'DAVA TV', labelAr: 'قناة دافا', category: 'private' },
+  { value: 'medina', label: 'Elmedina TV', labelAr: 'قناة المدينة', category: 'private' },
+  { value: 'sahra24', label: 'Sahra24 TV', labelAr: 'قناة صحراء 24', category: 'private' },
+  { value: 'ghimem', label: 'Ghimem TV', labelAr: 'قناة قمم', category: 'private' },
   
   // Other option
   { value: 'other', label: 'Autre chaîne', labelAr: 'قناة أخرى', category: 'other' },

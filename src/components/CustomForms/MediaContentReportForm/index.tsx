@@ -14,6 +14,9 @@ import {
   FormTextarea, 
   FormCheckboxGroup, 
   FormRadioGroup,
+  TVChannelCombobox,
+  RadioStationCombobox,
+  FormDateTimePicker,
   FormFileUpload
 } from '../FormFields'
 import { 
@@ -22,6 +25,8 @@ import {
   type MediaContentReportSubmission 
 } from '@/lib/validations/media-forms'
 import { type Locale } from '@/utilities/locale'
+import { convertToFormData } from '@/lib/file-upload'
+import { logger } from '@/utilities/logger'
 
 interface MediaContentReportFormProps {
   className?: string
@@ -39,23 +44,33 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
   const methods = useForm<MediaContentReportFormData>({
     resolver: zodResolver(createMediaContentReportSchema(t)),
     defaultValues: {
-      mediaType: undefined,
+      // Content Information
+      mediaType: '',
       mediaTypeOther: '',
+      tvChannel: '',
+      tvChannelOther: '',
+      radioStation: '',
+      radioStationOther: '',
       programName: '',
       broadcastDateTime: '',
       linkScreenshot: '',
       screenshotFiles: [],
+      // Report Reasons
       reasons: [],
       reasonOther: '',
+      // Content Description
       description: '',
+      // Attachments
       attachmentTypes: [],
       attachmentOther: '',
       attachmentFiles: [],
     },
   })
 
-  const { watch } = methods
+  const { watch, trigger, formState } = methods
   const selectedMediaType = watch('mediaType')
+  const selectedTvChannel = watch('tvChannel')
+  const selectedRadioStation = watch('radioStation')
   const selectedReasons = watch('reasons')
   const selectedAttachments = watch('attachmentTypes')
 
@@ -68,6 +83,7 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
     { value: 'facebook', label: t('facebook') },
     { value: 'other', label: t('other') },
   ]
+
 
   const reportReasonOptions = [
     { value: 'hateSpeech', label: t('hateSpeech') },
@@ -104,36 +120,58 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
     },
   }
 
+
   const onSubmit = async (data: MediaContentReportFormData) => {
+    // Debug: Log the raw form data received from React Hook Form
+    console.log('🔍 onSubmit received data:', data)
+    console.log('🔍 screenshotFiles type:', typeof data.screenshotFiles, 'value:', data.screenshotFiles)
+    console.log('🔍 attachmentFiles type:', typeof data.attachmentFiles, 'value:', data.attachmentFiles)
+    if (Array.isArray(data.screenshotFiles)) {
+      console.log('🔍 screenshotFiles array length:', data.screenshotFiles.length)
+      data.screenshotFiles.forEach((file, index) => {
+        console.log(`🔍 screenshotFiles[${index}]:`, file, 'instanceof File:', file instanceof File)
+      })
+    }
+    if (Array.isArray(data.attachmentFiles)) {
+      console.log('🔍 attachmentFiles array length:', data.attachmentFiles.length)
+      data.attachmentFiles.forEach((file, index) => {
+        console.log(`🔍 attachmentFiles[${index}]:`, file, 'instanceof File:', file instanceof File)
+      })
+    }
+    
+    logger.formSubmission('Report', data)
     setIsSubmitting(true)
     
     try {
-      const submissionData: MediaContentReportSubmission = {
+      // Prepare submission data with files
+      const submissionData = {
         ...data,
         formType: 'report',
         submittedAt: new Date().toISOString(),
         locale,
       }
 
-      const response = await fetch('/api/media-forms/submit', {
+      logger.log('📦 Converting to FormData...')
+      const formData = convertToFormData(submissionData)
+
+      logger.log('🚀 Submitting form with files...')
+      const response = await fetch('/api/media-forms/submit-with-files', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(submissionData),
+        body: formData, // No Content-Type header - let browser set it with boundary
       })
 
       const result = await response.json()
+      logger.apiResponse(response.status, result)
 
       if (result.success) {
-        // Show thank you card with submission ID
-        setSubmissionId(result.id || 'success')
+        logger.success('Form submitted successfully', result.submissionId)
+        setSubmissionId(result.submissionId || 'success')
         setIsSubmitted(true)
       } else {
         throw new Error(result.message || 'Submission failed')
       }
     } catch (error) {
-      console.error('Form submission error:', error)
+      logger.error('❌ Form submission error:', error)
       toast.error(t('submissionError'))
     } finally {
       setIsSubmitting(false)
@@ -155,6 +193,20 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
 
   return (
     <div className={className}>
+      {/* Debug: Show validation errors */}
+      {Object.keys(formState.errors).length > 0 && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <h4 className="text-red-800 font-semibold mb-2">🐛 Validation Errors (Debug):</h4>
+          <div className="text-sm text-red-700 space-y-1">
+            {Object.entries(formState.errors).map(([field, error]) => (
+              <div key={field} className="border-l-2 border-red-300 pl-2">
+                <strong>{field}:</strong> {error?.message || 'Invalid value'}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <BaseForm
         methods={methods}
         onSubmit={onSubmit}
@@ -187,6 +239,44 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
             />
           )}
 
+          {selectedMediaType === 'television' && (
+            <>
+              <TVChannelCombobox
+                name="tvChannel"
+                label={t('tvChannel')}
+                locale={locale}
+                required
+              />
+              {selectedTvChannel === 'other' && (
+                <FormInput
+                  name="tvChannelOther"
+                  label={t('specifyOther')}
+                  placeholder={t('specifyOther')}
+                  required
+                />
+              )}
+            </>
+          )}
+
+          {selectedMediaType === 'radio' && (
+            <>
+              <RadioStationCombobox
+                name="radioStation"
+                label={t('radioStation')}
+                locale={locale}
+                required
+              />
+              {selectedRadioStation === 'other' && (
+                <FormInput
+                  name="radioStationOther"
+                  label={t('specifyOther')}
+                  placeholder={t('specifyOther')}
+                  required
+                />
+              )}
+            </>
+          )}
+
           <FormInput
             name="programName"
             label={t('programName')}
@@ -194,10 +284,10 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
             required
           />
 
-          <FormInput
+          <FormDateTimePicker
             name="broadcastDateTime"
             label={t('broadcastDateTime')}
-            type="date"
+            locale={locale}
             required
           />
 
@@ -218,7 +308,7 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
           />
         </div>
 
-        {/* Section 2: Report Reason */}
+        {/* Section 3: Report Reason */}
         <div className="space-y-6">
           <div className="border-b border-gray-200 pb-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -243,7 +333,7 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
           )}
         </div>
 
-        {/* Section 3: Content Description */}
+        {/* Section 4: Content Description */}
         <div className="space-y-6">
           <div className="border-b border-gray-200 pb-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -260,7 +350,7 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
           />
         </div>
 
-        {/* Section 4: Attachments (Optional) */}
+        {/* Section 5: Attachments (Optional) */}
         <div className="space-y-6">
           <div className="border-b border-gray-200 pb-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -294,6 +384,7 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
             />
           )}
         </div>
+
       </BaseForm>
     </div>
   )

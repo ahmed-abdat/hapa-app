@@ -274,6 +274,9 @@ export interface MediaContentSubmission {
   locale: 'fr' | 'ar';
   submissionStatus: 'pending' | 'reviewing' | 'resolved' | 'dismissed';
   priority?: ('low' | 'medium' | 'high' | 'urgent') | null;
+  /**
+   * Contact and identification details of the person filing this complaint
+   */
   complainantInfo?: {
     fullName?: string | null;
     gender?: string | null;
@@ -284,13 +287,34 @@ export interface MediaContentSubmission {
     profession?: string | null;
     relationshipToContent?: string | null;
   };
+  /**
+   * Type of media (TV, Radio, Website, etc.)
+   */
+  mediaType?: string | null;
+  /**
+   * Specific TV channel or radio station
+   */
+  specificChannel?: string | null;
+  programName?: string | null;
+  /**
+   * Complete details about the media content that was reported or complained about
+   */
   contentInfo?: {
+    /**
+     * Type of media (TV, Radio, Website, etc.)
+     */
     mediaType?: string | null;
     mediaTypeOther?: string | null;
+    /**
+     * Specific channel or station name
+     */
     specificChannel?: string | null;
     programName?: string | null;
     broadcastDateTime?: string | null;
     linkScreenshot?: string | null;
+    /**
+     * Files uploaded by the user as evidence
+     */
     screenshotFiles?:
       | {
           url?: string | null;
@@ -313,6 +337,9 @@ export interface MediaContentSubmission {
       }[]
     | null;
   attachmentOther?: string | null;
+  /**
+   * Additional files attached by the user
+   */
   attachmentFiles?:
     | {
         url?: string | null;
@@ -651,6 +678,9 @@ export interface MediaContentSubmissionsSelect<T extends boolean = true> {
         profession?: T;
         relationshipToContent?: T;
       };
+  mediaType?: T;
+  specificChannel?: T;
+  programName?: T;
   contentInfo?:
     | T
     | {

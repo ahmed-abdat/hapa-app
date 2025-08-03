@@ -23,35 +23,21 @@ import { useLocale, useTranslations } from 'next-intl'
 import { type Locale } from '@/utilities/locale'
 import { type FormSelectProps } from '../types'
 
-// Radio Stations list with bilingual support
+// Radio Stations list with bilingual support - matches official HAPA specification
 const radioStations = [
-  // National Radio stations (official state radio)
-  { value: 'mauritanie', label: 'Radio Mauritanie', labelAr: 'إذاعة موريتانيا', category: 'state' },
-  { value: 'mauritanie_culture', label: 'Radio Mauritanie Culture', labelAr: 'إذاعة موريتانيا الثقافية', category: 'state' },
-  { value: 'mauritanie_quran', label: 'Radio Mauritanie Coran', labelAr: 'إذاعة موريتانيا القرآن', category: 'state' },
-  { value: 'mauritanie_sport', label: 'Radio Mauritanie Sport', labelAr: 'إذاعة موريتانيا الرياضية', category: 'state' },
-  { value: 'mauritanie_jeunes', label: 'Radio Mauritanie Jeunes', labelAr: 'إذاعة موريتانيا الشباب', category: 'state' },
+  // Radio Mauritanie (official state radio network)
+  { value: 'radio_mauritanie', label: 'Radio Mauritanie', labelAr: 'إذاعة موريتانيا الأم', category: 'state' },
+  { value: 'radio_coran', label: 'Radio Coran', labelAr: 'إذاعة القرآن الكريم', category: 'state' },
+  { value: 'radio_scolaire', label: 'Radio scolaire', labelAr: 'الاذاعة المدرسية', category: 'state' },
+  { value: 'radio_jeunesse', label: 'Radio Jeunesse', labelAr: 'إذاعة الشباب', category: 'state' },
+  { value: 'radio_culture', label: 'Radio culture', labelAr: 'الإذاعة الثقافية', category: 'state' },
+  { value: 'radio_sante', label: 'Radio Éducation à la santé', labelAr: 'إذاعة التثقيف الصحي', category: 'state' },
+  { value: 'radio_rurale', label: 'Radio rurale', labelAr: 'الإذاعة الريفية', category: 'state' },
   
   // Private radio stations
-  { value: 'radio_tenwir', label: 'Radio Tenwir FM', labelAr: 'إذاعة التنوير إف إم', category: 'private' },
-  { value: 'medina_fm', label: 'Medina FM', labelAr: 'إذاعة المدينة إف إم', category: 'private' },
-  { value: 'sahara_fm', label: 'Sahara FM', labelAr: 'إذاعة الصحراء إف إم', category: 'private' },
-  { value: 'chinguitt_fm', label: 'Chinguitt FM', labelAr: 'إذاعة شنقيط إف إم', category: 'private' },
-  { value: 'radio_andalous', label: 'Radio Andalous', labelAr: 'إذاعة الأندلس', category: 'private' },
-  { value: 'radio_alize', label: 'Radio Alizé', labelAr: 'إذاعة أليزيه', category: 'private' },
-  { value: 'nouakchott_fm', label: 'Nouakchott FM', labelAr: 'إذاعة نواكشوط إف إم', category: 'private' },
-  { value: 'assalam_fm', label: 'Assalam FM', labelAr: 'إذاعة السلام إف إم', category: 'private' },
-  { value: 'radio_future', label: 'Radio Future', labelAr: 'إذاعة المستقبل', category: 'private' },
-  { value: 'radio_espoir', label: 'Radio Espoir', labelAr: 'إذاعة الأمل', category: 'private' },
-  { value: 'mfm', label: 'MFM (Mauritania FM)', labelAr: 'إم إف إم', category: 'private' },
-  { value: 'women_fm', label: 'Women FM', labelAr: 'إذاعة المرأة إف إم', category: 'private' },
-  
-  // Community and regional stations
-  { value: 'radio_rosso', label: 'Radio Rosso', labelAr: 'إذاعة روصو', category: 'regional' },
-  { value: 'radio_kaedi', label: 'Radio Kaédi', labelAr: 'إذاعة كيهيدي', category: 'regional' },
-  { value: 'radio_atar', label: 'Radio Atar', labelAr: 'إذاعة أطار', category: 'regional' },
-  { value: 'radio_zouerate', label: 'Radio Zouérate', labelAr: 'إذاعة الزويرات', category: 'regional' },
-  { value: 'radio_nouadhibou', label: 'Radio Nouadhibou', labelAr: 'إذاعة نواذيبو', category: 'regional' },
+  { value: 'radio_mauritanides', label: 'Radio Mauritanides', labelAr: 'إذاعة موريتانيد', category: 'private' },
+  { value: 'radio_koubeni', label: 'Radio Koubeni', labelAr: 'إذاعة كوبني', category: 'private' },
+  { value: 'radio_tenwir', label: 'Radio Tenwir', labelAr: 'إذاعة التنوير', category: 'private' },
   
   // Other option
   { value: 'other', label: 'Autre station', labelAr: 'محطة أخرى', category: 'other' },

@@ -1,55 +1,183 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { validateFileSignature, sanitizeFilename } from '@/lib/file-upload'
+import { logger } from '@/utilities/logger'
 
-export async function POST(request: NextRequest) {
+/**
+ * Maximum file sizes
+ */
+const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB for images
+
+/**
+ * Allowed MIME types for security
+ */
+const ALLOWED_MIME_TYPES = [
+  'image/jpeg',
+  'image/jpg', 
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'application/pdf',
+  'text/plain',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+]
+
+/**
+ * Rate limiting: Track uploads per IP
+ * In production, this should be replaced with Redis or a proper rate limiter
+ */
+const uploadCounts = new Map<string, { count: number; resetTime: number }>()
+const RATE_LIMIT_WINDOW = 60 * 60 * 1000 // 1 hour
+const MAX_UPLOADS_PER_HOUR = 10
+
+/**
+ * Cleanup expired rate limit entries to prevent memory leak
+ */
+function cleanupExpiredEntries(): void {
+  const now = Date.now()
+  for (const [ip, data] of uploadCounts.entries()) {
+    if (now > data.resetTime) {
+      uploadCounts.delete(ip)
+    }
+  }
+}
+
+/**
+ * Simple rate limiting check with memory leak prevention
+ */
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now()
+  
+  // Cleanup expired entries periodically (every 100 calls)
+  if (Math.random() < 0.01) {
+    cleanupExpiredEntries()
+  }
+  
+  const userLimits = uploadCounts.get(ip)
+  
+  if (!userLimits || now > userLimits.resetTime) {
+    // Reset or create new limit
+    uploadCounts.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW })
+    return true
+  }
+  
+  if (userLimits.count >= MAX_UPLOADS_PER_HOUR) {
+    return false
+  }
+  
+  userLimits.count++
+  return true
+}
+
+/**
+ * Get client IP address
+ */
+function getClientIP(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for')
+  const realIP = request.headers.get('x-real-ip')
+  
+  if (forwarded) {
+    return forwarded.split(',')[0].trim()
+  }
+  
+  if (realIP) {
+    return realIP
+  }
+  
+  return 'unknown'
+}
+
+/**
+ * Upload file through Payload CMS with enhanced security
+ */
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  const startTime = Date.now()
+  
   try {
+    // Check rate limiting
+    const clientIP = getClientIP(request)
+    if (!checkRateLimit(clientIP)) {
+      logger.error('Rate limit exceeded for IP:', clientIP)
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. Maximum 10 uploads per hour.' },
+        { status: 429 }
+      )
+    }
+
     const payload = await getPayload({ config })
     const formData = await request.formData()
-    const file = formData.get('file') as File
+    const file = formData.get('file') as File | null
 
     if (!file) {
       return NextResponse.json(
-        { success: false, message: 'No file provided' },
+        { error: 'No file provided' },
         { status: 400 }
       )
     }
 
-    // Validate file size (10MB limit)
-    const maxSize = 10 * 1024 * 1024 // 10MB
-    if (file.size > maxSize) {
-      return NextResponse.json(
-        { success: false, message: 'File too large. Maximum size: 10MB' },
-        { status: 400 }
-      )
-    }
+    logger.fileOperation('📤 Processing upload through Payload:', file.name, `Size: ${(file.size / 1024).toFixed(1)}KB`)
 
     // Validate file type
-    const allowedTypes = [
-      'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
-      'application/pdf', 'text/plain',
-      'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    ]
-    
-    if (!allowedTypes.includes(file.type)) {
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+      logger.error('❌ Invalid file type:', file.type)
       return NextResponse.json(
-        { success: false, message: 'Unsupported file type' },
+        { error: `File type not allowed: ${file.type}` },
         { status: 400 }
       )
     }
+
+    // Validate file size
+    const isImage = file.type.startsWith('image/')
+    const maxSize = isImage ? MAX_IMAGE_SIZE : MAX_FILE_SIZE
+    
+    if (file.size > maxSize) {
+      logger.error('❌ File too large:', `${(file.size / 1024 / 1024).toFixed(1)}MB`)
+      return NextResponse.json(
+        { error: `File too large. Maximum size: ${maxSize / 1024 / 1024}MB` },
+        { status: 400 }
+      )
+    }
+
+    // Validate file signature for security
+    const isValidSignature = await validateFileSignature(file)
+    if (!isValidSignature) {
+      logger.error('❌ Invalid file signature detected')
+      return NextResponse.json(
+        { error: 'Invalid file format detected' },
+        { status: 400 }
+      )
+    }
+
+    // Sanitize filename for security
+    const sanitizedFilename = sanitizeFilename(file.name)
 
     // Upload file through Payload CMS
     const result = await payload.create({
       collection: 'media',
       data: {
-        alt: file.name,
+        alt: sanitizedFilename,
+        // Add metadata for tracking
+        description: `Uploaded via media forms on ${new Date().toISOString()}`,
       },
       file: {
         data: Buffer.from(await file.arrayBuffer()),
         mimetype: file.type,
-        name: file.name,
+        name: sanitizedFilename,
         size: file.size,
       },
+    })
+
+    const uploadTime = Date.now() - startTime
+    logger.success('✅ File uploaded successfully through Payload:', {
+      id: result.id,
+      filename: result.filename,
+      size: file.size,
+      type: file.type,
+      uploadTime: `${uploadTime}ms`,
+      url: result.url
     })
 
     return NextResponse.json({
@@ -57,13 +185,38 @@ export async function POST(request: NextRequest) {
       url: result.url,
       id: result.id,
       filename: result.filename,
+      originalName: file.name,
+      size: file.size,
+      type: file.type,
+      uploadTime
     })
 
   } catch (error) {
-    console.error('File upload error:', error)
+    const uploadTime = Date.now() - startTime
+    logger.error('❌ Payload upload failed:', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      uploadTime: `${uploadTime}ms`
+    })
+
+    // Don't expose internal errors to client
     return NextResponse.json(
-      { success: false, message: 'Internal server error' },
+      { error: 'Upload failed. Please try again.' },
       { status: 500 }
     )
   }
+}
+
+/**
+ * OPTIONS handler for CORS
+ */
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400',
+    },
+  })
 }

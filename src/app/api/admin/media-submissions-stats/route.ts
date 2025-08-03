@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getPayloadHMR } from '@payloadcms/next/utilities'
+import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import type { PayloadSubmissionData } from '@/types/media-forms'
 
@@ -14,7 +14,7 @@ interface PayloadSubmissionDocument extends PayloadSubmissionData {
 export async function GET(req: NextRequest) {
   try {
     // Get Payload instance
-    const payload = await getPayloadHMR({ config: configPromise })
+    const payload = await getPayload({ config: configPromise })
     
     // Check if user is authenticated
     const { user } = await payload.auth({ headers: req.headers })

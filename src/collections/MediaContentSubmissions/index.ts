@@ -16,7 +16,8 @@ export const MediaContentSubmissions: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'formType', 'submissionStatus', 'submittedAt', 'locale'],
+    defaultColumns: ['title', 'formType', 'submissionStatus', 'priority', 'submittedAt', 'locale', 'contentInfo.mediaType', 'contentInfo.specificChannel'],
+    listSearchableFields: ['title', 'contentInfo.programName', 'description', 'complainantInfo.fullName', 'complainantInfo.emailAddress'],
     group: {
       en: 'Forms & Submissions',
       fr: 'Formulaires et Soumissions',
@@ -26,6 +27,12 @@ export const MediaContentSubmissions: CollectionConfig = {
       en: 'Manage media content reports and complaints submitted through the website forms',
       fr: 'Gérer les signalements et plaintes de contenu médiatique soumis via les formulaires du site',
       ar: 'إدارة التبليغات والشكاوى الخاصة بالمحتوى الإعلامي المرسلة عبر نماذج الموقع',
+    },
+    preview: (doc: any) => {
+      const mediaType = doc.mediaType || doc.contentInfo?.mediaType || 'Unknown'
+      const channel = doc.specificChannel || doc.contentInfo?.specificChannel || 'N/A' 
+      const program = doc.programName || doc.contentInfo?.programName || 'Untitled'
+      return `${doc.formType === 'report' ? 'Report' : 'Complaint'}: ${program} (${mediaType}${channel !== 'N/A' ? ` - ${channel}` : ''})`
     },
   },
   access: {
@@ -44,9 +51,46 @@ export const MediaContentSubmissions: CollectionConfig = {
           ({ data }) => {
             if (data) {
               const formTypeLabel = data.formType === 'report' ? 'Signalement' : 'Plainte'
-              const programName = data.programName || 'Sans titre'
-              const date = new Date(data.submittedAt).toLocaleDateString('fr-FR')
-              return `${formTypeLabel} - ${programName} (${date})`
+              const programName = data.contentInfo?.programName || data.programName || 'Sans titre'
+              const mediaType = data.contentInfo?.mediaType || data.mediaType || ''
+              
+              // Enhanced safe date handling
+              let dateDisplay = 'Date inconnue'
+              try {
+                // Try multiple date sources and formats
+                const dateValue = data.submittedAt || data.createdAt || new Date().toISOString()
+                
+                if (dateValue) {
+                  const submittedDate = new Date(dateValue)
+                  
+                  // Additional validation for valid date
+                  if (!isNaN(submittedDate.getTime()) && submittedDate > new Date('2000-01-01')) {
+                    dateDisplay = submittedDate.toLocaleDateString('fr-FR', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit'
+                    })
+                  } else {
+                    // Fallback to current date if provided date is invalid
+                    dateDisplay = new Date().toLocaleDateString('fr-FR', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit'
+                    })
+                  }
+                }
+              } catch (error) {
+                console.warn('Invalid date in submission:', data.submittedAt, error)
+                // Use current date as ultimate fallback
+                dateDisplay = new Date().toLocaleDateString('fr-FR', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit'
+                })
+              }
+              
+              const mediaTypeDisplay = mediaType ? ` [${mediaType}]` : ''
+              return `${formTypeLabel}${mediaTypeDisplay} - ${programName} (${dateDisplay})`
             }
             return 'Nouvelle soumission'
           },
@@ -63,10 +107,13 @@ export const MediaContentSubmissions: CollectionConfig = {
       name: 'formType',
       type: 'select',
       required: true,
+      label: {
+        fr: 'Type de formulaire',
+        ar: 'نوع النموذج',
+      },
       options: [
         {
           label: {
-            en: 'Report',
             fr: 'Signalement',
             ar: 'تبليغ',
           },
@@ -74,7 +121,6 @@ export const MediaContentSubmissions: CollectionConfig = {
         },
         {
           label: {
-            en: 'Complaint',
             fr: 'Plainte',
             ar: 'شكوى',
           },
@@ -241,6 +287,11 @@ export const MediaContentSubmissions: CollectionConfig = {
       },
       admin: {
         condition: (data) => data.formType === 'complaint',
+        description: {
+          en: 'Contact and identification details of the person filing this complaint',
+          fr: 'Coordonnées et détails d\'identification de la personne déposant cette plainte',
+          ar: 'بيانات الاتصال والتعريف للشخص الذي يقدم هذه الشكوى',
+        },
       },
       fields: [
         {
@@ -342,14 +393,74 @@ export const MediaContentSubmissions: CollectionConfig = {
       ],
     },
 
-    // Content Information
+    // Quick overview fields (visible at top level)
+    {
+      name: 'mediaType',
+      type: 'text',
+      label: {
+        en: 'Media Type',
+        fr: 'Type de Média',
+        ar: 'نوع الوسيلة الإعلامية',
+      },
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        description: {
+          en: 'Type of media (TV, Radio, Website, etc.)',
+          fr: 'Type de média (TV, Radio, Site web, etc.)',
+          ar: 'نوع الوسائط (تلفزيون، راديو، موقع ويب، إلخ)',
+        },
+      },
+    },
+
+    {
+      name: 'specificChannel',
+      type: 'text',
+      label: {
+        en: 'Channel/Station',
+        fr: 'Chaîne/Station',
+        ar: 'القناة/المحطة',
+      },
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        description: {
+          en: 'Specific TV channel or radio station',
+          fr: 'Chaîne TV ou station radio spécifique',
+          ar: 'قناة تلفزيونية أو محطة إذاعية محددة',
+        },
+      },
+    },
+
+    {
+      name: 'programName',
+      type: 'text',
+      label: {
+        en: 'Program Name',
+        fr: 'Nom du Programme',
+        ar: 'اسم البرنامج',
+      },
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+      },
+    },
+
+    // Content Information (detailed group)
     {
       name: 'contentInfo',
       type: 'group',
       label: {
-        en: 'Content Information',
-        fr: 'Informations sur le Contenu',
-        ar: 'معلومات المحتوى',
+        en: 'Content Information (Full Details)',
+        fr: 'Informations sur le Contenu (Détails Complets)',
+        ar: 'معلومات المحتوى (التفاصيل الكاملة)',
+      },
+      admin: {
+        description: {
+          en: 'Complete details about the media content that was reported or complained about',
+          fr: 'Détails complets sur le contenu médiatique qui a fait l\'objet d\'un signalement ou d\'une plainte',
+          ar: 'تفاصيل كاملة عن المحتوى الإعلامي الذي تم الإبلاغ عنه أو تقديم شكوى بشأنه',
+        },
       },
       fields: [
         {
@@ -362,6 +473,11 @@ export const MediaContentSubmissions: CollectionConfig = {
           },
           admin: {
             readOnly: true,
+            description: {
+              en: 'Type of media (TV, Radio, Website, etc.)',
+              fr: 'Type de média (TV, Radio, Site web, etc.)',
+              ar: 'نوع الوسائط (تلفزيون، راديو، موقع ويب، إلخ)',
+            },
           },
         },
         {
@@ -374,20 +490,24 @@ export const MediaContentSubmissions: CollectionConfig = {
           },
           admin: {
             readOnly: true,
-            condition: (data) => data.contentInfo?.mediaType === 'other',
+            condition: (data) => data.contentInfo?.mediaType === 'Autre',
           },
         },
         {
           name: 'specificChannel',
           type: 'text',
           label: {
-            en: 'Specific Channel/Station',
-            fr: 'Chaîne/Station Spécifique',
-            ar: 'القناة/المحطة المحددة',
+            en: 'TV Channel / Radio Station',
+            fr: 'Chaîne TV / Station Radio',
+            ar: 'القناة التلفزيونية / المحطة الإذاعية',
           },
           admin: {
             readOnly: true,
-            condition: (data) => ['television', 'radio'].includes(data.contentInfo?.mediaType),
+            description: {
+              en: 'Specific channel or station name',
+              fr: 'Nom spécifique de la chaîne ou station',
+              ar: 'اسم القناة أو المحطة المحددة',
+            },
           },
         },
         {
@@ -443,10 +563,21 @@ export const MediaContentSubmissions: CollectionConfig = {
                 fr: 'URL du fichier',
                 ar: 'رابط الملف',
               },
+              admin: {
+                readOnly: true,
+              },
             },
           ],
           admin: {
             readOnly: true,
+            description: {
+              en: 'Files uploaded by the user as evidence',
+              fr: 'Fichiers téléchargés par l\'utilisateur comme preuves',
+              ar: 'الملفات التي رفعها المستخدم كأدلة',
+            },
+            components: {
+              RowLabel: '/src/components/admin/FileDisplayRowLabel/index',
+            },
           },
         },
       ],
@@ -457,7 +588,6 @@ export const MediaContentSubmissions: CollectionConfig = {
       name: 'reasons',
       type: 'array',
       label: {
-        en: 'Reasons',
         fr: 'Motifs',
         ar: 'الأسباب',
       },
@@ -469,6 +599,18 @@ export const MediaContentSubmissions: CollectionConfig = {
       ],
       admin: {
         readOnly: true,
+        components: {
+          RowLabel: ({ data }: { data?: { reason?: string } }) => {
+            if (data?.reason) {
+              // Truncate long reasons for better display
+              const truncatedReason = data.reason.length > 50 
+                ? `${data.reason.substring(0, 50)}...` 
+                : data.reason
+              return truncatedReason
+            }
+            return 'Motif sans titre'
+          },
+        },
       },
     },
 
@@ -550,10 +692,21 @@ export const MediaContentSubmissions: CollectionConfig = {
             fr: 'URL du fichier',
             ar: 'رابط الملف',
           },
+          admin: {
+            readOnly: true,
+          },
         },
       ],
       admin: {
         readOnly: true,
+        description: {
+          en: 'Additional files attached by the user',
+          fr: 'Fichiers supplémentaires joints par l\'utilisateur',
+          ar: 'ملفات إضافية مرفقة من قبل المستخدم',
+        },
+        components: {
+          RowLabel: '/src/components/admin/FileDisplayRowLabel/index',
+        },
       },
     },
 

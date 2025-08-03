@@ -27,6 +27,8 @@ import {
   type MediaContentComplaintSubmission 
 } from '@/lib/validations/media-forms'
 import { type Locale } from '@/utilities/locale'
+import { convertToFormData } from '@/lib/file-upload'
+import { logger } from '@/utilities/logger'
 
 interface MediaContentComplaintFormProps {
   className?: string
@@ -80,7 +82,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
     },
   })
 
-  const { watch } = methods
+  const { watch, trigger, formState } = methods
   const selectedMediaType = watch('mediaType')
   const selectedTvChannel = watch('tvChannel')
   const selectedRadioStation = watch('radioStation')
@@ -146,36 +148,58 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
     },
   }
 
+
   const onSubmit = async (data: MediaContentComplaintFormData) => {
+    // Debug: Log the raw form data received from React Hook Form
+    console.log('🔍 onSubmit received data:', data)
+    console.log('🔍 screenshotFiles type:', typeof data.screenshotFiles, 'value:', data.screenshotFiles)
+    console.log('🔍 attachmentFiles type:', typeof data.attachmentFiles, 'value:', data.attachmentFiles)
+    if (Array.isArray(data.screenshotFiles)) {
+      console.log('🔍 screenshotFiles array length:', data.screenshotFiles.length)
+      data.screenshotFiles.forEach((file, index) => {
+        console.log(`🔍 screenshotFiles[${index}]:`, file, 'instanceof File:', file instanceof File)
+      })
+    }
+    if (Array.isArray(data.attachmentFiles)) {
+      console.log('🔍 attachmentFiles array length:', data.attachmentFiles.length)
+      data.attachmentFiles.forEach((file, index) => {
+        console.log(`🔍 attachmentFiles[${index}]:`, file, 'instanceof File:', file instanceof File)
+      })
+    }
+    
+    logger.formSubmission('Complaint', data)
     setIsSubmitting(true)
     
     try {
-      const submissionData: MediaContentComplaintSubmission = {
+      // Prepare submission data with files
+      const submissionData = {
         ...data,
         formType: 'complaint',
         submittedAt: new Date().toISOString(),
         locale,
       }
 
-      const response = await fetch('/api/media-forms/submit', {
+      logger.log('📦 Converting to FormData...')
+      const formData = convertToFormData(submissionData)
+
+      logger.log('🚀 Submitting form with files...')
+      const response = await fetch('/api/media-forms/submit-with-files', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(submissionData),
+        body: formData, // No Content-Type header - let browser set it with boundary
       })
 
       const result = await response.json()
+      logger.apiResponse(response.status, result)
 
       if (result.success) {
-        // Show thank you card with submission ID
-        setSubmissionId(result.id || 'success')
+        logger.success('Form submitted successfully', result.submissionId)
+        setSubmissionId(result.submissionId || 'success')
         setIsSubmitted(true)
       } else {
         throw new Error(result.message || 'Submission failed')
       }
     } catch (error) {
-      console.error('Form submission error:', error)
+      logger.error('❌ Form submission error:', error)
       toast.error(t('submissionError'))
     } finally {
       setIsSubmitting(false)
@@ -197,6 +221,20 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
 
   return (
     <div className={className}>
+      {/* Debug: Show validation errors */}
+      {Object.keys(formState.errors).length > 0 && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <h4 className="text-red-800 font-semibold mb-2">🐛 Validation Errors (Debug):</h4>
+          <div className="text-sm text-red-700 space-y-1">
+            {Object.entries(formState.errors).map(([field, error]) => (
+              <div key={field} className="border-l-2 border-red-300 pl-2">
+                <strong>{field}:</strong> {error?.message || 'Invalid value'}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <BaseForm
         methods={methods}
         onSubmit={onSubmit}
