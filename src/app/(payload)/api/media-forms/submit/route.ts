@@ -18,79 +18,43 @@ import type {
 import { getTranslations } from 'next-intl/server'
 import { logger } from '@/utilities/logger'
 
-/**
- * Rate limiting for form submissions
- * In production, this should be replaced with Redis or a proper rate limiter
- */
-const submissionCounts = new Map<string, { count: number; resetTime: number }>()
-const RATE_LIMIT_WINDOW = 60 * 60 * 1000 // 1 hour
-const MAX_SUBMISSIONS_PER_HOUR = 5 // Stricter limit for form submissions
-
-/**
- * Simple rate limiting check for form submissions
- */
-function checkSubmissionRateLimit(ip: string): boolean {
-  const now = Date.now()
-  const userLimits = submissionCounts.get(ip)
-  
-  if (!userLimits || now > userLimits.resetTime) {
-    // Reset or create new limit
-    submissionCounts.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW })
-    return true
-  }
-  
-  if (userLimits.count >= MAX_SUBMISSIONS_PER_HOUR) {
-    return false
-  }
-  
-  userLimits.count++
-  return true
+// Type interfaces for request validation
+interface BasicRequestBody {
+  formType?: unknown;
+  submittedAt?: unknown;
+  locale?: unknown;
+  [key: string]: unknown;
 }
 
-/**
- * Get client IP address
- */
-function getClientIP(request: NextRequest): string {
-  const forwarded = request.headers.get('x-forwarded-for')
-  const realIP = request.headers.get('x-real-ip')
-  
-  if (forwarded) {
-    return forwarded.split(',')[0].trim()
-  }
-  
-  if (realIP) {
-    return realIP
-  }
-  
-  return 'unknown'
+// Type guard functions
+function isValidFormType(value: unknown): value is 'report' | 'complaint' {
+  return typeof value === 'string' && ['report', 'complaint'].includes(value);
+}
+
+function isValidLocale(value: unknown): value is 'fr' | 'ar' {
+  return typeof value === 'string' && ['fr', 'ar'].includes(value);
+}
+
+function getStringValue(value: unknown, fallback: string = 'unknown'): string {
+  return typeof value === 'string' ? value : fallback;
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse<FormSubmissionResponse>> {
+  let body: BasicRequestBody | null = null
+  
   try {
-    // Check rate limiting first
-    const clientIP = getClientIP(request)
-    if (!checkSubmissionRateLimit(clientIP)) {
-      logger.error('Form submission rate limit exceeded for IP:', clientIP)
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Rate limit exceeded. Maximum 5 form submissions per hour.',
-        },
-        { status: 429 }
-      )
-    }
     const payload = await getPayload({ config })
-    const body = await request.json()
+    body = await request.json()
 
     // Log the incoming request body for debugging
-    logger.log('🔍 API received body:', JSON.stringify(body, null, 2))
+    logger.log('🔍 API received body', { metadata: body })
 
     // Validate the request has required fields
-    if (!body.formType || !body.submittedAt || !body.locale) {
+    if (!body || !isValidFormType(body.formType) || !body.submittedAt || !isValidLocale(body.locale)) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Missing required fields: formType, submittedAt, locale',
+          message: 'Missing or invalid required fields: formType, submittedAt, locale',
         },
         { status: 400 }
       )
@@ -105,27 +69,20 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
     // Get translations for validation messages
     const t = await getTranslations({ locale })
 
-    // Validate form type first
-    if (!body.formType || !['report', 'complaint'].includes(body.formType)) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Invalid form type. Must be "report" or "complaint"',
-        },
-        { status: 400 }
-      )
-    }
+    // TypeScript now knows body.formType is valid due to the type guard above
+    const formType = body.formType; // This is now properly typed as 'report' | 'complaint'
+    const submissionLocale = body.locale; // This is now properly typed as 'fr' | 'ar'
 
     // Use appropriate Zod schema based on form type
     try {
-      if (body.formType === 'report') {
+      if (formType === 'report') {
         const reportSchema = createMediaContentReportSchema(t)
         const validationResult = reportSchema.parse(body)
         submissionData = {
           ...validationResult,
           formType: 'report',
           submittedAt: body.submittedAt,
-          locale: body.locale
+          locale: submissionLocale
         } as MediaContentReportSubmission
       } else {
         const complaintSchema = createMediaContentComplaintSchema(t)
@@ -134,17 +91,30 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
           ...validationResult,
           formType: 'complaint',
           submittedAt: body.submittedAt,
-          locale: body.locale
+          locale: submissionLocale
         } as MediaContentComplaintSubmission
       }
     } catch (error) {
-      // Debug: Log the validation error details
-      console.error('❌ Validation error caught:', error)
+      // Log validation error with context
+      const errorId = logger.api.error('Form validation failed', error as Error, {
+        component: 'MediaFormsAPI',
+        formType: formType,
+        locale: submissionLocale,
+      })
       
       // Handle Zod validation errors
       if (error instanceof Error && 'issues' in error) {
         const zodError = error as any
-        console.error('🐛 Zod validation issues:', JSON.stringify(zodError.issues, null, 2))
+        // Log Zod validation details
+        logger.form.validation(
+          formType, 
+          false, 
+          zodError.issues, 
+          {
+            component: 'MediaFormsAPI',
+            locale: submissionLocale,
+          }
+        )
         
         const firstIssue = zodError.issues[0]
         return NextResponse.json(
@@ -157,8 +127,12 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
         )
       }
       
-      // Log generic errors
-      console.error('❌ Generic validation error:', error)
+      // Log generic validation error
+      logger.api.error('Generic validation error', error as Error, {
+        component: 'MediaFormsAPI',
+        formType: formType,
+        locale: submissionLocale,
+      })
       
       return NextResponse.json(
         {
@@ -238,11 +212,16 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
           : 'Complaint submitted successfully',
         submissionId: result.id.toString(),
       },
-      { status: 201 }
+      { 
+        status: 201,
+      }
     )
 
   } catch (error) {
-    console.error('Media form submission error:', error)
+    const errorId = logger.api.error('Media form submission failed', error as Error, {
+      component: 'MediaFormsAPI',
+      formType: getStringValue(body?.formType),
+    })
     
     return NextResponse.json(
       {

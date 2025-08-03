@@ -18,6 +18,8 @@ import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { SlugFieldWithNotice as SlugFieldWithNotice_e83c5ccf8f9b3dccc0f0e2a7ece0904e } from '@/fields/slug/SlugFieldWithNotice.tsx'
 import { ForceLocaleMessage as ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62 } from '@/components/ForceLocaleMessage/index.tsx'
+import { default as default_74b9ab454beefefa84daef7850f7a2f9 } from '@/components/admin/FileDisplayRowLabel/index'
+import { default as default_102cce8ca03aca4d934be301b628260e } from '@/components/admin/ReasonRowLabel/index'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { default as default_f29f68a77f206966bf4b9f0b29ef1b8d } from '@/components/AdminLogo/index.tsx'
@@ -49,6 +51,8 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@/fields/slug/SlugFieldWithNotice.tsx#SlugFieldWithNotice": SlugFieldWithNotice_e83c5ccf8f9b3dccc0f0e2a7ece0904e,
   "@/components/ForceLocaleMessage/index.tsx#ForceLocaleMessage": ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62,
+  "@/components/admin/FileDisplayRowLabel/index#default": default_74b9ab454beefefa84daef7850f7a2f9,
+  "@/components/admin/ReasonRowLabel/index#default": default_102cce8ca03aca4d934be301b628260e,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@/components/AdminLogo/index.tsx#default": default_f29f68a77f206966bf4b9f0b29ef1b8d,

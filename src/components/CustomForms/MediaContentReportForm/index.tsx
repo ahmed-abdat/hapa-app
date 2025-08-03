@@ -122,22 +122,18 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
 
 
   const onSubmit = async (data: MediaContentReportFormData) => {
-    // Debug: Log the raw form data received from React Hook Form
-    console.log('🔍 onSubmit received data:', data)
-    console.log('🔍 screenshotFiles type:', typeof data.screenshotFiles, 'value:', data.screenshotFiles)
-    console.log('🔍 attachmentFiles type:', typeof data.attachmentFiles, 'value:', data.attachmentFiles)
-    if (Array.isArray(data.screenshotFiles)) {
-      console.log('🔍 screenshotFiles array length:', data.screenshotFiles.length)
-      data.screenshotFiles.forEach((file, index) => {
-        console.log(`🔍 screenshotFiles[${index}]:`, file, 'instanceof File:', file instanceof File)
-      })
-    }
-    if (Array.isArray(data.attachmentFiles)) {
-      console.log('🔍 attachmentFiles array length:', data.attachmentFiles.length)
-      data.attachmentFiles.forEach((file, index) => {
-        console.log(`🔍 attachmentFiles[${index}]:`, file, 'instanceof File:', file instanceof File)
-      })
-    }
+    // Log form submission data for debugging
+    logger.form.submission('MediaContentReport', {
+      component: 'MediaContentReportForm',
+      metadata: {
+        screenshotFilesType: typeof data.screenshotFiles,
+        screenshotFilesLength: Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0,
+        attachmentFilesType: typeof data.attachmentFiles,
+        attachmentFilesLength: Array.isArray(data.attachmentFiles) ? data.attachmentFiles.length : 0,
+        hasScreenshots: Array.isArray(data.screenshotFiles) && data.screenshotFiles.length > 0,
+        hasAttachments: Array.isArray(data.attachmentFiles) && data.attachmentFiles.length > 0
+      }
+    })
     
     logger.formSubmission('Report', data)
     setIsSubmitting(true)
@@ -168,11 +164,33 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
         setSubmissionId(result.submissionId || 'success')
         setIsSubmitted(true)
       } else {
+        // Enhanced error handling for file upload failures
+        if (result.details && Array.isArray(result.details)) {
+          // File upload specific errors
+          logger.error('❌ File upload errors detected:', result.details)
+          const fileErrorMessage = `${result.message}\n\nDétails des erreurs:\n${result.details.join('\n')}`
+          toast.error(fileErrorMessage, {
+            duration: 10000, // Longer duration for file errors
+          })
+        } else if (result.uploadStats) {
+          // Upload statistics available
+          logger.error('❌ Upload statistics:', result.uploadStats)
+          const statsMessage = `${result.message}\n\nStatistiques: ${result.uploadStats.successful}/${result.uploadStats.expected} fichiers téléchargés avec succès`
+          toast.error(statsMessage, {
+            duration: 8000,
+          })
+        } else {
+          // Generic error
+          toast.error(result.message || t('submissionError'))
+        }
         throw new Error(result.message || 'Submission failed')
       }
     } catch (error) {
       logger.error('❌ Form submission error:', error)
-      toast.error(t('submissionError'))
+      // Only show generic error if we haven't already shown a specific one
+      if (error instanceof Error && !error.message.includes('File upload failed')) {
+        toast.error(t('submissionError'))
+      }
     } finally {
       setIsSubmitting(false)
     }

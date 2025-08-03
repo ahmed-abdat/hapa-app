@@ -7,6 +7,7 @@ import {
   useConfig
 } from '@payloadcms/ui'
 import { SubmissionsTable } from './SubmissionsTable'
+import { logger } from '@/utilities/logger'
 
 import './index.scss'
 
@@ -150,16 +151,31 @@ export function MediaSubmissionsDashboard() {
           setStats(data.stats)
           setSubmissions(data.submissions)
         } else {
-          console.error('API returned error:', data.error)
+          logger.error('Admin dashboard API returned error', new Error(data.error), {
+            component: 'MediaSubmissionsDashboard',
+            action: 'fetch_stats',
+            metadata: { error: data.error }
+          })
         }
       } else if (response.status === 401) {
-        console.error('Unauthorized access - user not logged in')
+        logger.warn('Unauthorized access to admin dashboard', {
+          component: 'MediaSubmissionsDashboard',
+          action: 'unauthorized_access',
+          metadata: { status: response.status }
+        })
         window.location.href = '/admin/login'
       } else {
-        console.error('Failed to fetch data:', response.statusText)
+        logger.error('Failed to fetch admin dashboard data', new Error(response.statusText), {
+          component: 'MediaSubmissionsDashboard',
+          action: 'fetch_error',
+          metadata: { status: response.status, statusText: response.statusText }
+        })
       }
     } catch (error) {
-      console.error('Error fetching submissions:', error)
+      logger.error('Error fetching admin dashboard submissions', error as Error, {
+        component: 'MediaSubmissionsDashboard',
+        action: 'fetch_exception'
+      })
     } finally {
       setLoading(false)
     }

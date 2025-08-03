@@ -1,6 +1,7 @@
 'use client'
 
 import React, { Component, ReactNode } from 'react'
+import { logger } from '@/utilities/logger'
 
 interface Props {
   children: ReactNode
@@ -29,16 +30,24 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Log error to console for development
-    console.error('ErrorBoundary caught an error:', error, errorInfo)
+    // Log error with structured logging and generate error ID
+    const errorId = logger.error('ErrorBoundary caught component error', error, {
+      component: 'ErrorBoundary',
+      action: 'component_error',
+      metadata: {
+        componentStack: errorInfo.componentStack,
+        locale: this.props.locale,
+        hasCustomFallback: !!this.props.fallback
+      }
+    })
+    
+    // Store error ID for user support
+    if (typeof window !== 'undefined') {
+      ;(window as any).__hapa_error_id = errorId
+    }
     
     // Call optional error handler
     this.props.onError?.(error, errorInfo)
-    
-    // In production, you might want to send to an error reporting service
-    if (process.env.NODE_ENV === 'production') {
-      // Example: reportError(error, errorInfo)
-    }
   }
 
   render() {

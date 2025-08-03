@@ -1,4 +1,5 @@
 import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
+import { logger } from '@/utilities/logger'
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   try {
@@ -74,9 +75,9 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
       ON "media_content_submissions_attachment_files" ("_parent_id");
     `)
 
-    console.log('✅ File array tables created successfully')
+    logger.success('File array tables created successfully')
   } catch (error) {
-    console.error('❌ Migration error:', error)
+    logger.error('Migration error:', error)
     throw error
   }
 }
@@ -98,9 +99,9 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
     await db.execute(sql`
       ALTER TABLE "media_content_submissions" DROP COLUMN IF EXISTS "program_name";
     `)
-    console.log('✅ File array tables rolled back successfully')
+    logger.success('File array tables rolled back successfully')
   } catch (error) {
-    console.error('❌ Rollback error:', error)
+    logger.error('Rollback error:', error)
     throw error
   }
 }

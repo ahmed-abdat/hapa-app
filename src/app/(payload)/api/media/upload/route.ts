@@ -25,70 +25,6 @@ const ALLOWED_MIME_TYPES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ]
 
-/**
- * Rate limiting: Track uploads per IP
- * In production, this should be replaced with Redis or a proper rate limiter
- */
-const uploadCounts = new Map<string, { count: number; resetTime: number }>()
-const RATE_LIMIT_WINDOW = 60 * 60 * 1000 // 1 hour
-const MAX_UPLOADS_PER_HOUR = 10
-
-/**
- * Cleanup expired rate limit entries to prevent memory leak
- */
-function cleanupExpiredEntries(): void {
-  const now = Date.now()
-  for (const [ip, data] of uploadCounts.entries()) {
-    if (now > data.resetTime) {
-      uploadCounts.delete(ip)
-    }
-  }
-}
-
-/**
- * Simple rate limiting check with memory leak prevention
- */
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now()
-  
-  // Cleanup expired entries periodically (every 100 calls)
-  if (Math.random() < 0.01) {
-    cleanupExpiredEntries()
-  }
-  
-  const userLimits = uploadCounts.get(ip)
-  
-  if (!userLimits || now > userLimits.resetTime) {
-    // Reset or create new limit
-    uploadCounts.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW })
-    return true
-  }
-  
-  if (userLimits.count >= MAX_UPLOADS_PER_HOUR) {
-    return false
-  }
-  
-  userLimits.count++
-  return true
-}
-
-/**
- * Get client IP address
- */
-function getClientIP(request: NextRequest): string {
-  const forwarded = request.headers.get('x-forwarded-for')
-  const realIP = request.headers.get('x-real-ip')
-  
-  if (forwarded) {
-    return forwarded.split(',')[0].trim()
-  }
-  
-  if (realIP) {
-    return realIP
-  }
-  
-  return 'unknown'
-}
 
 /**
  * Upload file through Payload CMS with enhanced security
@@ -97,16 +33,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const startTime = Date.now()
   
   try {
-    // Check rate limiting
-    const clientIP = getClientIP(request)
-    if (!checkRateLimit(clientIP)) {
-      logger.error('Rate limit exceeded for IP:', clientIP)
-      return NextResponse.json(
-        { error: 'Rate limit exceeded. Maximum 10 uploads per hour.' },
-        { status: 429 }
-      )
-    }
-
     const payload = await getPayload({ config })
     const formData = await request.formData()
     const file = formData.get('file') as File | null
@@ -118,7 +44,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       )
     }
 
-    logger.fileOperation('📤 Processing upload through Payload:', file.name, `Size: ${(file.size / 1024).toFixed(1)}KB`)
+    logger.fileOperation(`📤 Processing upload through Payload: ${file.name} (Size: ${(file.size / 1024).toFixed(1)}KB)`)
 
     // Validate file type
     if (!ALLOWED_MIME_TYPES.includes(file.type)) {
@@ -159,8 +85,32 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       collection: 'media',
       data: {
         alt: sanitizedFilename,
-        // Add metadata for tracking
-        description: `Uploaded via media forms on ${new Date().toISOString()}`,
+        // Add metadata for tracking via caption
+        caption: {
+          root: {
+            type: 'root',
+            children: [
+              {
+                type: 'paragraph',
+                children: [
+                  {
+                    text: `Uploaded via media forms on ${new Date().toISOString()}`,
+                    type: 'text',
+                    version: 1,
+                  },
+                ],
+                direction: 'ltr',
+                format: '',
+                indent: 0,
+                version: 1,
+              },
+            ],
+            direction: 'ltr',
+            format: '',
+            indent: 0,
+            version: 1,
+          },
+        },
       },
       file: {
         data: Buffer.from(await file.arrayBuffer()),
@@ -171,7 +121,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     })
 
     const uploadTime = Date.now() - startTime
-    logger.success('✅ File uploaded successfully through Payload:', {
+    logger.success('✅ File uploaded successfully through Payload:', `ID: ${result.id}`)
+    logger.log('Upload details:', {
       id: result.id,
       filename: result.filename,
       size: file.size,

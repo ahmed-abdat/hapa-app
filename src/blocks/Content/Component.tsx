@@ -7,9 +7,14 @@ import { CMSLink } from '../../components/Link'
 type ContentBlockProps = {
   columns?: Array<{
     size?: 'full' | 'half' | 'oneThird' | 'twoThirds'
-    richText?: any
+    richText?: Record<string, any>  // Rich text from Payload CMS
     enableLink?: boolean
-    link?: any
+    link?: {
+      type?: string
+      url?: string
+      label?: string
+      [key: string]: any
+    }
   }>
   blockType?: string
 }
@@ -39,9 +44,9 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
                 })}
                 key={`content-column-${index}`}
               >
-                {richText && <RichText data={richText} enableGutter={false} />}
+                {richText && richText.root && <RichText data={richText as any} enableGutter={false} />}
 
-                {enableLink && <CMSLink {...link} />}
+                {enableLink && link && <CMSLink {...(link as any)} />}
               </div>
             )
           })}

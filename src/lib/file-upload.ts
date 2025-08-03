@@ -2,6 +2,8 @@
  * File upload utilities for handling media uploads with retry mechanism
  */
 
+import { logger } from '@/utilities/logger'
+
 // Retry-related types
 export interface RetryState {
   attemptCount: number
@@ -99,7 +101,7 @@ export async function uploadFile(file: File, retryState?: RetryState): Promise<F
     // Check network connectivity in browser environment
     if (isBrowser() && !isOnline()) {
       const error = new Error('Network is offline')
-      const updatedRetryState = updateRetryState(currentRetryState, error)
+      const updatedRetryState = updateRetryState(currentRetryState, error as Error)
       return {
         success: false,
         error: 'No network connection',
@@ -112,7 +114,7 @@ export async function uploadFile(file: File, retryState?: RetryState): Promise<F
     const isValidSignature = await validateFileSignature(file)
     if (!isValidSignature) {
       const error = new Error('Invalid file format detected')
-      const updatedRetryState = updateRetryState(currentRetryState, error)
+      const updatedRetryState = updateRetryState(currentRetryState, error as Error)
       return {
         success: false,
         error: 'Invalid file format detected',
@@ -148,8 +150,8 @@ export async function uploadFile(file: File, retryState?: RetryState): Promise<F
       url: result.url,
       retryState: currentRetryState
     }
-  } catch (error: any) {
-    const updatedRetryState = updateRetryState(currentRetryState, error)
+  } catch (error: unknown) {
+    const updatedRetryState = updateRetryState(currentRetryState, error as Error)
     const canRetry = updatedRetryState.attemptCount < updatedRetryState.maxRetries && 
                     isRetryableError(updatedRetryState.failureType || 'unknown')
     
@@ -255,72 +257,97 @@ export async function uploadFiles(
 export function convertToFormData(data: Record<string, any>): FormData {
   const formData = new FormData()
   
-  // Development-only logging
-  if (process.env.NODE_ENV === 'development') {
-    console.log('🔍 convertToFormData - processing data:', Object.keys(data))
-    console.log('🔍 screenshotFiles value:', data.screenshotFiles, 'type:', typeof data.screenshotFiles, 'isArray:', Array.isArray(data.screenshotFiles))
-    console.log('🔍 attachmentFiles value:', data.attachmentFiles, 'type:', typeof data.attachmentFiles, 'isArray:', Array.isArray(data.attachmentFiles))
-  }
+  // Log form data processing for debugging
+  logger.debug('Converting object to FormData', {
+    component: 'FileUpload',
+    action: 'convert_to_form_data',
+    metadata: {
+      dataKeys: Object.keys(data),
+      screenshotFilesType: typeof data.screenshotFiles,
+      screenshotFilesIsArray: Array.isArray(data.screenshotFiles),
+      attachmentFilesType: typeof data.attachmentFiles,
+      attachmentFilesIsArray: Array.isArray(data.attachmentFiles)
+    }
+  })
 
   for (const [key, value] of Object.entries(data)) {
     if (value === undefined || value === null) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`🔍 Skipping ${key}: undefined/null`)
-      }
+      logger.debug(`Skipping FormData field: ${key} (undefined/null)`, {
+        component: 'FileUpload',
+        action: 'skip_null_field',
+        metadata: { key }
+      })
       continue
     }
 
     if (Array.isArray(value)) {
       // Handle arrays (like reasons, attachmentTypes, files)
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`🔍 Processing array ${key} with ${value.length} items:`, value)
-      }
+      logger.debug(`Processing FormData array: ${key}`, {
+        component: 'FileUpload',
+        action: 'process_array',
+        metadata: { key, length: value.length, hasItems: value.length > 0 }
+      })
       
       if (value.length === 0) {
         // Skip empty arrays
-        if (process.env.NODE_ENV === 'development') {
-          console.log(`🔍 Skipping empty array ${key}`)
-        }
+        logger.debug(`Skipping empty FormData array: ${key}`, {
+          component: 'FileUpload',
+          action: 'skip_empty_array',
+          metadata: { key }
+        })
         continue
       }
       
       value.forEach((item, index) => {
         if (item instanceof File) {
-          if (process.env.NODE_ENV === 'development') {
-            console.log(`🔍 Appending File ${index} to ${key}: ${item.name} (${item.size} bytes)`)
-          }
+          logger.file.processing('formdata_append', item.name, {
+            component: 'FileUpload',
+            metadata: { key, index, fileSize: item.size }
+          })
           formData.append(key, item)
         } else {
-          if (process.env.NODE_ENV === 'development') {
-            console.log(`🔍 Appending string ${index} to ${key}: ${item}`)
-          }
+          logger.debug(`Appending string to FormData array: ${key}[${index}]`, {
+            component: 'FileUpload',
+            action: 'append_string',
+            metadata: { key, index, value: item }
+          })
           formData.append(key, item.toString())
         }
       })
     } else if (value instanceof File) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`🔍 Appending single File to ${key}: ${value.name} (${value.size} bytes)`)
-      }
+      logger.file.processing('formdata_append_single', value.name, {
+        component: 'FileUpload',
+        metadata: { key, fileSize: value.size }
+      })
       formData.append(key, value)
     } else {
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`🔍 Appending string to ${key}: ${value}`)
-      }
+      logger.debug(`Appending string to FormData: ${key}`, {
+        component: 'FileUpload',
+        action: 'append_string',
+        metadata: { key, value }
+      })
       formData.append(key, value.toString())
     }
   }
 
-  // Development-only: Log all FormData entries
-  if (process.env.NODE_ENV === 'development') {
-    console.log('🔍 Final FormData entries:')
-    for (const [key, value] of formData.entries()) {
-      if (value instanceof File) {
-        console.log(`  ${key}: File(${value.name}, ${value.size} bytes)`)
-      } else {
-        console.log(`  ${key}: ${value}`)
-      }
+  // Log final FormData entries for debugging
+  const entries: Array<{key: string, type: string, details: string}> = []
+  for (const [key, value] of formData.entries()) {
+    if (value instanceof File) {
+      entries.push({ key, type: 'File', details: `${value.name} (${value.size} bytes)` })
+    } else {
+      entries.push({ key, type: 'String', details: String(value) })
     }
   }
+  
+  logger.debug('FormData conversion completed', {
+    component: 'FileUpload',
+    action: 'conversion_complete',
+    metadata: {
+      totalEntries: entries.length,
+      entries: entries.slice(0, 10) // Limit to first 10 entries to avoid log spam
+    }
+  })
 
   return formData
 }
@@ -473,11 +500,13 @@ export function calculateSavings(originalSize: number, compressedSize: number): 
  */
 
 // Error categorization function
-export function categorizeError(error: any): 'network' | 'validation' | 'server' | 'security' | 'unknown' {
+export function categorizeError(error: unknown): 'network' | 'validation' | 'server' | 'security' | 'unknown' {
   if (!error) return 'unknown'
   
-  const errorMessage = error.message?.toLowerCase() || error.toString?.()?.toLowerCase() || ''
-  const status = error.status || error.response?.status
+  const errorMessage = (error instanceof Error ? error.message?.toLowerCase() : 
+                       typeof error === 'string' ? error.toLowerCase() : 
+                       String(error).toLowerCase()) || ''
+  const status = (error as any)?.status || (error as any)?.response?.status
   
   // Network-related errors (retryable)
   if (
@@ -486,8 +515,8 @@ export function categorizeError(error: any): 'network' | 'validation' | 'server'
     errorMessage.includes('connection') ||
     errorMessage.includes('timeout') ||
     errorMessage.includes('offline') ||
-    error.name === 'NetworkError' ||
-    error.code === 'NETWORK_ERROR' ||
+    (error instanceof Error && error.name === 'NetworkError') ||
+    (error as any)?.code === 'NETWORK_ERROR' ||
     status === 0 || // Network failure
     status === 408 || // Request Timeout
     status === 503 || // Service Unavailable
@@ -556,7 +585,7 @@ export function createRetryState(maxRetries: number = 3): RetryState {
 // Update retry state after a failure
 export function updateRetryState(
   currentState: RetryState, 
-  error: any
+  error: unknown
 ): RetryState {
   const failureType = categorizeError(error)
   const attemptCount = currentState.attemptCount + 1
@@ -565,7 +594,7 @@ export function updateRetryState(
   return {
     ...currentState,
     attemptCount,
-    lastError: error.message || error.toString(),
+    lastError: error instanceof Error ? error.message : String(error),
     failureType,
     nextRetryDelay: canRetry ? calculateRetryDelay(attemptCount) : undefined,
     isRetrying: false

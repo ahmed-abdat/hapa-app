@@ -2,17 +2,25 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import type { PayloadSubmissionData } from '@/types/media-forms'
+import { logger } from '@/utilities/logger'
 
-interface PayloadSubmissionDocument extends PayloadSubmissionData {
-  id: string
-  title: string
-  createdAt: string
-  updatedAt: string
-  adminNotes?: string
-}
+const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+
+// Simple cache using WeakMap to avoid memory leaks in serverless environment
+const cacheWeakMap = new WeakMap()
+const cacheKey = { key: 'stats-cache' }
+
+// Use the generated Payload types directly instead of custom interface
+import type { MediaContentSubmission } from '@/payload-types'
 
 export async function GET(req: NextRequest) {
   try {
+    // Check cache first
+    const cachedData = cacheWeakMap.get(cacheKey)
+    if (cachedData && Date.now() - cachedData.timestamp < CACHE_TTL) {
+      return NextResponse.json(cachedData.data)
+    }
+
     // Get Payload instance
     const payload = await getPayload({ config: configPromise })
     
@@ -26,11 +34,24 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    // Fetch all media content submissions
+    // Fetch recent submissions with optimized query
     const submissions = await payload.find({
       collection: 'media-content-submissions',
-      limit: 500, // Adjust as needed
+      limit: 100, // Reduced for better performance
       sort: '-submittedAt',
+      select: {
+        id: true,
+        formType: true,
+        submissionStatus: true,
+        priority: true,
+        submittedAt: true,
+        locale: true,
+        contentInfo: true,
+        complainantInfo: true,
+        description: true,
+        reasons: true,
+        adminNotes: true,
+      },
     })
 
     // Process statistics
@@ -88,7 +109,7 @@ export async function GET(req: NextRequest) {
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
 
     // Process each submission for statistics
-    submissions.docs.forEach((submission: any) => {
+    submissions.docs.forEach((submission: MediaContentSubmission) => {
       const submittedDate = new Date(submission.submittedAt)
 
       // Form type counts
@@ -230,9 +251,9 @@ export async function GET(req: NextRequest) {
     })
 
     // Prepare submissions data for table
-    const submissionsData = submissions.docs.map((submission: any) => ({
-      id: submission.id,
-      title: submission.title,
+    const submissionsData = submissions.docs.map((submission: MediaContentSubmission) => ({
+      id: submission.id.toString(),  // Convert number to string for frontend
+      title: submission.title || 'Untitled',  // Handle nullable title
       formType: submission.formType,
       submissionStatus: submission.submissionStatus,
       priority: submission.priority,
@@ -245,13 +266,21 @@ export async function GET(req: NextRequest) {
       adminNotes: submission.adminNotes,
     }))
 
-    return NextResponse.json({
+    const response = {
       success: true,
       stats,
       submissions: submissionsData,
+    }
+
+    // Cache the response
+    cacheWeakMap.set(cacheKey, {
+      data: response,
+      timestamp: Date.now(),
     })
+
+    return NextResponse.json(response)
   } catch (error) {
-    console.error('Error fetching media submissions stats:', error)
+    logger.error('Error fetching media submissions stats:', error)
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
       { status: 500 }

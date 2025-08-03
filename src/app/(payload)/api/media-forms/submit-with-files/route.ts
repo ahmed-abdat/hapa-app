@@ -80,12 +80,13 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
       )
     }
 
-    // Upload files first
+    // Upload files first with validation
     logger.log('📤 Starting file uploads...')
     const uploadedScreenshots: string[] = []
     const uploadedAttachments: string[] = []
+    const uploadErrors: string[] = []
 
-    // Upload screenshot files
+    // Upload screenshot files with error tracking
     for (const file of screenshotFiles) {
       logger.fileOperation('📷 Uploading screenshot:', file.name)
       const result = await uploadFile(file)
@@ -93,11 +94,13 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
         uploadedScreenshots.push(result.url)
         logger.success('📷 Screenshot uploaded:', result.url)
       } else {
-        logger.error('❌ Screenshot upload failed:', result.error)
+        const errorMsg = `Screenshot "${file.name}": ${result.error || 'Upload failed'}`
+        uploadErrors.push(errorMsg)
+        logger.error('❌ Screenshot upload failed:', errorMsg)
       }
     }
 
-    // Upload attachment files
+    // Upload attachment files with error tracking
     for (const file of attachmentFiles) {
       logger.fileOperation('📎 Uploading attachment:', file.name)
       const result = await uploadFile(file)
@@ -105,8 +108,48 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
         uploadedAttachments.push(result.url)
         logger.success('📎 Attachment uploaded:', result.url)
       } else {
-        logger.error('❌ Attachment upload failed:', result.error)
+        const errorMsg = `Attachment "${file.name}": ${result.error || 'Upload failed'}`
+        uploadErrors.push(errorMsg)
+        logger.error('❌ Attachment upload failed:', errorMsg)
       }
+    }
+
+    // Critical validation: Ensure all files uploaded successfully
+    const totalFilesExpected = screenshotFiles.length + attachmentFiles.length
+    const totalFilesUploaded = uploadedScreenshots.length + uploadedAttachments.length
+    
+    if (totalFilesExpected > 0 && totalFilesUploaded !== totalFilesExpected) {
+      const failureDetails = uploadErrors.length > 0 
+        ? uploadErrors.join('; ') 
+        : 'Unknown upload failures'
+      
+      logger.error('❌ File upload validation failed:', {
+        expected: totalFilesExpected,
+        uploaded: totalFilesUploaded,
+        failures: uploadErrors.length,
+        details: failureDetails
+      })
+      
+      return NextResponse.json(
+        {
+          success: false,
+          message: `File upload failed: ${totalFilesUploaded}/${totalFilesExpected} files uploaded successfully`,
+          details: uploadErrors,
+          uploadStats: {
+            expected: totalFilesExpected,
+            successful: totalFilesUploaded,
+            failed: uploadErrors.length
+          }
+        },
+        { status: 400 }
+      )
+    }
+
+    // Log successful upload summary
+    if (totalFilesExpected > 0) {
+      logger.success(
+        `✅ All files uploaded successfully: ${totalFilesUploaded} files (${uploadedScreenshots.length} screenshots, ${uploadedAttachments.length} attachments)`
+      )
     }
 
     // Prepare submission data with uploaded file URLs
@@ -117,7 +160,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
     }
 
     // Validate with Zod schema
-    let validatedData: any
+    let validatedData: Record<string, any>
     try {
       if (formFields.formType === 'report') {
         const reportSchema = createMediaContentReportSchema(t)
@@ -130,7 +173,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
       logger.error('❌ Validation error:', error)
       
       if (error instanceof Error && 'issues' in error) {
-        const zodError = error as any
+        const zodError = error as { issues: Array<{ message: string; path: string[] }> }
         const firstIssue = zodError.issues[0]
         return NextResponse.json(
           {
@@ -166,7 +209,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
 
     // Server-side data validation and sanitization
     // Preserve the original form type from form submission
-    const formTypeValue = formFields.formType === 'report' ? 'report' : 'complaint'
+    const formTypeValue: 'report' | 'complaint' = formFields.formType === 'report' ? 'report' : 'complaint'
     
     // Log to debug form type preservation
     logger.log('🔍 Form type preservation:', {
@@ -192,60 +235,62 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
       )
     }
 
-    // Validate date
-    const broadcastDate = new Date(sanitizedData.broadcastDateTime)
-    if (isNaN(broadcastDate.getTime()) || broadcastDate > new Date()) {
-      logger.error('❌ Invalid broadcast date')
-      return NextResponse.json(
-        { success: false, message: 'Date de diffusion invalide' },
-        { status: 400 }
-      )
+    // Validate date if present
+    if (validatedData.broadcastDateTime) {
+      const broadcastDate = new Date(validatedData.broadcastDateTime)
+      if (isNaN(broadcastDate.getTime()) || broadcastDate > new Date()) {
+        logger.error('❌ Invalid broadcast date')
+        return NextResponse.json(
+          { success: false, message: 'Date de diffusion invalide' },
+          { status: 400 }
+        )
+      }
     }
 
     // Prepare data for Payload collection
     const collectionData = {
-      formType: formTypeValue,
+      formType: formTypeValue as 'report' | 'complaint',
       submittedAt: sanitizedData.submittedAt,
-      locale: ['fr', 'ar'].includes(sanitizedData.locale) ? sanitizedData.locale as 'fr' | 'ar' : 'fr',
-      submissionStatus: 'pending' as 'pending' | 'reviewing' | 'resolved' | 'dismissed',
-      priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent',
+      locale: ['fr', 'ar'].includes(validatedData.locale) ? validatedData.locale as 'fr' | 'ar' : 'fr',
+      submissionStatus: 'pending' as const,
+      priority: 'medium' as const,
       
       // Top-level fields for better admin visibility
-      mediaType: formatMediaType(sanitizedData.mediaType, sanitizedData.mediaTypeOther),
-      specificChannel: getSpecificChannel(sanitizedData),
+      mediaType: formatMediaType(validatedData.mediaType, validatedData.mediaTypeOther),
+      specificChannel: getSpecificChannel(validatedData),
       programName: sanitizedData.programName,
       
       // For complaints, include complainant information
       ...(formTypeValue === 'complaint' && {
         complainantInfo: {
-          fullName: sanitizedData.fullName?.trim() || '',
-          gender: formatGender(sanitizedData.gender),
-          country: sanitizedData.country?.trim() || '',
-          emailAddress: sanitizedData.emailAddress?.trim() || '',
-          phoneNumber: sanitizedData.phoneNumber?.trim() || '',
-          whatsappNumber: sanitizedData.whatsappNumber?.trim() || '',
-          profession: sanitizedData.profession?.trim() || '',
+          fullName: validatedData.fullName?.trim() || '',
+          gender: formatGender(validatedData.gender),
+          country: validatedData.country?.trim() || '',
+          emailAddress: validatedData.emailAddress?.trim() || '',
+          phoneNumber: validatedData.phoneNumber?.trim() || '',
+          whatsappNumber: validatedData.whatsappNumber?.trim() || '',
+          profession: validatedData.profession?.trim() || '',
           relationshipToContent: formatRelationshipToContent(
-            sanitizedData.relationshipToContent,
-            sanitizedData.relationshipOther
+            validatedData.relationshipToContent,
+            validatedData.relationshipOther
           ),
         },
       }),
 
       // Content information
       contentInfo: {
-        mediaType: formatMediaType(sanitizedData.mediaType, sanitizedData.mediaTypeOther),
-        mediaTypeOther: sanitizedData.mediaTypeOther?.trim() || '',
-        specificChannel: getSpecificChannel(sanitizedData),
+        mediaType: formatMediaType(validatedData.mediaType, validatedData.mediaTypeOther),
+        mediaTypeOther: validatedData.mediaTypeOther?.trim() || '',
+        specificChannel: getSpecificChannel(validatedData),
         programName: sanitizedData.programName,
-        broadcastDateTime: sanitizedData.broadcastDateTime,
-        linkScreenshot: sanitizedData.linkScreenshot?.trim() || '',
+        broadcastDateTime: validatedData.broadcastDateTime,
+        linkScreenshot: validatedData.linkScreenshot?.trim() || '',
         screenshotFiles: uploadedScreenshots.map((url: string) => ({ url })),
       },
 
       // Reasons
-      reasons: sanitizedData.reasons.map((reason: string) => ({ reason: formatReason(reason) })),
-      reasonOther: sanitizedData.reasonOther?.trim() || '',
+      reasons: validatedData.reasons.map((reason: string) => ({ reason: formatReason(reason) })),
+      reasonOther: validatedData.reasonOther?.trim() || '',
 
       // Content description
       description: sanitizedData.description,
@@ -265,6 +310,37 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
       locale: collectionData.locale,
     })
 
+    // Final validation before database creation
+    logger.log('🔍 Final validation before DB creation:', {
+      screenshotFiles: uploadedScreenshots.length,
+      attachmentFiles: uploadedAttachments.length,
+      totalFiles: uploadedScreenshots.length + uploadedAttachments.length,
+      expectedFiles: screenshotFiles.length + attachmentFiles.length
+    })
+
+    // Double-check that all expected files have valid URLs
+    const invalidScreenshots = uploadedScreenshots.filter(url => !url || typeof url !== 'string' || url.trim() === '')
+    const invalidAttachments = uploadedAttachments.filter(url => !url || typeof url !== 'string' || url.trim() === '')
+    
+    if (invalidScreenshots.length > 0 || invalidAttachments.length > 0) {
+      logger.error('❌ Invalid file URLs detected before DB creation:', {
+        invalidScreenshots: invalidScreenshots.length,
+        invalidAttachments: invalidAttachments.length
+      })
+      
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Invalid file URLs detected. Please try uploading your files again.',
+          details: [
+            ...invalidScreenshots.map(() => 'Invalid screenshot URL'),
+            ...invalidAttachments.map(() => 'Invalid attachment URL')
+          ]
+        },
+        { status: 400 }
+      )
+    }
+
     // Create the submission in Payload with explicit locale
     const result = await payload.create({
       collection: 'media-content-submissions',
@@ -272,7 +348,9 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
       locale: 'fr', // Use French locale as it's the default for this project
     })
 
-    logger.success('✅ Submission created successfully', result.id.toString())
+    logger.success(
+      `✅ Submission created successfully (ID: ${result.id}, ${uploadedScreenshots.length} screenshots, ${uploadedAttachments.length} attachments)`
+    )
 
     return NextResponse.json(
       {
@@ -356,7 +434,7 @@ function formatGender(gender: string): string {
   return genderMap[gender] || gender
 }
 
-function getSpecificChannel(data: any): string {
+function getSpecificChannel(data: Record<string, any>): string {
   if (data.mediaType === 'television' && data.tvChannel) {
     return formatTVChannel(data.tvChannel, data.tvChannelOther)
   }

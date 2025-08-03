@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react'
 import { useFormContext, Controller } from 'react-hook-form'
 import { useLocale, useTranslations } from 'next-intl'
+import Image from 'next/image'
 import { Upload, X, FileImage, FileText, FileVideo, File, Settings, Check, AlertCircle, Zap, RotateCcw, Wifi, WifiOff } from 'lucide-react'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -213,9 +214,11 @@ export function FormFileUpload({
       if (thumbnailUrl && !thumbnailError) {
         return (
           <div className="h-12 w-12 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
-            <img
+            <Image
               src={thumbnailUrl}
               alt={`${t('loadingThumbnail')} ${file.name}`}
+              width={48}
+              height={48}
               className="h-full w-full object-cover"
               loading="lazy"
               onError={() => {
@@ -284,7 +287,12 @@ export function FormFileUpload({
         return { error: t('invalidFileFormat') }
       }
     } catch (error) {
-      logger.warn('File signature validation failed:', error)
+      logger.warn('File signature validation failed:', {
+        component: 'FormFileUpload',
+        action: 'signature_validation_failed',
+        filename: file.name,
+        metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
+      })
       // Create retry state for validation errors that might be transient
       const fakeError = { message: 'File validation error' }
       const retryState = updateRetryState(createRetryState(), fakeError)
@@ -372,7 +380,12 @@ export function FormFileUpload({
             ))
           }
         } catch (error) {
-          logger.warn('Image compression failed:', error)
+          logger.warn('Image compression failed:', {
+            component: 'FormFileUpload',
+            action: 'image_compression_failed',
+            filename: originalFile.name,
+            metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
+          })
           // Continue with original file if compression fails
         }
       }

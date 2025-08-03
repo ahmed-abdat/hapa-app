@@ -89,7 +89,7 @@ const FileDisplayRowLabel: React.FC = () => {
           
           // Create temporary link for download
           const link = document.createElement('a')
-          link.href = data.url
+          link.href = data.url || ''
           link.download = filename
           link.target = '_blank'
           document.body.appendChild(link)

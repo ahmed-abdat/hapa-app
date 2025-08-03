@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { Button } from '@payloadcms/ui'
+import { logger } from '@/utilities/logger'
 
 import './SubmissionsTable.scss'
 
@@ -93,11 +94,24 @@ export function SubmissionsTable({ submissions, onRefresh }: SubmissionsTablePro
         setEditingId(null)
         setTempData({ status: '', priority: '', notes: '' })
         onRefresh()
+        logger.info('Successfully updated submission', {
+          component: 'SubmissionsTable',
+          action: 'update_success',
+          metadata: { submissionId }
+        })
       } else {
-        console.error('Failed to update submission')
+        logger.error('Failed to update submission', new Error(`HTTP ${response.status}`), {
+          component: 'SubmissionsTable',
+          action: 'update_failed',
+          metadata: { submissionId, status: response.status }
+        })
       }
     } catch (error) {
-      console.error('Error updating submission:', error)
+      logger.error('Error updating submission', error as Error, {
+        component: 'SubmissionsTable',
+        action: 'update_exception',
+        metadata: { submissionId }
+      })
     } finally {
       setIsUpdating(false)
     }

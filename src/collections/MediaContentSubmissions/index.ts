@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { logger } from '@/utilities/logger'
 
 export const MediaContentSubmissions: CollectionConfig = {
   slug: 'media-content-submissions',
@@ -28,7 +29,7 @@ export const MediaContentSubmissions: CollectionConfig = {
       fr: 'Gérer les signalements et plaintes de contenu médiatique soumis via les formulaires du site',
       ar: 'إدارة التبليغات والشكاوى الخاصة بالمحتوى الإعلامي المرسلة عبر نماذج الموقع',
     },
-    preview: (doc: any) => {
+    preview: (doc: Record<string, any>) => {
       const mediaType = doc.mediaType || doc.contentInfo?.mediaType || 'Unknown'
       const channel = doc.specificChannel || doc.contentInfo?.specificChannel || 'N/A' 
       const program = doc.programName || doc.contentInfo?.programName || 'Untitled'
@@ -80,8 +81,12 @@ export const MediaContentSubmissions: CollectionConfig = {
                   }
                 }
               } catch (error) {
-                console.warn('Invalid date in submission:', data.submittedAt, error)
                 // Use current date as ultimate fallback
+                logger.warn('Invalid date in media submission', {
+                  component: 'MediaContentSubmissions',
+                  action: 'date_parsing',
+                  metadata: { submittedAt: data.submittedAt, error: error instanceof Error ? error.message : String(error) }
+                })
                 dateDisplay = new Date().toLocaleDateString('fr-FR', {
                   year: 'numeric',
                   month: '2-digit',
@@ -576,7 +581,7 @@ export const MediaContentSubmissions: CollectionConfig = {
               ar: 'الملفات التي رفعها المستخدم كأدلة',
             },
             components: {
-              RowLabel: '/src/components/admin/FileDisplayRowLabel/index',
+              RowLabel: '@/components/admin/FileDisplayRowLabel/index',
             },
           },
         },
@@ -600,16 +605,7 @@ export const MediaContentSubmissions: CollectionConfig = {
       admin: {
         readOnly: true,
         components: {
-          RowLabel: ({ data }: { data?: { reason?: string } }) => {
-            if (data?.reason) {
-              // Truncate long reasons for better display
-              const truncatedReason = data.reason.length > 50 
-                ? `${data.reason.substring(0, 50)}...` 
-                : data.reason
-              return truncatedReason
-            }
-            return 'Motif sans titre'
-          },
+          RowLabel: '@/components/admin/ReasonRowLabel/index',
         },
       },
     },
@@ -705,7 +701,7 @@ export const MediaContentSubmissions: CollectionConfig = {
           ar: 'ملفات إضافية مرفقة من قبل المستخدم',
         },
         components: {
-          RowLabel: '/src/components/admin/FileDisplayRowLabel/index',
+          RowLabel: '@/components/admin/FileDisplayRowLabel/index',
         },
       },
     },

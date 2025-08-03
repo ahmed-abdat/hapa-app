@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import type { Post, Category } from '@/payload-types'
 import type { Locale } from '@/utilities/locale'
+import { logger } from '@/utilities/logger'
 
 /**
  * Enhanced caching utilities for HAPA website performance optimization
@@ -38,8 +39,8 @@ export const getCachedPosts = unstable_cache(
     try {
       const payload = await getPayloadClient()
       
-      // Build optimized where clause
-      const whereClause: any = {
+      // Build optimized where clause - Payload where clause structure
+      const whereClause: Record<string, any> = {
         _status: { equals: 'published' }
       }
       
@@ -74,7 +75,9 @@ export const getCachedPosts = unstable_cache(
 
       return result.docs
     } catch (error) {
-      console.error('Error fetching cached posts:', error)
+      logger.cache.error('posts_fetch', 'posts', error as Error, {
+        metadata: { locale, limit, categoryId, excludeId }
+      })
       return []
     }
   },
@@ -120,7 +123,9 @@ export const getCachedPostBySlug = unstable_cache(
 
       return result.docs[0] || null
     } catch (error) {
-      console.error('Error fetching cached post by slug:', error)
+      logger.cache.error('post_by_slug_fetch', slug, error as Error, {
+        metadata: { locale, slug }
+      })
       return null
     }
   },
@@ -154,7 +159,9 @@ export const getCachedCategories = cache(
 
         return result.docs
       } catch (error) {
-        console.error('Error fetching cached categories:', error)
+        logger.cache.error('categories_fetch', 'categories', error as Error, {
+          metadata: { locale }
+        })
         return []
       }
     },

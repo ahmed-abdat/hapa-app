@@ -150,20 +150,20 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
 
 
   const onSubmit = async (data: MediaContentComplaintFormData) => {
-    // Debug: Log the raw form data received from React Hook Form
-    console.log('🔍 onSubmit received data:', data)
-    console.log('🔍 screenshotFiles type:', typeof data.screenshotFiles, 'value:', data.screenshotFiles)
-    console.log('🔍 attachmentFiles type:', typeof data.attachmentFiles, 'value:', data.attachmentFiles)
+    // Development logging for form data analysis
+    logger.log('onSubmit received data', { metadata: data })
+    logger.log('screenshotFiles type', { metadata: { type: typeof data.screenshotFiles } })
+    logger.log('attachmentFiles type', { metadata: { type: typeof data.attachmentFiles } })
     if (Array.isArray(data.screenshotFiles)) {
-      console.log('🔍 screenshotFiles array length:', data.screenshotFiles.length)
+      logger.log('screenshotFiles array length', { metadata: { length: data.screenshotFiles.length } })
       data.screenshotFiles.forEach((file, index) => {
-        console.log(`🔍 screenshotFiles[${index}]:`, file, 'instanceof File:', file instanceof File)
+        logger.log(`screenshotFiles[${index}]`, { metadata: { name: file instanceof File ? file.name : 'not a file', instanceof: file instanceof File } })
       })
     }
     if (Array.isArray(data.attachmentFiles)) {
-      console.log('🔍 attachmentFiles array length:', data.attachmentFiles.length)
+      logger.log('attachmentFiles array length', { metadata: { length: data.attachmentFiles.length } })
       data.attachmentFiles.forEach((file, index) => {
-        console.log(`🔍 attachmentFiles[${index}]:`, file, 'instanceof File:', file instanceof File)
+        logger.log(`attachmentFiles[${index}]`, { metadata: { name: file instanceof File ? file.name : 'not a file', instanceof: file instanceof File } })
       })
     }
     
@@ -196,11 +196,33 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
         setSubmissionId(result.submissionId || 'success')
         setIsSubmitted(true)
       } else {
+        // Enhanced error handling for file upload failures
+        if (result.details && Array.isArray(result.details)) {
+          // File upload specific errors
+          logger.error('❌ File upload errors detected:', result.details)
+          const fileErrorMessage = `${result.message}\n\nDétails des erreurs:\n${result.details.join('\n')}`
+          toast.error(fileErrorMessage, {
+            duration: 10000, // Longer duration for file errors
+          })
+        } else if (result.uploadStats) {
+          // Upload statistics available
+          logger.error('❌ Upload statistics:', result.uploadStats)
+          const statsMessage = `${result.message}\n\nStatistiques: ${result.uploadStats.successful}/${result.uploadStats.expected} fichiers téléchargés avec succès`
+          toast.error(statsMessage, {
+            duration: 8000,
+          })
+        } else {
+          // Generic error
+          toast.error(result.message || t('submissionError'))
+        }
         throw new Error(result.message || 'Submission failed')
       }
     } catch (error) {
       logger.error('❌ Form submission error:', error)
-      toast.error(t('submissionError'))
+      // Only show generic error if we haven't already shown a specific one
+      if (error instanceof Error && !error.message.includes('File upload failed')) {
+        toast.error(t('submissionError'))
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -221,10 +243,10 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
 
   return (
     <div className={className}>
-      {/* Debug: Show validation errors */}
-      {Object.keys(formState.errors).length > 0 && (
+      {/* Development: Show validation errors in development mode only */}
+      {process.env.NODE_ENV === 'development' && Object.keys(formState.errors).length > 0 && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <h4 className="text-red-800 font-semibold mb-2">🐛 Validation Errors (Debug):</h4>
+          <h4 className="text-red-800 font-semibold mb-2">Validation Errors (Development):</h4>
           <div className="text-sm text-red-700 space-y-1">
             {Object.entries(formState.errors).map(([field, error]) => (
               <div key={field} className="border-l-2 border-red-300 pl-2">
