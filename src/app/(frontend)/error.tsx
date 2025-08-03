@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { Link } from '@/i18n/navigation'
+import { logger } from '@/utilities/logger'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -97,11 +98,15 @@ export default function Error({ error, reset }: ErrorProps) {
       reset()
       setAutoRetryCountdown(10)
     } catch (retryError) {
-      console.error('Retry failed:', retryError)
+      logger.error('Error page retry failed', retryError as Error, {
+        component: 'ErrorPage',
+        action: 'retry_failed',
+        metadata: { retryCount, originalError: error.message }
+      })
     } finally {
       setIsRetrying(false)
     }
-  }, [reset])
+  }, [reset, error.message, retryCount])
 
   // Auto-retry countdown
   useEffect(() => {
@@ -115,32 +120,39 @@ export default function Error({ error, reset }: ErrorProps) {
     }
   }, [autoRetryCountdown, retryCount, handleRetry])
 
-  // Log error to console and external service
+  // Log error with structured logging and generate error ID
   useEffect(() => {
-    console.error('Error occurred:', error)
+    const errorId = logger.error('Frontend error page displayed', error, {
+      component: 'ErrorPage',
+      action: 'error_displayed',
+      metadata: {
+        digest: error.digest,
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A',
+        url: typeof window !== 'undefined' ? window.location.href : 'N/A',
+        retryCount,
+        timestamp: new Date().toISOString()
+      }
+    })
     
-    const errorReport = {
-      message: error.message,
-      stack: error.stack,
-      digest: error.digest,
-      timestamp: new Date().toISOString(),
-      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A',
-      url: typeof window !== 'undefined' ? window.location.href : 'N/A',
-      retryCount
+    // Store error ID for user support
+    if (typeof window !== 'undefined') {
+      ;(window as any).__hapa_error_id = errorId
     }
-    
-    console.log('Error report:', errorReport)
   }, [error, retryCount])
 
   const handleReportError = () => {
+    const errorId = typeof window !== 'undefined' ? (window as any).__hapa_error_id : 'N/A'
     const subject = encodeURIComponent(`Signaler un problème - ${error.message}`)
     const body = encodeURIComponent(`
 Message d'erreur: ${error.message}
 Horodatage: ${new Date().toISOString()}
-ID de l'erreur: ${error.digest || 'N/A'}
+ID de l'erreur (support): ${errorId}
+ID de l'erreur (système): ${error.digest || 'N/A'}
 URL: ${typeof window !== 'undefined' ? window.location.href : 'N/A'}
 Tentatives: ${retryCount}
 User Agent: ${typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A'}
+
+Veuillez inclure l'ID de l'erreur (support) dans votre demande.
     `)
     
     if (typeof window !== 'undefined') {

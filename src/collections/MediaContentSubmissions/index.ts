@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { logger } from '@/utilities/logger'
 
 export const MediaContentSubmissions: CollectionConfig = {
   slug: 'media-content-submissions',
@@ -81,9 +82,11 @@ export const MediaContentSubmissions: CollectionConfig = {
                 }
               } catch (error) {
                 // Use current date as ultimate fallback
-                if (process.env.NODE_ENV === 'development') {
-                  console.warn('Invalid date in submission:', data.submittedAt, error)
-                }
+                logger.warn('Invalid date in media submission', {
+                  component: 'MediaContentSubmissions',
+                  action: 'date_parsing',
+                  metadata: { submittedAt: data.submittedAt, error: error instanceof Error ? error.message : String(error) }
+                })
                 dateDisplay = new Date().toLocaleDateString('fr-FR', {
                   year: 'numeric',
                   month: '2-digit',
@@ -578,7 +581,7 @@ export const MediaContentSubmissions: CollectionConfig = {
               ar: 'الملفات التي رفعها المستخدم كأدلة',
             },
             components: {
-              RowLabel: '/src/components/admin/FileDisplayRowLabel/index',
+              RowLabel: '@/components/admin/FileDisplayRowLabel/index',
             },
           },
         },
@@ -602,7 +605,7 @@ export const MediaContentSubmissions: CollectionConfig = {
       admin: {
         readOnly: true,
         components: {
-          RowLabel: '/src/components/admin/ReasonRowLabel/index',
+          RowLabel: '@/components/admin/ReasonRowLabel/index',
         },
       },
     },
@@ -698,7 +701,7 @@ export const MediaContentSubmissions: CollectionConfig = {
           ar: 'ملفات إضافية مرفقة من قبل المستخدم',
         },
         components: {
-          RowLabel: '/src/components/admin/FileDisplayRowLabel/index',
+          RowLabel: '@/components/admin/FileDisplayRowLabel/index',
         },
       },
     },

@@ -7,6 +7,7 @@ import { getPayload } from "payload";
 import { draftMode } from "next/headers";
 import React, { cache } from "react";
 import RichText from "@/components/RichText";
+import { logger } from "@/utilities/logger";
 
 import type { Post } from "@/payload-types";
 import type { Locale } from "@/utilities/locale";
@@ -49,7 +50,11 @@ export async function generateStaticParams() {
     return params;
   } catch (error) {
     // Fallback to empty array if database connection fails during build
-    console.warn('Failed to generate static params for posts:', error);
+    logger.warn('Failed to generate static params for posts', {
+      component: 'PostsPageGeneration',
+      action: 'generate_static_params',
+      metadata: { error: error instanceof Error ? error.message : String(error) }
+    });
     return [];
   }
 }

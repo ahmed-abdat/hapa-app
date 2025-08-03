@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { AlertTriangle, RefreshCw, Home, Phone } from 'lucide-react'
+import { logger } from '@/utilities/logger'
 
 interface GlobalErrorProps {
   error: Error & { digest?: string }
@@ -10,28 +11,34 @@ interface GlobalErrorProps {
 
 export default function GlobalError({ error, reset }: GlobalErrorProps) {
   useEffect(() => {
-    // Log the error to console and external error reporting service
-    console.error('Global error occurred:', error)
+    // Log global error with structured logging and generate error ID
+    const errorId = logger.error('Global error page displayed', error, {
+      component: 'GlobalErrorPage',
+      action: 'global_error',
+      metadata: {
+        digest: error.digest,
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A',
+        url: typeof window !== 'undefined' ? window.location.href : 'N/A',
+        type: 'global-error',
+        timestamp: new Date().toISOString()
+      }
+    })
     
-    // Report to external service (e.g., Sentry, LogRocket)
-    const errorReport = {
-      message: error.message,
-      stack: error.stack,
-      digest: error.digest,
-      timestamp: new Date().toISOString(),
-      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A',
-      url: typeof window !== 'undefined' ? window.location.href : 'N/A',
-      type: 'global-error'
+    // Store error ID for user support
+    if (typeof window !== 'undefined') {
+      ;(window as any).__hapa_error_id = errorId
     }
-    
-    console.log('Global error report:', errorReport)
   }, [error])
 
   const handleRetry = () => {
     try {
       reset()
     } catch (retryError) {
-      console.error('Global retry failed:', retryError)
+      logger.error('Global error page retry failed', retryError as Error, {
+        component: 'GlobalErrorPage',
+        action: 'retry_failed',
+        metadata: { originalError: error.message }
+      })
       // Fallback to full page reload
       if (typeof window !== 'undefined') {
         window.location.reload()
@@ -46,17 +53,19 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
   }
 
   const handleReportError = () => {
+    const errorId = typeof window !== 'undefined' ? (window as any).__hapa_error_id : 'N/A'
     const subject = encodeURIComponent(`Erreur critique HAPA - ${error.message}`)
     const body = encodeURIComponent(`
 Une erreur critique s'est produite sur le site HAPA.
 
 Message d'erreur: ${error.message}
 Horodatage: ${new Date().toISOString()}
-ID de l'erreur: ${error.digest || 'N/A'}
+ID de l'erreur (support): ${errorId}
+ID de l'erreur (système): ${error.digest || 'N/A'}
 URL: ${typeof window !== 'undefined' ? window.location.href : 'N/A'}
 User Agent: ${typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A'}
 
-Veuillez traiter cette erreur en priorité.
+Veuillez traiter cette erreur en priorité et inclure l'ID de l'erreur (support) dans votre investigation.
     `)
     
     if (typeof window !== 'undefined') {

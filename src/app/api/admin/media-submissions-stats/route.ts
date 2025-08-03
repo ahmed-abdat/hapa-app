@@ -4,6 +4,10 @@ import configPromise from '@payload-config'
 import type { PayloadSubmissionData } from '@/types/media-forms'
 import { logger } from '@/utilities/logger'
 
+// Simple in-memory cache for stats (5 minute TTL)
+let statsCache: { data: any; timestamp: number } | null = null
+const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+
 interface PayloadSubmissionDocument extends PayloadSubmissionData {
   id: string
   title: string
@@ -14,6 +18,11 @@ interface PayloadSubmissionDocument extends PayloadSubmissionData {
 
 export async function GET(req: NextRequest) {
   try {
+    // Check cache first
+    if (statsCache && Date.now() - statsCache.timestamp < CACHE_TTL) {
+      return NextResponse.json(statsCache.data)
+    }
+
     // Get Payload instance
     const payload = await getPayload({ config: configPromise })
     
@@ -27,11 +36,24 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    // Fetch all media content submissions
+    // Fetch recent submissions with optimized query
     const submissions = await payload.find({
       collection: 'media-content-submissions',
-      limit: 500, // Adjust as needed
+      limit: 100, // Reduced for better performance
       sort: '-submittedAt',
+      select: {
+        id: true,
+        formType: true,
+        submissionStatus: true,
+        priority: true,
+        submittedAt: true,
+        locale: true,
+        contentInfo: true,
+        complainantInfo: true,
+        description: true,
+        reasons: true,
+        adminNotes: true,
+      },
     })
 
     // Process statistics
@@ -246,11 +268,19 @@ export async function GET(req: NextRequest) {
       adminNotes: submission.adminNotes,
     }))
 
-    return NextResponse.json({
+    const response = {
       success: true,
       stats,
       submissions: submissionsData,
-    })
+    }
+
+    // Cache the response
+    statsCache = {
+      data: response,
+      timestamp: Date.now(),
+    }
+
+    return NextResponse.json(response)
   } catch (error) {
     logger.error('Error fetching media submissions stats:', error)
     return NextResponse.json(

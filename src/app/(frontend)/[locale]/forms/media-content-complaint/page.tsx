@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { MessageCircle, Shield, Clock, UserCheck } from "lucide-react";
 
-import { MediaContentComplaintForm } from "@/components/CustomForms/MediaContentComplaintForm";
+import { DynamicMediaContentComplaintForm } from "@/components/CustomForms/DynamicMediaContentComplaintForm";
 import { isValidLocale } from "@/utilities/locale";
 
 interface PageProps {
@@ -141,7 +141,7 @@ export default async function MediaContentComplaintPage({ params }: PageProps) {
       {/* Form Section */}
       <div className="container mx-auto px-4 pb-16">
         <div className="max-w-4xl mx-auto">
-          <MediaContentComplaintForm />
+          <DynamicMediaContentComplaintForm />
         </div>
       </div>
 

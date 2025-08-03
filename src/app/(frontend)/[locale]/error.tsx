@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/i18n/navigation'
+import { logger } from '@/utilities/logger'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -106,11 +107,15 @@ export default function Error({ error, reset }: ErrorProps) {
       reset()
       setAutoRetryCountdown(10) // Reset countdown for potential next error
     } catch (retryError) {
-      console.error('Retry failed:', retryError)
+      logger.error('Locale error page retry failed', retryError as Error, {
+        component: 'LocaleErrorPage',
+        action: 'retry_failed',
+        metadata: { retryCount, locale, originalError: error.message }
+      })
     } finally {
       setIsRetrying(false)
     }
-  }, [reset])
+  }, [reset, error.message, locale, retryCount])
 
   // Auto-retry countdown
   useEffect(() => {
@@ -124,38 +129,40 @@ export default function Error({ error, reset }: ErrorProps) {
     }
   }, [autoRetryCountdown, retryCount, handleRetry])
 
-  // Log error to console and external service
+  // Log error with structured logging and generate error ID
   useEffect(() => {
-    // Log to console for development
-    console.error('Error occurred:', error)
+    const errorId = logger.error('Locale error page displayed', error, {
+      component: 'LocaleErrorPage',
+      action: 'error_displayed',
+      metadata: {
+        digest: error.digest,
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A',
+        url: typeof window !== 'undefined' ? window.location.href : 'N/A',
+        locale,
+        retryCount,
+        timestamp: new Date().toISOString()
+      }
+    })
     
-    // Log to external error reporting service (e.g., Sentry, LogRocket)
-    // This would be replaced with actual error reporting service
-    const errorReport = {
-      message: error.message,
-      stack: error.stack,
-      digest: error.digest,
-      timestamp: new Date().toISOString(),
-      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A',
-      url: typeof window !== 'undefined' ? window.location.href : 'N/A',
-      locale,
-      retryCount
+    // Store error ID for user support
+    if (typeof window !== 'undefined') {
+      ;(window as any).__hapa_error_id = errorId
     }
-    
-    // Example: Send to error reporting service
-    // reportError(errorReport)
-    console.log('Error report:', errorReport)
   }, [error, locale, retryCount])
 
   const handleReportError = () => {
+    const errorId = typeof window !== 'undefined' ? (window as any).__hapa_error_id : 'N/A'
     const subject = encodeURIComponent(`${t('errorReportIssue')} - ${error.message}`)
     const body = encodeURIComponent(`
 ${t('errorMessage')}: ${error.message}
 ${t('errorTimestamp')}: ${new Date().toISOString()}
-${t('errorId')}: ${error.digest || 'N/A'}
+${t('errorId')} (support): ${errorId}
+${t('errorId')} (système): ${error.digest || 'N/A'}
 URL: ${typeof window !== 'undefined' ? window.location.href : 'N/A'}
 ${t('errorRetryAttempts')}: ${retryCount}
 User Agent: ${typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A'}
+
+${locale === 'fr' ? 'Veuillez inclure l\'ID de l\'erreur (support) dans votre demande.' : 'يرجى تضمين معرف الخطأ (الدعم) في طلبكم.'}
     `)
     
     if (typeof window !== 'undefined') {

@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import type { Post } from '@/payload-types'
 import { revalidateTag, unstable_cache } from 'next/cache'
+import { logger } from '@/utilities/logger'
 
 export interface SearchParams {
   query: string
@@ -130,7 +131,11 @@ export async function searchPosts(params: SearchParams): Promise<SearchResult> {
   try {
     return await cachedSearch(params)
   } catch (error) {
-    console.error('Search error:', error)
+    logger.error('Search operation failed', error as Error, {
+      component: 'SearchAction',
+      action: 'search',
+      metadata: { params }
+    })
     throw error
   }
 }
@@ -243,7 +248,11 @@ export async function searchPostsWithAnalytics(params: SearchParams): Promise<Se
     
     return result
   } catch (error) {
-    console.error('Search error:', error)
+    logger.error('Search operation failed', error as Error, {
+      component: 'SearchAction',
+      action: 'search',
+      metadata: { params }
+    })
     throw error
   }
 }

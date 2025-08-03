@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import type { Post } from '@/payload-types'
 import type { Locale } from './locale'
+import { logger } from '@/utilities/logger'
 
 /**
  * Cached posts fetcher with automatic revalidation
@@ -60,7 +61,9 @@ export const getCachedPosts = cache(
 
       return result.docs
     } catch (error) {
-      console.error('Error fetching cached posts:', error)
+      logger.cache.error('cached_posts_fetch', 'posts', error as Error, {
+        metadata: { limit, locale, categoryId, excludeId }
+      })
       return []
     }
   },
@@ -107,7 +110,9 @@ export const getCachedPostBySlug = cache(
 
       return result.docs[0] || null
     } catch (error) {
-      console.error('Error fetching cached post:', error)
+      logger.cache.error('cached_post_fetch', slug, error as Error, {
+        metadata: { slug, locale }
+      })
       return null
     }
   },
@@ -141,7 +146,9 @@ export const getCachedCategories = cache(
 
       return result.docs
     } catch (error) {
-      console.error('Error fetching cached categories:', error)
+      logger.cache.error('cached_categories_fetch', 'categories', error as Error, {
+        metadata: { locale }
+      })
       return []
     }
   },

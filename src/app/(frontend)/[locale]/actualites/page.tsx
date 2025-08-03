@@ -8,6 +8,7 @@ import React from "react";
 import { isValidLocale } from "@/utilities/locale";
 import { notFound } from "next/navigation";
 import type { Category, Post } from "@/payload-types";
+import { logger } from "@/utilities/logger";
 
 // Force dynamic rendering to avoid database connectivity issues during build
 export const dynamic = "force-dynamic";
@@ -41,7 +42,11 @@ export default async function ActualitesPage({ params: paramsPromise }: Args) {
         locale,
       });
     } catch (error) {
-      console.error("Error finding actualites category:", error instanceof Error ? error.message : 'Unknown error');
+      logger.error('Error finding actualites category', error as Error, {
+        component: 'ActualitesPage',
+        action: 'find_category',
+        metadata: { locale }
+      });
       // Continue with empty categoryResult
     }
 
@@ -74,11 +79,19 @@ export default async function ActualitesPage({ params: paramsPromise }: Args) {
         page: postsResult.page || 1
       };
     } catch (error) {
-      console.error("Error finding posts in actualites category:", error instanceof Error ? error.message : 'Unknown error');
+      logger.error('Error finding posts in actualites category', error as Error, {
+        component: 'ActualitesPage',
+        action: 'find_posts',
+        metadata: { locale, category: 'actualites' }
+      });
       // Continue with empty posts
     }
   } catch (error) {
-    console.error("Error connecting to Payload:", error instanceof Error ? error.message : 'Unknown error');
+    logger.error('Error connecting to Payload', error as Error, {
+      component: 'ActualitesPage',
+      action: 'payload_connection',
+      metadata: { locale }
+    });
     // Continue with empty data
   }
 

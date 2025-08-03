@@ -1,5 +1,6 @@
 import { withPayload } from '@payloadcms/next/withPayload'
 import createNextIntlPlugin from 'next-intl/plugin'
+import bundleAnalyzer from '@next/bundle-analyzer'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -7,8 +8,11 @@ const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})
 
-// Security headers for enhanced protection
+// Security headers for enhanced protection following MCP best practices
 const securityHeaders = [
   {
     key: 'X-Frame-Options',
@@ -24,11 +28,38 @@ const securityHeaders = [
   },
   {
     key: 'Permissions-Policy',
-    value: 'camera=(), microphone=(), geolocation=(), payment=()'
+    value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=()'
+  },
+  {
+    key: 'X-DNS-Prefetch-Control',
+    value: 'on'
+  },
+  {
+    key: 'Strict-Transport-Security',
+    value: 'max-age=31536000; includeSubDomains; preload'
+  },
+  {
+    key: 'Content-Security-Policy',
+    value: [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://va.vercel-scripts.com https://vercel.live",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "img-src 'self' blob: data: https://res.cloudinary.com https://*.r2.dev https://vercel.com",
+      "font-src 'self' https://fonts.gstatic.com",
+      "connect-src 'self' https://api.vercel.com https://*.upstash.io https://vercel.live",
+      "media-src 'self' blob: https://*.r2.dev",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "frame-ancestors 'none'",
+      "upgrade-insecure-requests",
+      "block-all-mixed-content"
+    ].join('; ')
   }
 ]
 
 const config = withPayload(
+    withBundleAnalyzer(
     withNextIntl({
       eslint: {
         ignoreDuringBuilds: false,
@@ -134,7 +165,7 @@ const config = withPayload(
           },
         ]
       },
-    }),
+    })),
     { configPath: path.resolve(dirname, 'src/payload.config.ts') },
 )
 

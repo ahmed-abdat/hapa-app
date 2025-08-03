@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { AlertTriangle, Shield, Clock, CheckCircle } from 'lucide-react'
 
-import { MediaContentReportForm } from '@/components/CustomForms/MediaContentReportForm'
+import { DynamicMediaContentReportForm } from '@/components/CustomForms/DynamicMediaContentReportForm'
 import { isValidLocale } from '@/utilities/locale'
 
 interface PageProps {
@@ -118,7 +118,7 @@ export default async function MediaContentReportPage({ params }: PageProps) {
       {/* Form Section */}
       <div className="container mx-auto px-4 pb-16">
         <div className="max-w-4xl mx-auto">
-          <MediaContentReportForm />
+          <DynamicMediaContentReportForm />
         </div>
       </div>
 

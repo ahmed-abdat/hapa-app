@@ -204,11 +204,11 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
 
     // Prepare data for Payload collection
     const collectionData = {
-      formType: formTypeValue,
+      formType: formTypeValue as 'report' | 'complaint',
       submittedAt: sanitizedData.submittedAt,
       locale: ['fr', 'ar'].includes(sanitizedData.locale) ? sanitizedData.locale as 'fr' | 'ar' : 'fr',
-      submissionStatus: 'pending' as 'pending' | 'reviewing' | 'resolved' | 'dismissed',
-      priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent',
+      submissionStatus: 'pending' as const,
+      priority: 'medium' as const,
       
       // Top-level fields for better admin visibility
       mediaType: formatMediaType(sanitizedData.mediaType, sanitizedData.mediaTypeOther),

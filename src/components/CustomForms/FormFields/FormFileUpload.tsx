@@ -287,7 +287,12 @@ export function FormFileUpload({
         return { error: t('invalidFileFormat') }
       }
     } catch (error) {
-      logger.warn('File signature validation failed:', error)
+      logger.warn('File signature validation failed:', {
+        component: 'FormFileUpload',
+        action: 'signature_validation_failed',
+        filename: file.name,
+        metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
+      })
       // Create retry state for validation errors that might be transient
       const fakeError = { message: 'File validation error' }
       const retryState = updateRetryState(createRetryState(), fakeError)
@@ -375,7 +380,12 @@ export function FormFileUpload({
             ))
           }
         } catch (error) {
-          logger.warn('Image compression failed:', error)
+          logger.warn('Image compression failed:', {
+            component: 'FormFileUpload',
+            action: 'image_compression_failed',
+            filename: originalFile.name,
+            metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
+          })
           // Continue with original file if compression fails
         }
       }
