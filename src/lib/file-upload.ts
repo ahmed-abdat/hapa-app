@@ -101,7 +101,7 @@ export async function uploadFile(file: File, retryState?: RetryState): Promise<F
     // Check network connectivity in browser environment
     if (isBrowser() && !isOnline()) {
       const error = new Error('Network is offline')
-      const updatedRetryState = updateRetryState(currentRetryState, error)
+      const updatedRetryState = updateRetryState(currentRetryState, error as Error)
       return {
         success: false,
         error: 'No network connection',
@@ -114,7 +114,7 @@ export async function uploadFile(file: File, retryState?: RetryState): Promise<F
     const isValidSignature = await validateFileSignature(file)
     if (!isValidSignature) {
       const error = new Error('Invalid file format detected')
-      const updatedRetryState = updateRetryState(currentRetryState, error)
+      const updatedRetryState = updateRetryState(currentRetryState, error as Error)
       return {
         success: false,
         error: 'Invalid file format detected',
@@ -150,8 +150,8 @@ export async function uploadFile(file: File, retryState?: RetryState): Promise<F
       url: result.url,
       retryState: currentRetryState
     }
-  } catch (error: any) {
-    const updatedRetryState = updateRetryState(currentRetryState, error)
+  } catch (error: unknown) {
+    const updatedRetryState = updateRetryState(currentRetryState, error as Error)
     const canRetry = updatedRetryState.attemptCount < updatedRetryState.maxRetries && 
                     isRetryableError(updatedRetryState.failureType || 'unknown')
     
@@ -500,11 +500,13 @@ export function calculateSavings(originalSize: number, compressedSize: number): 
  */
 
 // Error categorization function
-export function categorizeError(error: any): 'network' | 'validation' | 'server' | 'security' | 'unknown' {
+export function categorizeError(error: unknown): 'network' | 'validation' | 'server' | 'security' | 'unknown' {
   if (!error) return 'unknown'
   
-  const errorMessage = error.message?.toLowerCase() || error.toString?.()?.toLowerCase() || ''
-  const status = error.status || error.response?.status
+  const errorMessage = (error instanceof Error ? error.message?.toLowerCase() : 
+                       typeof error === 'string' ? error.toLowerCase() : 
+                       String(error).toLowerCase()) || ''
+  const status = (error as any)?.status || (error as any)?.response?.status
   
   // Network-related errors (retryable)
   if (
@@ -513,8 +515,8 @@ export function categorizeError(error: any): 'network' | 'validation' | 'server'
     errorMessage.includes('connection') ||
     errorMessage.includes('timeout') ||
     errorMessage.includes('offline') ||
-    error.name === 'NetworkError' ||
-    error.code === 'NETWORK_ERROR' ||
+    (error instanceof Error && error.name === 'NetworkError') ||
+    (error as any)?.code === 'NETWORK_ERROR' ||
     status === 0 || // Network failure
     status === 408 || // Request Timeout
     status === 503 || // Service Unavailable
@@ -583,7 +585,7 @@ export function createRetryState(maxRetries: number = 3): RetryState {
 // Update retry state after a failure
 export function updateRetryState(
   currentState: RetryState, 
-  error: any
+  error: unknown
 ): RetryState {
   const failureType = categorizeError(error)
   const attemptCount = currentState.attemptCount + 1
@@ -592,7 +594,7 @@ export function updateRetryState(
   return {
     ...currentState,
     attemptCount,
-    lastError: error.message || error.toString(),
+    lastError: error instanceof Error ? error.message : String(error),
     failureType,
     nextRetryDelay: canRetry ? calculateRetryDelay(attemptCount) : undefined,
     isRetrying: false

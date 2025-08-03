@@ -10,13 +10,8 @@ const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 const cacheWeakMap = new WeakMap()
 const cacheKey = { key: 'stats-cache' }
 
-interface PayloadSubmissionDocument extends PayloadSubmissionData {
-  id: string
-  title: string
-  createdAt: string
-  updatedAt: string
-  adminNotes?: string
-}
+// Use the generated Payload types directly instead of custom interface
+import type { MediaContentSubmission } from '@/payload-types'
 
 export async function GET(req: NextRequest) {
   try {
@@ -114,7 +109,7 @@ export async function GET(req: NextRequest) {
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
 
     // Process each submission for statistics
-    submissions.docs.forEach((submission: PayloadSubmissionDocument) => {
+    submissions.docs.forEach((submission: MediaContentSubmission) => {
       const submittedDate = new Date(submission.submittedAt)
 
       // Form type counts
@@ -256,9 +251,9 @@ export async function GET(req: NextRequest) {
     })
 
     // Prepare submissions data for table
-    const submissionsData = submissions.docs.map((submission: PayloadSubmissionDocument) => ({
-      id: submission.id,
-      title: submission.title,
+    const submissionsData = submissions.docs.map((submission: MediaContentSubmission) => ({
+      id: submission.id.toString(),  // Convert number to string for frontend
+      title: submission.title || 'Untitled',  // Handle nullable title
       formType: submission.formType,
       submissionStatus: submission.submissionStatus,
       priority: submission.priority,

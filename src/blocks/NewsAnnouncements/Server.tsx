@@ -6,7 +6,7 @@ import { Suspense } from 'react'
 type NewsAnnouncementsServerProps = {
   title?: string
   description?: string
-  posts?: any[] // From block config
+  posts?: Array<{ relationTo: string; value: number | string }> // Payload relation format
   showFeatured?: boolean
   maxPosts?: number
   locale: Locale
@@ -21,7 +21,7 @@ async function NewsAnnouncementsContent({
   locale,
 }: NewsAnnouncementsServerProps) {
   // Use configured posts if available, otherwise fetch latest posts
-  let postsToDisplay = configPosts
+  let postsToDisplay: any = configPosts
 
   if (!configPosts || configPosts.length === 0) {
     // Fetch latest posts using cached query

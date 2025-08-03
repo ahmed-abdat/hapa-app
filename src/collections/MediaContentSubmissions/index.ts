@@ -29,7 +29,7 @@ export const MediaContentSubmissions: CollectionConfig = {
       fr: 'Gérer les signalements et plaintes de contenu médiatique soumis via les formulaires du site',
       ar: 'إدارة التبليغات والشكاوى الخاصة بالمحتوى الإعلامي المرسلة عبر نماذج الموقع',
     },
-    preview: (doc: any) => {
+    preview: (doc: Record<string, any>) => {
       const mediaType = doc.mediaType || doc.contentInfo?.mediaType || 'Unknown'
       const channel = doc.specificChannel || doc.contentInfo?.specificChannel || 'N/A' 
       const program = doc.programName || doc.contentInfo?.programName || 'Untitled'

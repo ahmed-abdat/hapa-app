@@ -39,8 +39,8 @@ export const getCachedPosts = unstable_cache(
     try {
       const payload = await getPayloadClient()
       
-      // Build optimized where clause
-      const whereClause: any = {
+      // Build optimized where clause - Payload where clause structure
+      const whereClause: Record<string, any> = {
         _status: { equals: 'published' }
       }
       

@@ -25,8 +25,8 @@ export const getCachedPosts = cache(
     try {
       const payload = await getPayload({ config: configPromise })
 
-      // Build where clause
-      const whereClause: any = {
+      // Build where clause - Payload where clause structure
+      const whereClause: Record<string, any> = {
         _status: { equals: 'published' }
       }
 

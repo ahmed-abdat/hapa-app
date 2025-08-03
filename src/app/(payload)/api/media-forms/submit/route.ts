@@ -47,7 +47,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
     body = await request.json()
 
     // Log the incoming request body for debugging
-    logger.log('🔍 API received body:', JSON.stringify(body, null, 2))
+    logger.log('🔍 API received body', { metadata: body })
 
     // Validate the request has required fields
     if (!body || !isValidFormType(body.formType) || !body.submittedAt || !isValidLocale(body.locale)) {

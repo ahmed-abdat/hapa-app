@@ -187,7 +187,7 @@ export const logger = {
       })
     },
     
-    validation: (formType: string, isValid: boolean, errors?: any, context?: LogContext) => {
+    validation: (formType: string, isValid: boolean, errors?: Record<string, any>, context?: LogContext) => {
       if (isValid) {
         logger.debug(`✅ Form validation passed: ${formType}`, {
           component: 'Form',
@@ -332,7 +332,7 @@ export const logger = {
   },
 
   // Legacy compatibility methods
-  log: (message: string, data?: any) => {
+  log: (message: string, data?: Record<string, any>) => {
     logger.debug(message, { metadata: data })
   },
 
@@ -340,11 +340,11 @@ export const logger = {
     logger.info(message, { metadata: { id } })
   },
 
-  formSubmission: (formType: string, data?: any) => {
+  formSubmission: (formType: string, data?: Record<string, any>) => {
     logger.form.submission(formType, { metadata: data })
   },
 
-  apiResponse: (status: number, data?: any) => {
+  apiResponse: (status: number, data?: Record<string, any>) => {
     const path = 'unknown'
     logger.api.response(status, path, { metadata: data })
   },
