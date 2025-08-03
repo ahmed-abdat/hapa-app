@@ -164,7 +164,7 @@ export function FormSubmissionProgress({
             )}>
               <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
               <p className="text-sm text-green-700">
-                <bdi>Votre soumission a été enregistrée avec succès.</bdi>
+                <bdi>{t('submissionSuccessfullyRecorded')}</bdi>
               </p>
             </div>
           </div>
@@ -174,8 +174,8 @@ export function FormSubmissionProgress({
         {stage === 'error' && uploadStats && uploadStats.failed > 0 && (
           <div className="text-xs text-gray-500 text-center">
             <bdi>
-              Fichiers réussis: {uploadStats.completed}, 
-              Échecs: {uploadStats.failed}
+              {t('filesSuccessful')}: {uploadStats.completed}, 
+              {t('failures')}: {uploadStats.failed}
             </bdi>
           </div>
         )}

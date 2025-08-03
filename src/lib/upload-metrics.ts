@@ -91,7 +91,7 @@ class UploadMetricsCollector {
       fileSize,
       duration,
       error,
-      errorType: errorType as any,
+      errorType: errorType as 'network' | 'validation' | 'server' | 'security' | 'unknown',
       sessionId: this.sessionId
     }
 

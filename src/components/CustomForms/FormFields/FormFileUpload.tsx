@@ -87,6 +87,7 @@ export function FormFileUpload({
   const [files, setFiles] = useState<SelectedFile[]>([])
   const [isDragOver, setIsDragOver] = useState(false)
   const [compressionEnabled, setCompressionEnabled] = useState(enableCompression)
+  const [formOnChange, setFormOnChange] = useState<((value: any) => void) | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   
   const {
@@ -486,6 +487,7 @@ export function FormFileUpload({
   // Update form field when files change (store File objects, not URLs)
   const updateFormValue = React.useCallback(() => {
     const validFiles = files.filter(f => !f.error).map(f => f.file)
+    const newValue = multiple ? validFiles : (validFiles[0] || null)
     
     logger.log(`🔍 FormFileUpload - Updating form value for field "${name}":`, {
       component: 'FormFileUpload',
@@ -496,16 +498,25 @@ export function FormFileUpload({
         fileNames: validFiles.map(f => f.name),
         fileSizes: validFiles.map(f => f.size),
         multiple,
-        valueBeingSet: multiple ? validFiles : (validFiles[0] || null)
+        valueBeingSet: newValue,
+        hasFormOnChange: typeof formOnChange === 'function',
+        usingSetValue: !formOnChange
       }
     })
     
-    if (multiple) {
-      setValue(name, validFiles)
+    // Use Controller's onChange if available, fallback to setValue
+    if (formOnChange) {
+      formOnChange(newValue)
+      logger.log(`✅ Called formOnChange for "${name}" with:`, { newValue })
     } else {
-      setValue(name, validFiles[0] || null)
+      if (multiple) {
+        setValue(name, validFiles)
+      } else {
+        setValue(name, validFiles[0] || null)
+      }
+      logger.log(`✅ Called setValue for "${name}" with:`, { newValue })
     }
-  }, [files, multiple, name, setValue])
+  }, [files, multiple, name, setValue, formOnChange])
 
   // Update form value when files change
   React.useEffect(() => {
@@ -570,7 +581,26 @@ export function FormFileUpload({
       <Controller
         name={name}
         control={control}
-        render={({ field }) => (
+        render={({ field: { onChange, value, ...fieldProps } }) => {
+          // Store the onChange function for use in updateFormValue
+          React.useEffect(() => {
+            setFormOnChange(() => onChange)
+          }, [onChange])
+          
+          // Debug current field value
+          logger.log(`🔍 FormFileUpload Controller render - Field "${name}":`, {
+            component: 'FormFileUpload',
+            metadata: {
+              fieldName: name,
+              currentValue: value,
+              valueType: typeof value,
+              valueLength: Array.isArray(value) ? value.length : 'not array',
+              filesState: files.length,
+              hasOnChange: typeof onChange === 'function'
+            }
+          })
+          
+          return (
             <div className="space-y-3">
               {/* Upload Area */}
               <div
@@ -750,7 +780,8 @@ export function FormFileUpload({
                 </div>
               )}
             </div>
-        )}
+          )
+        }}
       />
 
       {error && (
