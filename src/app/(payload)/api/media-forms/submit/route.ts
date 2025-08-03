@@ -218,12 +218,10 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
     )
 
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      const errorId = logger.api.error('Media form submission failed', error as Error, {
-        component: 'MediaFormsAPI',
-        formType: getStringValue(body?.formType),
-      })
-    }
+    const errorId = logger.api.error('Media form submission failed', error as Error, {
+      component: 'MediaFormsAPI',
+      formType: getStringValue(body?.formType),
+    })
     
     return NextResponse.json(
       {

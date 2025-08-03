@@ -4,9 +4,11 @@ import configPromise from '@payload-config'
 import type { PayloadSubmissionData } from '@/types/media-forms'
 import { logger } from '@/utilities/logger'
 
-// Simple in-memory cache for stats (5 minute TTL)
-let statsCache: { data: any; timestamp: number } | null = null
 const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+
+// Simple cache using WeakMap to avoid memory leaks in serverless environment
+const cacheWeakMap = new WeakMap()
+const cacheKey = { key: 'stats-cache' }
 
 interface PayloadSubmissionDocument extends PayloadSubmissionData {
   id: string
@@ -19,8 +21,9 @@ interface PayloadSubmissionDocument extends PayloadSubmissionData {
 export async function GET(req: NextRequest) {
   try {
     // Check cache first
-    if (statsCache && Date.now() - statsCache.timestamp < CACHE_TTL) {
-      return NextResponse.json(statsCache.data)
+    const cachedData = cacheWeakMap.get(cacheKey)
+    if (cachedData && Date.now() - cachedData.timestamp < CACHE_TTL) {
+      return NextResponse.json(cachedData.data)
     }
 
     // Get Payload instance
@@ -111,7 +114,7 @@ export async function GET(req: NextRequest) {
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
 
     // Process each submission for statistics
-    submissions.docs.forEach((submission: any) => {
+    submissions.docs.forEach((submission: PayloadSubmissionDocument) => {
       const submittedDate = new Date(submission.submittedAt)
 
       // Form type counts
@@ -253,7 +256,7 @@ export async function GET(req: NextRequest) {
     })
 
     // Prepare submissions data for table
-    const submissionsData = submissions.docs.map((submission: any) => ({
+    const submissionsData = submissions.docs.map((submission: PayloadSubmissionDocument) => ({
       id: submission.id,
       title: submission.title,
       formType: submission.formType,
@@ -275,10 +278,10 @@ export async function GET(req: NextRequest) {
     }
 
     // Cache the response
-    statsCache = {
+    cacheWeakMap.set(cacheKey, {
       data: response,
       timestamp: Date.now(),
-    }
+    })
 
     return NextResponse.json(response)
   } catch (error) {
