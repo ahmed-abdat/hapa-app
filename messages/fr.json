@@ -447,6 +447,8 @@
   "fileSizeReduced": "Taille du fichier réduite de {percent}%",
   
   "retry": "Réessayer",
+  "filesUploaded": "fichiers téléchargés",
+  "uploadFailures": "échecs",
   "retrying": "Nouvelle tentative",
   "retryAttempt": "Réessayer {current}/{max}",
   "retrySuccess": "Réessai réussi",

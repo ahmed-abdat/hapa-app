@@ -126,6 +126,20 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
 
 
   const onSubmit = async (data: MediaContentReportFormData) => {
+    // Enhanced debugging for file upload issue
+    logger.log('🔍 Form submission data analysis:', {
+      screenshotFilesType: typeof data.screenshotFiles,
+      screenshotFilesValue: data.screenshotFiles,
+      screenshotFilesLength: Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0,
+      attachmentFilesType: typeof data.attachmentFiles,
+      attachmentFilesValue: data.attachmentFiles,
+      attachmentFilesLength: Array.isArray(data.attachmentFiles) ? data.attachmentFiles.length : 0,
+      hasScreenshots: Array.isArray(data.screenshotFiles) && data.screenshotFiles.length > 0,
+      hasAttachments: Array.isArray(data.attachmentFiles) && data.attachmentFiles.length > 0,
+      allFormKeys: Object.keys(data),
+      allFormData: data
+    })
+
     // Log form submission data for debugging
     logger.form.submission('MediaContentReport', {
       component: 'MediaContentReportForm',

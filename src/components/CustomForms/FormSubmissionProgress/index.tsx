@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import { Progress } from '@/components/ui/progress'
 import { Upload, CheckCircle, AlertCircle, Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -45,6 +46,7 @@ export function FormSubmissionProgress({
   errorMessage,
   locale = 'fr'
 }: FormSubmissionProgressProps) {
+  const t = useTranslations()
   const isRTL = locale === 'ar'
   const messages = stageMessages[locale]
 
@@ -106,8 +108,8 @@ export function FormSubmissionProgress({
             {uploadStats && stage === 'uploading' && (
               <p className="text-sm text-gray-600 mt-1">
                 <bdi>
-                  {uploadStats.completed}/{uploadStats.total} fichiers téléchargés
-                  {uploadStats.failed > 0 && ` (${uploadStats.failed} échecs)`}
+                  {uploadStats.completed}/{uploadStats.total} {t('filesUploaded')}
+                  {uploadStats.failed > 0 && ` (${uploadStats.failed} ${t('uploadFailures')})`}
                 </bdi>
               </p>
             )}

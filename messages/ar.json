@@ -441,6 +441,8 @@
   "compressionRatio": "نسبة الضغط",
   "compressionError": "خطأ في الضغط",
   "compressionUnavailable": "الضغط غير متاح لهذا النوع من الملفات",
+  "filesUploaded": "ملفات تم رفعها",
+  "uploadFailures": "فشل",
   "compressionInProgress": "جاري الضغط...",
   "compressionOptimizing": "تحسين الجودة...",
   "compressionBestQuality": "تم الحصول على أفضل جودة",

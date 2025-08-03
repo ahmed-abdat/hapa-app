@@ -138,7 +138,7 @@ function getPerformanceGrade(avgTime: number): 'excellent' | 'good' | 'fair' | '
 /**
  * Generate recommendations based on metrics
  */
-function generateRecommendations(metrics: any, successRate: number): string[] {
+function generateRecommendations(metrics: import('@/lib/upload-metrics').UploadMetrics, successRate: number): string[] {
   const recommendations: string[] = []
 
   if (successRate < 90) {

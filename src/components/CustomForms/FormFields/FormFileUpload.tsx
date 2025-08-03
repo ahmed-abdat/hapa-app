@@ -487,6 +487,19 @@ export function FormFileUpload({
   const updateFormValue = React.useCallback(() => {
     const validFiles = files.filter(f => !f.error).map(f => f.file)
     
+    logger.log(`🔍 FormFileUpload - Updating form value for field "${name}":`, {
+      component: 'FormFileUpload',
+      metadata: {
+        fieldName: name,
+        totalFiles: files.length,
+        validFiles: validFiles.length,
+        fileNames: validFiles.map(f => f.name),
+        fileSizes: validFiles.map(f => f.size),
+        multiple,
+        valueBeingSet: multiple ? validFiles : (validFiles[0] || null)
+      }
+    })
+    
     if (multiple) {
       setValue(name, validFiles)
     } else {
