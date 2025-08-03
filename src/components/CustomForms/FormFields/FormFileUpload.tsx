@@ -87,7 +87,8 @@ export function FormFileUpload({
   const [files, setFiles] = useState<SelectedFile[]>([])
   const [isDragOver, setIsDragOver] = useState(false)
   const [compressionEnabled, setCompressionEnabled] = useState(enableCompression)
-  const [formOnChange, setFormOnChange] = useState<((value: any) => void) | null>(null)
+  // Ref to store the current onChange function from Controller
+  const formOnChangeRef = React.useRef<((value: any) => void) | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   
   const {
@@ -499,14 +500,14 @@ export function FormFileUpload({
         fileSizes: validFiles.map(f => f.size),
         multiple,
         valueBeingSet: newValue,
-        hasFormOnChange: typeof formOnChange === 'function',
-        usingSetValue: !formOnChange
+        hasFormOnChange: typeof formOnChangeRef.current === 'function',
+        usingSetValue: !formOnChangeRef.current
       }
     })
     
     // Use Controller's onChange if available, fallback to setValue
-    if (formOnChange) {
-      formOnChange(newValue)
+    if (formOnChangeRef.current) {
+      formOnChangeRef.current(newValue)
       logger.log(`✅ Called formOnChange for "${name}" with:`, { newValue })
     } else {
       if (multiple) {
@@ -516,7 +517,7 @@ export function FormFileUpload({
       }
       logger.log(`✅ Called setValue for "${name}" with:`, { newValue })
     }
-  }, [files, multiple, name, setValue, formOnChange])
+  }, [files, multiple, name, setValue])
 
   // Update form value when files change
   React.useEffect(() => {
@@ -582,10 +583,8 @@ export function FormFileUpload({
         name={name}
         control={control}
         render={({ field: { onChange, value, ...fieldProps } }) => {
-          // Store the onChange function for use in updateFormValue
-          React.useEffect(() => {
-            setFormOnChange(() => onChange)
-          }, [onChange])
+          // Store the onChange function in ref to avoid Rules of Hooks violation
+          formOnChangeRef.current = onChange
           
           // Debug current field value
           logger.log(`🔍 FormFileUpload Controller render - Field "${name}":`, {
