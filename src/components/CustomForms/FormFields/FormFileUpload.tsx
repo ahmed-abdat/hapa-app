@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react'
 import { useFormContext, Controller } from 'react-hook-form'
 import { useLocale, useTranslations } from 'next-intl'
+import Image from 'next/image'
 import { Upload, X, FileImage, FileText, FileVideo, File, Settings, Check, AlertCircle, Zap, RotateCcw, Wifi, WifiOff } from 'lucide-react'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -213,9 +214,11 @@ export function FormFileUpload({
       if (thumbnailUrl && !thumbnailError) {
         return (
           <div className="h-12 w-12 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
-            <img
+            <Image
               src={thumbnailUrl}
               alt={`${t('loadingThumbnail')} ${file.name}`}
+              width={48}
+              height={48}
               className="h-full w-full object-cover"
               loading="lazy"
               onError={() => {

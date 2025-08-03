@@ -138,13 +138,17 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
         } as MediaContentComplaintSubmission
       }
     } catch (error) {
-      // Debug: Log the validation error details
-      console.error('❌ Validation error caught:', error)
+      // Debug: Log the validation error details (development only)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('❌ Validation error caught:', error)
+      }
       
       // Handle Zod validation errors
       if (error instanceof Error && 'issues' in error) {
         const zodError = error as any
-        console.error('🐛 Zod validation issues:', JSON.stringify(zodError.issues, null, 2))
+        if (process.env.NODE_ENV === 'development') {
+          console.error('🐛 Zod validation issues:', JSON.stringify(zodError.issues, null, 2))
+        }
         
         const firstIssue = zodError.issues[0]
         return NextResponse.json(
@@ -157,8 +161,10 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
         )
       }
       
-      // Log generic errors
-      console.error('❌ Generic validation error:', error)
+      // Log generic errors (development only)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('❌ Generic validation error:', error)
+      }
       
       return NextResponse.json(
         {
@@ -242,7 +248,9 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
     )
 
   } catch (error) {
-    console.error('Media form submission error:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Media form submission error:', error)
+    }
     
     return NextResponse.json(
       {

@@ -80,8 +80,10 @@ export const MediaContentSubmissions: CollectionConfig = {
                   }
                 }
               } catch (error) {
-                console.warn('Invalid date in submission:', data.submittedAt, error)
                 // Use current date as ultimate fallback
+                if (process.env.NODE_ENV === 'development') {
+                  console.warn('Invalid date in submission:', data.submittedAt, error)
+                }
                 dateDisplay = new Date().toLocaleDateString('fr-FR', {
                   year: 'numeric',
                   month: '2-digit',
@@ -600,16 +602,7 @@ export const MediaContentSubmissions: CollectionConfig = {
       admin: {
         readOnly: true,
         components: {
-          RowLabel: ({ data }: { data?: { reason?: string } }) => {
-            if (data?.reason) {
-              // Truncate long reasons for better display
-              const truncatedReason = data.reason.length > 50 
-                ? `${data.reason.substring(0, 50)}...` 
-                : data.reason
-              return truncatedReason
-            }
-            return 'Motif sans titre'
-          },
+          RowLabel: '/src/components/admin/ReasonRowLabel/index',
         },
       },
     },

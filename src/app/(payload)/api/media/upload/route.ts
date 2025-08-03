@@ -118,7 +118,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       )
     }
 
-    logger.fileOperation('📤 Processing upload through Payload:', file.name, `Size: ${(file.size / 1024).toFixed(1)}KB`)
+    logger.fileOperation(`📤 Processing upload through Payload: ${file.name} (Size: ${(file.size / 1024).toFixed(1)}KB)`)
 
     // Validate file type
     if (!ALLOWED_MIME_TYPES.includes(file.type)) {
@@ -159,8 +159,32 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       collection: 'media',
       data: {
         alt: sanitizedFilename,
-        // Add metadata for tracking
-        description: `Uploaded via media forms on ${new Date().toISOString()}`,
+        // Add metadata for tracking via caption
+        caption: {
+          root: {
+            type: 'root',
+            children: [
+              {
+                type: 'paragraph',
+                children: [
+                  {
+                    text: `Uploaded via media forms on ${new Date().toISOString()}`,
+                    type: 'text',
+                    version: 1,
+                  },
+                ],
+                direction: 'ltr',
+                format: '',
+                indent: 0,
+                version: 1,
+              },
+            ],
+            direction: 'ltr',
+            format: '',
+            indent: 0,
+            version: 1,
+          },
+        },
       },
       file: {
         data: Buffer.from(await file.arrayBuffer()),
@@ -171,7 +195,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     })
 
     const uploadTime = Date.now() - startTime
-    logger.success('✅ File uploaded successfully through Payload:', {
+    logger.success('✅ File uploaded successfully through Payload:', `ID: ${result.id}`)
+    logger.log('Upload details:', {
       id: result.id,
       filename: result.filename,
       size: file.size,

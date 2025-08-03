@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import type { PayloadSubmissionData } from '@/types/media-forms'
+import { logger } from '@/utilities/logger'
 
 interface PayloadSubmissionDocument extends PayloadSubmissionData {
   id: string
@@ -251,7 +252,7 @@ export async function GET(req: NextRequest) {
       submissions: submissionsData,
     })
   } catch (error) {
-    console.error('Error fetching media submissions stats:', error)
+    logger.error('Error fetching media submissions stats:', error)
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
       { status: 500 }

@@ -150,20 +150,20 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
 
 
   const onSubmit = async (data: MediaContentComplaintFormData) => {
-    // Debug: Log the raw form data received from React Hook Form
-    console.log('🔍 onSubmit received data:', data)
-    console.log('🔍 screenshotFiles type:', typeof data.screenshotFiles, 'value:', data.screenshotFiles)
-    console.log('🔍 attachmentFiles type:', typeof data.attachmentFiles, 'value:', data.attachmentFiles)
+    // Development logging for form data analysis
+    logger.log('onSubmit received data:', data)
+    logger.log('screenshotFiles type:', typeof data.screenshotFiles)
+    logger.log('attachmentFiles type:', typeof data.attachmentFiles)
     if (Array.isArray(data.screenshotFiles)) {
-      console.log('🔍 screenshotFiles array length:', data.screenshotFiles.length)
+      logger.log('screenshotFiles array length:', data.screenshotFiles.length)
       data.screenshotFiles.forEach((file, index) => {
-        console.log(`🔍 screenshotFiles[${index}]:`, file, 'instanceof File:', file instanceof File)
+        logger.log(`screenshotFiles[${index}]:`, { name: file instanceof File ? file.name : 'not a file', instanceof: file instanceof File })
       })
     }
     if (Array.isArray(data.attachmentFiles)) {
-      console.log('🔍 attachmentFiles array length:', data.attachmentFiles.length)
+      logger.log('attachmentFiles array length:', data.attachmentFiles.length)
       data.attachmentFiles.forEach((file, index) => {
-        console.log(`🔍 attachmentFiles[${index}]:`, file, 'instanceof File:', file instanceof File)
+        logger.log(`attachmentFiles[${index}]:`, { name: file instanceof File ? file.name : 'not a file', instanceof: file instanceof File })
       })
     }
     
@@ -221,10 +221,10 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
 
   return (
     <div className={className}>
-      {/* Debug: Show validation errors */}
-      {Object.keys(formState.errors).length > 0 && (
+      {/* Development: Show validation errors in development mode only */}
+      {process.env.NODE_ENV === 'development' && Object.keys(formState.errors).length > 0 && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <h4 className="text-red-800 font-semibold mb-2">🐛 Validation Errors (Debug):</h4>
+          <h4 className="text-red-800 font-semibold mb-2">Validation Errors (Development):</h4>
           <div className="text-sm text-red-700 space-y-1">
             {Object.entries(formState.errors).map(([field, error]) => (
               <div key={field} className="border-l-2 border-red-300 pl-2">

@@ -166,7 +166,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
 
     // Server-side data validation and sanitization
     // Preserve the original form type from form submission
-    const formTypeValue = formFields.formType === 'report' ? 'report' : 'complaint'
+    const formTypeValue: 'report' | 'complaint' = formFields.formType === 'report' ? 'report' : 'complaint'
     
     // Log to debug form type preservation
     logger.log('🔍 Form type preservation:', {

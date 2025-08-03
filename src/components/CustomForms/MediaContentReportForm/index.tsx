@@ -122,21 +122,23 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
 
 
   const onSubmit = async (data: MediaContentReportFormData) => {
-    // Debug: Log the raw form data received from React Hook Form
-    console.log('🔍 onSubmit received data:', data)
-    console.log('🔍 screenshotFiles type:', typeof data.screenshotFiles, 'value:', data.screenshotFiles)
-    console.log('🔍 attachmentFiles type:', typeof data.attachmentFiles, 'value:', data.attachmentFiles)
-    if (Array.isArray(data.screenshotFiles)) {
-      console.log('🔍 screenshotFiles array length:', data.screenshotFiles.length)
-      data.screenshotFiles.forEach((file, index) => {
-        console.log(`🔍 screenshotFiles[${index}]:`, file, 'instanceof File:', file instanceof File)
-      })
-    }
-    if (Array.isArray(data.attachmentFiles)) {
-      console.log('🔍 attachmentFiles array length:', data.attachmentFiles.length)
-      data.attachmentFiles.forEach((file, index) => {
-        console.log(`🔍 attachmentFiles[${index}]:`, file, 'instanceof File:', file instanceof File)
-      })
+    // Debug: Log the raw form data received from React Hook Form (development only)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 onSubmit received data:', data)
+      console.log('🔍 screenshotFiles type:', typeof data.screenshotFiles, 'value:', data.screenshotFiles)
+      console.log('🔍 attachmentFiles type:', typeof data.attachmentFiles, 'value:', data.attachmentFiles)
+      if (Array.isArray(data.screenshotFiles)) {
+        console.log('🔍 screenshotFiles array length:', data.screenshotFiles.length)
+        data.screenshotFiles.forEach((file, index) => {
+          console.log(`🔍 screenshotFiles[${index}]:`, file, 'instanceof File:', file instanceof File)
+        })
+      }
+      if (Array.isArray(data.attachmentFiles)) {
+        console.log('🔍 attachmentFiles array length:', data.attachmentFiles.length)
+        data.attachmentFiles.forEach((file, index) => {
+          console.log(`🔍 attachmentFiles[${index}]:`, file, 'instanceof File:', file instanceof File)
+        })
+      }
     }
     
     logger.formSubmission('Report', data)
