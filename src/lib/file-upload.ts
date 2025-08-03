@@ -255,52 +255,70 @@ export async function uploadFiles(
 export function convertToFormData(data: Record<string, any>): FormData {
   const formData = new FormData()
   
-  // Debug logging to understand what's being processed
-  console.log('🔍 convertToFormData - processing data:', Object.keys(data))
-  console.log('🔍 screenshotFiles value:', data.screenshotFiles, 'type:', typeof data.screenshotFiles, 'isArray:', Array.isArray(data.screenshotFiles))
-  console.log('🔍 attachmentFiles value:', data.attachmentFiles, 'type:', typeof data.attachmentFiles, 'isArray:', Array.isArray(data.attachmentFiles))
+  // Development-only logging
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔍 convertToFormData - processing data:', Object.keys(data))
+    console.log('🔍 screenshotFiles value:', data.screenshotFiles, 'type:', typeof data.screenshotFiles, 'isArray:', Array.isArray(data.screenshotFiles))
+    console.log('🔍 attachmentFiles value:', data.attachmentFiles, 'type:', typeof data.attachmentFiles, 'isArray:', Array.isArray(data.attachmentFiles))
+  }
 
   for (const [key, value] of Object.entries(data)) {
     if (value === undefined || value === null) {
-      console.log(`🔍 Skipping ${key}: undefined/null`)
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`🔍 Skipping ${key}: undefined/null`)
+      }
       continue
     }
 
     if (Array.isArray(value)) {
       // Handle arrays (like reasons, attachmentTypes, files)
-      console.log(`🔍 Processing array ${key} with ${value.length} items:`, value)
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`🔍 Processing array ${key} with ${value.length} items:`, value)
+      }
       
       if (value.length === 0) {
         // Skip empty arrays
-        console.log(`🔍 Skipping empty array ${key}`)
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`🔍 Skipping empty array ${key}`)
+        }
         continue
       }
       
       value.forEach((item, index) => {
         if (item instanceof File) {
-          console.log(`🔍 Appending File ${index} to ${key}: ${item.name} (${item.size} bytes)`)
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`🔍 Appending File ${index} to ${key}: ${item.name} (${item.size} bytes)`)
+          }
           formData.append(key, item)
         } else {
-          console.log(`🔍 Appending string ${index} to ${key}: ${item}`)
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`🔍 Appending string ${index} to ${key}: ${item}`)
+          }
           formData.append(key, item.toString())
         }
       })
     } else if (value instanceof File) {
-      console.log(`🔍 Appending single File to ${key}: ${value.name} (${value.size} bytes)`)
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`🔍 Appending single File to ${key}: ${value.name} (${value.size} bytes)`)
+      }
       formData.append(key, value)
     } else {
-      console.log(`🔍 Appending string to ${key}: ${value}`)
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`🔍 Appending string to ${key}: ${value}`)
+      }
       formData.append(key, value.toString())
     }
   }
 
-  // Debug: Log all FormData entries
-  console.log('🔍 Final FormData entries:')
-  for (const [key, value] of formData.entries()) {
-    if (value instanceof File) {
-      console.log(`  ${key}: File(${value.name}, ${value.size} bytes)`)
-    } else {
-      console.log(`  ${key}: ${value}`)
+  // Development-only: Log all FormData entries
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔍 Final FormData entries:')
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(`  ${key}: File(${value.name}, ${value.size} bytes)`)
+      } else {
+        console.log(`  ${key}: ${value}`)
+      }
     }
   }
 

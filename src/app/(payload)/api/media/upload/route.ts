@@ -34,10 +34,28 @@ const RATE_LIMIT_WINDOW = 60 * 60 * 1000 // 1 hour
 const MAX_UPLOADS_PER_HOUR = 10
 
 /**
- * Simple rate limiting check
+ * Cleanup expired rate limit entries to prevent memory leak
+ */
+function cleanupExpiredEntries(): void {
+  const now = Date.now()
+  for (const [ip, data] of uploadCounts.entries()) {
+    if (now > data.resetTime) {
+      uploadCounts.delete(ip)
+    }
+  }
+}
+
+/**
+ * Simple rate limiting check with memory leak prevention
  */
 function checkRateLimit(ip: string): boolean {
   const now = Date.now()
+  
+  // Cleanup expired entries periodically (every 100 calls)
+  if (Math.random() < 0.01) {
+    cleanupExpiredEntries()
+  }
+  
   const userLimits = uploadCounts.get(ip)
   
   if (!userLimits || now > userLimits.resetTime) {

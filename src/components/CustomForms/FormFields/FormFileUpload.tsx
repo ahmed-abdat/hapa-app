@@ -41,6 +41,7 @@ interface FormFileUploadProps extends Omit<FormFieldProps, 'placeholder'> {
 interface SelectedFile {
   file: File
   originalFile?: File // Keep reference to original file
+  fileId: string // Unique identifier to prevent race conditions
   previewUrl: string
   thumbnailUrl?: string
   thumbnailLoading?: boolean
@@ -59,6 +60,13 @@ interface SelectedFile {
   canRetry?: boolean
   retryAttempts?: number
   nextRetryDelay?: number
+}
+
+/**
+ * Generate unique file ID to prevent race conditions
+ */
+function generateFileId(file: File): string {
+  return `${file.name}-${file.size}-${file.lastModified}-${Date.now()}`
 }
 
 export function FormFileUpload({
@@ -106,7 +114,7 @@ export function FormFileUpload({
     
     // Update file state to show retrying
     setFiles(prev => prev.map(f => 
-      f.originalFile === fileData.originalFile 
+      f.fileId === fileData.fileId 
         ? { 
             ...f, 
             retrying: true, 
@@ -122,7 +130,7 @@ export function FormFileUpload({
       if (result.success) {
         // Retry succeeded
         setFiles(prev => prev.map(f => 
-          f.originalFile === fileData.originalFile 
+          f.fileId === fileData.fileId 
             ? { 
                 ...f, 
                 retrying: false,
@@ -136,7 +144,7 @@ export function FormFileUpload({
       } else {
         // Retry failed
         setFiles(prev => prev.map(f => 
-          f.originalFile === fileData.originalFile 
+          f.fileId === fileData.fileId 
             ? { 
                 ...f, 
                 retrying: false,
@@ -150,7 +158,7 @@ export function FormFileUpload({
     } catch (error) {
       // Handle retry error
       setFiles(prev => prev.map(f => 
-        f.originalFile === fileData.originalFile 
+        f.fileId === fileData.fileId 
           ? { 
               ...f, 
               retrying: false,
@@ -298,9 +306,11 @@ export function FormFileUpload({
       const originalFile = selectedFiles[i]
       
       // Show loading state for this file
+      const fileId = generateFileId(originalFile)
       const tempFileData: SelectedFile = {
         file: originalFile,
         originalFile,
+        fileId,
         previewUrl: '',
         thumbnailLoading: isImageFile(originalFile),
         uploading: true,
@@ -319,6 +329,7 @@ export function FormFileUpload({
         const errorFileData: SelectedFile = {
           file: originalFile,
           originalFile,
+          fileId,
           previewUrl: '',
           error: validationResult.error,
           uploading: false,
@@ -341,7 +352,7 @@ export function FormFileUpload({
         
         // Show compression state
         setFiles(prevFiles => prevFiles.map(f => 
-          f.file === originalFile 
+          f.fileId === fileId 
             ? { ...f, compressing: true, uploadProgress: 25 }  
             : f
         ))
@@ -355,7 +366,7 @@ export function FormFileUpload({
             
             // Update progress during compression
             setFiles(prevFiles => prevFiles.map(f => 
-              f.file === originalFile 
+              f.fileId === fileId 
                 ? { ...f, uploadProgress: 75 }  
                 : f
             ))
@@ -369,6 +380,7 @@ export function FormFileUpload({
       let finalFileData: SelectedFile = {
         file: processedFile,
         originalFile,
+        fileId,
         previewUrl: URL.createObjectURL(processedFile),
         uploading: false,
         thumbnailLoading: false,
@@ -384,7 +396,7 @@ export function FormFileUpload({
         // Generate thumbnail asynchronously without blocking the UI
         generateThumbnail(processedFile, 100, 100, 0.8).then(thumbnailResult => {
           setFiles(prevFiles => prevFiles.map(f => {
-            if (f.originalFile === originalFile) {
+            if (f.fileId === fileId) {
               return {
                 ...f,
                 thumbnailLoading: false,
@@ -396,7 +408,7 @@ export function FormFileUpload({
           }))
         }).catch(() => {
           setFiles(prevFiles => prevFiles.map(f => {
-            if (f.originalFile === originalFile) {
+            if (f.fileId === fileId) {
               return {
                 ...f,
                 thumbnailLoading: false,
@@ -448,7 +460,7 @@ export function FormFileUpload({
   }
 
   const removeFile = (fileToRemove: SelectedFile) => {
-    setFiles(prev => prev.filter(f => f.originalFile !== fileToRemove.originalFile))
+    setFiles(prev => prev.filter(f => f.fileId !== fileToRemove.fileId))
     // Revoke object URLs to prevent memory leaks
     if (fileToRemove.previewUrl.startsWith('blob:')) {
       URL.revokeObjectURL(fileToRemove.previewUrl)
