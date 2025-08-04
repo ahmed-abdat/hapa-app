@@ -27,6 +27,7 @@ import {
 import { type Locale } from '@/utilities/locale'
 import { convertToFormData } from '@/lib/file-upload'
 import { logger } from '@/utilities/logger'
+import { FormSubmissionProgress } from '@/components/CustomForms/FormSubmissionProgress'
 
 interface MediaContentReportFormProps {
   className?: string
@@ -36,6 +37,9 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [submissionId, setSubmissionId] = useState<string>()
+  const [submissionProgress, setSubmissionProgress] = useState(0)
+  const [submissionStage, setSubmissionStage] = useState<'preparing' | 'uploading' | 'validating' | 'saving' | 'complete' | 'error'>('preparing')
+  const [submissionError, setSubmissionError] = useState<string>()
   const params = useParams()
   const router = useRouter()
   const locale = (params?.locale as Locale) || 'fr'
@@ -122,6 +126,20 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
 
 
   const onSubmit = async (data: MediaContentReportFormData) => {
+    // Enhanced debugging for file upload issue
+    logger.log('🔍 Form submission data analysis:', {
+      screenshotFilesType: typeof data.screenshotFiles,
+      screenshotFilesValue: data.screenshotFiles,
+      screenshotFilesLength: Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0,
+      attachmentFilesType: typeof data.attachmentFiles,
+      attachmentFilesValue: data.attachmentFiles,
+      attachmentFilesLength: Array.isArray(data.attachmentFiles) ? data.attachmentFiles.length : 0,
+      hasScreenshots: Array.isArray(data.screenshotFiles) && data.screenshotFiles.length > 0,
+      hasAttachments: Array.isArray(data.attachmentFiles) && data.attachmentFiles.length > 0,
+      allFormKeys: Object.keys(data),
+      allFormData: data
+    })
+
     // Log form submission data for debugging
     logger.form.submission('MediaContentReport', {
       component: 'MediaContentReportForm',
@@ -137,9 +155,15 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
     
     logger.formSubmission('Report', data)
     setIsSubmitting(true)
+    setSubmissionStage('preparing')
+    setSubmissionProgress(0)
+    setSubmissionError(undefined)
     
     try {
-      // Prepare submission data with files
+      // Stage 1: Prepare submission data
+      setSubmissionStage('preparing')
+      setSubmissionProgress(10)
+      
       const submissionData = {
         ...data,
         formType: 'report',
@@ -149,50 +173,97 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
 
       logger.log('📦 Converting to FormData...')
       const formData = convertToFormData(submissionData)
+      setSubmissionProgress(20)
+
+      // Stage 2: Upload files and submit
+      setSubmissionStage('uploading')
+      setSubmissionProgress(30)
 
       logger.log('🚀 Submitting form with files...')
       const response = await fetch('/api/media-forms/submit-with-files', {
         method: 'POST',
         body: formData, // No Content-Type header - let browser set it with boundary
       })
+      
+      // Stage 3: Validate response
+      setSubmissionStage('validating')
+      setSubmissionProgress(70)
 
       const result = await response.json()
       logger.apiResponse(response.status, result)
 
       if (result.success) {
+        // Stage 4: Save to database
+        setSubmissionStage('saving')
+        setSubmissionProgress(90)
+        
         logger.success('Form submitted successfully', result.submissionId)
+        
+        // Stage 5: Complete
+        setSubmissionStage('complete')
+        setSubmissionProgress(100)
+        
+        // Small delay to show completion state
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        
         setSubmissionId(result.submissionId || 'success')
         setIsSubmitted(true)
       } else {
-        // Enhanced error handling for file upload failures
+        // Error handling with progress feedback
+        setSubmissionStage('error')
+        setSubmissionProgress(100)
+        
+        let errorMessage = result.message || t('submissionError')
+        
         if (result.details && Array.isArray(result.details)) {
           // File upload specific errors
           logger.error('❌ File upload errors detected:', result.details)
-          const fileErrorMessage = `${result.message}\n\nDétails des erreurs:\n${result.details.join('\n')}`
-          toast.error(fileErrorMessage, {
+          errorMessage = `${result.message}\n\nDétails des erreurs:\n${result.details.join('\n')}`
+          setSubmissionError(errorMessage)
+          
+          toast.error(errorMessage, {
             duration: 10000, // Longer duration for file errors
           })
         } else if (result.uploadStats) {
           // Upload statistics available
           logger.error('❌ Upload statistics:', result.uploadStats)
           const statsMessage = `${result.message}\n\nStatistiques: ${result.uploadStats.successful}/${result.uploadStats.expected} fichiers téléchargés avec succès`
+          setSubmissionError(statsMessage)
+          
           toast.error(statsMessage, {
             duration: 8000,
           })
         } else {
           // Generic error
-          toast.error(result.message || t('submissionError'))
+          setSubmissionError(errorMessage)
+          toast.error(errorMessage)
         }
+        
+        // Keep error state visible for 3 seconds before hiding progress
+        setTimeout(() => {
+          setIsSubmitting(false)
+        }, 3000)
+        
         throw new Error(result.message || 'Submission failed')
       }
     } catch (error) {
       logger.error('❌ Form submission error:', error)
+      
+      setSubmissionStage('error')
+      setSubmissionProgress(100)
+      
+      const errorMessage = error instanceof Error ? error.message : t('submissionError')
+      setSubmissionError(errorMessage)
+      
       // Only show generic error if we haven't already shown a specific one
       if (error instanceof Error && !error.message.includes('File upload failed')) {
         toast.error(t('submissionError'))
       }
-    } finally {
-      setIsSubmitting(false)
+      
+      // Keep error state visible for 3 seconds before hiding progress
+      setTimeout(() => {
+        setIsSubmitting(false)
+      }, 3000)
     }
   }
 
@@ -404,6 +475,15 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
         </div>
 
       </BaseForm>
+
+      {/* Progress Modal */}
+      <FormSubmissionProgress
+        isVisible={isSubmitting}
+        stage={submissionStage}
+        progress={submissionProgress}
+        errorMessage={submissionError}
+        locale={locale}
+      />
     </div>
   )
 }

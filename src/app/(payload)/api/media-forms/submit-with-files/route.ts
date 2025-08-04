@@ -12,6 +12,7 @@ import type {
 import { getTranslations } from 'next-intl/server'
 import { uploadFile } from '@/lib/file-upload'
 import { logger } from '@/utilities/logger'
+import { uploadMetrics } from '@/lib/upload-metrics'
 
 export async function POST(request: NextRequest): Promise<NextResponse<FormSubmissionResponse>> {
   try {
@@ -80,39 +81,132 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
       )
     }
 
-    // Upload files first with validation
-    logger.log('📤 Starting file uploads...')
+    // Upload files in parallel with comprehensive error tracking
+    logger.log('📤 Starting parallel file uploads...', {
+      screenshots: screenshotFiles.length,
+      attachments: attachmentFiles.length,
+      total: screenshotFiles.length + attachmentFiles.length
+    })
+
+    const uploadErrors: string[] = []
     const uploadedScreenshots: string[] = []
     const uploadedAttachments: string[] = []
-    const uploadErrors: string[] = []
 
-    // Upload screenshot files with error tracking
-    for (const file of screenshotFiles) {
-      logger.fileOperation('📷 Uploading screenshot:', file.name)
-      const result = await uploadFile(file)
-      if (result.success && result.url) {
-        uploadedScreenshots.push(result.url)
-        logger.success('📷 Screenshot uploaded:', result.url)
-      } else {
-        const errorMsg = `Screenshot "${file.name}": ${result.error || 'Upload failed'}`
-        uploadErrors.push(errorMsg)
-        logger.error('❌ Screenshot upload failed:', errorMsg)
+    // Create upload promises for parallel processing with metrics tracking
+    const screenshotPromises = screenshotFiles.map(async (file, index) => {
+      logger.fileOperation(`📷 Starting screenshot upload ${index + 1}/${screenshotFiles.length}:`, file.name)
+      uploadMetrics.recordUploadStart(file.name, file.size)
+      const startTime = Date.now()
+      
+      try {
+        const result = await uploadFile(file)
+        const duration = Date.now() - startTime
+        
+        if (result.success && result.url) {
+          uploadMetrics.recordUploadSuccess(file.name, file.size, duration, result.url)
+        } else {
+          uploadMetrics.recordUploadError(file.name, file.size, duration, result.error || 'Upload failed', 'unknown')
+        }
+        
+        return { type: 'screenshot', file, result, index, duration }
+      } catch (error) {
+        const duration = Date.now() - startTime
+        const errorMessage = error instanceof Error ? error.message : 'Upload failed'
+        uploadMetrics.recordUploadError(file.name, file.size, duration, errorMessage, 'network')
+        throw error
       }
-    }
+    })
 
-    // Upload attachment files with error tracking
-    for (const file of attachmentFiles) {
-      logger.fileOperation('📎 Uploading attachment:', file.name)
-      const result = await uploadFile(file)
-      if (result.success && result.url) {
-        uploadedAttachments.push(result.url)
-        logger.success('📎 Attachment uploaded:', result.url)
-      } else {
-        const errorMsg = `Attachment "${file.name}": ${result.error || 'Upload failed'}`
-        uploadErrors.push(errorMsg)
-        logger.error('❌ Attachment upload failed:', errorMsg)
+    const attachmentPromises = attachmentFiles.map(async (file, index) => {
+      logger.fileOperation(`📎 Starting attachment upload ${index + 1}/${attachmentFiles.length}:`, file.name)
+      uploadMetrics.recordUploadStart(file.name, file.size)
+      const startTime = Date.now()
+      
+      try {
+        const result = await uploadFile(file)
+        const duration = Date.now() - startTime
+        
+        if (result.success && result.url) {
+          uploadMetrics.recordUploadSuccess(file.name, file.size, duration, result.url)
+        } else {
+          uploadMetrics.recordUploadError(file.name, file.size, duration, result.error || 'Upload failed', 'unknown')
+        }
+        
+        return { type: 'attachment', file, result, index, duration }
+      } catch (error) {
+        const duration = Date.now() - startTime
+        const errorMessage = error instanceof Error ? error.message : 'Upload failed'
+        uploadMetrics.recordUploadError(file.name, file.size, duration, errorMessage, 'network')
+        throw error
       }
-    }
+    })
+
+    // Execute all uploads in parallel
+    const uploadStartTime = Date.now()
+    const allUploadPromises = [...screenshotPromises, ...attachmentPromises]
+    
+    logger.log(`🚀 Executing ${allUploadPromises.length} uploads in parallel...`)
+    const uploadResults = await Promise.allSettled(allUploadPromises)
+    const uploadDuration = Date.now() - uploadStartTime
+
+    // Process results and collect successes/failures
+    uploadResults.forEach((promiseResult, index) => {
+      if (promiseResult.status === 'fulfilled') {
+        const { type, file, result } = promiseResult.value
+        
+        if (result.success && result.url) {
+          if (type === 'screenshot') {
+            uploadedScreenshots.push(result.url)
+            logger.success(
+              `📷 Screenshot uploaded (${uploadDuration}ms): ${file.name} (${file.size} bytes) -> ${result.url}`
+            )
+          } else {
+            uploadedAttachments.push(result.url)
+            logger.success(
+              `📎 Attachment uploaded (${uploadDuration}ms): ${file.name} (${file.size} bytes) -> ${result.url}`
+            )
+          }
+        } else {
+          const errorMsg = `${type === 'screenshot' ? 'Screenshot' : 'Attachment'} "${file.name}": ${result.error || 'Upload failed'}`
+          uploadErrors.push(errorMsg)
+          logger.error(`❌ ${type} upload failed:`, {
+            filename: file.name,
+            error: result.error,
+            duration: uploadDuration
+          })
+        }
+      } else {
+        // Promise rejected (network error, etc.)
+        const errorMsg = `Upload promise rejected: ${promiseResult.reason?.message || 'Unknown error'}`
+        uploadErrors.push(errorMsg)
+        logger.error('❌ Upload promise rejection:', {
+          error: promiseResult.reason?.message || 'Unknown error',
+          index,
+          duration: uploadDuration
+        })
+      }
+    })
+
+    // Log upload performance summary and record batch metrics
+    const totalSuccessful = uploadedScreenshots.length + uploadedAttachments.length
+    const totalFailed = uploadErrors.length
+    
+    logger.log('📊 Upload performance summary:', {
+      duration: `${uploadDuration}ms`,
+      totalFiles: allUploadPromises.length,
+      successful: totalSuccessful,
+      failed: totalFailed,
+      avgTimePerFile: allUploadPromises.length > 0 ? `${Math.round(uploadDuration / allUploadPromises.length)}ms` : '0ms'
+    })
+
+    // Record batch upload metrics
+    uploadMetrics.recordBatchUpload({
+      total: allUploadPromises.length,
+      successful: totalSuccessful,
+      failed: totalFailed,
+      totalTime: uploadDuration,
+      errors: uploadErrors
+    })
 
     // Critical validation: Ensure all files uploaded successfully
     const totalFilesExpected = screenshotFiles.length + attachmentFiles.length

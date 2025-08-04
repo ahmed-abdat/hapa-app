@@ -447,6 +447,11 @@
   "fileSizeReduced": "Taille du fichier réduite de {percent}%",
   
   "retry": "Réessayer",
+  "filesUploaded": "fichiers téléchargés",
+  "uploadFailures": "échecs",
+  "submissionSuccessfullyRecorded": "Votre soumission a été enregistrée avec succès.",
+  "filesSuccessful": "Fichiers réussis",
+  "failures": "Échecs",
   "retrying": "Nouvelle tentative",
   "retryAttempt": "Réessayer {current}/{max}",
   "retrySuccess": "Réessai réussi",

@@ -87,6 +87,8 @@ export function FormFileUpload({
   const [files, setFiles] = useState<SelectedFile[]>([])
   const [isDragOver, setIsDragOver] = useState(false)
   const [compressionEnabled, setCompressionEnabled] = useState(enableCompression)
+  // Ref to store the current onChange function from Controller
+  const formOnChangeRef = React.useRef<((value: any) => void) | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   
   const {
@@ -486,11 +488,34 @@ export function FormFileUpload({
   // Update form field when files change (store File objects, not URLs)
   const updateFormValue = React.useCallback(() => {
     const validFiles = files.filter(f => !f.error).map(f => f.file)
+    const newValue = multiple ? validFiles : (validFiles[0] || null)
     
-    if (multiple) {
-      setValue(name, validFiles)
+    logger.log(`🔍 FormFileUpload - Updating form value for field "${name}":`, {
+      component: 'FormFileUpload',
+      metadata: {
+        fieldName: name,
+        totalFiles: files.length,
+        validFiles: validFiles.length,
+        fileNames: validFiles.map(f => f.name),
+        fileSizes: validFiles.map(f => f.size),
+        multiple,
+        valueBeingSet: newValue,
+        hasFormOnChange: typeof formOnChangeRef.current === 'function',
+        usingSetValue: !formOnChangeRef.current
+      }
+    })
+    
+    // Use Controller's onChange if available, fallback to setValue
+    if (formOnChangeRef.current) {
+      formOnChangeRef.current(newValue)
+      logger.log(`✅ Called formOnChange for "${name}" with:`, { newValue })
     } else {
-      setValue(name, validFiles[0] || null)
+      if (multiple) {
+        setValue(name, validFiles)
+      } else {
+        setValue(name, validFiles[0] || null)
+      }
+      logger.log(`✅ Called setValue for "${name}" with:`, { newValue })
     }
   }, [files, multiple, name, setValue])
 
@@ -557,7 +582,24 @@ export function FormFileUpload({
       <Controller
         name={name}
         control={control}
-        render={({ field }) => (
+        render={({ field: { onChange, value, ...fieldProps } }) => {
+          // Store the onChange function in ref to avoid Rules of Hooks violation
+          formOnChangeRef.current = onChange
+          
+          // Debug current field value
+          logger.log(`🔍 FormFileUpload Controller render - Field "${name}":`, {
+            component: 'FormFileUpload',
+            metadata: {
+              fieldName: name,
+              currentValue: value,
+              valueType: typeof value,
+              valueLength: Array.isArray(value) ? value.length : 'not array',
+              filesState: files.length,
+              hasOnChange: typeof onChange === 'function'
+            }
+          })
+          
+          return (
             <div className="space-y-3">
               {/* Upload Area */}
               <div
@@ -737,7 +779,8 @@ export function FormFileUpload({
                 </div>
               )}
             </div>
-        )}
+          )
+        }}
       />
 
       {error && (
