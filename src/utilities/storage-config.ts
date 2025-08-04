@@ -7,10 +7,10 @@ import { getR2StorageConfig } from './r2-client'
 
 /**
  * Get storage configuration - R2 only, no fallback
- * Files are organized via custom filename patterns:
- * - Form uploads: form_{type}_{timestamp}_{index}.ext → uploads/
- * - General media: {sanitized_name}.ext → uploads/
- * Organization is achieved through filename prefixes rather than folder structure
+ * Files are organized hierarchically:
+ * - Form uploads: forms/media-submissions/{year}/{month}/{type}/
+ * - General media: media/general/
+ * Organization achieved through static prefix configuration
  */
 
 export function getStorageConfig() {
@@ -23,12 +23,16 @@ export function getStorageConfig() {
   
   if (useR2) {
     try {
+      const now = new Date()
+      const year = now.getFullYear()
+      const month = (now.getMonth() + 1).toString().padStart(2, '0')
+      
       return s3Storage({
         collections: {
           media: {
             disableLocalStorage: true,
-            // Use a simple prefix for now - we'll organize via filename
-            prefix: 'uploads/',
+            // Static prefix for form uploads - will be organized by custom filenames
+            prefix: `forms/media-submissions/${year}/${month}/`,
           },
         },
         config: getR2StorageConfig(),
