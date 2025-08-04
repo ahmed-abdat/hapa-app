@@ -1,5 +1,6 @@
 /**
  * Storage configuration - Cloudflare R2 only
+ * SIMPLE FIX: Revert to original working configuration
  */
 
 import { s3Storage } from '@payloadcms/storage-s3'
@@ -7,12 +8,8 @@ import { getR2StorageConfig } from './r2-client'
 
 /**
  * Get storage configuration - R2 only, no fallback
- * Files are organized hierarchically:
- * - Form uploads: forms/media-submissions/{year}/{month}/{type}/
- * - General media: media/general/
- * Organization achieved through static prefix configuration
+ * Let Media.ts hook handle ALL path organization
  */
-
 export function getStorageConfig() {
   const useR2 = Boolean(
     process.env.R2_ACCESS_KEY_ID && 
@@ -23,16 +20,12 @@ export function getStorageConfig() {
   
   if (useR2) {
     try {
-      const now = new Date()
-      const year = now.getFullYear()
-      const month = (now.getMonth() + 1).toString().padStart(2, '0')
-      
       return s3Storage({
         collections: {
           media: {
             disableLocalStorage: true,
-            // Static prefix for form uploads - will be organized by custom filenames
-            prefix: `forms/media-submissions/${year}/${month}/`,
+            // CRITICAL: No prefix here - let Media collection hook handle it
+            // This allows Media.ts to organize files by type: images/, docs/, videos/, audio/
           },
         },
         config: getR2StorageConfig(),
