@@ -1,5 +1,6 @@
 /**
  * Storage configuration - Cloudflare R2 only
+ * SIMPLE FIX: Revert to original working configuration
  */
 
 import { s3Storage } from '@payloadcms/storage-s3'
@@ -7,6 +8,7 @@ import { getR2StorageConfig } from './r2-client'
 
 /**
  * Get storage configuration - R2 only, no fallback
+ * Let Media.ts hook handle ALL path organization
  */
 export function getStorageConfig() {
   const useR2 = Boolean(
@@ -22,7 +24,8 @@ export function getStorageConfig() {
         collections: {
           media: {
             disableLocalStorage: true,
-            prefix: undefined, // Let the Media collection hook handle prefixes
+            // CRITICAL: No prefix here - let Media collection hook handle it
+            // This allows Media.ts to organize files by type: images/, docs/, videos/, audio/
           },
         },
         config: getR2StorageConfig(),

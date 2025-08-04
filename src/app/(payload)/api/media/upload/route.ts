@@ -36,6 +36,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const payload = await getPayload({ config })
     const formData = await request.formData()
     const file = formData.get('file') as File | null
+    const fileType = formData.get('fileType') as string | null
+    const fileIndex = formData.get('fileIndex') as string | null
 
     if (!file) {
       return NextResponse.json(
@@ -77,14 +79,31 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       )
     }
 
-    // Sanitize filename for security
-    const sanitizedFilename = sanitizeFilename(file.name)
+    // Generate custom filename for form uploads with form_ prefix
+    const timestamp = Date.now()
+    const index = fileIndex || '0'
+    const originalName = sanitizeFilename(file.name)
+    const extension = originalName.substring(originalName.lastIndexOf('.'))
+    const nameWithoutExt = originalName.substring(0, originalName.lastIndexOf('.'))
+    
+    let customFilename: string
+    if (fileType === 'screenshot') {
+      customFilename = `form_screenshot_${timestamp}_${index}${extension}`
+    } else if (fileType === 'attachment') {
+      customFilename = `form_attachment_${timestamp}_${index}${extension}`
+    } else {
+      // Fallback for regular uploads or when fileType is not specified
+      customFilename = `form_${nameWithoutExt}_${timestamp}${extension}`
+    }
+
+    // Use custom filename instead of original sanitized filename
+    const finalFilename = customFilename
 
     // Upload file through Payload CMS
     const result = await payload.create({
       collection: 'media',
       data: {
-        alt: sanitizedFilename,
+        alt: finalFilename,
         // Add metadata for tracking via caption
         caption: {
           root: {
@@ -115,7 +134,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       file: {
         data: Buffer.from(await file.arrayBuffer()),
         mimetype: file.type,
-        name: sanitizedFilename,
+        name: finalFilename,
         size: file.size,
       },
     })
