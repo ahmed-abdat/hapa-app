@@ -40,7 +40,14 @@ export function getStorageConfig() {
         collections: {
           media: {
             disableLocalStorage: true,
-            prefix: 'uploads/', // All files go to uploads folder, organized by our custom filenames
+            prefix: ({ filename }) => {
+              // Check if this is a form upload based on filename pattern
+              if (filename && (filename.includes('form_screenshot_') || filename.includes('form_attachment_'))) {
+                return getFormPrefix(filename)
+              }
+              // General media (CMS uploads) go in media folder
+              return 'media/general/'
+            },
           },
         },
         config: getR2StorageConfig(),
