@@ -7,24 +7,11 @@ import { getR2StorageConfig } from './r2-client'
 
 /**
  * Get storage configuration - R2 only, no fallback
+ * Files are organized via custom filename patterns:
+ * - Form uploads: form_{type}_{timestamp}_{index}.ext → uploads/
+ * - General media: {sanitized_name}.ext → uploads/
+ * Organization is achieved through filename prefixes rather than folder structure
  */
-/**
- * Get form-specific prefix for organized R2 storage
- */
-function getFormPrefix(filename: string): string {
-  const now = new Date()
-  const year = now.getFullYear()
-  const month = (now.getMonth() + 1).toString().padStart(2, '0')
-  
-  // Detect file type and form context from filename or request context
-  const isScreenshot = filename.toLowerCase().includes('screenshot') || filename.toLowerCase().includes('capture')
-  const isAttachment = !isScreenshot
-  
-  const fileType = isScreenshot ? 'screenshots' : 'attachments'
-  
-  // Default to forms folder with date organization
-  return `forms/media-submissions/${year}/${month}/${fileType}/`
-}
 
 export function getStorageConfig() {
   const useR2 = Boolean(
@@ -40,14 +27,8 @@ export function getStorageConfig() {
         collections: {
           media: {
             disableLocalStorage: true,
-            prefix: ({ filename }) => {
-              // Check if this is a form upload based on filename pattern
-              if (filename && (filename.includes('form_screenshot_') || filename.includes('form_attachment_'))) {
-                return getFormPrefix(filename)
-              }
-              // General media (CMS uploads) go in media folder
-              return 'media/general/'
-            },
+            // Use a simple prefix for now - we'll organize via filename
+            prefix: 'uploads/',
           },
         },
         config: getR2StorageConfig(),
