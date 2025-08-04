@@ -99,7 +99,10 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
       const startTime = Date.now()
       
       try {
-        const result = await uploadFile(file)
+        const result = await uploadFile(file, undefined, { 
+          fileType: 'screenshot', 
+          fileIndex: index.toString() 
+        })
         const duration = Date.now() - startTime
         
         if (result.success && result.url) {
@@ -123,7 +126,10 @@ export async function POST(request: NextRequest): Promise<NextResponse<FormSubmi
       const startTime = Date.now()
       
       try {
-        const result = await uploadFile(file)
+        const result = await uploadFile(file, undefined, { 
+          fileType: 'attachment', 
+          fileIndex: index.toString() 
+        })
         const duration = Date.now() - startTime
         
         if (result.success && result.url) {

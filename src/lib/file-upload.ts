@@ -94,7 +94,11 @@ export function sanitizeFilename(filename: string): string {
 /**
  * Upload a single file to the server with security validation and retry mechanism
  */
-export async function uploadFile(file: File, retryState?: RetryState): Promise<FileUploadResult> {
+export async function uploadFile(
+  file: File, 
+  retryState?: RetryState,
+  options?: { fileType?: 'screenshot' | 'attachment', fileIndex?: string }
+): Promise<FileUploadResult> {
   const currentRetryState = retryState || createRetryState()
   
   try {
@@ -129,6 +133,14 @@ export async function uploadFile(file: File, retryState?: RetryState): Promise<F
 
     const formData = new FormData()
     formData.append('file', sanitizedFile)
+    
+    // Add optional metadata for form uploads
+    if (options?.fileType) {
+      formData.append('fileType', options.fileType)
+    }
+    if (options?.fileIndex) {
+      formData.append('fileIndex', options.fileIndex)
+    }
 
     const response = await fetch('/api/media/upload', {
       method: 'POST',
@@ -170,13 +182,14 @@ export async function uploadFile(file: File, retryState?: RetryState): Promise<F
 export async function uploadFileWithRetry(
   file: File, 
   maxRetries: number = 3,
-  onRetryAttempt?: (attemptCount: number, nextDelay: number) => void
+  onRetryAttempt?: (attemptCount: number, nextDelay: number) => void,
+  options?: { fileType?: 'screenshot' | 'attachment', fileIndex?: string }
 ): Promise<FileUploadResult> {
   let retryState = createRetryState(maxRetries)
   let lastResult: FileUploadResult
   
   while (retryState.attemptCount <= maxRetries) {
-    lastResult = await uploadFile(file, retryState)
+    lastResult = await uploadFile(file, retryState, options)
     
     if (lastResult.success) {
       return lastResult
@@ -211,7 +224,8 @@ export async function uploadFileWithRetry(
  */
 export async function retryFileUpload(
   file: File,
-  currentRetryState: RetryState
+  currentRetryState: RetryState,
+  options?: { fileType?: 'screenshot' | 'attachment', fileIndex?: string }
 ): Promise<FileUploadResult> {
   // Allow unlimited manual retries by not incrementing attempt count
   const manualRetryState: RetryState = {
@@ -220,7 +234,7 @@ export async function retryFileUpload(
     lastError: undefined
   }
   
-  return uploadFile(file, manualRetryState)
+  return uploadFile(file, manualRetryState, options)
 }
 
 /**
