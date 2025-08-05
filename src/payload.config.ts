@@ -12,6 +12,7 @@ import { fileURLToPath } from "url";
 import { Categories } from "./collections/Categories";
 import { MediaContentSubmissions } from "./collections/MediaContentSubmissions";
 import { Media } from "./collections/Media";
+import { FormMedia } from "./collections/FormMedia";
 import { Posts } from "./collections/Posts";
 import { Users } from "./collections/Users";
 import { plugins } from "./plugins";
@@ -171,7 +172,7 @@ export default buildConfig({
       // retry_delay: 500, // Property doesn't exist in PoolConfig
     },
   }),
-  collections: [Posts, Media, Categories, MediaContentSubmissions, Users],
+  collections: [Posts, Media, FormMedia, Categories, MediaContentSubmissions, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [],
   plugins: [
