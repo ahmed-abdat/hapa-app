@@ -230,7 +230,12 @@ async function validateAndExtractData(formData: FormData, sessionId: string): Pr
         fields[key] = [value.toString()]
       }
     } else if (typeof value === 'string') {
-      fields[key] = value.trim()
+      // Handle boolean fields that come as strings from FormData
+      if (key === 'acceptDeclaration' || key === 'acceptConsent') {
+        fields[key] = value.trim() === 'true'
+      } else {
+        fields[key] = value.trim()
+      }
     }
   }
 
