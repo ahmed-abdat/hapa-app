@@ -49,23 +49,24 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
 
   const methods = useForm<MediaContentComplaintFormData>({
     resolver: zodResolver(createMediaContentComplaintSchema(t)),
+    mode: 'onBlur', // Validate on blur for better UX
     defaultValues: {
       // Complainant Information
       fullName: '',
-      gender: undefined,
+      gender: '' as any, // Initialize as empty string instead of undefined
       country: '',
       phoneNumber: '',
       whatsappNumber: '',
       emailAddress: '',
       profession: '',
-      relationshipToContent: undefined,
+      relationshipToContent: '' as any, // Initialize as empty string instead of undefined
       relationshipOther: '',
       // Content Information
-      mediaType: undefined,
+      mediaType: '' as any, // Initialize as empty string instead of undefined
       mediaTypeOther: '',
-      tvChannel: undefined,
+      tvChannel: '' as any, // Initialize as empty string instead of undefined
       tvChannelOther: '',
-      radioStation: undefined,
+      radioStation: '' as any, // Initialize as empty string instead of undefined
       radioStationOther: '',
       programName: '',
       broadcastDateTime: '',
@@ -157,7 +158,28 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
     // PRODUCTION DEBUG: Comprehensive form submission analysis
     const clientSessionId = `CLIENT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     
-    logger.log('Form submission starting', { sessionId: clientSessionId })
+    logger.log('🚀 Form submission starting', { 
+      sessionId: clientSessionId,
+      formType: 'complaint',
+      locale
+    })
+
+    // Debug: Log form data structure (excluding sensitive info)
+    const debugData = Object.keys(data).reduce((acc, key) => {
+      const value = data[key as keyof MediaContentComplaintFormData]
+      if (key.includes('email') || key.includes('phone')) {
+        acc[key] = `[${typeof value}] ${value ? '***HIDDEN***' : 'empty'}`
+      } else if (Array.isArray(value)) {
+        acc[key] = `[array] length: ${value.length}`
+      } else if (value instanceof File) {
+        acc[key] = `[File] ${value.name}`
+      } else {
+        acc[key] = `[${typeof value}] ${value?.toString?.()?.substring(0, 30) || 'null/undefined'}`
+      }
+      return acc
+    }, {} as Record<string, string>)
+    
+    logger.log('🔍 [CLIENT DEBUG] Form data structure', { sessionId: clientSessionId, data: debugData })
     
     // File validation
     const screenshotCount = Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0
