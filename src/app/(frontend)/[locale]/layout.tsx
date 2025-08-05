@@ -14,8 +14,7 @@ import { Providers } from "@/providers";
 import { draftMode } from "next/headers";
 import { routing } from "@/i18n/routing";
 import ReactPlugin from "@stagewise-plugins/react";
-import { GeistSans } from "geist/font/sans";
-import { arabicFontVariables } from "@/lib/fonts/arabic";
+import { louguiya, louguiyaFR } from "@/fonts";
 import { GeistMono } from "geist/font/mono";
 import "@/app/(frontend)/globals.css";
 
@@ -37,16 +36,18 @@ export default async function LocaleLayout({ children, params }: Props) {
   const messages = await getMessages({ locale: locale as Locale });
   const { isEnabled } = await draftMode();
 
-  const fontClass = locale === "ar" ? "font-arabic-sans" : "font-sans";
+  // Select the appropriate font based on locale
+  const font = locale === "ar" ? louguiya : louguiyaFR;
+  const fontClass = font.className;
+  const fontVariable = font.variable;
 
   return (
     <html
       lang={locale}
       dir={locale === "ar" ? "rtl" : "ltr"}
       className={cn(
-        GeistSans.variable,
-        GeistMono.variable,
-        arabicFontVariables
+        fontVariable,
+        GeistMono.variable
       )}
     >
       <head>
@@ -55,13 +56,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <meta name="grammarly-disable-indicator" content="true" />
         <meta name="grammarly-disable-editor" content="true" />
         <meta name="grammarly-disable" content="true" />
-        {/* Preload Arabic fonts for better performance */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
+        {/* Local fonts are automatically optimized by Next.js */}
       </head>
       <body
         suppressHydrationWarning={true}
