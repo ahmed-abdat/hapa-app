@@ -172,8 +172,6 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
 
     // Log form submission
     logger.formSubmission('Report', { screenshots: screenshotCount, attachments: attachmentCount })
-    
-    logger.formSubmission('Report', data)
     setIsSubmitting(true)
     setSubmissionStage('preparing')
     setSubmissionProgress(0)
@@ -299,10 +297,10 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
 
   return (
     <div className={className}>
-      {/* Debug: Show validation errors */}
-      {Object.keys(formState.errors).length > 0 && (
+      {/* Development: Show validation errors in development mode only */}
+      {process.env.NODE_ENV === 'development' && Object.keys(formState.errors).length > 0 && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <h4 className="text-red-800 font-semibold mb-2">🐛 Validation Errors (Debug):</h4>
+          <h4 className="text-red-800 font-semibold mb-2">Validation Errors (Development):</h4>
           <div className="text-sm text-red-700 space-y-1">
             {Object.entries(formState.errors).map(([field, error]) => (
               <div key={field} className="border-l-2 border-red-300 pl-2">

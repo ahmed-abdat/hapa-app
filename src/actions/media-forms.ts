@@ -140,7 +140,8 @@ export async function submitMediaFormAction(formData: FormData): Promise<FormSub
 
     const submission = await payload.create({
       collection: 'media-content-submissions',
-      data: submissionData as any, // Type assertion for complex nested types
+      // Type assertion needed due to complex Payload nested types
+      data: submissionData as any,
       locale: 'fr',
     })
 
