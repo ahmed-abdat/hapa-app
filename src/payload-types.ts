@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     posts: Post;
     media: Media;
+    'form-media': FormMedia;
     categories: Category;
     'media-content-submissions': MediaContentSubmission;
     users: User;
@@ -83,6 +84,7 @@ export interface Config {
   collectionsSelect: {
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'form-media': FormMediaSelect<false> | FormMediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     'media-content-submissions': MediaContentSubmissionsSelect<false> | MediaContentSubmissionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -179,6 +181,8 @@ export interface Post {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Fichiers média pour les contenus éditoriaux. Les fichiers des formulaires sont dans une collection séparée.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
@@ -259,6 +263,69 @@ export interface User {
       }[]
     | null;
   password?: string | null;
+}
+/**
+ * Fichiers téléchargés via les formulaires de soumission. Ces fichiers ne sont pas disponibles pour la sélection dans les autres contenus.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-media".
+ */
+export interface FormMedia {
+  id: number;
+  /**
+   * Description du fichier pour l'accessibilité
+   */
+  alt?: string | null;
+  caption?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Type de formulaire d'origine
+   */
+  formType?: ('report' | 'complaint') | null;
+  /**
+   * Catégorie du fichier uploadé
+   */
+  fileType?: ('screenshot' | 'attachment') | null;
+  /**
+   * Identifiant de la soumission de formulaire associée
+   */
+  submissionId?: string | null;
+  /**
+   * Date et heure de téléchargement du fichier
+   */
+  submissionDate?: string | null;
+  /**
+   * Taille du fichier en octets
+   */
+  fileSize?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  /**
+   * Type MIME du fichier
+   */
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {};
 }
 /**
  * Manage media content reports and complaints submitted through the website forms
@@ -519,6 +586,10 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
+        relationTo: 'form-media';
+        value: number | FormMedia;
+      } | null)
+    | ({
         relationTo: 'categories';
         value: number | Category;
       } | null)
@@ -622,6 +693,31 @@ export interface PostsSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?: T | {};
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-media_select".
+ */
+export interface FormMediaSelect<T extends boolean = true> {
+  alt?: T;
+  caption?: T;
+  formType?: T;
+  fileType?: T;
+  submissionId?: T;
+  submissionDate?: T;
+  fileSize?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

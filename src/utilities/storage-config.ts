@@ -8,7 +8,7 @@ import { getR2StorageConfig } from './r2-client'
 
 /**
  * Get storage configuration - R2 only, no fallback
- * Let Media.ts hook handle ALL path organization
+ * Supports both admin media and form media collections with isolation
  */
 export function getStorageConfig() {
   const useR2 = Boolean(
@@ -22,10 +22,17 @@ export function getStorageConfig() {
     try {
       return s3Storage({
         collections: {
+          // Admin Media Collection - organized by file type
           media: {
             disableLocalStorage: true,
             // CRITICAL: No prefix here - let Media collection hook handle it
             // This allows Media.ts to organize files by type: images/, docs/, videos/, audio/
+          },
+          // Form Media Collection - isolated with forms/ prefix
+          'form-media': {
+            disableLocalStorage: true,
+            // CRITICAL: No prefix here - let FormMedia collection hook handle it
+            // This allows FormMedia.ts to organize files with forms/ prefix: forms/images/, forms/documents/, etc.
           },
         },
         config: getR2StorageConfig(),

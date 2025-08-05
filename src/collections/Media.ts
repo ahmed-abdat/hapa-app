@@ -9,6 +9,13 @@ import {
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
 
+/**
+ * Admin Media Collection
+ * 
+ * This collection is reserved for admin-uploaded media files that should
+ * be available for selection in posts, pages, and other content.
+ * Form submission files are stored in the separate 'form-media' collection.
+ */
 export const Media: CollectionConfig = {
   slug: 'media',
   labels: {
@@ -20,6 +27,12 @@ export const Media: CollectionConfig = {
       fr: 'Médias',
       ar: 'وسائط'
     }
+  },
+  admin: {
+    description: {
+      fr: 'Fichiers média pour les contenus éditoriaux. Les fichiers des formulaires sont dans une collection séparée.',
+      ar: 'ملفات الوسائط للمحتوى التحريري. ملفات النماذج موجودة في مجموعة منفصلة.'
+    },
   },
   access: {
     create: authenticated,

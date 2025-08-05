@@ -381,9 +381,9 @@ async function uploadFilesWithRetry(
     try {
       // Uploading file
 
-      // Upload with timeout
+      // Upload with timeout to FormMedia collection (isolated from admin media)
       const uploadPromise = payload.create({
-        collection: 'media',
+        collection: 'form-media',
         data: { 
           alt: sanitizeFilename(file.name),
           caption: {
@@ -407,6 +407,12 @@ async function uploadFilesWithRetry(
               version: 1,
             },
           },
+          // Form-specific metadata
+          formType: 'report', // Default, will be updated based on actual form type
+          fileType: fileType,
+          submissionDate: new Date().toISOString(),
+          fileSize: file.size,
+          mimeType: file.type,
         },
         file: {
           data: Buffer.from(await file.arrayBuffer()),

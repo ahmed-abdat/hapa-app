@@ -125,14 +125,29 @@ const config = withPayload(
             pathname: '/api/media/**',
           },
           {
+            protocol: 'http',
+            hostname: 'localhost',
+            pathname: '/api/form-media/**',
+          },
+          {
             protocol: 'https', 
             hostname: 'localhost',
             pathname: '/api/media/**',
           },
           {
+            protocol: 'https', 
+            hostname: 'localhost',
+            pathname: '/api/form-media/**',
+          },
+          {
             protocol: 'https',
             hostname: 'hapa-mr.vercel.app',
             pathname: '/api/media/**',
+          },
+          {
+            protocol: 'https',
+            hostname: 'hapa-mr.vercel.app',
+            pathname: '/api/form-media/**',
           },
           {
             protocol: 'https',

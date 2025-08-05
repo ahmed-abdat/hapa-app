@@ -114,10 +114,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Use custom filename instead of original sanitized filename
     const finalFilename = customFilename
 
+    // Determine collection based on fileType - form uploads go to separate collection
+    const isFormUpload = fileType === 'screenshot' || fileType === 'attachment'
+    const collection = isFormUpload ? 'form-media' : 'media'
+    
     // Upload file through Payload CMS
     const result = await payload.create({
-      collection: 'media',
-      data: {
+      collection,
+      data: isFormUpload ? {
         alt: finalFilename,
         // Add metadata for tracking via caption
         caption: {
@@ -129,6 +133,40 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
                 children: [
                   {
                     text: `Uploaded via media forms on ${new Date().toISOString()}`,
+                    type: 'text',
+                    version: 1,
+                  },
+                ],
+                direction: 'ltr',
+                format: '',
+                indent: 0,
+                version: 1,
+              },
+            ],
+            direction: 'ltr',
+            format: '',
+            indent: 0,
+            version: 1,
+          },
+        },
+        // Form-specific metadata
+        formType: 'report', // Default, can be updated
+        fileType: fileType,
+        submissionDate: new Date().toISOString(),
+        fileSize: file.size,
+        mimeType: file.type,
+      } : {
+        alt: finalFilename,
+        // Regular admin upload caption
+        caption: {
+          root: {
+            type: 'root',
+            children: [
+              {
+                type: 'paragraph',
+                children: [
+                  {
+                    text: `Admin upload on ${new Date().toISOString()}`,
                     type: 'text',
                     version: 1,
                   },
