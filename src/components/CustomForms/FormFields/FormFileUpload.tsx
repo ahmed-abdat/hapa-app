@@ -449,8 +449,39 @@ export function FormFileUpload({
       })
     }
 
-    // Update form value with file objects (will be uploaded on form submit)
-    setTimeout(updateFormValue, 100) // Small delay to ensure state is updated
+    // Update form value immediately with validated file objects
+    // Don't use setTimeout as it can cause timing issues with Controller
+    const validatedFileObjects = newFiles.filter(f => !f.error).map(f => f.file)
+    const newFormValue = multiple ? validatedFileObjects : (validatedFileObjects[0] || null)
+    
+    logger.log(`🔍 FormFileUpload - Immediately updating form value for field "${name}":`, {
+      component: 'FormFileUpload',
+      metadata: {
+        fieldName: name,
+        totalFiles: newFiles.length,
+        validFiles: validatedFileObjects.length,
+        fileNames: validatedFileObjects.map(f => f.name),
+        fileSizes: validatedFileObjects.map(f => f.size),
+        multiple,
+        valueBeingSet: newFormValue,
+        hasFormOnChange: typeof formOnChangeRef.current === 'function'
+      }
+    })
+    
+    // Update form value immediately using Controller's onChange or setValue
+    if (formOnChangeRef.current) {
+      formOnChangeRef.current(newFormValue)
+      logger.log(`✅ Called formOnChange for "${name}" with:`, { 
+        filesCount: Array.isArray(newFormValue) ? newFormValue.length : 1,
+        fileNames: Array.isArray(newFormValue) ? newFormValue.map(f => f.name) : [newFormValue?.name]
+      })
+    } else {
+      setValue(name, newFormValue)
+      logger.log(`✅ Called setValue for "${name}" with:`, { 
+        filesCount: Array.isArray(newFormValue) ? newFormValue.length : 1,
+        fileNames: Array.isArray(newFormValue) ? newFormValue.map(f => f.name) : [newFormValue?.name]
+      })
+    }
   }
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -475,7 +506,29 @@ export function FormFileUpload({
   }
 
   const removeFile = (fileToRemove: SelectedFile) => {
-    setFiles(prev => prev.filter(f => f.fileId !== fileToRemove.fileId))
+    setFiles(prev => {
+      const updatedFiles = prev.filter(f => f.fileId !== fileToRemove.fileId)
+      
+      // Update form value immediately after removing file
+      const validFiles = updatedFiles.filter(f => !f.error).map(f => f.file)
+      const newValue = multiple ? validFiles : (validFiles[0] || null)
+      
+      logger.log(`🗑️ Removing file and updating form for "${name}":`, {
+        removedFile: fileToRemove.file.name,
+        remainingFiles: validFiles.length,
+        fileNames: validFiles.map(f => f.name)
+      })
+      
+      // Update form value immediately
+      if (formOnChangeRef.current) {
+        formOnChangeRef.current(newValue)
+      } else {
+        setValue(name, newValue)
+      }
+      
+      return updatedFiles
+    })
+    
     // Revoke object URLs to prevent memory leaks
     if (fileToRemove.previewUrl.startsWith('blob:')) {
       URL.revokeObjectURL(fileToRemove.previewUrl)
@@ -487,6 +540,12 @@ export function FormFileUpload({
 
   // Update form field when files change (store File objects, not URLs)
   const updateFormValue = React.useCallback(() => {
+    // Skip if no files to avoid clearing during initial setup
+    if (files.length === 0) {
+      logger.log(`🔍 FormFileUpload - Skipping update for "${name}", no files present`)
+      return
+    }
+    
     const validFiles = files.filter(f => !f.error).map(f => f.file)
     const newValue = multiple ? validFiles : (validFiles[0] || null)
     
@@ -508,21 +567,26 @@ export function FormFileUpload({
     // Use Controller's onChange if available, fallback to setValue
     if (formOnChangeRef.current) {
       formOnChangeRef.current(newValue)
-      logger.log(`✅ Called formOnChange for "${name}" with:`, { newValue })
+      logger.log(`✅ Called formOnChange for "${name}" with:`, { 
+        filesCount: Array.isArray(newValue) ? newValue.length : (newValue ? 1 : 0),
+        fileNames: Array.isArray(newValue) ? newValue.map(f => f.name) : (newValue ? [newValue.name] : [])
+      })
     } else {
-      if (multiple) {
-        setValue(name, validFiles)
-      } else {
-        setValue(name, validFiles[0] || null)
-      }
-      logger.log(`✅ Called setValue for "${name}" with:`, { newValue })
+      setValue(name, newValue)
+      logger.log(`✅ Called setValue for "${name}" with:`, { 
+        filesCount: Array.isArray(newValue) ? newValue.length : (newValue ? 1 : 0),
+        fileNames: Array.isArray(newValue) ? newValue.map(f => f.name) : (newValue ? [newValue.name] : [])
+      })
     }
   }, [files, multiple, name, setValue])
 
-  // Update form value when files change
+  // Update form value when files change (but not on initial mount)
   React.useEffect(() => {
-    updateFormValue()
-  }, [updateFormValue])
+    // Only update if files have been modified (not empty initial state)
+    if (files.length > 0) {
+      updateFormValue()
+    }
+  }, [files, updateFormValue])
 
   // Cleanup all object URLs when component unmounts
   React.useEffect(() => {

@@ -101,6 +101,16 @@ export interface FormSubmissionResponse {
   success: boolean
   message: string
   submissionId?: string
+  details?: string[]
+  uploadStats?: {
+    screenshots?: number
+    attachments?: number
+    totalTime?: number
+    expected?: number
+    successful?: number
+    failed?: number
+  }
+  errorId?: string
 }
 
 // File upload API response

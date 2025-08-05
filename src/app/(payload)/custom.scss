@@ -2,11 +2,11 @@
 
 /* HAPA Brand Colors */
 :root {
-  --hapa-primary: #065986;      /* Government authority blue */
-  --hapa-secondary: #D4A574;    /* Official gold accent */
-  --hapa-accent: #2D5A27;       /* Regulatory green */
-  --hapa-light: #F8F9FA;        /* Light background */
-  --hapa-text: #2C3E50;         /* Professional text */
+  --hapa-primary: #065986; /* Government authority blue */
+  --hapa-secondary: #d4a574; /* Official gold accent */
+  --hapa-accent: #2d5a27; /* Regulatory green */
+  --hapa-light: #f8f9fa; /* Light background */
+  --hapa-text: #2c3e50; /* Professional text */
 }
 
 /* Customize Payload admin interface with HAPA branding */
@@ -23,7 +23,7 @@
   .ReactModal__Content .btn--style-primary {
     background-color: var(--hapa-primary) !important;
     border-color: var(--hapa-primary) !important;
-    
+
     &:hover {
       background-color: var(--hapa-accent) !important;
       border-color: var(--hapa-accent) !important;
@@ -35,7 +35,7 @@
     background-color: var(--hapa-secondary) !important;
     border-color: var(--hapa-secondary) !important;
     color: var(--hapa-text) !important;
-    
+
     &:hover {
       background-color: var(--hapa-accent) !important;
       border-color: var(--hapa-accent) !important;
@@ -47,7 +47,7 @@
   .nav__link,
   .nav__link--active {
     color: white !important;
-    
+
     &:hover {
       background-color: rgba(255, 255, 255, 0.1) !important;
     }
@@ -64,7 +64,7 @@
   .textarea,
   .select__control {
     border-color: var(--hapa-primary) !important;
-    
+
     &:focus {
       border-color: var(--hapa-secondary) !important;
       box-shadow: 0 0 0 1px var(--hapa-secondary) !important;
@@ -73,7 +73,11 @@
 
   /* Sidebar branding */
   .template-default .nav {
-    background: linear-gradient(135deg, var(--hapa-primary) 0%, var(--hapa-accent) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--hapa-primary) 0%,
+      var(--hapa-accent) 100%
+    );
   }
 
   /* Header customization */
@@ -92,7 +96,7 @@
   .card,
   .dashboard__card {
     border: 1px solid var(--hapa-secondary);
-    
+
     &:hover {
       box-shadow: 0 4px 12px rgba(6, 89, 134, 0.15);
     }
@@ -106,45 +110,45 @@
   /* Localization language tabs */
   .tabs__nav-item {
     position: relative;
-    
+
     &--active {
       border-bottom-color: var(--hapa-secondary) !important;
       color: var(--hapa-primary) !important;
       font-weight: 600;
     }
-    
+
     /* Add language flags/indicators */
     &[data-label*="Français"]::before {
       content: "🇫🇷";
       margin-right: 0.5rem;
     }
-    
+
     &[data-label*="العربية"]::before {
       content: "🇲🇷";
       margin-right: 0.5rem;
     }
   }
-  
+
   /* Localization status indicators */
   .locale-status {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
     margin-left: 0.5rem;
-    
+
     &--complete {
       color: var(--hapa-accent);
     }
-    
+
     &--incomplete {
       color: #e74c3c;
     }
-    
+
     &--empty {
       color: #95a5a6;
     }
   }
-  
+
   /* Enhanced language switching experience */
   .tabs__nav {
     background: rgba(248, 249, 250, 0.8);
@@ -153,16 +157,16 @@
     margin-bottom: 1rem;
     border: 1px solid var(--hapa-secondary);
   }
-  
+
   .tabs__nav-item {
     border-radius: 4px;
     padding: 0.5rem 1rem;
     transition: all 0.2s ease;
-    
+
     &:hover {
       background-color: rgba(212, 165, 116, 0.1);
     }
-    
+
     &--active {
       background-color: white;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -177,7 +181,7 @@
   /* File upload areas */
   .upload__area {
     border-color: var(--hapa-primary) !important;
-    
+
     &:hover {
       border-color: var(--hapa-secondary) !important;
       background-color: rgba(212, 165, 116, 0.05);
@@ -207,13 +211,15 @@
 
 /* French Government Typography */
 .payload-admin[lang="fr"] {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
 }
 
 /* Arabic Government Typography */
 .payload-admin[lang="ar"] {
-  font-family: "Noto Sans Arabic", "Arabic UI Text", "SF Arabic", "Segoe UI", Arial, sans-serif;
-  
+  font-family: "Noto Sans Arabic", "Arabic UI Text", "SF Arabic", "Segoe UI",
+    Arial, sans-serif;
+
   /* Arabic text improvements */
   .input,
   .textarea {
@@ -224,16 +230,20 @@
 
 /* HAPA Specific Welcome Message Styling */
 .dashboard__welcome {
-  background: linear-gradient(135deg, var(--hapa-light) 0%, rgba(212, 165, 116, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--hapa-light) 0%,
+    rgba(212, 165, 116, 0.1) 100%
+  );
   border: 1px solid var(--hapa-secondary);
   border-radius: 8px;
   padding: 2rem;
-  
+
   h1 {
     color: var(--hapa-primary) !important;
     font-weight: 700;
   }
-  
+
   p {
     color: var(--hapa-text) !important;
   }
