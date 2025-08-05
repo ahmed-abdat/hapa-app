@@ -126,34 +126,52 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
 
 
   const onSubmit = async (data: MediaContentReportFormData) => {
-    // Enhanced debugging for file upload issue
-    logger.log('🔍 Form submission data analysis:', {
-      screenshotFilesType: typeof data.screenshotFiles,
-      screenshotFilesValue: data.screenshotFiles,
-      screenshotFilesLength: Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0,
-      attachmentFilesType: typeof data.attachmentFiles,
-      attachmentFilesValue: data.attachmentFiles,
-      attachmentFilesLength: Array.isArray(data.attachmentFiles) ? data.attachmentFiles.length : 0,
-      hasScreenshots: Array.isArray(data.screenshotFiles) && data.screenshotFiles.length > 0,
-      hasAttachments: Array.isArray(data.attachmentFiles) && data.attachmentFiles.length > 0,
-      allFormKeys: Object.keys(data),
-      allFormData: data
-    })
-
-    // Log form submission data for debugging
-    logger.form.submission('MediaContentReport', {
-      component: 'MediaContentReportForm',
-      metadata: {
-        screenshotFilesType: typeof data.screenshotFiles,
-        screenshotFilesLength: Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0,
-        attachmentFilesType: typeof data.attachmentFiles,
-        attachmentFilesLength: Array.isArray(data.attachmentFiles) ? data.attachmentFiles.length : 0,
-        hasScreenshots: Array.isArray(data.screenshotFiles) && data.screenshotFiles.length > 0,
-        hasAttachments: Array.isArray(data.attachmentFiles) && data.attachmentFiles.length > 0
-      }
+    // PRODUCTION DEBUG: Comprehensive form submission analysis
+    const clientSessionId = `CLIENT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    
+    logger.log('Form submission starting', { sessionId: clientSessionId })
+    
+    // File validation
+    const screenshotCount = Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0
+    const attachmentCount = Array.isArray(data.attachmentFiles) ? data.attachmentFiles.length : 0
+    
+    logger.log('File check:', {
+      sessionId: clientSessionId,
+      screenshots: screenshotCount,
+      attachments: attachmentCount
     })
     
-    logger.formSubmission('Report', data)
+    // File validation with detailed logging
+    const fileValidationErrors: string[] = []
+    
+    if (Array.isArray(data.screenshotFiles)) {
+      data.screenshotFiles.forEach((file, index) => {
+        if (!(file instanceof File)) {
+          const error = `Screenshot ${index + 1} is not a valid File`
+          fileValidationErrors.push(error)
+          logger.error('Invalid screenshot file:', { sessionId: clientSessionId, index: index + 1 })
+        }
+      })
+    }
+    
+    if (Array.isArray(data.attachmentFiles)) {
+      data.attachmentFiles.forEach((file, index) => {
+        if (!(file instanceof File)) {
+          const error = `Attachment ${index + 1} is not a valid File`
+          fileValidationErrors.push(error)
+          logger.error('Invalid attachment file:', { sessionId: clientSessionId, index: index + 1 })
+        }
+      })
+    }
+    
+    if (fileValidationErrors.length > 0) {
+      logger.error('File validation failed:', { sessionId: clientSessionId, errors: fileValidationErrors })
+      setSubmissionError('File validation failed. Please re-upload your files.')
+      return
+    }
+
+    // Log form submission
+    logger.formSubmission('Report', { screenshots: screenshotCount, attachments: attachmentCount })
     setIsSubmitting(true)
     setSubmissionStage('preparing')
     setSubmissionProgress(0)
@@ -171,26 +189,21 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
         locale,
       }
 
-      logger.log('📦 Converting to FormData...')
+      // Converting to FormData
       const formData = convertToFormData(submissionData)
       setSubmissionProgress(20)
 
-      // Stage 2: Upload files and submit
+      // Stage 2: Submit using Server Action
       setSubmissionStage('uploading')
       setSubmissionProgress(30)
 
-      logger.log('🚀 Submitting form with files...')
-      const response = await fetch('/api/media-forms/submit-with-files', {
-        method: 'POST',
-        body: formData, // No Content-Type header - let browser set it with boundary
-      })
+      // Submitting form
+      const { submitMediaFormAction } = await import('@/actions/media-forms')
+      const result = await submitMediaFormAction(formData)
       
       // Stage 3: Validate response
       setSubmissionStage('validating')
       setSubmissionProgress(70)
-
-      const result = await response.json()
-      logger.apiResponse(response.status, result)
 
       if (result.success) {
         // Stage 4: Save to database
@@ -227,7 +240,9 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
         } else if (result.uploadStats) {
           // Upload statistics available
           logger.error('❌ Upload statistics:', result.uploadStats)
-          const statsMessage = `${result.message}\n\nStatistiques: ${result.uploadStats.successful}/${result.uploadStats.expected} fichiers téléchargés avec succès`
+          const successful = result.uploadStats.successful || (result.uploadStats.screenshots || 0) + (result.uploadStats.attachments || 0)
+          const expected = result.uploadStats.expected || 'unknown'
+          const statsMessage = `${result.message}\n\nStatistiques: ${successful}/${expected} fichiers téléchargés avec succès`
           setSubmissionError(statsMessage)
           
           toast.error(statsMessage, {
@@ -282,10 +297,10 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
 
   return (
     <div className={className}>
-      {/* Debug: Show validation errors */}
-      {Object.keys(formState.errors).length > 0 && (
+      {/* Development: Show validation errors in development mode only */}
+      {process.env.NODE_ENV === 'development' && Object.keys(formState.errors).length > 0 && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <h4 className="text-red-800 font-semibold mb-2">🐛 Validation Errors (Debug):</h4>
+          <h4 className="text-red-800 font-semibold mb-2">Validation Errors (Development):</h4>
           <div className="text-sm text-red-700 space-y-1">
             {Object.entries(formState.errors).map(([field, error]) => (
               <div key={field} className="border-l-2 border-red-300 pl-2">

@@ -154,24 +154,53 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
 
 
   const onSubmit = async (data: MediaContentComplaintFormData) => {
-    // Development logging for form data analysis
-    logger.log('onSubmit received data', { metadata: data })
-    logger.log('screenshotFiles type', { metadata: { type: typeof data.screenshotFiles } })
-    logger.log('attachmentFiles type', { metadata: { type: typeof data.attachmentFiles } })
+    // PRODUCTION DEBUG: Comprehensive form submission analysis
+    const clientSessionId = `CLIENT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    
+    logger.log('Form submission starting', { sessionId: clientSessionId })
+    
+    // File validation
+    const screenshotCount = Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0
+    const attachmentCount = Array.isArray(data.attachmentFiles) ? data.attachmentFiles.length : 0
+    
+    logger.log('File check:', {
+      sessionId: clientSessionId,
+      screenshots: screenshotCount,
+      attachments: attachmentCount
+    })
+    
+    // File validation with detailed logging
+    const fileValidationErrors: string[] = []
+    
     if (Array.isArray(data.screenshotFiles)) {
-      logger.log('screenshotFiles array length', { metadata: { length: data.screenshotFiles.length } })
       data.screenshotFiles.forEach((file, index) => {
-        logger.log(`screenshotFiles[${index}]`, { metadata: { name: file instanceof File ? file.name : 'not a file', instanceof: file instanceof File } })
-      })
-    }
-    if (Array.isArray(data.attachmentFiles)) {
-      logger.log('attachmentFiles array length', { metadata: { length: data.attachmentFiles.length } })
-      data.attachmentFiles.forEach((file, index) => {
-        logger.log(`attachmentFiles[${index}]`, { metadata: { name: file instanceof File ? file.name : 'not a file', instanceof: file instanceof File } })
+        if (!(file instanceof File)) {
+          const error = `Screenshot ${index + 1} is not a valid File`
+          fileValidationErrors.push(error)
+          logger.error('Invalid screenshot file:', { sessionId: clientSessionId, index: index + 1 })
+        }
       })
     }
     
-    logger.formSubmission('Complaint', data)
+    if (Array.isArray(data.attachmentFiles)) {
+      data.attachmentFiles.forEach((file, index) => {
+        if (!(file instanceof File)) {
+          const error = `Attachment ${index + 1} is not a valid File`
+          fileValidationErrors.push(error)
+          logger.error('Invalid attachment file:', { sessionId: clientSessionId, index: index + 1 })
+        }
+      })
+    }
+    
+    if (fileValidationErrors.length > 0) {
+      logger.error('File validation failed:', { sessionId: clientSessionId, errors: fileValidationErrors })
+      setSubmissionError('File validation failed. Please re-upload your files.')
+      return
+    }
+
+    // Log form submission
+    logger.formSubmission('Complaint', { screenshots: screenshotCount, attachments: attachmentCount })
+    
     setIsSubmitting(true)
     setSubmissionStage('preparing')
     setSubmissionProgress(0)
@@ -189,26 +218,23 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
         locale,
       }
 
-      logger.log('📦 Converting to FormData...')
+      // Converting to FormData
       const formData = convertToFormData(submissionData)
       setSubmissionProgress(20)
 
-      // Stage 2: Upload files and submit
+      // Stage 2: Submit using Server Action
       setSubmissionStage('uploading')
       setSubmissionProgress(30)
-      
-      logger.log('🚀 Submitting form with files...')
-      const response = await fetch('/api/media-forms/submit-with-files', {
-        method: 'POST',
-        body: formData, // No Content-Type header - let browser set it with boundary
-      })
+
+      // Submitting form
+      const { submitMediaFormAction } = await import('@/actions/media-forms')
+      const result = await submitMediaFormAction(formData)
       
       // Stage 3: Validate response
       setSubmissionStage('validating')
       setSubmissionProgress(70)
 
-      const result = await response.json()
-      logger.apiResponse(response.status, result)
+      // Result already obtained from Server Action
 
       if (result.success) {
         // Stage 4: Save to database
@@ -245,7 +271,9 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
         } else if (result.uploadStats) {
           // Upload statistics available
           logger.error('❌ Upload statistics:', result.uploadStats)
-          const statsMessage = `${result.message}\n\nStatistiques: ${result.uploadStats.successful}/${result.uploadStats.expected} fichiers téléchargés avec succès`
+          const successful = result.uploadStats.successful || (result.uploadStats.screenshots || 0) + (result.uploadStats.attachments || 0)
+          const expected = result.uploadStats.expected || 'unknown'
+          const statsMessage = `${result.message}\n\nStatistiques: ${successful}/${expected} fichiers téléchargés avec succès`
           setSubmissionError(statsMessage)
           
           toast.error(statsMessage, {

@@ -270,97 +270,49 @@ export async function uploadFiles(
  */
 export function convertToFormData(data: Record<string, any>): FormData {
   const formData = new FormData()
+  const conversionSessionId = `CONVERT_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`
   
-  // Log form data processing for debugging
-  logger.debug('Converting object to FormData', {
-    component: 'FileUpload',
-    action: 'convert_to_form_data',
-    metadata: {
-      dataKeys: Object.keys(data),
-      screenshotFilesType: typeof data.screenshotFiles,
-      screenshotFilesIsArray: Array.isArray(data.screenshotFiles),
-      attachmentFilesType: typeof data.attachmentFiles,
-      attachmentFilesIsArray: Array.isArray(data.attachmentFiles)
-    }
-  })
+  logger.log('Converting form data', { sessionId: conversionSessionId })
+  
+  // Check for files to convert
+  const screenshotCount = Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0
+  const attachmentCount = Array.isArray(data.attachmentFiles) ? data.attachmentFiles.length : 0
 
   for (const [key, value] of Object.entries(data)) {
     if (value === undefined || value === null) {
-      logger.debug(`Skipping FormData field: ${key} (undefined/null)`, {
-        component: 'FileUpload',
-        action: 'skip_null_field',
-        metadata: { key }
-      })
+      // Skip null/undefined fields
       continue
     }
 
     if (Array.isArray(value)) {
       // Handle arrays (like reasons, attachmentTypes, files)
-      logger.debug(`Processing FormData array: ${key}`, {
-        component: 'FileUpload',
-        action: 'process_array',
-        metadata: { key, length: value.length, hasItems: value.length > 0 }
-      })
       
       if (value.length === 0) {
         // Skip empty arrays
-        logger.debug(`Skipping empty FormData array: ${key}`, {
-          component: 'FileUpload',
-          action: 'skip_empty_array',
-          metadata: { key }
-        })
         continue
       }
       
       value.forEach((item, index) => {
         if (item instanceof File) {
-          logger.file.processing('formdata_append', item.name, {
-            component: 'FileUpload',
-            metadata: { key, index, fileSize: item.size }
-          })
+          // Appending file to FormData
           formData.append(key, item)
         } else {
-          logger.debug(`Appending string to FormData array: ${key}[${index}]`, {
-            component: 'FileUpload',
-            action: 'append_string',
-            metadata: { key, index, value: item }
-          })
+          // Appending string to array
           formData.append(key, item.toString())
         }
       })
     } else if (value instanceof File) {
-      logger.file.processing('formdata_append_single', value.name, {
-        component: 'FileUpload',
-        metadata: { key, fileSize: value.size }
-      })
+      // Appending single file
       formData.append(key, value)
     } else {
-      logger.debug(`Appending string to FormData: ${key}`, {
-        component: 'FileUpload',
-        action: 'append_string',
-        metadata: { key, value }
-      })
+      // Appending string value
       formData.append(key, value.toString())
     }
   }
 
-  // Log final FormData entries for debugging
-  const entries: Array<{key: string, type: string, details: string}> = []
-  for (const [key, value] of formData.entries()) {
-    if (value instanceof File) {
-      entries.push({ key, type: 'File', details: `${value.name} (${value.size} bytes)` })
-    } else {
-      entries.push({ key, type: 'String', details: String(value) })
-    }
-  }
-  
-  logger.debug('FormData conversion completed', {
-    component: 'FileUpload',
-    action: 'conversion_complete',
-    metadata: {
-      totalEntries: entries.length,
-      entries: entries.slice(0, 10) // Limit to first 10 entries to avoid log spam
-    }
+  logger.log('FormData conversion complete', { 
+    sessionId: conversionSessionId, 
+    files: screenshotCount + attachmentCount 
   })
 
   return formData

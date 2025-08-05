@@ -4,6 +4,17 @@ import config from '@payload-config'
 import { validateFileSignature, sanitizeFilename } from '@/lib/file-upload'
 import { logger } from '@/utilities/logger'
 
+// For Node.js compatibility - File is a browser API
+const isFileObject = (value: any): value is File => {
+  return value && 
+         typeof value === 'object' && 
+         typeof value.name === 'string' && 
+         typeof value.size === 'number' && 
+         typeof value.type === 'string' &&
+         'stream' in value &&
+         'arrayBuffer' in value
+}
+
 /**
  * Maximum file sizes
  */
@@ -35,18 +46,22 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const payload = await getPayload({ config })
     const formData = await request.formData()
+    
+    // Process upload request
+    
     const file = formData.get('file') as File | null
     const fileType = formData.get('fileType') as string | null
     const fileIndex = formData.get('fileIndex') as string | null
 
     if (!file) {
+      logger.error('❌ UPLOAD ENDPOINT: No file provided in FormData')
       return NextResponse.json(
         { error: 'No file provided' },
         { status: 400 }
       )
     }
 
-    logger.fileOperation(`📤 Processing upload through Payload: ${file.name} (Size: ${(file.size / 1024).toFixed(1)}KB)`)
+    logger.log('Processing file upload:', { name: file.name, size: `${(file.size / 1024).toFixed(1)}KB`, type: file.type })
 
     // Validate file type
     if (!ALLOWED_MIME_TYPES.includes(file.type)) {
@@ -88,12 +103,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     
     let customFilename: string
     if (fileType === 'screenshot') {
-      customFilename = `form_screenshot_${timestamp}_${index}${extension}`
+      customFilename = `hapa_form_screenshot_${timestamp}_${index}${extension}`
     } else if (fileType === 'attachment') {
-      customFilename = `form_attachment_${timestamp}_${index}${extension}`
+      customFilename = `hapa_form_attachment_${timestamp}_${index}${extension}`
     } else {
       // Fallback for regular uploads or when fileType is not specified
-      customFilename = `form_${nameWithoutExt}_${timestamp}${extension}`
+      customFilename = `hapa_form_${nameWithoutExt}_${timestamp}${extension}`
     }
 
     // Use custom filename instead of original sanitized filename
@@ -140,15 +155,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     })
 
     const uploadTime = Date.now() - startTime
-    logger.success('✅ File uploaded successfully through Payload:', `ID: ${result.id}`)
-    logger.log('Upload details:', {
-      id: result.id,
-      filename: result.filename,
-      size: file.size,
-      type: file.type,
-      uploadTime: `${uploadTime}ms`,
-      url: result.url
-    })
+    logger.success(`File uploaded successfully: ${file.name} in ${uploadTime}ms`, `URL: ${result.url}`)
 
     return NextResponse.json({
       success: true,
