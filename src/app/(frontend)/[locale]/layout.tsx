@@ -8,12 +8,10 @@ import { NextIntlClientProvider } from "next-intl";
 import { cn } from "@/utilities/ui";
 import { AdminBar } from "@/components/AdminBar";
 import { Footer } from "@/Footer/Component";
-import { StagewiseToolbar } from "@stagewise/toolbar-next";
 import { Header } from "@/Header/Component";
 import { Providers } from "@/providers";
 import { draftMode } from "next/headers";
 import { routing } from "@/i18n/routing";
-import ReactPlugin from "@stagewise-plugins/react";
 import { GeistSans } from "geist/font/sans";
 import { arabicFontVariables } from "@/lib/fonts/arabic";
 import { GeistMono } from "geist/font/mono";
@@ -78,15 +76,6 @@ export default async function LocaleLayout({ children, params }: Props) {
 
             <Header />
             {children}
-            
-            {/* Stagewise toolbar for AI-powered editing - only loads in development */}
-            {process.env.NODE_ENV === "development" && (
-              <StagewiseToolbar
-                config={{
-                  plugins: [ReactPlugin],
-                }}
-              />
-            )}
             <Footer />
           </NextIntlClientProvider>
         </Providers>
