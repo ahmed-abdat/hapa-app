@@ -214,6 +214,10 @@ const config = {
       fontFamily: {
         mono: ['var(--font-geist-mono)'],
         sans: ['var(--font-geist-sans)'],
+        // Custom local fonts
+        'louguiya': ['var(--font-louguiya)', 'Arial', 'sans-serif'],
+        'louguiya-fr': ['var(--font-louguiya-fr)', 'Arial', 'sans-serif'],
+        // Legacy Arabic fonts (for backward compatibility)
         'arabic-sans': ['var(--font-arabic-noto)', 'Noto Sans Arabic', 'Segoe UI', 'Tahoma', 'Arial', 'sans-serif'],
         'arabic-display': ['var(--font-arabic-cairo)', 'Cairo', 'Noto Sans Arabic', 'Segoe UI', 'sans-serif'],
         'arabic-tajawal': ['var(--font-arabic-tajawal)', 'Tajawal', 'Arial', 'sans-serif'],
