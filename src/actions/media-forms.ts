@@ -319,7 +319,7 @@ async function validateFileSecurity(files: File[], sessionId: string): Promise<V
 }
 
 /**
- * Schema validation using Zod with comprehensive debugging
+ * Schema validation using Zod
  */
 async function validateSchema(
   fields: Record<string, any>, 
@@ -329,30 +329,6 @@ async function validateSchema(
   sessionId: string
 ): Promise<ValidationResult> {
   const errors: string[] = []
-  
-  logger.log('🔍 [DEBUG] Schema validation starting', { 
-    sessionId, 
-    formType: fields.formType,
-    fieldsCount: Object.keys(fields).length,
-    screenshotsCount: screenshots.length,
-    attachmentsCount: attachments.length
-  })
-
-  // Debug: Log all field keys and values (excluding sensitive data)
-  const debugFields = Object.keys(fields).reduce((acc, key) => {
-    const value = fields[key]
-    // Don't log sensitive information but show data types and structures
-    if (key.includes('email') || key.includes('phone')) {
-      acc[key] = `[${typeof value}] ${value ? '***HIDDEN***' : 'empty'}`
-    } else if (Array.isArray(value)) {
-      acc[key] = `[array] length: ${value.length}, items: ${value.map(v => typeof v).join(', ')}`
-    } else {
-      acc[key] = `[${typeof value}] ${value?.toString?.()?.substring(0, 50) || 'null/undefined'}`
-    }
-    return acc
-  }, {} as Record<string, string>)
-  
-  logger.log('🔍 [DEBUG] Form fields structure', { sessionId, fields: debugFields })
 
   try {
     const submissionData = {
@@ -361,83 +337,26 @@ async function validateSchema(
       attachmentFiles: attachments,
     }
 
-    logger.log('🔍 [DEBUG] Submission data prepared', { 
-      sessionId, 
-      totalKeys: Object.keys(submissionData).length,
-      hasScreenshots: screenshots.length > 0,
-      hasAttachments: attachments.length > 0
-    })
-
     if (fields.formType === 'report') {
-      logger.log('🔍 [DEBUG] Using report schema', { sessionId })
       const schema = createMediaContentReportSchema(t)
       schema.parse(submissionData)
-      logger.log('✅ [DEBUG] Report schema validation passed', { sessionId })
     } else {
-      logger.log('🔍 [DEBUG] Using complaint schema', { sessionId })
       const schema = createMediaContentComplaintSchema(t)
-      
-      // Additional debugging for complaint schema
-      logger.log('🔍 [DEBUG] Key complaint fields', { 
-        sessionId,
-        gender: submissionData.gender,
-        mediaType: submissionData.mediaType,
-        relationshipToContent: submissionData.relationshipToContent,
-        acceptDeclaration: submissionData.acceptDeclaration,
-        acceptConsent: submissionData.acceptConsent,
-        fullName: submissionData.fullName ? '[PROVIDED]' : '[EMPTY]',
-        emailAddress: submissionData.emailAddress ? '[PROVIDED]' : '[EMPTY]',
-        phoneNumber: submissionData.phoneNumber ? '[PROVIDED]' : '[EMPTY]',
-        programName: submissionData.programName ? '[PROVIDED]' : '[EMPTY]',
-        broadcastDateTime: submissionData.broadcastDateTime ? '[PROVIDED]' : '[EMPTY]',
-        description: submissionData.description ? `[${submissionData.description.length} chars]` : '[EMPTY]',
-        reasons: Array.isArray(submissionData.reasons) ? `[${submissionData.reasons.length} items]` : '[NOT ARRAY]'
-      })
-      
       schema.parse(submissionData)
-      logger.log('✅ [DEBUG] Complaint schema validation passed', { sessionId })
     }
     
   } catch (error: any) {
-    logger.error('❌ [DEBUG] Schema validation failed - detailed error analysis', { 
-      sessionId,
-      errorName: error.name,
-      errorMessage: error.message,
-      hasIssues: !!error.issues,
-      issuesCount: error.issues?.length || 0
-    })
-
     if (error.issues) {
-      // Detailed logging of each validation issue
-      error.issues.forEach((issue: any, index: number) => {
-        logger.error(`❌ [DEBUG] Validation Issue #${index + 1}`, {
-          sessionId,
-          path: issue.path.join('.'),
-          code: issue.code,
-          message: issue.message,
-          received: issue.received,
-          expected: issue.expected,
-          unionErrors: issue.unionErrors?.length || 0
-        })
-      })
-
       errors.push(...error.issues.map((issue: any) => {
         const path = issue.path.join('.')
         const message = issue.message
         return `${path}: ${message}`
       }))
     } else {
-      errors.push('Schema validation failed - no detailed error information')
-      logger.error('❌ [DEBUG] No detailed error information available', { sessionId, error })
+      errors.push('Schema validation failed')
     }
+    logger.error('Schema validation failed:', { sessionId, error: error.issues?.map((i: any) => i.message).join(', ') || 'Unknown schema error' })
   }
-
-  logger.log('🔍 [DEBUG] Schema validation completed', { 
-    sessionId, 
-    isValid: errors.length === 0,
-    errorCount: errors.length,
-    errors: errors.slice(0, 3) // Log first 3 errors to avoid spam
-  })
 
   return {
     isValid: errors.length === 0,
