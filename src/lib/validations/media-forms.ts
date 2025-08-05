@@ -309,13 +309,16 @@ export const createMediaContentReportSchema = (t: ReturnType<typeof useTranslati
 // Complainant information schema factory (for complaints only)
 const createComplainantInformationSchema = (validationMessages: ReturnType<typeof getValidationMessages>) => z.object({
   fullName: z.string().min(2, validationMessages.required).max(100, validationMessages.max_length(100)),
-  gender: GenderEnum,
+  gender: z.union([GenderEnum, z.literal('')]).refine((val) => val !== '', validationMessages.required),
   country: z.string().min(2, validationMessages.required),
   phoneNumber: z.string().regex(phoneRegex, validationMessages.invalid_phone),
-  whatsappNumber: z.string().regex(phoneRegex, validationMessages.invalid_phone).optional().or(z.literal('')),
+  whatsappNumber: z.string().optional().or(z.literal('')).refine((val) => {
+    if (!val || val === '') return true // Optional field
+    return phoneRegex.test(val)
+  }, validationMessages.invalid_phone),
   emailAddress: z.string().email(validationMessages.invalid_email),
   profession: z.string().max(100, validationMessages.max_length(100)).optional(),
-  relationshipToContent: RelationshipToContentEnum.optional(),
+  relationshipToContent: z.union([RelationshipToContentEnum, z.literal('')]).optional(),
   relationshipOther: z.string().optional(),
 })
 

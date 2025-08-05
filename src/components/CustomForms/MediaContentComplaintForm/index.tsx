@@ -49,23 +49,24 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
 
   const methods = useForm<MediaContentComplaintFormData>({
     resolver: zodResolver(createMediaContentComplaintSchema(t)),
+    mode: 'onBlur', // Validate on blur for better UX
     defaultValues: {
       // Complainant Information
       fullName: '',
-      gender: undefined,
+      gender: '' as any, // Initialize as empty string instead of undefined
       country: '',
       phoneNumber: '',
       whatsappNumber: '',
       emailAddress: '',
       profession: '',
-      relationshipToContent: undefined,
+      relationshipToContent: '' as any, // Initialize as empty string instead of undefined
       relationshipOther: '',
       // Content Information
-      mediaType: undefined,
+      mediaType: '' as any, // Initialize as empty string instead of undefined
       mediaTypeOther: '',
-      tvChannel: undefined,
+      tvChannel: '' as any, // Initialize as empty string instead of undefined
       tvChannelOther: '',
-      radioStation: undefined,
+      radioStation: '' as any, // Initialize as empty string instead of undefined
       radioStationOther: '',
       programName: '',
       broadcastDateTime: '',
@@ -154,10 +155,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
 
 
   const onSubmit = async (data: MediaContentComplaintFormData) => {
-    // PRODUCTION DEBUG: Comprehensive form submission analysis
     const clientSessionId = `CLIENT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
-    logger.log('Form submission starting', { sessionId: clientSessionId })
     
     // File validation
     const screenshotCount = Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0

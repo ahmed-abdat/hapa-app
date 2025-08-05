@@ -230,7 +230,12 @@ async function validateAndExtractData(formData: FormData, sessionId: string): Pr
         fields[key] = [value.toString()]
       }
     } else if (typeof value === 'string') {
-      fields[key] = value.trim()
+      // Handle boolean fields that come as strings from FormData
+      if (key === 'acceptDeclaration' || key === 'acceptConsent') {
+        fields[key] = value.trim() === 'true'
+      } else {
+        fields[key] = value.trim()
+      }
     }
   }
 
@@ -339,11 +344,14 @@ async function validateSchema(
       const schema = createMediaContentComplaintSchema(t)
       schema.parse(submissionData)
     }
-
-    // Schema validation passed
+    
   } catch (error: any) {
     if (error.issues) {
-      errors.push(...error.issues.map((issue: any) => `${issue.path.join('.')}: ${issue.message}`))
+      errors.push(...error.issues.map((issue: any) => {
+        const path = issue.path.join('.')
+        const message = issue.message
+        return `${path}: ${message}`
+      }))
     } else {
       errors.push('Schema validation failed')
     }
