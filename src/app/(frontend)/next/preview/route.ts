@@ -73,10 +73,11 @@ export async function GET(
     // Authenticate user
     let user
     try {
-      user = await payload.auth({
+      const authResult = await payload.auth({
         req: req as unknown as PayloadRequest,
         headers: req.headers,
       })
+      user = authResult.user
     } catch (error) {
       payload.logger.error('Error verifying user authentication for preview', {
         error: error instanceof Error ? error.message : String(error),
