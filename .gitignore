@@ -21,3 +21,8 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 hapa_backup/
+
+# Debug and temporary files
+debuging/
+*.debug
+*.tmp
