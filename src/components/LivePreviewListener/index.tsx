@@ -30,11 +30,8 @@ export const LivePreviewListener: React.FC = () => {
     <PayloadLivePreview 
       refresh={router.refresh} 
       serverURL={serverURL}
-      // Add some additional options for better reliability
-      opts={{
-        depth: 2,
-        fallbackLocale: 'fr',
-      }}
+      // Add depth for better reliability with nested data
+      depth={2}
     />
   )
 }

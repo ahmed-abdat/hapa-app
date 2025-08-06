@@ -59,7 +59,7 @@ export async function GET(
     }
 
     // Validate collection exists
-    const validCollections = ['posts', 'media'] // Add your collections here
+    const validCollections = ['posts', 'media', 'categories', 'mediaContentSubmissions'] // Collections from payload.config.ts
     if (!validCollections.includes(collection)) {
       payload.logger.warn('Preview attempt with invalid collection', {
         collection,
@@ -70,14 +70,13 @@ export async function GET(
       return new Response(`Invalid collection. Valid collections: ${validCollections.join(', ')}`, { status: 400 })
     }
 
-    // Authenticate user
+    // Authenticate user - payload.auth() returns the user directly
     let user
     try {
-      const authResult = await payload.auth({
+      user = await payload.auth({
         req: req as unknown as PayloadRequest,
         headers: req.headers,
       })
-      user = authResult.user
     } catch (error) {
       payload.logger.error('Error verifying user authentication for preview', {
         error: error instanceof Error ? error.message : String(error),
@@ -145,7 +144,7 @@ export async function GET(
       collection,
       slug,
       path,
-      user: user.id,
+      user: user && typeof user === 'object' && 'id' in user ? user.id : 'authenticated',
       timestamp: new Date().toISOString(),
     })
 
