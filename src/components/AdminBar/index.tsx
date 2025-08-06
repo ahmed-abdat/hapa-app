@@ -19,9 +19,13 @@ const collectionLabels = {
     plural: 'Posts',
     singular: 'Post',
   },
-  projects: {
-    plural: 'Projects',
-    singular: 'Project',
+  media: {
+    plural: 'Media',
+    singular: 'Media',
+  },
+  categories: {
+    plural: 'Categories',
+    singular: 'Category',
   },
 }
 
@@ -33,9 +37,17 @@ export const AdminBar: React.FC<{
   const { adminBarProps } = props || {}
   const segments = useSelectedLayoutSegments()
   const [show, setShow] = useState(false)
-  const collection = (
-    collectionLabels[segments?.[1] as keyof typeof collectionLabels] ? segments[1] : 'posts'
-  ) as keyof typeof collectionLabels
+  const [isExitingPreview, setIsExitingPreview] = useState(false)
+  
+  // Better collection detection based on current path
+  const detectCollection = (): keyof typeof collectionLabels => {
+    if (segments?.includes('posts') || segments?.[0] === 'posts') return 'posts'
+    if (segments?.includes('media') || segments?.[0] === 'media') return 'media'
+    if (segments?.includes('categories') || segments?.[0] === 'categories') return 'categories'
+    return 'posts' // default fallback
+  }
+  
+  const collection = detectCollection()
   const router = useRouter()
 
   const onAuthChange = React.useCallback((user: PayloadMeUser) => {
@@ -66,11 +78,25 @@ export const AdminBar: React.FC<{
           }}
           logo={<Title />}
           onAuthChange={onAuthChange}
-          onPreviewExit={() => {
-            fetch('/next/exit-preview').then(() => {
-              router.push('/')
-              router.refresh()
-            })
+          onPreviewExit={async () => {
+            if (isExitingPreview) return // Prevent multiple calls
+            
+            setIsExitingPreview(true)
+            try {
+              const response = await fetch('/next/exit-preview')
+              if (response.ok) {
+                // Get the current path to redirect to the same page but without preview
+                const currentPath = window.location.pathname
+                router.push(currentPath)
+                router.refresh()
+              } else {
+                console.error('Failed to exit preview mode')
+              }
+            } catch (error) {
+              console.error('Error exiting preview mode:', error)
+            } finally {
+              setIsExitingPreview(false)
+            }
           }}
           style={{
             backgroundColor: 'transparent',
