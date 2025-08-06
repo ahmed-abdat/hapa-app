@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useField, useFormFields } from '@payloadcms/ui'
 import type { ArrayFieldClientComponent } from 'payload'
 import './index.scss'
@@ -26,6 +26,13 @@ const CleanMediaGallery: ArrayFieldClientComponent = ({ path }) => {
   
   const [lightboxMedia, setLightboxMedia] = useState<string | null>(null)
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
+
+  // Cleanup body overflow on component unmount
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [])
 
   // Get the actual array data from form fields
   const formFieldValue = formFields[path]?.value
@@ -69,7 +76,7 @@ const CleanMediaGallery: ArrayFieldClientComponent = ({ path }) => {
         <div className="clean-media-gallery__empty">
           <span className="clean-media-gallery__empty-icon">📁</span>
           <span className="clean-media-gallery__empty-text">
-            Aucun fichier multimédia
+            Aucun média disponible
           </span>
         </div>
       </div>

@@ -181,7 +181,7 @@ function renderMediaPreview(
             controls
             preload="metadata"
             controlsList="nodownload"
-            onError={() => console.warn('Erreur de chargement vidéo')}
+            onError={() => {/* Video load error - graceful fallback */}}
           >
             Votre navigateur ne supporte pas la lecture vidéo.
           </video>
@@ -198,7 +198,7 @@ function renderMediaPreview(
             className="media-preview-card__preview-audio"
             preload="metadata"
             controlsList="nodownload"
-            onError={() => console.warn('Erreur de chargement audio')}
+            onError={() => {/* Audio load error - graceful fallback */}}
           >
             Votre navigateur ne supporte pas la lecture audio.
           </audio>
