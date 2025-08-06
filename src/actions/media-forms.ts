@@ -138,6 +138,15 @@ export async function submitMediaFormAction(formData: FormData): Promise<FormSub
       attachmentUpload.urls
     )
 
+    // Log complainant info presence for complaint forms
+    if (fields.formType === 'complaint') {
+      logger.log('📝 Complaint submission includes complainant info', {
+        sessionId,
+        hasComplainantInfo: !!submissionData.complainantInfo,
+        fieldsPresent: submissionData.complainantInfo ? Object.keys(submissionData.complainantInfo) : []
+      })
+    }
+
     const submission = await payload.create({
       collection: 'media-content-submissions',
       // Type assertion needed due to complex Payload nested types
@@ -493,6 +502,20 @@ function buildSubmissionData(
       linkScreenshot: fields.linkScreenshot?.trim() || '',
       screenshotFiles: screenshotUrls.map((url: string) => ({ url })),
     },
+
+    // Complainant Information (for complaints only)
+    ...(fields.formType === 'complaint' && {
+      complainantInfo: {
+        fullName: fields.fullName?.trim() || '',
+        gender: fields.gender || '',
+        country: fields.country || '',
+        emailAddress: fields.emailAddress?.trim() || '',
+        phoneNumber: fields.phoneNumber?.trim() || '',
+        whatsappNumber: fields.whatsappNumber?.trim() || '',
+        profession: fields.profession?.trim() || '',
+        relationshipToContent: fields.relationshipToContent || '',
+      }
+    }),
 
     // Reasons
     reasons: (fields.reasons || []).map((reason: string) => ({ reason })),
