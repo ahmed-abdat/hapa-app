@@ -161,11 +161,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
     const screenshotCount = Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0
     const attachmentCount = Array.isArray(data.attachmentFiles) ? data.attachmentFiles.length : 0
     
-    logger.log('File check:', {
-      sessionId: clientSessionId,
-      screenshots: screenshotCount,
-      attachments: attachmentCount
-    })
+    // File check completed
     
     // File validation with detailed logging
     const fileValidationErrors: string[] = []
@@ -239,7 +235,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
         setSubmissionStage('saving')
         setSubmissionProgress(90)
         
-        logger.success('Form submitted successfully', result.submissionId)
+        // Form submitted successfully
         
         // Stage 5: Complete
         setSubmissionStage('complete')

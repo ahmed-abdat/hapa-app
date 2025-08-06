@@ -454,33 +454,15 @@ export function FormFileUpload({
     const validatedFileObjects = newFiles.filter(f => !f.error).map(f => f.file)
     const newFormValue = multiple ? validatedFileObjects : (validatedFileObjects[0] || null)
     
-    logger.log(`🔍 FormFileUpload - Immediately updating form value for field "${name}":`, {
-      component: 'FormFileUpload',
-      metadata: {
-        fieldName: name,
-        totalFiles: newFiles.length,
-        validFiles: validatedFileObjects.length,
-        fileNames: validatedFileObjects.map(f => f.name),
-        fileSizes: validatedFileObjects.map(f => f.size),
-        multiple,
-        valueBeingSet: newFormValue,
-        hasFormOnChange: typeof formOnChangeRef.current === 'function'
-      }
-    })
+    // Update form value immediately with validated files
     
     // Update form value immediately using Controller's onChange or setValue
     if (formOnChangeRef.current) {
       formOnChangeRef.current(newFormValue)
-      logger.log(`✅ Called formOnChange for "${name}" with:`, { 
-        filesCount: Array.isArray(newFormValue) ? newFormValue.length : 1,
-        fileNames: Array.isArray(newFormValue) ? newFormValue.map(f => f.name) : [newFormValue?.name]
-      })
+      // Called formOnChange with new value
     } else {
       setValue(name, newFormValue)
-      logger.log(`✅ Called setValue for "${name}" with:`, { 
-        filesCount: Array.isArray(newFormValue) ? newFormValue.length : 1,
-        fileNames: Array.isArray(newFormValue) ? newFormValue.map(f => f.name) : [newFormValue?.name]
-      })
+      // Called setValue with new value
     }
   }
 
@@ -542,41 +524,22 @@ export function FormFileUpload({
   const updateFormValue = React.useCallback(() => {
     // Skip if no files to avoid clearing during initial setup
     if (files.length === 0) {
-      logger.log(`🔍 FormFileUpload - Skipping update for "${name}", no files present`)
+      // Skipping update - no files present
       return
     }
     
     const validFiles = files.filter(f => !f.error).map(f => f.file)
     const newValue = multiple ? validFiles : (validFiles[0] || null)
     
-    logger.log(`🔍 FormFileUpload - Updating form value for field "${name}":`, {
-      component: 'FormFileUpload',
-      metadata: {
-        fieldName: name,
-        totalFiles: files.length,
-        validFiles: validFiles.length,
-        fileNames: validFiles.map(f => f.name),
-        fileSizes: validFiles.map(f => f.size),
-        multiple,
-        valueBeingSet: newValue,
-        hasFormOnChange: typeof formOnChangeRef.current === 'function',
-        usingSetValue: !formOnChangeRef.current
-      }
-    })
+    // Update form value with valid files
     
     // Use Controller's onChange if available, fallback to setValue
     if (formOnChangeRef.current) {
       formOnChangeRef.current(newValue)
-      logger.log(`✅ Called formOnChange for "${name}" with:`, { 
-        filesCount: Array.isArray(newValue) ? newValue.length : (newValue ? 1 : 0),
-        fileNames: Array.isArray(newValue) ? newValue.map(f => f.name) : (newValue ? [newValue.name] : [])
-      })
+      // Called formOnChange with new value
     } else {
       setValue(name, newValue)
-      logger.log(`✅ Called setValue for "${name}" with:`, { 
-        filesCount: Array.isArray(newValue) ? newValue.length : (newValue ? 1 : 0),
-        fileNames: Array.isArray(newValue) ? newValue.map(f => f.name) : (newValue ? [newValue.name] : [])
-      })
+      // Called setValue with new value
     }
   }, [files, multiple, name, setValue])
 
@@ -650,18 +613,7 @@ export function FormFileUpload({
           // Store the onChange function in ref to avoid Rules of Hooks violation
           formOnChangeRef.current = onChange
           
-          // Debug current field value
-          logger.log(`🔍 FormFileUpload Controller render - Field "${name}":`, {
-            component: 'FormFileUpload',
-            metadata: {
-              fieldName: name,
-              currentValue: value,
-              valueType: typeof value,
-              valueLength: Array.isArray(value) ? value.length : 'not array',
-              filesState: files.length,
-              hasOnChange: typeof onChange === 'function'
-            }
-          })
+          // Controller render - field value updated
           
           return (
             <div className="space-y-3">

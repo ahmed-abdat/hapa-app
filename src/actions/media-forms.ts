@@ -58,7 +58,7 @@ export async function submitMediaFormAction(formData: FormData): Promise<FormSub
   const startTime = Date.now()
   const sessionId = `SA_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   
-  logger.log('🚀 Form submission started', { sessionId })
+  // Form submission started
 
   try {
     // Phase 1: Input Validation & Data Extraction
@@ -138,14 +138,7 @@ export async function submitMediaFormAction(formData: FormData): Promise<FormSub
       attachmentUpload.urls
     )
 
-    // Log complainant info presence for complaint forms
-    if (fields.formType === 'complaint') {
-      logger.log('📝 Complaint submission includes complainant info', {
-        sessionId,
-        hasComplainantInfo: !!submissionData.complainantInfo,
-        fieldsPresent: submissionData.complainantInfo ? Object.keys(submissionData.complainantInfo) : []
-      })
-    }
+    // Complainant info included for complaint forms
 
     const submission = await payload.create({
       collection: 'media-content-submissions',
@@ -156,7 +149,7 @@ export async function submitMediaFormAction(formData: FormData): Promise<FormSub
 
     // Phase 6: Success Response
     const totalTime = Date.now() - startTime
-    logger.success('✅ Form submitted successfully', `ID: ${submission.id}, Files: ${screenshotUpload.uploadedCount + attachmentUpload.uploadedCount}, Time: ${totalTime}ms`)
+    // Form submitted successfully
 
     return {
       success: true,
@@ -448,7 +441,7 @@ async function uploadFilesWithRetry(
       if (result && result.url) {
         urls.push(result.url)
         uploadedCount++
-        logger.success(`File uploaded: ${file.name}`, `Session: ${sessionId}, URL: ${result.url}`)
+        // File uploaded successfully
       } else {
         errors.push(`Upload failed: ${fileId} - No URL returned`)
         logger.error(`Upload failed: ${file.name} - No URL returned`, { sessionId })
@@ -461,7 +454,7 @@ async function uploadFilesWithRetry(
     }
   }
 
-  logger.log(`Upload complete: ${uploadedCount}/${files.length} ${fileType}s uploaded`, { sessionId })
+  // Upload complete
 
   return {
     success: uploadedCount === files.length,

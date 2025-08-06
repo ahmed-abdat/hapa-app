@@ -272,7 +272,7 @@ export function convertToFormData(data: Record<string, any>): FormData {
   const formData = new FormData()
   const conversionSessionId = `CONVERT_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`
   
-  logger.log('Converting form data', { sessionId: conversionSessionId })
+  // Converting form data to FormData
   
   // Check for files to convert
   const screenshotCount = Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0
@@ -310,10 +310,7 @@ export function convertToFormData(data: Record<string, any>): FormData {
     }
   }
 
-  logger.log('FormData conversion complete', { 
-    sessionId: conversionSessionId, 
-    files: screenshotCount + attachmentCount 
-  })
+  // FormData conversion complete
 
   return formData
 }
