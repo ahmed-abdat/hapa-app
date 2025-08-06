@@ -1,6 +1,7 @@
 import { draftMode } from 'next/headers'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import { Link } from '@/i18n/navigation'
 
 export default async function DebugPreviewPage() {
   const { isEnabled: isDraftMode } = await draftMode()
@@ -61,12 +62,12 @@ export default async function DebugPreviewPage() {
                     Slug: {post.slug} | Status: {post._status}
                   </div>
                   <div className="mt-2">
-                    <a 
-                      href={`/fr/posts/${post.slug}`}
+                    <Link 
+                      href={`/posts/${post.slug}`}
                       className="text-blue-600 hover:underline text-sm"
                     >
                       View Post
-                    </a>
+                    </Link>
                     {post.slug && (
                       <span className="mx-2">|</span>
                     )}
@@ -74,6 +75,8 @@ export default async function DebugPreviewPage() {
                       <a 
                         href={`/next/preview?slug=${post.slug}&collection=posts&path=/fr/posts/${post.slug}&previewSecret=${process.env.PREVIEW_SECRET}`}
                         className="text-purple-600 hover:underline text-sm"
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
                         Preview
                       </a>
@@ -97,6 +100,8 @@ export default async function DebugPreviewPage() {
             <a 
               href="/next/exit-preview" 
               className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 inline-block"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Exit Preview Mode
             </a>
