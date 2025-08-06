@@ -17,23 +17,25 @@ export const MediaContentSubmissions: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'formType', 'submissionStatus', 'priority', 'submittedAt', 'locale', 'contentInfo.mediaType', 'contentInfo.specificChannel'],
-    listSearchableFields: ['title', 'contentInfo.programName', 'description', 'complainantInfo.fullName', 'complainantInfo.emailAddress'],
+    defaultColumns: ['title', 'submissionStatus', 'priority', 'formType', 'submittedAt', 'contentInfo.mediaType', 'locale'],
+    listSearchableFields: ['title', 'contentInfo.programName', 'description', 'complainantInfo.fullName', 'complainantInfo.emailAddress', 'contentInfo.specificChannel'],
     group: {
-      en: 'Forms & Submissions',
-      fr: 'Formulaires et Soumissions',
+      fr: 'Formulaires et Soumissions', 
       ar: 'النماذج والإرسالات',
     },
     description: {
-      en: 'Manage media content reports and complaints submitted through the website forms',
-      fr: 'Gérer les signalements et plaintes de contenu médiatique soumis via les formulaires du site',
-      ar: 'إدارة التبليغات والشكاوى الخاصة بالمحتوى الإعلامي المرسلة عبر نماذج الموقع',
+      fr: 'Gérer les signalements et plaintes de contenu médiatique soumis via les formulaires du site. Visualiser les fichiers médias, suivre le statut et gérer les soumissions.',
+      ar: 'إدارة التبليغات والشكاوى الخاصة بالمحتوى الإعلامي المرسلة عبر نماذج الموقع. عرض الملفات الإعلامية وتتبع الحالة وإدارة الطلبات.',
     },
     preview: (doc: Record<string, any>) => {
-      const mediaType = doc.mediaType || doc.contentInfo?.mediaType || 'Unknown'
-      const channel = doc.specificChannel || doc.contentInfo?.specificChannel || 'N/A' 
-      const program = doc.programName || doc.contentInfo?.programName || 'Untitled'
-      return `${doc.formType === 'report' ? 'Report' : 'Complaint'}: ${program} (${mediaType}${channel !== 'N/A' ? ` - ${channel}` : ''})`
+      const formTypeLabel = doc.formType === 'complaint' ? '📋 Plainte' : '⚠️ Signalement'
+      const program = doc.contentInfo?.programName || doc.programName || 'Programme non spécifié'
+      const mediaType = doc.contentInfo?.mediaType || doc.mediaType || ''
+      const channel = doc.contentInfo?.specificChannel || doc.specificChannel || ''
+      const status = doc.submissionStatus || 'pending'
+      const statusEmoji = status === 'resolved' ? '✅' : status === 'reviewing' ? '👀' : status === 'dismissed' ? '❌' : '⏳'
+      
+      return `${formTypeLabel}: ${program}${mediaType ? ` [${mediaType}]` : ''}${channel ? ` - ${channel}` : ''} ${statusEmoji}`
     },
   },
   access: {
@@ -411,9 +413,8 @@ export const MediaContentSubmissions: CollectionConfig = {
         readOnly: true,
         position: 'sidebar',
         description: {
-          en: 'Type of media (TV, Radio, Website, etc.)',
-          fr: 'Type de média (TV, Radio, Site web, etc.)',
-          ar: 'نوع الوسائط (تلفزيون، راديو، موقع ويب، إلخ)',
+          fr: 'Le type de média où le contenu a été trouvé (TV, Radio, Site web, etc.)',
+          ar: 'نوع الوسائط حيث تم العثور على المحتوى (تلفزيون، راديو، موقع ويب، إلخ)',
         },
       },
     },
@@ -555,33 +556,24 @@ export const MediaContentSubmissions: CollectionConfig = {
           name: 'screenshotFiles',
           type: 'array',
           label: {
-            en: 'Screenshot Files',
-            fr: 'Fichiers de capture d\'écran',
-            ar: 'ملفات صورة الشاشة',
+            fr: 'Captures d\'écran et Fichiers de Preuve', 
+            ar: 'لقطات الشاشة وملفات الأدلة',
           },
           fields: [
             {
               name: 'url',
               type: 'text',
-              label: {
-                en: 'File URL',
-                fr: 'URL du fichier',
-                ar: 'رابط الملف',
-              },
-              admin: {
-                readOnly: true,
-              },
+              admin: { readOnly: true },
             },
           ],
           admin: {
             readOnly: true,
             description: {
-              en: 'Files uploaded by the user as evidence',
-              fr: 'Fichiers téléchargés par l\'utilisateur comme preuves',
-              ar: 'الملفات التي رفعها المستخدم كأدلة',
+              fr: 'Captures d\'écran et images fournies comme preuves. Interface épurée sans URLs techniques.',
+              ar: 'لقطات الشاشة والصور المقدمة كأدلة. واجهة نظيفة بدون عناوين URL تقنية.',
             },
             components: {
-              RowLabel: '@/components/admin/FileDisplayRowLabel/index',
+              Field: '@/components/admin/CleanMediaGallery/index',
             },
           },
         },
@@ -675,33 +667,24 @@ export const MediaContentSubmissions: CollectionConfig = {
       name: 'attachmentFiles',
       type: 'array',
       label: {
-        en: 'Attachment Files',
-        fr: 'Fichiers joints',
-        ar: 'الملفات المرفقة',
+        fr: 'Fichiers de Preuve Supplémentaires',
+        ar: 'ملفات أدلة إضافية',
       },
       fields: [
         {
           name: 'url',
           type: 'text',
-          label: {
-            en: 'File URL',
-            fr: 'URL du fichier',
-            ar: 'رابط الملف',
-          },
-          admin: {
-            readOnly: true,
-          },
+          admin: { readOnly: true },
         },
       ],
       admin: {
         readOnly: true,
         description: {
-          en: 'Additional files attached by the user',
-          fr: 'Fichiers supplémentaires joints par l\'utilisateur',
-          ar: 'ملفات إضافية مرفقة من قبل المستخدم',
+          fr: 'Fichiers de preuve supplémentaires (vidéos, audio, documents). Interface épurée sans URLs techniques.',
+          ar: 'ملفات أدلة إضافية (فيديو، صوت، مستندات). واجهة نظيفة بدون عناوين URL تقنية.',
         },
         components: {
-          RowLabel: '@/components/admin/FileDisplayRowLabel/index',
+          Field: '@/components/admin/CleanMediaGallery/index',
         },
       },
     },

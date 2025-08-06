@@ -328,7 +328,7 @@ export interface FormMedia {
   sizes?: {};
 }
 /**
- * Manage media content reports and complaints submitted through the website forms
+ * Gérer les signalements et plaintes de contenu médiatique soumis via les formulaires du site. Visualiser les fichiers médias, suivre le statut et gérer les soumissions.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media-content-submissions".
@@ -355,7 +355,7 @@ export interface MediaContentSubmission {
     relationshipToContent?: string | null;
   };
   /**
-   * Type of media (TV, Radio, Website, etc.)
+   * Le type de média où le contenu a été trouvé (TV, Radio, Site web, etc.)
    */
   mediaType?: string | null;
   /**
@@ -380,7 +380,7 @@ export interface MediaContentSubmission {
     broadcastDateTime?: string | null;
     linkScreenshot?: string | null;
     /**
-     * Files uploaded by the user as evidence
+     * Captures d'écran et images fournies comme preuves. Interface épurée sans URLs techniques.
      */
     screenshotFiles?:
       | {
@@ -405,7 +405,7 @@ export interface MediaContentSubmission {
     | null;
   attachmentOther?: string | null;
   /**
-   * Additional files attached by the user
+   * Fichiers de preuve supplémentaires (vidéos, audio, documents). Interface épurée sans URLs techniques.
    */
   attachmentFiles?:
     | {
