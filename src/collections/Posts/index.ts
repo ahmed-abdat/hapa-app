@@ -105,14 +105,13 @@ export const Posts: CollectionConfig<'posts'> = {
           return '' // Return empty string if no slug is available
         }
 
-        const path = generatePreviewPath({
-          slug,
-          collection: 'posts',
-          req,
-          locale: (locale && typeof locale === 'object' && 'code' in locale) ? String((locale as { code: string }).code) : String(locale || 'fr'),
-        })
-
-        return path
+        // For live preview, return direct frontend URL (not preview route)
+        // This allows the iframe to load the actual content without redirect issues
+        const currentLocale = (locale && typeof locale === 'object' && 'code' in locale) 
+          ? String((locale as { code: string }).code) 
+          : String(locale || 'fr')
+        
+        return `/${currentLocale}/posts/${slug}`
       },
     },
     preview: (data, { req, locale }) => {
