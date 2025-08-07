@@ -1,6 +1,12 @@
 import canUseDOM from './canUseDOM'
 
 export const getServerSideURL = () => {
+  // In development, use the actual port if available from PORT env var
+  if (process.env.NODE_ENV === 'development') {
+    const port = process.env.PORT || '3000'
+    return `http://localhost:${port}`
+  }
+
   let url = process.env.NEXT_PUBLIC_SERVER_URL
 
   if (!url && process.env.VERCEL_PROJECT_PRODUCTION_URL) {
@@ -8,7 +14,8 @@ export const getServerSideURL = () => {
   }
 
   if (!url) {
-    url = 'http://localhost:3000'
+    const port = process.env.PORT || '3000'
+    url = `http://localhost:${port}`
   }
 
   return url
