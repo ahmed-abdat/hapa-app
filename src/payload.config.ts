@@ -173,7 +173,9 @@ export default buildConfig({
     },
   }),
   collections: [Posts, Media, FormMedia, Categories, MediaContentSubmissions, Users],
-  cors: [getServerSideURL()].filter(Boolean),
+  cors: process.env.NODE_ENV === 'development' 
+    ? ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'].filter(Boolean)
+    : [getServerSideURL()].filter(Boolean),
   globals: [],
   plugins: [
     ...plugins,
