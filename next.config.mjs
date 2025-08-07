@@ -12,12 +12,31 @@ const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 })
 
-// Security headers for enhanced protection following MCP best practices
+// Get environment-specific frame ancestors for Payload CMS live preview
+const getFrameAncestors = () => {
+  const baseAncestors = ['\'self\'']
+  
+  if (process.env.NODE_ENV === 'development') {
+    baseAncestors.push('localhost:*')
+  }
+  
+  // Add production admin domain if available
+  const productionUrl = process.env.NEXT_PUBLIC_SERVER_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL
+  if (productionUrl && process.env.NODE_ENV === 'production') {
+    const domain = productionUrl.replace(/^https?:\/\//, '')
+    baseAncestors.push(`https://${domain}`)
+  }
+  
+  return baseAncestors.join(' ')
+}
+
+// Security headers for enhanced protection following Payload CMS best practices
 const securityHeaders = [
-  {
-    key: 'X-Frame-Options',
-    value: 'DENY'
-  },
+  // Remove X-Frame-Options in favor of CSP frame-ancestors (modern approach)
+  // {
+  //   key: 'X-Frame-Options',
+  //   value: 'SAMEORIGIN'
+  // },
   {
     key: 'X-Content-Type-Options',
     value: 'nosniff'
@@ -51,7 +70,7 @@ const securityHeaders = [
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
-      "frame-ancestors 'none'",
+      `frame-ancestors ${getFrameAncestors()}`,
       "upgrade-insecure-requests",
       "block-all-mixed-content"
     ].join('; ')

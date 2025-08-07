@@ -35,10 +35,11 @@ Production-ready bilingual government website with French/Arabic support and RTL
 ## Architecture Overview
 
 ### Page Structure & Routing
-- **Dynamic Pages**: `app/(frontend)/[locale]/[slug]/page.tsx` - All localized pages
-- **Hero System**: `src/heros/RenderHero.tsx` - Dynamic hero component resolver
+- **Homepage**: `app/(frontend)/[locale]/page.tsx` - Homepage with hero + blocks
+- **Dynamic Pages**: Specific routes like `/posts/[slug]`, `/about/*`, `/forms/*`
 - **Block System**: `src/blocks/RenderBlocks.tsx` - CMS content blocks renderer
 - **Internationalization**: `src/i18n/navigation.ts` - next-intl routing utilities
+- **App Structure**: `(frontend)` for public pages, `(payload)` for CMS admin
 
 ### Content Management Flow
 1. **Collections** (`src/collections/`) define data structure with localization
@@ -47,14 +48,15 @@ Production-ready bilingual government website with French/Arabic support and RTL
 4. **Dynamic rendering** combines hero + blocks for each page
 
 **Block System Architecture:**
-- All blocks registered in `src/blocks/RenderBlocks.tsx`
-- Block configs in `src/collections/Pages/index.ts` determine admin interface
+- All blocks registered in `src/blocks/RenderBlocks.tsx` with component mapping
+- Block variants: `NewsAnnouncements` supports 'simple' and 'rich' layouts
 - Each block: `Component.tsx` (React) + `config.ts` (Payload schema)
+- Available blocks: `aboutMission`, `archive`, `banner`, `code`, `complaintForm`, `contactForm`, `content`, `coreServices`, `cta`, `mediaBlock`, `mediaReportingCTA`, `mediaSpace`, `newsAnnouncements`, `partnersSection`
 
 **Hero System Architecture:**
-- Hero types registered in `src/heros/RenderHero.tsx`
-- Hero configs in `src/heros/config.ts` define admin options
-- Homepage uses `homepageHero` type with bilingual content
+- Heroes used directly in pages without central registry
+- Available heroes: `HomepageHero`, `ContactUsHero`, `PostHero`, `PublicationsCategoryHero`
+- Each hero accepts locale and content props for bilingual rendering
 
 **Internationalization Stack:**
 - `src/i18n/routing.ts` - Locale configuration (fr/ar)
@@ -73,14 +75,15 @@ Production-ready bilingual government website with French/Arabic support and RTL
 
 ### Adding New Hero Types
 1. Create hero component: `src/heros/YourHero/index.tsx`
-2. Register in `src/heros/RenderHero.tsx` (import + add to heroes object)
-3. Add option in `src/heros/config.ts`
-4. Run `pnpm generate:types` to update types
+2. **Note**: There is no central `RenderHero.tsx` or `config.ts` - heroes are used directly in pages
+3. Available hero types: `HomepageHero`, `ContactUsHero`, `PostHero`, `PublicationsCategoryHero`
+4. Import directly in page components and pass appropriate props
 
 ### Adding Translations
-1. Add keys to both `fr` and `ar` objects in `src/utilities/translations.ts`
-2. Use `getTranslation(key, locale)` in components
+1. Add keys to both `fr` and `ar` objects in `/messages/fr.json` and `/messages/ar.json`
+2. Use `useTranslations()` hook or `getTranslations()` server function
 3. Get locale from `useParams()` and cast to `Locale` type
+4. Message files are loaded via next-intl `NextIntlClientProvider`
 
 ## Critical Development Rules
 
@@ -98,11 +101,18 @@ Production-ready bilingual government website with French/Arabic support and RTL
 4. **Use translations** - `getTranslation(key, locale)` for UI strings
 
 ### Key Collections
-- **Pages**: Block-based static content | **Posts**: News with categories | **MediaContentSubmissions**: Form submissions
+- **Posts**: News articles with categories and localization
+- **Media**: File storage with metadata and CDN optimization 
+- **FormMedia**: Form-specific file uploads separate from general media
+- **Categories**: Post categorization system
+- **MediaContentSubmissions**: Public form submissions (complaint/report)
+- **Users**: Admin user management
 
 ### Custom Forms (React Hook Form + Zod + Shadcn UI)
-- **Media Content Complaint/Report Forms**: Bilingual with RTL support
-- **API**: `/api/media-forms/submit` | `/api/admin/media-submissions*`
+- **Forms**: `/forms/media-content-complaint` and `/forms/media-content-report`
+- **Components**: `src/components/CustomForms/` with field components and schemas
+- **API**: Form submission via server actions in `src/actions/media-forms.ts`
+- **Admin View**: Custom dashboard at `/admin/media-submissions` for form management
 
 ## Database Management
 
@@ -118,3 +128,28 @@ neonctl connection-string production --project-id damp-snow-64638673
 1. Update collections in `src/collections/`
 2. Run `pnpm payload migrate` 
 3. Run `pnpm generate:types`
+
+## Performance & Bundle Analysis
+
+### Bundle Analysis Commands
+- `pnpm analyze` - Production bundle analysis with size breakdown
+- `pnpm analyze:dev` - Development bundle analysis
+- Bundle analyzer available at `http://localhost:3000/__bundle_analyzer`
+
+### Storage Configuration
+- **Primary**: Cloudflare R2 bucket via `@payloadcms/storage-s3`
+- **Fallback**: Local file storage for development
+- **Configuration**: `src/utilities/storage-config.ts` with environment-based selection
+- **Media Handling**: Automatic format optimization and CDN delivery
+
+## Testing & Quality Assurance
+
+### Code Quality Commands
+- `pnpm lint` - ESLint checks with Next.js rules
+- `pnpm lint:fix` - Auto-fix linting issues
+- **Configuration**: `eslint.config2.mjs` with TypeScript and accessibility rules
+
+### Browser Support
+- **Modern Browsers**: Chrome 64+, Firefox 67+, Safari 12+, Edge 79+
+- **RTL Support**: Full Arabic RTL layout with proper text direction
+- **Performance**: Core Web Vitals optimized with Next.js 15 features
