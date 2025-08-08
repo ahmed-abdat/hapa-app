@@ -20,6 +20,7 @@ Production-ready bilingual government website with French/Arabic support and RTL
 ### Development Workflow
 - `pnpm dev` - Start development server (http://localhost:3000 → redirects to /fr)
 - `pnpm generate:types` - **REQUIRED after schema changes** - Regenerate TypeScript types
+- `pnpm payload generate:importmap` - **REQUIRED after adding admin components** - Register new components
 - `pnpm payload migrate` - Apply database schema changes (select "+" to accept)
 - `pnpm lint` & `pnpm lint:fix` - Code quality checks and fixes
 
@@ -72,6 +73,7 @@ Production-ready bilingual government website with French/Arabic support and RTL
 3. Register in `src/blocks/RenderBlocks.tsx` (import + add to blockComponents)
 4. Register in `src/collections/Pages/index.ts` (import + add to blocks array)
 5. Run `pnpm generate:types` to update TypeScript types
+6. If block uses admin components, run `pnpm payload generate:importmap`
 
 ### Adding New Hero Types
 1. Create hero component: `src/heros/YourHero/index.tsx`
@@ -87,9 +89,17 @@ Production-ready bilingual government website with French/Arabic support and RTL
 
 ## Critical Development Rules
 
+### Payload CMS Admin Development
+- **MANDATORY**: Run `pnpm payload generate:importmap` after creating any custom admin components
+- **MANDATORY**: Run `pnpm generate:types` after modifying collections, globals, or field schemas
+- **Component Registration**: All admin components must be registered in importMap for Payload to recognize them
+- **Collection Changes**: Any new collections or field modifications require type generation
+- **Admin Component Paths**: Use absolute paths from project root (e.g., `@/components/admin/MyComponent`)
+
 ### Internationalization Requirements
 - **ALWAYS** import `Link` from `@/i18n/navigation`, never from `next/link`
 - **ALWAYS** run `pnpm generate:types` after schema changes
+- **ALWAYS** run `pnpm payload generate:importmap` after adding admin components
 - French content required first (generates slugs), Arabic translation optional with fallback
 - Use `useParams()` to get locale, cast as `Locale` type
 - Support RTL layout: use `getLocaleDirection(locale)` for `dir` attribute
@@ -128,6 +138,7 @@ neonctl connection-string production --project-id damp-snow-64638673
 1. Update collections in `src/collections/`
 2. Run `pnpm payload migrate` 
 3. Run `pnpm generate:types`
+4. If adding admin components, run `pnpm payload generate:importmap`
 
 ## Performance & Bundle Analysis
 

@@ -1,46 +1,47 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
-import type { PayloadSubmissionData } from '@/types/media-forms'
-import { logger } from '@/utilities/logger'
+import { NextRequest, NextResponse } from "next/server";
+import { getPayload } from "payload";
+import configPromise from "@payload-config";
+import type { PayloadSubmissionData } from "@/types/media-forms";
+import { logger } from "@/utilities/logger";
 
-const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 // Simple cache using WeakMap to avoid memory leaks in serverless environment
-const cacheWeakMap = new WeakMap()
-const cacheKey = { key: 'stats-cache' }
+const cacheWeakMap = new WeakMap();
+const cacheKey = { key: "stats-cache" };
 
 // Use the generated Payload types directly instead of custom interface
-import type { MediaContentSubmission } from '@/payload-types'
+// Note: do not import the full MediaContentSubmission type here; with `select` the
+// returned docs are a narrowed shape. We'll rely on inference from Payload.
 
 export async function GET(req: NextRequest) {
   try {
     // Check cache first
-    const cachedData = cacheWeakMap.get(cacheKey)
+    const cachedData = cacheWeakMap.get(cacheKey);
     if (cachedData && Date.now() - cachedData.timestamp < CACHE_TTL) {
-      return NextResponse.json(cachedData.data)
+      return NextResponse.json(cachedData.data);
     }
 
     // Get Payload instance
-    const payload = await getPayload({ config: configPromise })
-    
+    const payload = await getPayload({ config: configPromise });
+
     // Check if user is authenticated
-    const { user } = await payload.auth({ headers: req.headers })
-    
+    const { user } = await payload.auth({ headers: req.headers });
+
     if (!user) {
       return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
+        { success: false, error: "Unauthorized" },
         { status: 401 }
-      )
+      );
     }
 
     // Fetch recent submissions with optimized query
     const submissions = await payload.find({
-      collection: 'media-content-submissions',
+      collection: "media-content-submissions",
       limit: 100, // Reduced for better performance
-      sort: '-submittedAt',
+      sort: "-submittedAt",
+      // Note: 'id' is implicitly returned by Payload and is not part of the generated Select type
       select: {
-        id: true,
         formType: true,
         submissionStatus: true,
         priority: true,
@@ -52,7 +53,43 @@ export async function GET(req: NextRequest) {
         reasons: true,
         adminNotes: true,
       },
-    })
+    });
+
+    // Helper: build a human-readable title similar to the admin list
+    const buildSubmissionTitle = (submission: {
+      formType: "report" | "complaint";
+      submittedAt: string;
+      contentInfo?: { programName?: string; mediaType?: string };
+      description?: string;
+    }): string => {
+      const formTypeLabel =
+        submission.formType === "complaint" ? "Plainte" : "Signalement";
+      const programName = submission.contentInfo?.programName?.trim();
+      const mediaType = submission.contentInfo?.mediaType?.trim();
+      const dateDisplay = (() => {
+        try {
+          const d = new Date(submission.submittedAt);
+          if (!isNaN(d.getTime())) {
+            return d.toLocaleDateString("fr-FR", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            });
+          }
+        } catch {}
+        return undefined;
+      })();
+      const fallback =
+        submission.description && submission.description.trim().length > 0
+          ? submission.description.trim().slice(0, 60) +
+            (submission.description.length > 60 ? "…" : "")
+          : "Sans titre";
+
+      const core = `${formTypeLabel}${mediaType ? ` [${mediaType}]` : ""} - ${
+        programName || fallback
+      }`;
+      return dateDisplay ? `${core} (${dateDisplay})` : core;
+    };
 
     // Process statistics
     const stats = {
@@ -101,159 +138,179 @@ export async function GET(req: NextRequest) {
         thisWeek: 0,
         thisMonth: 0,
       },
-    }
+    };
 
-    const now = new Date()
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
     // Process each submission for statistics
-    submissions.docs.forEach((submission: MediaContentSubmission) => {
-      const submittedDate = new Date(submission.submittedAt)
+    submissions.docs.forEach((submission) => {
+      const submittedDate = new Date(submission.submittedAt);
 
       // Form type counts
-      if (submission.formType === 'report') {
-        stats.reportSubmissions++
-        stats.reportStats.total++
-        
+      if (submission.formType === "report") {
+        stats.reportSubmissions++;
+        stats.reportStats.total++;
+
         // Status counts for reports
         switch (submission.submissionStatus) {
-          case 'pending':
-            stats.reportStats.pending++
-            break
-          case 'reviewing':
-            stats.reportStats.reviewing++
-            break
-          case 'resolved':
-            stats.reportStats.resolved++
-            break
-          case 'dismissed':
-            stats.reportStats.dismissed++
-            break
+          case "pending":
+            stats.reportStats.pending++;
+            break;
+          case "reviewing":
+            stats.reportStats.reviewing++;
+            break;
+          case "resolved":
+            stats.reportStats.resolved++;
+            break;
+          case "dismissed":
+            stats.reportStats.dismissed++;
+            break;
         }
 
         // Language counts for reports
-        if (submission.locale === 'fr') {
-          stats.reportStats.french++
-        } else if (submission.locale === 'ar') {
-          stats.reportStats.arabic++
+        if (submission.locale === "fr") {
+          stats.reportStats.french++;
+        } else if (submission.locale === "ar") {
+          stats.reportStats.arabic++;
         }
 
         // Time-based counts for reports
         if (submittedDate >= weekAgo) {
-          stats.reportStats.thisWeek++
+          stats.reportStats.thisWeek++;
         }
         if (submittedDate >= monthStart) {
-          stats.reportStats.thisMonth++
+          stats.reportStats.thisMonth++;
         }
-      } else if (submission.formType === 'complaint') {
-        stats.complaintSubmissions++
-        stats.complaintStats.total++
-        
+      } else if (submission.formType === "complaint") {
+        stats.complaintSubmissions++;
+        stats.complaintStats.total++;
+
         // Status counts for complaints
         switch (submission.submissionStatus) {
-          case 'pending':
-            stats.complaintStats.pending++
-            break
-          case 'reviewing':
-            stats.complaintStats.reviewing++
-            break
-          case 'resolved':
-            stats.complaintStats.resolved++
-            break
-          case 'dismissed':
-            stats.complaintStats.dismissed++
-            break
+          case "pending":
+            stats.complaintStats.pending++;
+            break;
+          case "reviewing":
+            stats.complaintStats.reviewing++;
+            break;
+          case "resolved":
+            stats.complaintStats.resolved++;
+            break;
+          case "dismissed":
+            stats.complaintStats.dismissed++;
+            break;
         }
 
         // Language counts for complaints
-        if (submission.locale === 'fr') {
-          stats.complaintStats.french++
-        } else if (submission.locale === 'ar') {
-          stats.complaintStats.arabic++
+        if (submission.locale === "fr") {
+          stats.complaintStats.french++;
+        } else if (submission.locale === "ar") {
+          stats.complaintStats.arabic++;
         }
 
         // Time-based counts for complaints
         if (submittedDate >= weekAgo) {
-          stats.complaintStats.thisWeek++
+          stats.complaintStats.thisWeek++;
         }
         if (submittedDate >= monthStart) {
-          stats.complaintStats.thisMonth++
+          stats.complaintStats.thisMonth++;
         }
       }
 
       // Overall status counts
       switch (submission.submissionStatus) {
-        case 'pending':
-          stats.pendingCount++
-          break
-        case 'reviewing':
-          stats.reviewingCount++
-          break
-        case 'resolved':
-          stats.resolvedCount++
-          break
-        case 'dismissed':
-          stats.dismissedCount++
-          break
+        case "pending":
+          stats.pendingCount++;
+          break;
+        case "reviewing":
+          stats.reviewingCount++;
+          break;
+        case "resolved":
+          stats.resolvedCount++;
+          break;
+        case "dismissed":
+          stats.dismissedCount++;
+          break;
       }
 
       // Priority counts
       switch (submission.priority) {
-        case 'urgent':
-          stats.urgentCount++
-          break
-        case 'high':
-          stats.highCount++
-          break
-        case 'medium':
-          stats.mediumCount++
-          break
-        case 'low':
-          stats.lowCount++
-          break
+        case "urgent":
+          stats.urgentCount++;
+          break;
+        case "high":
+          stats.highCount++;
+          break;
+        case "medium":
+          stats.mediumCount++;
+          break;
+        case "low":
+          stats.lowCount++;
+          break;
       }
 
       // Language counts
-      if (submission.locale === 'fr') {
-        stats.frenchSubmissions++
-      } else if (submission.locale === 'ar') {
-        stats.arabicSubmissions++
+      if (submission.locale === "fr") {
+        stats.frenchSubmissions++;
+      } else if (submission.locale === "ar") {
+        stats.arabicSubmissions++;
       }
 
       // Time-based counts
       if (submittedDate >= today) {
-        stats.todaySubmissions++
+        stats.todaySubmissions++;
       }
       if (submittedDate >= weekAgo) {
-        stats.weekSubmissions++
+        stats.weekSubmissions++;
       }
       if (submittedDate >= monthStart) {
-        stats.monthSubmissions++
+        stats.monthSubmissions++;
       }
 
       // Media type counts (if available)
       if (submission.contentInfo?.mediaType) {
-        const mediaType = submission.contentInfo.mediaType.toLowerCase()
-        if (mediaType.includes('television') || mediaType.includes('tv')) {
-          stats.mediaTypeStats.television++
-        } else if (mediaType.includes('radio')) {
-          stats.mediaTypeStats.radio++
-        } else if (mediaType.includes('online') || mediaType.includes('web') || mediaType.includes('internet')) {
-          stats.mediaTypeStats.online++
-        } else if (mediaType.includes('print') || mediaType.includes('journal') || mediaType.includes('magazine')) {
-          stats.mediaTypeStats.print++
+        const mediaType = submission.contentInfo.mediaType.toLowerCase();
+        if (mediaType.includes("television") || mediaType.includes("tv")) {
+          stats.mediaTypeStats.television++;
+        } else if (mediaType.includes("radio")) {
+          stats.mediaTypeStats.radio++;
+        } else if (
+          mediaType.includes("online") ||
+          mediaType.includes("web") ||
+          mediaType.includes("internet")
+        ) {
+          stats.mediaTypeStats.online++;
+        } else if (
+          mediaType.includes("print") ||
+          mediaType.includes("journal") ||
+          mediaType.includes("magazine")
+        ) {
+          stats.mediaTypeStats.print++;
         } else {
-          stats.mediaTypeStats.other++
+          stats.mediaTypeStats.other++;
         }
       }
-    })
+    });
 
     // Prepare submissions data for table
-    const submissionsData = submissions.docs.map((submission: MediaContentSubmission) => ({
-      id: submission.id.toString(),  // Convert number to string for frontend
-      title: submission.title || 'Untitled',  // Handle nullable title
+    const submissionsData = submissions.docs.map((submission) => ({
+      id: submission.id.toString(), // Convert number to string for frontend
+      // Build human-friendly title without relying on hidden admin-only 'title' field
+      title: buildSubmissionTitle({
+        formType: submission.formType,
+        submittedAt: submission.submittedAt,
+        contentInfo: {
+          programName: submission.contentInfo?.programName ?? undefined,
+          mediaType: submission.contentInfo?.mediaType ?? undefined,
+        },
+        description:
+          typeof submission.description === "string"
+            ? submission.description
+            : undefined,
+      }),
       formType: submission.formType,
       submissionStatus: submission.submissionStatus,
       priority: submission.priority,
@@ -264,26 +321,26 @@ export async function GET(req: NextRequest) {
       description: submission.description,
       reasons: submission.reasons,
       adminNotes: submission.adminNotes,
-    }))
+    }));
 
     const response = {
       success: true,
       stats,
       submissions: submissionsData,
-    }
+    };
 
     // Cache the response
     cacheWeakMap.set(cacheKey, {
       data: response,
       timestamp: Date.now(),
-    })
+    });
 
-    return NextResponse.json(response)
+    return NextResponse.json(response);
   } catch (error) {
-    logger.error('Error fetching media submissions stats:', error)
+    logger.error("Error fetching media submissions stats:", error);
     return NextResponse.json(
-      { success: false, error: 'Internal server error' },
+      { success: false, error: "Internal server error" },
       { status: 500 }
-    )
+    );
   }
 }

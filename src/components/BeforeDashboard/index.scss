@@ -1,4 +1,4 @@
-@import '~@payloadcms/ui/scss';
+@import "~@payloadcms/ui/scss";
 
 .dashboard .before-dashboard {
   margin-bottom: base(1.5);
@@ -19,6 +19,70 @@
   }
 
   & a:hover {
-    opacity: 0.85;
+    /* Keep legacy hover for generic links but exclude enhanced admin buttons */
+    &:not(.admin-action) {
+      opacity: 0.85;
+    }
+  }
+
+  /* Enhanced Admin Action Buttons - no Tailwind dependency */
+  .admin-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 0.875rem; /* 10px 14px */
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.875rem; /* 14px */
+    font-weight: 600;
+    line-height: 1;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease,
+      transform 0.05s ease;
+    border: 1px solid transparent;
+
+    &:hover {
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(19, 139, 58, 0.4); /* ring aligned with #138B3A */
+    }
+
+    & .admin-action__icon {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.2s ease;
+    }
+
+    &:hover .admin-action__icon {
+      transform: scale(1.1);
+    }
+  }
+
+  .admin-action.admin-action--primary {
+    background: var(--hapa-primary);
+    color: #fff;
+    border-color: var(--hapa-primary);
+
+    &:hover {
+      background: var(--hapa-accent);
+      border-color: var(--hapa-accent);
+    }
+  }
+
+  .admin-action.admin-action--outline {
+    background: #fff;
+    color: var(--hapa-primary);
+    border-color: var(--hapa-primary);
+
+    &:hover {
+      background: rgba(14, 122, 46, 0.05); /* subtle green tint */
+    }
   }
 }

@@ -7,7 +7,8 @@ import { getPayload } from "payload";
 import React from "react";
 import { isValidLocale } from "@/utilities/locale";
 import { notFound } from "next/navigation";
-import type { Category, Post } from "@/payload-types";
+import type { Category, Post, Media } from "@/payload-types";
+import { CardPostData } from "@/components/Card";
 import { logger } from "@/utilities/logger";
 
 // Force dynamic rendering to avoid database connectivity issues during build
@@ -28,7 +29,7 @@ export default async function ActualitesPage({ params: paramsPromise }: Args) {
   }
 
   let categoryResult: { docs: Category[] } = { docs: [] };
-  let posts: { docs: Post[], totalDocs: number, totalPages: number, page: number } = { docs: [], totalDocs: 0, totalPages: 1, page: 1 };
+  let posts: { docs: CardPostData[], totalDocs: number, totalPages: number, page: number } = { docs: [], totalDocs: 0, totalPages: 1, page: 1 };
 
   try {
     const payload = await getPayload({ config: configPromise });
@@ -63,7 +64,6 @@ export default async function ActualitesPage({ params: paramsPromise }: Args) {
             ? { categories: { in: [categoryResult.docs[0].id] } }
             : { id: { equals: "nonexistent" } }, // Return empty if category doesn't exist
         select: {
-          id: true,
           title: true,
           slug: true,
           categories: true,
@@ -73,7 +73,7 @@ export default async function ActualitesPage({ params: paramsPromise }: Args) {
         },
       });
       posts = {
-        docs: postsResult.docs,
+        docs: postsResult.docs as CardPostData[],
         totalDocs: postsResult.totalDocs,
         totalPages: postsResult.totalPages,
         page: postsResult.page || 1

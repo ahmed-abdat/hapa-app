@@ -27,6 +27,7 @@ export const MediaContentSubmissions: CollectionConfig = {
       fr: 'Gérer les signalements et plaintes de contenu médiatique soumis via les formulaires du site. Visualiser les fichiers médias, suivre le statut et gérer les soumissions.',
       ar: 'إدارة التبليغات والشكاوى الخاصة بالمحتوى الإعلامي المرسلة عبر نماذج الموقع. عرض الملفات الإعلامية وتتبع الحالة وإدارة الطلبات.',
     },
+    // Dashboard now accessible via sidebar navigation
     preview: (doc: Record<string, any>) => {
       const formTypeLabel = doc.formType === 'complaint' ? '📋 Plainte' : '⚠️ Signalement'
       const program = doc.contentInfo?.programName || doc.programName || 'Programme non spécifié'

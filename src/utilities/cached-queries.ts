@@ -1,7 +1,7 @@
 import { unstable_cache as cache } from 'next/cache'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import type { Post } from '@/payload-types'
+import type { Post, Category } from '@/payload-types'
 import type { Locale } from './locale'
 import { logger } from '@/utilities/logger'
 
@@ -10,6 +10,10 @@ import { logger } from '@/utilities/logger'
  * Uses Next.js unstable_cache for optimal performance
  * Enhanced with depth limits and select fields optimization
  */
+// Define the type for partial post data returned by select queries
+type PostListItem = Pick<Post, 'id' | 'title' | 'slug' | 'publishedAt' | 'createdAt' | 'heroImage' | 'categories' | 'meta'>
+type PostDetailItem = Pick<Post, 'id' | 'title' | 'slug' | 'publishedAt' | 'createdAt' | 'heroImage' | 'categories' | 'content' | 'meta'>
+
 export const getCachedPosts = cache(
   async ({
     limit = 6,
@@ -21,7 +25,7 @@ export const getCachedPosts = cache(
     locale?: Locale
     categoryId?: string
     excludeId?: string
-  }): Promise<Post[]> => {
+  }): Promise<PostListItem[]> => {
     try {
       const payload = await getPayload({ config: configPromise })
 
@@ -46,7 +50,6 @@ export const getCachedPosts = cache(
         locale,
         depth: 1,
         select: {
-          id: true,
           title: true,
           slug: true,
           publishedAt: true,
@@ -59,7 +62,7 @@ export const getCachedPosts = cache(
         },
       })
 
-      return result.docs
+      return result.docs as PostListItem[]
     } catch (error) {
       logger.cache.error('cached_posts_fetch', 'posts', error as Error, {
         metadata: { limit, locale, categoryId, excludeId }
@@ -78,7 +81,7 @@ export const getCachedPosts = cache(
  * Cached single post fetcher
  */
 export const getCachedPostBySlug = cache(
-  async ({ slug, locale = 'fr' }: { slug: string; locale?: Locale }): Promise<Post | null> => {
+  async ({ slug, locale = 'fr' }: { slug: string; locale?: Locale }): Promise<PostDetailItem | null> => {
     try {
       const payload = await getPayload({ config: configPromise })
 
@@ -92,7 +95,6 @@ export const getCachedPostBySlug = cache(
         locale,
         depth: 2, // Keep depth 2 for full post content
         select: {
-          id: true,
           title: true,
           slug: true,
           publishedAt: true,
@@ -108,7 +110,7 @@ export const getCachedPostBySlug = cache(
         },
       })
 
-      return result.docs[0] || null
+      return (result.docs[0] as PostDetailItem) || null
     } catch (error) {
       logger.cache.error('cached_post_fetch', slug, error as Error, {
         metadata: { slug, locale }
@@ -123,11 +125,14 @@ export const getCachedPostBySlug = cache(
   }
 )
 
+// Define the type for partial category data returned by select queries
+type CategoryListItem = Pick<Category, 'id' | 'title' | 'slug'>
+
 /**
  * Cached categories fetcher
  */
 export const getCachedCategories = cache(
-  async ({ locale = 'fr' }: { locale?: Locale } = {}) => {
+  async ({ locale = 'fr' }: { locale?: Locale } = {}): Promise<CategoryListItem[]> => {
     try {
       const payload = await getPayload({ config: configPromise })
 
@@ -138,13 +143,12 @@ export const getCachedCategories = cache(
         locale,
         depth: 1, // Add depth limit for performance
         select: {
-          id: true,
           title: true,
           slug: true,
         },
       })
 
-      return result.docs
+      return result.docs as CategoryListItem[]
     } catch (error) {
       logger.cache.error('cached_categories_fetch', 'categories', error as Error, {
         metadata: { locale }

@@ -54,7 +54,6 @@ export default async function PublicationCategoryPage({
     limit: 1, // Payload best practice: limit 1 for unique fields
     depth: 0, // Performance optimization: don't populate relationships
     select: {
-      id: true,
       title: true,
       slug: true,
     },

@@ -1,12 +1,18 @@
 /* HAPA Government Authority Admin Panel Branding */
 
-/* HAPA Brand Colors */
+/* HAPA Brand Colors - aligned with frontend Tailwind CSS variables */
 :root {
-  --hapa-primary: #065986; /* Government authority blue */
-  --hapa-secondary: #d4a574; /* Official gold accent */
-  --hapa-accent: #2d5a27; /* Regulatory green */
-  --hapa-light: #f8f9fa; /* Light background */
-  --hapa-text: #2c3e50; /* Professional text */
+  /* Frontend brand mapping */
+  /* Primary Green (#138B3A) */
+  --hapa-primary: #138b3a;
+  /* Bright Yellow (#E6E619) */
+  --hapa-secondary: #e6e619;
+  /* Dark Green Accent (#0F7A2E) */
+  --hapa-accent: #0f7a2e;
+  /* Light background */
+  --hapa-light: #f8f9fa;
+  /* Text color aligned with frontend foreground */
+  --hapa-text: #111827; /* close to hsl(var(--foreground)) */
 }
 
 /* Customize Payload admin interface with HAPA branding */
