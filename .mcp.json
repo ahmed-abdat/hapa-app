@@ -15,6 +15,16 @@
         "@modelcontextprotocol/server-sequential-thinking"
       ],
       "env": {}
+    },
+    "shadcn-ui": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@jpisnice/shadcn-ui-mcp-server"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "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"
+      }
     }
   }
 }
