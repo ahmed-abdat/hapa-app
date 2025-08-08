@@ -142,6 +142,35 @@ neonctl connection-string production --project-id damp-snow-64638673
 - **Configuration**: `src/utilities/storage-config.ts` with environment-based selection
 - **Media Handling**: Automatic format optimization and CDN delivery
 
+## MCP Servers & Advanced Analysis
+
+### Available MCP Servers
+- **Serena** - Advanced codebase analysis and semantic navigation
+- **Context7** - Library documentation and framework patterns  
+- **Sequential Thinking** - Complex problem solving and architectural analysis
+- **Exa/Brave Search** - Web research and documentation lookup
+
+### Using Serena MCP for Codebase Analysis
+```typescript
+// Intelligent code navigation - finds symbols across the codebase
+mcp__serena__find_symbol("Posts", "src/collections/Posts/index.ts")
+
+// Pattern search with semantic understanding
+mcp__serena__search_for_pattern("export.*Collection", "src/collections")
+
+// Get project structure overview
+mcp__serena__get_symbols_overview("src/payload.config.ts")
+
+// Smart code editing with symbol replacement
+mcp__serena__replace_symbol_body("ComponentName", "path/to/file.ts", "new code")
+```
+
+**Key Serena Commands:**
+- `find_symbol` - Locate functions, classes, exports by name/path pattern
+- `search_for_pattern` - Regex-based semantic search across files
+- `get_symbols_overview` - Analyze file structure and exports
+- `replace_symbol_body` - Edit specific symbols intelligently
+
 ## Testing & Quality Assurance
 
 ### Code Quality Commands

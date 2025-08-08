@@ -28,3 +28,6 @@ hapa_backup/
 debuging/
 *.debug
 *.tmp
+
+# Development tools
+.serena/
