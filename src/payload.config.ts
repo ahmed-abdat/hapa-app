@@ -11,6 +11,7 @@ import { fileURLToPath } from "url";
 
 import { Categories } from "./collections/Categories";
 import { MediaContentSubmissions } from "./collections/MediaContentSubmissions";
+import { MediaSubmissionsDashboard } from "./collections/MediaSubmissionsDashboard";
 import { Media } from "./collections/Media";
 import { FormMedia } from "./collections/FormMedia";
 import { Posts } from "./collections/Posts";
@@ -61,8 +62,6 @@ export default buildConfig({
       },
       // Load custom CSS styles
       providers: ["@/components/AdminProvider/index.tsx"],
-      // Custom navigation links
-      afterNavLinks: ["@/components/admin/MediaSubmissionsNavLink/index.tsx"],
       // Custom admin views
       views: {
         "media-submissions": {
@@ -172,10 +171,27 @@ export default buildConfig({
       // retry_delay: 500, // Property doesn't exist in PoolConfig
     },
   }),
-  collections: [Posts, Media, FormMedia, Categories, MediaContentSubmissions, Users],
-  cors: process.env.NODE_ENV === 'development' 
-    ? ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'].filter(Boolean)
-    : [getServerSideURL()].filter(Boolean),
+  // Reordered to control sidebar grouping order for "Formulaires et Soumissions":
+  // 1) MediaSubmissionsDashboard (dashboard link)
+  // 2) MediaContentSubmissions (data list)
+  // 3) FormMedia (uploads from forms)
+  collections: [
+    Posts,
+    Media,
+    Categories,
+    MediaSubmissionsDashboard,
+    MediaContentSubmissions,
+    FormMedia,
+    Users,
+  ],
+  cors:
+    process.env.NODE_ENV === "development"
+      ? [
+          "http://localhost:3000",
+          "http://localhost:3001",
+          "http://localhost:3002",
+        ].filter(Boolean)
+      : [getServerSideURL()].filter(Boolean),
   globals: [],
   plugins: [
     ...plugins,

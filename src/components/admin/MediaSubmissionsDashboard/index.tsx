@@ -8,6 +8,7 @@ import {
 } from '@payloadcms/ui'
 import { SubmissionsTable } from './SubmissionsTable'
 import { logger } from '@/utilities/logger'
+import { BarChart3, Clock, Eye, Users, AlertTriangle, MessageSquare, CalendarDays } from 'lucide-react'
 
 import './index.scss'
 
@@ -210,7 +211,7 @@ export function MediaSubmissionsDashboard() {
       <Banner type="success" className="media-submissions-dashboard__header">
         <div className="header-content">
           <div className="header-info">
-            <h1>Tableau de Bord des Soumissions Médiatiques</h1>
+            <h1>Tableau de bord des Soumissions Médiatiques</h1>
             <p>Gérez et suivez les signalements et plaintes concernant le contenu médiatique</p>
           </div>
           <div className="header-actions">
@@ -232,14 +233,18 @@ export function MediaSubmissionsDashboard() {
           className={`nav-tab ${currentView === 'dashboard' ? 'nav-tab--active' : ''}`}
           onClick={() => setCurrentView('dashboard')}
         >
-          <span className="nav-tab__icon">📊</span>
-          Tableau de Bord
+          <span className="nav-tab__icon" aria-hidden>
+            <BarChart3 size={16} />
+          </span>
+          Tableau de bord
         </button>
         <button
           className={`nav-tab ${currentView === 'table' ? 'nav-tab--active' : ''}`}
           onClick={() => setCurrentView('table')}
         >
-          <span className="nav-tab__icon">📋</span>
+          <span className="nav-tab__icon" aria-hidden>
+            <Eye size={16} />
+          </span>
           Gestion des Soumissions
         </button>
       </div>
@@ -249,11 +254,14 @@ export function MediaSubmissionsDashboard() {
         <div className="media-submissions-dashboard__content">
           {/* Statistics Cards */}
           <div className="stats-grid">
-            {/* Total Submissions */}
+            {/* Total Submissions */
+            }
             <div className="stat-card stat-card--primary">
               <div className="stat-card__header">
                 <h3>Total des Soumissions</h3>
-                <span className="stat-card__icon">👥</span>
+                <span className="stat-card__icon" aria-hidden>
+                  <Users size={18} />
+                </span>
               </div>
               <div className="stat-card__value">{stats.totalSubmissions}</div>
               <div className="stat-card__details">
@@ -265,7 +273,9 @@ export function MediaSubmissionsDashboard() {
             <div className="stat-card stat-card--warning">
               <div className="stat-card__header">
                 <h3>En Attente</h3>
-                <span className="stat-card__icon">⏳</span>
+                <span className="stat-card__icon" aria-hidden>
+                  <Clock size={18} />
+                </span>
               </div>
               <div className="stat-card__value">{stats.pendingCount}</div>
               <div className="stat-card__details">Nécessitent une révision</div>
@@ -275,7 +285,9 @@ export function MediaSubmissionsDashboard() {
             <div className="stat-card stat-card--info">
               <div className="stat-card__header">
                 <h3>En Cours d&apos;Examen</h3>
-                <span className="stat-card__icon">👁️</span>
+                <span className="stat-card__icon" aria-hidden>
+                  <Eye size={18} />
+                </span>
               </div>
               <div className="stat-card__value">{stats.reviewingCount}</div>
               <div className="stat-card__details">Actuellement en révision</div>
@@ -285,7 +297,9 @@ export function MediaSubmissionsDashboard() {
             <div className="stat-card stat-card--success">
               <div className="stat-card__header">
                 <h3>Ce Mois-ci</h3>
-                <span className="stat-card__icon">📈</span>
+                <span className="stat-card__icon" aria-hidden>
+                  <BarChart3 size={18} />
+                </span>
               </div>
               <div className="stat-card__value">{stats.monthSubmissions}</div>
               <div className="stat-card__details">
@@ -306,7 +320,9 @@ export function MediaSubmissionsDashboard() {
                   <h3>Signalements de Contenu</h3>
                   <p>Contenus médiatiques inappropriés signalés</p>
                 </div>
-                <span className="form-type-card__icon form-type-card__icon--warning">⚠️</span>
+                <span className="form-type-card__icon form-type-card__icon--warning" aria-hidden>
+                  <AlertTriangle size={28} />
+                </span>
               </div>
               <div className="form-type-card__value">{stats.reportStats.total}</div>
               <div className="form-type-card__stats">
@@ -340,7 +356,9 @@ export function MediaSubmissionsDashboard() {
                   <h3>Plaintes Officielles</h3>
                   <p>Plaintes formelles avec informations de contact</p>
                 </div>
-                <span className="form-type-card__icon form-type-card__icon--info">💬</span>
+                <span className="form-type-card__icon form-type-card__icon--info" aria-hidden>
+                  <MessageSquare size={28} />
+                </span>
               </div>
               <div className="form-type-card__value">{stats.complaintStats.total}</div>
               <div className="form-type-card__stats">
@@ -387,8 +405,8 @@ export function MediaSubmissionsDashboard() {
                 >
                   <div className="submission-preview__content">
                     <div className="submission-preview__header">
-                      <span className={`submission-type submission-type--${submission.formType}`}>
-                        {submission.formType === 'report' ? '⚠️' : '💬'}
+                      <span className={`submission-type submission-type--${submission.formType}`} aria-hidden>
+                        {submission.formType === 'report' ? <AlertTriangle size={18} /> : <MessageSquare size={18} />}
                       </span>
                       <h4>{submission.title}</h4>
                       <span className={`priority-badge priority-badge--${submission.priority}`}>
@@ -398,7 +416,8 @@ export function MediaSubmissionsDashboard() {
                     
                     <div className="submission-preview__meta">
                       <span className="submission-date">
-                        📅 {new Date(submission.submittedAt).toLocaleDateString('fr-FR')}
+                        <CalendarDays size={14} style={{ marginRight: 6 }} aria-hidden />
+                        {new Date(submission.submittedAt).toLocaleDateString('fr-FR')}
                       </span>
                       <span className={`locale-badge locale-badge--${submission.locale}`}>
                         {submission.locale.toUpperCase()}

@@ -6,6 +6,11 @@ import type { Post, Category } from '@/payload-types'
 import type { Locale } from '@/utilities/locale'
 import { logger } from '@/utilities/logger'
 
+// Define types for partial data returned by select queries
+type PostListItem = Pick<Post, 'id' | 'title' | 'slug' | 'publishedAt' | 'createdAt' | 'heroImage' | 'categories' | 'meta'>
+type PostDetailItem = Pick<Post, 'id' | 'title' | 'slug' | 'publishedAt' | 'createdAt' | 'heroImage' | 'categories' | 'content' | 'meta'>
+type CategoryListItem = Pick<Category, 'id' | 'title' | 'slug'>
+
 /**
  * Enhanced caching utilities for HAPA website performance optimization
  * Follows Next.js 15 + React 19 best practices for unstable_cache usage:
@@ -35,7 +40,7 @@ export const getCachedPosts = unstable_cache(
     limit?: number
     categoryId?: string
     excludeId?: string
-  }): Promise<Post[]> => {
+  }): Promise<PostListItem[]> => {
     try {
       const payload = await getPayloadClient()
       
@@ -60,7 +65,6 @@ export const getCachedPosts = unstable_cache(
         locale,
         depth: 1, // Optimized depth for list views
         select: {
-          id: true,
           title: true,
           slug: true,
           publishedAt: true,
@@ -73,7 +77,7 @@ export const getCachedPosts = unstable_cache(
         },
       })
 
-      return result.docs
+      return result.docs as PostListItem[]
     } catch (error) {
       logger.cache.error('posts_fetch', 'posts', error as Error, {
         metadata: { locale, limit, categoryId, excludeId }
@@ -91,7 +95,7 @@ export const getCachedPosts = unstable_cache(
 
 // Cached single post with optimized fields for detail view
 export const getCachedPostBySlug = unstable_cache(
-  async ({ slug, locale = 'fr' }: { slug: string; locale?: Locale }): Promise<Post | null> => {
+  async ({ slug, locale = 'fr' }: { slug: string; locale?: Locale }): Promise<PostDetailItem | null> => {
     try {
       const payload = await getPayloadClient()
 
@@ -105,7 +109,6 @@ export const getCachedPostBySlug = unstable_cache(
         locale,
         depth: 2, // Keep depth 2 for full content and populated relations
         select: {
-          id: true,
           title: true,
           slug: true,
           publishedAt: true,
@@ -121,7 +124,7 @@ export const getCachedPostBySlug = unstable_cache(
         },
       })
 
-      return result.docs[0] || null
+      return (result.docs[0] as PostDetailItem) || null
     } catch (error) {
       logger.cache.error('post_by_slug_fetch', slug, error as Error, {
         metadata: { locale, slug }
@@ -140,7 +143,7 @@ export const getCachedPostBySlug = unstable_cache(
 // Cached categories with React cache for request memoization
 export const getCachedCategories = cache(
   unstable_cache(
-    async ({ locale = 'fr' }: { locale?: Locale } = {}): Promise<Category[]> => {
+    async ({ locale = 'fr' }: { locale?: Locale } = {}): Promise<CategoryListItem[]> => {
       try {
         const payload = await getPayloadClient()
 
@@ -151,13 +154,12 @@ export const getCachedCategories = cache(
           locale,
           depth: 1, // Optimized depth
           select: {
-            id: true,
-            title: true,
+              title: true,
             slug: true,
           },
         })
 
-        return result.docs
+        return result.docs as CategoryListItem[]
       } catch (error) {
         logger.cache.error('categories_fetch', 'categories', error as Error, {
           metadata: { locale }
