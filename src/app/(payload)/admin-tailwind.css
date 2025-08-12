@@ -3,3 +3,99 @@
 /* @tailwind base; */
 @tailwind components;
 @tailwind utilities;
+
+/* Scoped Tailwind Preflight for dashboard components */
+/* This applies Tailwind's base styles only within .dashboard-tailwind containers */
+/* Prevents conflicts with Payload's native admin styling */
+
+.dashboard-tailwind {
+  /* CSS Variables for consistent theming */
+  --tw-border-color: rgb(229 231 235); /* border-gray-200 */
+  --tw-ring-color: rgb(59 130 246 / 0.5); /* blue-500/50 */
+  --tw-text-opacity: 1;
+  --tw-bg-opacity: 1;
+  
+  /* Base font family (can be overridden by utilities) */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  
+  /* Normalize font size to 16px base (Tailwind default) */
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Box-sizing and border normalization for all elements within dashboard */
+.dashboard-tailwind *,
+.dashboard-tailwind *::before,
+.dashboard-tailwind *::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: var(--tw-border-color);
+}
+
+/* Reset margins and normalize typography within dashboard */
+.dashboard-tailwind h1,
+.dashboard-tailwind h2, 
+.dashboard-tailwind h3,
+.dashboard-tailwind h4,
+.dashboard-tailwind h5,
+.dashboard-tailwind h6 {
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+}
+
+.dashboard-tailwind p,
+.dashboard-tailwind figure,
+.dashboard-tailwind blockquote,
+.dashboard-tailwind dl,
+.dashboard-tailwind ol,
+.dashboard-tailwind ul {
+  margin: 0;
+}
+
+.dashboard-tailwind ol,
+.dashboard-tailwind ul {
+  list-style: none;
+  padding: 0;
+}
+
+/* Form element normalization within dashboard */
+.dashboard-tailwind input,
+.dashboard-tailwind button,
+.dashboard-tailwind textarea,
+.dashboard-tailwind select {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  background: transparent;
+}
+
+.dashboard-tailwind button,
+.dashboard-tailwind [role="button"] {
+  cursor: pointer;
+}
+
+/* Table normalization within dashboard */
+.dashboard-tailwind table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.dashboard-tailwind img,
+.dashboard-tailwind svg,
+.dashboard-tailwind video,
+.dashboard-tailwind canvas,
+.dashboard-tailwind audio,
+.dashboard-tailwind iframe,
+.dashboard-tailwind embed,
+.dashboard-tailwind object {
+  display: block;
+  vertical-align: middle;
+  max-width: 100%;
+}
+
+/* Hidden elements within dashboard */
+.dashboard-tailwind [hidden] {
+  display: none !important;
+}

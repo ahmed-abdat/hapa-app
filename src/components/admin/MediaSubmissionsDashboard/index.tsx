@@ -18,7 +18,7 @@ import { ModernDashboard } from "./ModernDashboard";
  */
 export function MediaSubmissionsDashboard() {
   return (
-    <div className="min-h-screen bg-background text-foreground antialiased">
+    <div className="dashboard-tailwind min-h-screen bg-background text-foreground antialiased">
       <ModernDashboard />
     </div>
   );
