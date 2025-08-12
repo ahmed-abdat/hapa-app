@@ -157,7 +157,7 @@ export function SubmissionsDataTable({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm truncate">
-                  {hasComplainant ? submission.complainantInfo.fullName : "Anonyme"}
+                  {hasComplainant ? submission.complainantInfo?.fullName : "Anonyme"}
                 </p>
                 {submission.complainantInfo?.emailAddress && (
                   <div className="flex items-center gap-1 mt-0.5">
