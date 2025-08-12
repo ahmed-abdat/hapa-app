@@ -1,0 +1,339 @@
+/* HAPA Enhanced Admin Dashboard Styles */
+/* Following proven patterns from Integration-tailwind-css-shadcnui-payloadmcs.md */
+
+/* CSS Cascade Layers for explicit priority control */
+@layer payload-default, hapa-brand, tailwind-utilities, hapa-custom;
+
+@layer hapa-brand {
+  /* HAPA Official Government Brand Variables */
+  :root {
+    /* HAPA Primary Brand Colors */
+    --hapa-primary: 142 80% 25%;        /* HAPA Official Green */
+    --hapa-secondary: 45 95% 50%;       /* HAPA Official Yellow */
+    --hapa-accent: 142 75% 20%;         /* HAPA Dark Green */
+    
+    /* Government Authority Status Colors */
+    --hapa-urgent: 0 85% 60%;           /* Emergency Red */
+    --hapa-warning: 27 87% 67%;         /* Warning Orange */
+    --hapa-success: 142 70% 45%;        /* Success Green */
+    --hapa-info: 215 85% 60%;           /* Information Blue */
+    --hapa-neutral: 215 25% 35%;        /* Professional Gray */
+    
+    /* Mauritanian Heritage Colors */
+    --hapa-heritage-green: 142 80% 25%; /* National Flag Green */
+    --hapa-heritage-gold: 45 95% 50%;   /* National Symbol Gold */
+    
+    /* Enhanced Government Typography */
+    --hapa-font-heading: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    --hapa-font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    --hapa-font-arabic: 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif;
+    
+    /* Government Spacing Scale */
+    --hapa-spacing-xs: 0.25rem;  /* 4px */
+    --hapa-spacing-sm: 0.5rem;   /* 8px */
+    --hapa-spacing-md: 1rem;     /* 16px */
+    --hapa-spacing-lg: 1.5rem;   /* 24px */
+    --hapa-spacing-xl: 2rem;     /* 32px */
+    --hapa-spacing-2xl: 3rem;    /* 48px */
+    
+    /* Government Authority Z-Index Scale */
+    --hapa-z-dropdown: 1000;
+    --hapa-z-modal: 2000;
+    --hapa-z-toast: 3000;
+    --hapa-z-tooltip: 4000;
+    --hapa-z-overlay: 5000;
+  }
+
+  /* Dark mode optimizations for government dashboard */
+  [data-theme="dark"] {
+    --hapa-primary: 142 70% 35%;        /* Lighter green for dark mode */
+    --hapa-secondary: 45 85% 60%;       /* Softer yellow for dark mode */
+    --hapa-urgent: 0 75% 65%;           /* Softer red for dark mode */
+    --hapa-warning: 27 80% 72%;         /* Softer orange for dark mode */
+    --hapa-success: 142 65% 50%;        /* Softer success green */
+  }
+
+  /* Bridge variables to map HAPA colors to Tailwind/shadcn system */
+  :root {
+    --primary: var(--hapa-primary);
+    --secondary: var(--hapa-secondary);
+    --destructive: var(--hapa-urgent);
+    --warning: var(--hapa-warning);
+    --success: var(--hapa-success);
+    --info: var(--hapa-info);
+  }
+}
+
+@layer tailwind-utilities {
+  /* Import Tailwind utilities in controlled layer */
+  @import "tailwindcss/utilities";
+}
+
+@layer hapa-custom {
+  /* Scoped preflight for HAPA components */
+  .hapa-scoped {
+    /* Essential box-sizing for shadcn/ui compatibility */
+    box-sizing: border-box;
+  }
+  
+  .hapa-scoped *,
+  .hapa-scoped *::before,
+  .hapa-scoped *::after {
+    box-sizing: border-box;
+  }
+
+  /* Enhanced HAPA Brand Identity Cards */
+  .hapa-card-enhanced {
+    @apply bg-card border border-border rounded-xl shadow-sm transition-all duration-200;
+    padding: var(--hapa-spacing-lg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hapa-card-enhanced::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background: linear-gradient(180deg, 
+      hsl(var(--hapa-primary)), 
+      hsl(var(--hapa-accent))
+    );
+    border-radius: 0 4px 4px 0;
+  }
+
+  .hapa-card-enhanced:hover {
+    @apply shadow-md -translate-y-0.5;
+    box-shadow: 0 10px 25px hsl(var(--foreground) / 0.1);
+  }
+
+  /* Government Authority Card Variants */
+  .hapa-card-urgent::before {
+    background: linear-gradient(180deg, 
+      hsl(var(--hapa-urgent)), 
+      hsl(var(--hapa-urgent) / 0.8)
+    );
+  }
+
+  .hapa-card-warning::before {
+    background: linear-gradient(180deg, 
+      hsl(var(--hapa-warning)), 
+      hsl(var(--hapa-warning) / 0.8)
+    );
+  }
+
+  .hapa-card-success::before {
+    background: linear-gradient(180deg, 
+      hsl(var(--hapa-success)), 
+      hsl(var(--hapa-success) / 0.8)
+    );
+  }
+
+  .hapa-card-info::before {
+    background: linear-gradient(180deg, 
+      hsl(var(--hapa-info)), 
+      hsl(var(--hapa-info) / 0.8)
+    );
+  }
+
+  /* HAPA Official Header with Government Branding */
+  .hapa-header-official {
+    @apply sticky top-0 z-30 flex h-auto min-h-16 items-center gap-6 px-6 py-4;
+    background: linear-gradient(135deg, 
+      hsl(var(--hapa-primary)), 
+      hsl(var(--hapa-accent))
+    );
+    color: white;
+    border: none;
+    border-radius: 12px;
+    margin-bottom: var(--hapa-spacing-xl);
+    position: relative;
+    box-shadow: 
+      0 4px 6px hsl(var(--foreground) / 0.1),
+      0 1px 3px hsl(var(--foreground) / 0.1);
+  }
+
+  .hapa-header-official::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+      hsl(var(--hapa-heritage-gold)), 
+      hsl(var(--hapa-heritage-green)), 
+      hsl(var(--hapa-heritage-gold))
+    );
+    border-radius: 12px 12px 0 0;
+  }
+
+  .hapa-header-official .hapa-title {
+    @apply text-2xl font-bold tracking-tight;
+    color: white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+
+  .hapa-header-official .hapa-subtitle {
+    @apply text-sm opacity-90;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  /* Government Official Icon Container */
+  .hapa-icon-official {
+    @apply flex items-center justify-center w-10 h-10 rounded-lg;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+  }
+
+  .hapa-icon-official:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+  }
+
+  /* Enhanced Government Badges */
+  .hapa-badge-official {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s ease;
+  }
+
+  .hapa-badge-urgent {
+    background: linear-gradient(135deg, 
+      hsl(var(--hapa-urgent) / 0.9), 
+      hsl(var(--hapa-urgent) / 0.7)
+    );
+    color: white;
+    animation: pulse-urgent 2s infinite;
+  }
+
+  .hapa-badge-warning {
+    background: linear-gradient(135deg, 
+      hsl(var(--hapa-warning) / 0.9), 
+      hsl(var(--hapa-warning) / 0.7)
+    );
+    color: white;
+  }
+
+  .hapa-badge-success {
+    background: linear-gradient(135deg, 
+      hsl(var(--hapa-success) / 0.9), 
+      hsl(var(--hapa-success) / 0.7)
+    );
+    color: white;
+  }
+
+  /* Government Priority Indicators */
+  @keyframes pulse-urgent {
+    0%, 100% { 
+      opacity: 1; 
+      box-shadow: 0 0 20px hsl(var(--hapa-urgent) / 0.3);
+    }
+    50% { 
+      opacity: 0.8; 
+      box-shadow: 0 0 30px hsl(var(--hapa-urgent) / 0.5);
+    }
+  }
+
+  /* WCAG 2.1 AA Accessibility Enhancements */
+  .hapa-accessible-focus {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+    --tw-ring-color: hsl(var(--hapa-primary));
+    --tw-ring-offset-color: hsl(var(--background));
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .hapa-card-enhanced {
+      border-width: 2px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .hapa-card-enhanced::before {
+      width: 8px;
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .hapa-card-enhanced,
+    .hapa-icon-official,
+    .hapa-badge-official {
+      transition: none;
+      animation: none;
+    }
+  }
+
+  /* RTL support for Arabic content */
+  [dir="rtl"] .hapa-card-enhanced::before {
+    left: auto;
+    right: 0;
+    border-radius: 4px 0 0 4px;
+  }
+
+  [dir="rtl"] .hapa-header-official {
+    direction: rtl;
+  }
+
+  /* Print optimization for government reports */
+  @media print {
+    .hapa-header-official {
+      background: none !important;
+      color: black !important;
+      border: 2px solid black !important;
+    }
+
+    .hapa-card-enhanced {
+      border: 1px solid black !important;
+      background: white !important;
+      box-shadow: none !important;
+      break-inside: avoid;
+    }
+
+    .hapa-badge-urgent,
+    .hapa-badge-warning,
+    .hapa-badge-success {
+      background: white !important;
+      color: black !important;
+      border: 1px solid black !important;
+    }
+  }
+
+  /* Mobile-first responsive enhancements */
+  @media (max-width: 640px) {
+    .hapa-header-official {
+      @apply flex-col items-start gap-4 py-4 px-4;
+    }
+
+    .hapa-header-official .hapa-title {
+      @apply text-xl;
+    }
+
+    .hapa-card-enhanced {
+      padding: var(--hapa-spacing-md);
+    }
+
+    .hapa-icon-official {
+      @apply w-8 h-8;
+    }
+  }
+}
+
+/* Payload CMS compatibility layers */
+@layer payload-default {
+  /* Ensure Payload dropdowns appear above HAPA dashboard */
+  .payload-locale-picker,
+  .payload-locale-picker__dropdown,
+  .payload-locale-picker__menu,
+  .payload__popup,
+  .payload__dropdown-menu,
+  [data-testid="locale-selector"],
+  .payload-locale-selector {
+    z-index: var(--hapa-z-overlay) !important;
+  }
+}
