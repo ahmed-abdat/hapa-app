@@ -38,7 +38,7 @@ export const FormMedia: CollectionConfig = {
       ar: 'الملفات المرفوعة عبر نماذج الإرسال. هذه الملفات غير متاحة للاختيار في المحتويات الأخرى.'
     },
     useAsTitle: 'filename',
-    defaultColumns: ['filename', 'formType', 'submissionDate', 'fileSize', 'mimeType'],
+    defaultColumns: ['filename', 'formType', 'submissionDate'],
     listSearchableFields: ['filename', 'alt', 'formType', 'submissionId'],
     // Hide from global search to prevent accidental selection
     hidden: ({ user }) => !user, // Only visible to authenticated users
@@ -202,38 +202,6 @@ export const FormMedia: CollectionConfig = {
         description: {
           fr: 'Date et heure de téléchargement du fichier',
           ar: 'تاريخ ووقت رفع الملف'
-        }
-      },
-    },
-    {
-      name: 'fileSize',
-      type: 'number',
-      label: {
-        fr: 'Taille du fichier (octets)',
-        ar: 'حجم الملف (بايت)'
-      },
-      admin: {
-        position: 'sidebar',
-        readOnly: true,
-        description: {
-          fr: 'Taille du fichier en octets',
-          ar: 'حجم الملف بالبايت'
-        }
-      },
-    },
-    {
-      name: 'mimeType',
-      type: 'text',
-      label: {
-        fr: 'Type MIME',
-        ar: 'نوع MIME'
-      },
-      admin: {
-        position: 'sidebar',
-        readOnly: true,
-        description: {
-          fr: 'Type MIME du fichier',
-          ar: 'نوع MIME للملف'
         }
       },
     },
