@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import { Toaster } from '@/components/ui/sonner'
 
 const AdminProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return (
@@ -15,6 +16,16 @@ const AdminProvider: React.FC<{ children?: React.ReactNode }> = ({ children }) =
         }
       `}</style>
       {children}
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: 'hsl(var(--background))',
+            color: 'hsl(var(--foreground))',
+            border: '1px solid hsl(var(--border))',
+          },
+        }}
+      />
     </>
   )
 }

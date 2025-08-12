@@ -1,0 +1,20 @@
+---
+globs: src/middleware.ts,src/app/**/route.ts
+---
+
+# Middleware and Preview Rules
+
+- Middleware
+
+  - Uses next-intl middleware; skips `/api`, `/admin`, `/next`, `/_next`, `/_vercel`, and files
+  - Root `/` redirects to `/fr`
+  - Reference: [`src/middleware.ts`](mdc:src/middleware.ts)
+
+- Preview mode
+
+  - Admin live preview uses iframe; ensure CORS/frame-ancestors are correct in `next.config.mjs`
+  - Preview debugging notes: [`PREVIEW_MODE_FIX.md`](mdc:PREVIEW_MODE_FIX.md) and [`PAYLOAD_PREVIEW_PRODUCTION_RESEARCH.md`](mdc:PAYLOAD_PREVIEW_PRODUCTION_RESEARCH.md)
+
+- Pitfalls
+  - Do not intercept `/next/*` preview routes with middleware logic
+  - Ensure localized routes exist for previewed content (e.g., `/[locale]/posts/[slug]`)

@@ -1,0 +1,5 @@
+/* Tailwind for Payload admin: utilities only to avoid preflight resets */
+/* Keep base disabled globally to avoid conflicts with Payload styles */
+/* @tailwind base; */
+@tailwind components;
+@tailwind utilities;

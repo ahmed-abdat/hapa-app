@@ -465,5 +465,90 @@
   "errorTypeunknown": "Erreur inconnue",
   "autoRetrying": "Nouvelle tentative automatique dans {seconds}s",
   "maxRetriesReached": "Nombre maximum de tentatives atteint",
-  "canRetryManually": "Vous pouvez réessayer manuellement"
+  "canRetryManually": "Vous pouvez réessayer manuellement",
+
+  "dashboard": {
+    "title": "Tableau de Bord des Soumissions Médiatiques",
+    "subtitle": "Gestion centralisée des signalements et plaintes"
+  },
+  
+  "filters": {
+    "type": "Type",
+    "all": "Tous",
+    "search": "Rechercher",
+    "status": "Statut",
+    "priority": "Priorité"
+  },
+  
+  "forms": {
+    "report": "Signalement",
+    "complaint": "Plainte"
+  },
+  
+  "actions": {
+    "refresh": "Actualiser",
+    "bulkActions": "Actions Groupées",
+    "view": "Voir",
+    "edit": "Modifier"
+  },
+  
+  "stats": {
+    "total": "Total",
+    "thisWeek": "Cette Semaine",
+    "pending": "En Attente",
+    "resolutionRate": "Taux de Résolution",
+    "resolved": "Résolus",
+    "urgent": "Urgent"
+  },
+  
+  "status": {
+    "pending": "En Attente",
+    "reviewing": "En Révision",
+    "resolved": "Résolu",
+    "dismissed": "Rejeté"
+  },
+  
+  "priority": {
+    "urgent": "Urgent",
+    "high": "Élevée",
+    "medium": "Moyenne",
+    "low": "Faible"
+  },
+  
+  "common": {
+    "requiresImmediateAction": "Nécessite une Action Immédiate",
+    "averageResponseTime": "Temps de Réponse Moyen",
+    "lastThirtyDays": "30 Derniers Jours",
+    "quickActions": "Actions Rapides",
+    "export": "Exporter",
+    "import": "Importer",
+    "statusDistribution": "Répartition des Statuts",
+    "priorityLevels": "Niveaux de Priorité",
+    "recentSubmissions": "Soumissions Récentes",
+    "viewAll": "Voir Tout",
+    "anonymous": "Anonyme",
+    "submissionManagement": "Gestion des Soumissions",
+    "openInAdmin": "Ouvrir dans Admin",
+    "detailedAnalytics": "Analyses Détaillées",
+    "customReports": "Rapports Personnalisés",
+    "teamManagement": "Gestion d'Équipe"
+  },
+  
+  "tabs": {
+    "overview": "Aperçu",
+    "submissions": "Soumissions",
+    "analytics": "Analyses",
+    "reports": "Rapports",
+    "team": "Équipe"
+  },
+  
+  "table": {
+    "title": "Titre",
+    "type": "Type",
+    "status": "Statut",
+    "priority": "Priorité",
+    "submittedOn": "Soumis le",
+    "language": "Langue",
+    "actions": "Actions"
+  }
 }

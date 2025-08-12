@@ -20,6 +20,7 @@ import { plugins } from "./plugins";
 import { defaultLexical } from "@/fields/defaultLexical";
 import { getServerSideURL } from "./utilities/getURL";
 import { getStorageConfig } from "./utilities/storage-config";
+import { adminTranslations } from "./translations/admin-translations";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -62,17 +63,7 @@ export default buildConfig({
       },
       // Load custom CSS styles
       providers: ["@/components/AdminProvider/index.tsx"],
-      // Custom admin views
-      views: {
-        "media-submissions": {
-          Component:
-            "@/components/admin/MediaSubmissionsDashboard/PayloadView.tsx",
-          path: "/media-submissions",
-          meta: {
-            title: "Soumissions Médiatiques - HAPA Admin",
-          },
-        },
-      },
+      // Media Submissions Dashboard is handled via virtual collection
     },
     importMap: {
       baseDir: path.resolve(dirname),
@@ -104,26 +95,7 @@ export default buildConfig({
   // Admin Interface Internationalization (French and Arabic only)
   i18n: {
     supportedLanguages: { fr, ar },
-    translations: {
-      fr: {
-        // Plugin-generated collections
-        "general:redirects": "Redirections",
-        "general:search": "Résultats de recherche",
-        // Custom HAPA admin translations
-        "general:dashboard": "Tableau de bord HAPA",
-        "general:adminPanel": "Interface d'administration HAPA",
-        "general:welcome": "Bienvenue dans l'interface d'administration HAPA",
-      },
-      ar: {
-        // Plugin-generated collections
-        "general:redirects": "عمليات إعادة التوجيه",
-        "general:search": "نتائج البحث",
-        // Custom HAPA admin translations
-        "general:dashboard": "لوحة تحكم هابا",
-        "general:adminPanel": "واجهة إدارة هابا",
-        "general:welcome": "مرحباً بك في واجهة إدارة هابا",
-      },
-    },
+    translations: adminTranslations,
   },
   localization: {
     locales: [

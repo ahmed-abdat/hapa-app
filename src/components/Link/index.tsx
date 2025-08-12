@@ -40,7 +40,6 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
 
   if (!href) return null
 
-  const size = appearance === 'link' ? 'clear' : sizeFromProps
   const newTabProps = newTab ? { rel: 'noopener noreferrer', target: '_blank' } : {}
 
   /* Ensure we don't break any styles set by richText */
@@ -53,8 +52,35 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     )
   }
 
+  // Handle button variants - map invalid variants to valid ones
+  const buttonVariant: ButtonProps['variant'] = (() => {
+    const appearanceStr = String(appearance)
+    if (appearanceStr === 'clear') return 'ghost'
+    if (appearanceStr === 'inline') return 'ghost'
+    
+    // Check if appearance is a valid ButtonProps variant
+    const validVariants = ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link']
+    if (validVariants.includes(appearanceStr)) {
+      return appearanceStr as ButtonProps['variant']
+    }
+    
+    return 'default'
+  })()
+
+  // Handle button sizes - map invalid sizes to valid ones  
+  const buttonSize: ButtonProps['size'] = (() => {
+    if (String(appearance) === 'link') return 'sm'
+    
+    const validSizes = ['default', 'sm', 'lg', 'icon']
+    if (sizeFromProps && validSizes.includes(String(sizeFromProps))) {
+      return sizeFromProps as ButtonProps['size']
+    }
+    
+    return 'default'
+  })()
+
   return (
-    <Button asChild className={className} size={size} variant={appearance}>
+    <Button asChild className={className} size={buttonSize} variant={buttonVariant}>
       <Link className={cn(className)} href={href || url || ''} {...newTabProps}>
         {label && label}
         {children && children}

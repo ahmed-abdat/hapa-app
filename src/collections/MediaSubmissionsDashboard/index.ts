@@ -33,11 +33,11 @@ export const MediaSubmissionsDashboard: CollectionConfig = {
       ar: "الوصول إلى لوحة تحكم إرسالات الوسائط مع الإحصائيات والإدارة المتقدمة",
     },
     useAsTitle: "id",
-    // Override the default list view with modern landing component
+    // Override the default list view with the full dashboard component
     components: {
       views: {
         list: {
-          Component: "@/components/admin/DashboardLanding/index.tsx",
+          Component: "@/components/admin/MediaSubmissionsDashboard/index.tsx",
         },
       },
     },

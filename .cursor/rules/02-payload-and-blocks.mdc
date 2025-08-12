@@ -1,0 +1,45 @@
+---
+globs: src/collections/**/*.ts,src/blocks/**/*.ts,src/blocks/**/*.tsx,src/payload.config.ts
+---
+
+# Payload CMS and Blocks Rules
+
+- Main config
+
+  - All collection/global/plugin changes go in [`src/payload.config.ts`](mdc:src/payload.config.ts)
+  - After schema changes, run: `pnpm generate:types`
+
+- Collections
+
+  - Define in `src/collections/*` with localized labels and access
+  - Examples: [`src/collections/Posts/index.ts`](mdc:src/collections/Posts/index.ts), [`src/collections/Categories.ts`](mdc:src/collections/Categories.ts), [`src/collections/Media.ts`](mdc:src/collections/Media.ts)
+  - Access: public reads where appropriate; writes require authentication
+
+- Types
+
+  - Generated at [`src/payload-types.ts`](mdc:src/payload-types.ts)
+  - Must be regenerated after any collection or field change
+
+- Plugins
+
+  - Centralized in [`src/plugins/index.ts`](mdc:src/plugins/index.ts)
+  - Includes redirects, nested docs, SEO, search, cloud; review labels and hooks
+
+- Blocks system
+
+  - Register new blocks in [`src/blocks/RenderBlocks.tsx`](mdc:src/blocks/RenderBlocks.tsx)
+  - Each block should have a React component and a Payload `config.ts`
+  - The `newsAnnouncements` block supports `layoutVariant` = `simple` | `rich`
+
+- Admin components
+
+  - If adding custom admin components, run: `pnpm payload generate:importmap`
+
+- Workflow
+  - Order for schema changes:
+    1. Edit collections/blocks
+    2. `pnpm payload migrate` (accept prompts)
+    3. `pnpm generate:types`
+    4. If admin components added: `pnpm payload generate:importmap`
+
+See also guidance in [CLAUDE.md](mdc:CLAUDE.md).

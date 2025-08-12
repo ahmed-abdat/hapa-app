@@ -19,8 +19,12 @@ const config = {
     // Ensure admin routes are included
     './src/app/(payload)/admin/**/*.{ts,tsx}',
     './src/components/admin/**/*.{ts,tsx}',
+    // Include SCSS files that use Tailwind utilities
+    './src/components/admin/**/*.scss',
+    // Include admin custom.scss which contains shadcn variables
+    './src/app/(payload)/custom.scss',
   ],
-  darkMode: ['selector', '[data-theme="dark"]'],
+  darkMode: ['selector', '[data-theme="dark"]', '.dark'],
   plugins: [tailwindcssAnimate, typography],
   prefix: '',
   safelist: [

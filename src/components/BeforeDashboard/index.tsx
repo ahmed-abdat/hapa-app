@@ -51,7 +51,7 @@ const BeforeDashboard: React.FC = () => {
               Gérer les Collections
             </Link>
             <Link
-              href="/admin/media-submissions"
+              href="/admin/collections/dashboard-submissions"
               /* Enhanced UI/UX via scoped CSS (no Tailwind dependency in admin) */
               className="admin-action admin-action--primary"
               aria-label="Ouvrir les soumissions médiatiques"
