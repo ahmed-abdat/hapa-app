@@ -1134,9 +1134,7 @@ export function ModernDashboard() {
                     >
                       {dynamicStats.evidenceQuality.withEvidence}
                     </div>
-                    <div className="text-xs hapa-text-muted">
-                      Avec preuves
-                    </div>
+                    <div className="text-xs hapa-text-muted">Avec preuves</div>
                   </div>
                   <div
                     style={{
@@ -1155,9 +1153,7 @@ export function ModernDashboard() {
                     >
                       {dynamicStats.evidenceQuality.withoutEvidence}
                     </div>
-                    <div className="text-xs hapa-text-muted">
-                      Sans preuves
-                    </div>
+                    <div className="text-xs hapa-text-muted">Sans preuves</div>
                   </div>
                   <div
                     style={{
