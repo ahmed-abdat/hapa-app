@@ -1,0 +1,62 @@
+---
+alwaysApply: true
+---
+
+# HAPA Project Structure and Entry Points
+
+Use this rule to orient yourself quickly in the codebase and navigate to the correct file fast.
+
+- App router and locales
+
+  - Public app lives under `src/app/(frontend)`
+  - Locale-prefixed routes: `src/app/(frontend)/[locale]/*` (locales: `fr`, `ar`)
+  - Root redirect: `src/app/(frontend)/page.tsx` → redirects to `/fr`
+  - Locale layout: `src/app/(frontend)/[locale]/layout.tsx`
+  - Middleware for locale handling: `src/middleware.ts`
+
+- Internationalization (next-intl)
+
+  - Routing config: [`src/i18n/routing.ts`](mdc:src/i18n/routing.ts)
+  - Navigation helpers and Link: [`src/i18n/navigation.ts`](mdc:src/i18n/navigation.ts)
+  - Request integration: [`src/i18n/request.ts`](mdc:src/i18n/request.ts)
+  - Locale types/utilities: [`src/utilities/locale.ts`](mdc:src/utilities/locale.ts)
+
+- Payload CMS
+
+  - Main config: [`src/payload.config.ts`](mdc:src/payload.config.ts)
+  - Generated types: [`src/payload-types.ts`](mdc:src/payload-types.ts)
+  - Collections: [`src/collections/*`](mdc:src/collections)
+  - Plugins: [`src/plugins/index.ts`](mdc:src/plugins/index.ts)
+
+- Content blocks and rich text
+
+  - Blocks renderer: [`src/blocks/RenderBlocks.tsx`](mdc:src/blocks/RenderBlocks.tsx)
+  - Example block mappings exist for: `aboutMission`, `archive`, `banner`, `code`, `complaintForm`, `contactForm`, `content`, `coreServices`, `cta`, `mediaBlock`, `mediaReportingCTA`, `mediaSpace`, `newsAnnouncements`, `partnersSection`
+  - Rich text components: [`src/components/RichText/index.tsx`](mdc:src/components/RichText/index.tsx)
+
+- Forms (media report/complaint)
+
+  - Server action: [`src/actions/media-forms.ts`](mdc:src/actions/media-forms.ts)
+  - Complaint form UI: [`src/components/CustomForms/MediaContentComplaintForm/index.tsx`](mdc:src/components/CustomForms/MediaContentComplaintForm/index.tsx)
+  - Report form UI: [`src/components/CustomForms/MediaContentReportForm/index.tsx`](mdc:src/components/CustomForms/MediaContentReportForm/index.tsx)
+  - Submission collection: [`src/collections/MediaContentSubmissions/index.ts`](mdc:src/collections/MediaContentSubmissions/index.ts)
+
+- Caching and logging
+
+  - Enhanced cache helpers: [`src/lib/cache/enhanced-cache.ts`](mdc:src/lib/cache/enhanced-cache.ts)
+  - Cached queries: [`src/utilities/cached-queries.ts`](mdc:src/utilities/cached-queries.ts)
+  - Structured logger: [`src/utilities/logger.ts`](mdc:src/utilities/logger.ts)
+  - Logging standards: [`docs/LOGGING-STANDARDS.md`](mdc:docs/LOGGING-STANDARDS.md)
+
+- Storage (Cloudflare R2)
+
+  - Storage config: [`src/utilities/storage-config.ts`](mdc:src/utilities/storage-config.ts)
+  - R2 client/config: [`src/utilities/r2-client.ts`](mdc:src/utilities/r2-client.ts)
+  - Media collection hooks (prefixes): [`src/collections/Media.ts`](mdc:src/collections/Media.ts)
+
+- Useful docs and guides
+  - Dev guide and conventions: [`CLAUDE.md`](mdc:CLAUDE.md)
+  - Preview/iframe notes: [`PREVIEW_MODE_FIX.md`](mdc:PREVIEW_MODE_FIX.md)
+  - R2 setup: [`docs/R2_STORAGE_SETUP.md`](mdc:docs/R2_STORAGE_SETUP.md)
+
+Conventions and key commands are thoroughly documented in [CLAUDE.md](mdc:CLAUDE.md).

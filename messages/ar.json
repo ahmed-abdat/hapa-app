@@ -465,5 +465,90 @@
   "errorTypeunknown": "خطأ غير معروف",
   "autoRetrying": "إعادة المحاولة التلقائية خلال {seconds} ثانية",
   "maxRetriesReached": "تم الوصول للحد الأقصى من المحاولات",
-  "canRetryManually": "يمكنك إعادة المحاولة يدوياً"
+  "canRetryManually": "يمكنك إعادة المحاولة يدوياً",
+
+  "dashboard": {
+    "title": "لوحة تحكم الطلبات الإعلامية",
+    "subtitle": "إدارة مركزية للتبليغات والشكاوى"
+  },
+  
+  "filters": {
+    "type": "النوع",
+    "all": "الكل",
+    "search": "البحث",
+    "status": "الحالة",
+    "priority": "الأولوية"
+  },
+  
+  "forms": {
+    "report": "تبليغ",
+    "complaint": "شكوى"
+  },
+  
+  "actions": {
+    "refresh": "تحديث",
+    "bulkActions": "إجراءات مجمعة",
+    "view": "عرض",
+    "edit": "تعديل"
+  },
+  
+  "stats": {
+    "total": "المجموع",
+    "thisWeek": "هذا الأسبوع",
+    "pending": "معلق",
+    "resolutionRate": "معدل الحل",
+    "resolved": "محلول",
+    "urgent": "عاجل"
+  },
+  
+  "status": {
+    "pending": "معلق",
+    "reviewing": "قيد المراجعة",
+    "resolved": "محلول",
+    "dismissed": "مرفوض"
+  },
+  
+  "priority": {
+    "urgent": "عاجل",
+    "high": "عالي",
+    "medium": "متوسط",
+    "low": "منخفض"
+  },
+  
+  "common": {
+    "requiresImmediateAction": "يتطلب إجراء فوري",
+    "averageResponseTime": "متوسط وقت الاستجابة",
+    "lastThirtyDays": "آخر 30 يوماً",
+    "quickActions": "إجراءات سريعة",
+    "export": "تصدير",
+    "import": "استيراد",
+    "statusDistribution": "توزيع الحالات",
+    "priorityLevels": "مستويات الأولوية",
+    "recentSubmissions": "طلبات حديثة",
+    "viewAll": "عرض الكل",
+    "anonymous": "مجهول",
+    "submissionManagement": "إدارة الطلبات",
+    "openInAdmin": "فتح في الإدارة",
+    "detailedAnalytics": "تحليلات مفصلة",
+    "customReports": "تقارير مخصصة",
+    "teamManagement": "إدارة الفريق"
+  },
+  
+  "tabs": {
+    "overview": "نظرة عامة",
+    "submissions": "الطلبات",
+    "analytics": "التحليلات",
+    "reports": "التقارير",
+    "team": "الفريق"
+  },
+  
+  "table": {
+    "title": "العنوان",
+    "type": "النوع",
+    "status": "الحالة",
+    "priority": "الأولوية",
+    "submittedOn": "تاريخ التقديم",
+    "language": "اللغة",
+    "actions": "الإجراءات"
+  }
 }

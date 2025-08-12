@@ -1,0 +1,458 @@
+/* HAPA Media Submissions Dashboard - Scoped Styles */
+/* These styles are scoped to avoid conflicts with Payload CMS admin interface */
+
+.hapa-dashboard-container {
+  /* Reset any inherited styles from Payload admin */
+  all: initial;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #1e293b;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.hapa-dashboard-container *,
+.hapa-dashboard-container *::before,
+.hapa-dashboard-container *::after {
+  box-sizing: border-box;
+}
+
+/* Header Styles */
+.hapa-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  height: 4rem;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 0 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+/* Card Styles */
+.hapa-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.hapa-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hapa-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.hapa-card-content {
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+.hapa-card-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin: 0;
+}
+
+.hapa-card-value {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+  line-height: 1.2;
+  color: #111827;
+}
+
+/* HAPA Brand Identity Cards */
+.hapa-card-blue {
+  border-left: 4px solid #138b3a; /* HAPA Primary Green */
+}
+
+.hapa-card-blue .hapa-card-value {
+  color: #0f7a2e; /* HAPA Dark Green */
+}
+
+.hapa-card-blue .hapa-card-title {
+  color: #138b3a; /* HAPA Primary Green */
+}
+
+.hapa-card-red {
+  border-left: 4px solid #dc2626; /* Alert Red */
+}
+
+.hapa-card-red .hapa-card-value {
+  color: #991b1b;
+}
+
+.hapa-card-red .hapa-card-title {
+  color: #dc2626;
+}
+
+.hapa-card-orange {
+  border-left: 4px solid #ea580c; /* Warning Orange */
+}
+
+.hapa-card-orange .hapa-card-value {
+  color: #c2410c;
+}
+
+.hapa-card-orange .hapa-card-title {
+  color: #ea580c;
+}
+
+.hapa-card-green {
+  border-left: 4px solid #138b3a; /* HAPA Primary Green */
+}
+
+.hapa-card-green .hapa-card-value {
+  color: #0f7a2e; /* HAPA Dark Green */
+}
+
+.hapa-card-green .hapa-card-title {
+  color: #138b3a;
+}
+
+.hapa-card-slate {
+  border-left: 4px solid #64748b; /* Neutral */
+}
+
+.hapa-card-slate .hapa-card-value {
+  color: #475569;
+}
+
+.hapa-card-slate .hapa-card-title {
+  color: #64748b;
+}
+
+.hapa-card-purple {
+  border-left: 4px solid #7c3aed; /* Info Purple */
+}
+
+.hapa-card-purple .hapa-card-value {
+  color: #6d28d9;
+}
+
+.hapa-card-purple .hapa-card-title {
+  color: #7c3aed;
+}
+
+/* Grid Layouts */
+.hapa-grid-5 {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .hapa-grid-5 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .hapa-grid-5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.hapa-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .hapa-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.hapa-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .hapa-grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .hapa-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Badge Styles */
+.hapa-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.hapa-badge-secondary {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.hapa-badge-outline {
+  background-color: transparent;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+}
+
+.hapa-badge-destructive {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #f87171;
+}
+
+/* Button Styles */
+.hapa-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.hapa-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hapa-button-primary {
+  background: linear-gradient(135deg, #138b3a 0%, #0f7a2e 100%);
+  color: white;
+}
+
+.hapa-button-outline {
+  background: white;
+  color: #475569;
+  border: 1px solid #d1d5db;
+}
+
+.hapa-button-sm {
+  height: 2.25rem;
+  padding: 0 0.75rem;
+  font-size: 0.8125rem;
+}
+
+/* Alert Styles */
+.hapa-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid;
+  background-color: #f8fafc;
+}
+
+.hapa-alert-warning {
+  background-color: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+.hapa-alert-error {
+  background-color: #fee2e2;
+  border-color: #ef4444;
+  color: #dc2626;
+}
+
+/* Progress Styles */
+.hapa-progress {
+  width: 100%;
+  height: 0.5rem;
+  background-color: #f1f5f9;
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.hapa-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #9333ea 0%, #c084fc 100%);
+  transition: width 0.3s ease;
+}
+
+/* Avatar Styles */
+.hapa-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background-color: #f1f5f9;
+  color: #475569;
+  font-size: 0.625rem;
+  font-weight: 600;
+}
+
+.hapa-avatar-blue {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.hapa-avatar-green {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+/* Utility Classes */
+.hapa-flex {
+  display: flex;
+}
+
+.hapa-items-center {
+  align-items: center;
+}
+
+.hapa-gap-2 {
+  gap: 0.5rem;
+}
+
+.hapa-gap-4 {
+  gap: 1rem;
+}
+
+.hapa-text-xs {
+  font-size: 0.75rem;
+}
+
+.hapa-text-sm {
+  font-size: 0.875rem;
+}
+
+.hapa-font-medium {
+  font-weight: 500;
+}
+
+.hapa-font-semibold {
+  font-weight: 600;
+}
+
+.hapa-text-muted {
+  color: #64748b;
+}
+
+.hapa-mt-1 {
+  margin-top: 0.25rem;
+}
+
+.hapa-mt-2 {
+  margin-top: 0.5rem;
+}
+
+.hapa-mb-4 {
+  margin-bottom: 1rem;
+}
+
+/* Section Styles */
+.hapa-section {
+  margin-bottom: 2rem;
+}
+
+.hapa-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.hapa-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.hapa-section-description {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0.25rem 0 0 0;
+}
+
+/* Icon Container */
+.hapa-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.375rem;
+  background-color: rgba(19, 139, 58, 0.08); /* HAPA Green tint */
+  border: 1px solid rgba(19, 139, 58, 0.15);
+}
+
+/* Card-specific icon styling */
+.hapa-card-red .hapa-icon-container {
+  background-color: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.15);
+}
+
+.hapa-card-orange .hapa-icon-container {
+  background-color: rgba(234, 88, 12, 0.08);
+  border-color: rgba(234, 88, 12, 0.15);
+}
+
+.hapa-card-slate .hapa-icon-container {
+  background-color: rgba(100, 116, 139, 0.08);
+  border-color: rgba(100, 116, 139, 0.15);
+}
+
+.hapa-card-purple .hapa-icon-container {
+  background-color: rgba(124, 58, 237, 0.08);
+  border-color: rgba(124, 58, 237, 0.15);
+}
+
+/* Responsive Utilities */
+@media (max-width: 767px) {
+  .hapa-dashboard-container {
+    padding: 1rem;
+  }
+  
+  .hapa-card-value {
+    font-size: 1.5rem;
+  }
+  
+  .hapa-grid-5,
+  .hapa-grid-3,
+  .hapa-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}

@@ -1,0 +1,45 @@
+---
+globs: src/**/*.ts,src/**/*.tsx
+---
+
+# Internationalization and Routing Rules (next-intl)
+
+Follow these rules to avoid common i18n/routing mistakes.
+
+- Always import `Link`, `useRouter`, `usePathname`, `redirect` from `@/i18n/navigation`, not from `next/link`
+
+  - File: [`src/i18n/navigation.ts`](mdc:src/i18n/navigation.ts)
+
+- Locale configuration
+
+  - Supported locales are `fr` and `ar` with default `fr`
+  - File: [`src/i18n/routing.ts`](mdc:src/i18n/routing.ts)
+  - Locale type and helpers: [`src/utilities/locale.ts`](mdc:src/utilities/locale.ts)
+  - Use `getLocaleDirection(locale)` to set `dir` = `ltr` or `rtl`
+
+- Layout and messages
+
+  - Set request locale in layout: `setRequestLocale(locale)`
+  - Provide messages via `NextIntlClientProvider`
+  - Reference: [`src/app/(frontend)/[locale]/layout.tsx`](<mdc:src/app/(frontend)/[locale]/layout.tsx>)
+
+- Middleware
+
+  - Root `/` must redirect to `/fr`
+  - Preview/admin routes are excluded from intl middleware
+  - Reference: [`src/middleware.ts`](mdc:src/middleware.ts)
+
+- Pages
+
+  - All public routes live under `src/app/(frontend)/[locale]` and should validate locale before usage
+  - Example: check validity then call `setRequestLocale`
+  - Reference: [`src/app/(frontend)/[locale]/page.tsx`](<mdc:src/app/(frontend)/[locale]/page.tsx>)
+
+- Messages files
+
+  - Keys must exist in both `/messages/fr.json` and `/messages/ar.json`
+  - Use `useTranslations()` in client components or `getTranslations()` in server
+
+- Testing
+  - Verify: `/` → `/fr`, `/fr/...` and `/ar/...` render correctly, Arabic is RTL
+  - Ensure `Link` from `@/i18n/navigation` preserves locale prefixes

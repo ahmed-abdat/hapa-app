@@ -1,0 +1,31 @@
+---
+globs: src/actions/media-forms.ts,src/components/CustomForms/**/*.tsx,src/collections/MediaContentSubmissions/index.ts
+---
+
+# Forms and Submissions Rules (Media Complaint/Report)
+
+- Frontend forms
+
+  - Complaint: [`src/components/CustomForms/MediaContentComplaintForm/index.tsx`](mdc:src/components/CustomForms/MediaContentComplaintForm/index.tsx)
+  - Report: [`src/components/CustomForms/MediaContentReportForm/index.tsx`](mdc:src/components/CustomForms/MediaContentReportForm/index.tsx)
+  - Use Zod + React Hook Form; provide bilingual labels
+  - Validate files before submission; use `convertToFormData`
+
+- Server action
+
+  - Submit via [`src/actions/media-forms.ts`](mdc:src/actions/media-forms.ts) → `submitMediaFormAction`
+  - Steps: validate input → connect Payload → file security validation → upload with retry → create submission
+  - On partial failures, return useful messages; log with context
+
+- Storage separation
+
+  - Form uploads use `FormMedia` collection (isolated from admin media)
+
+- Admin collection
+
+  - Submissions stored in [`src/collections/MediaContentSubmissions/index.ts`](mdc:src/collections/MediaContentSubmissions/index.ts)
+  - Review dashboard components under `src/components/admin/` if applicable
+
+- Testing
+  - Try both forms with screenshots/attachments
+  - Confirm R2 uploads, database entry creation, and admin visibility

@@ -1,0 +1,31 @@
+---
+globs: src/**/*.ts,src/**/*.tsx
+---
+
+# Caching and Logging Rules
+
+- Caching
+
+  - Prefer `unstable_cache` with proper tags for selective revalidation
+  - Use request-scoped `cache()` for memoization where needed
+  - Reference helpers:
+    - [`src/lib/cache/enhanced-cache.ts`](mdc:src/lib/cache/enhanced-cache.ts)
+    - [`src/utilities/cached-queries.ts`](mdc:src/utilities/cached-queries.ts)
+    - [`src/utilities/getDocument.ts`](mdc:src/utilities/getDocument.ts)
+    - [`src/utilities/getRedirects.ts`](mdc:src/utilities/getRedirects.ts)
+
+- Logging
+
+  - Use structured logger in [`src/utilities/logger.ts`](mdc:src/utilities/logger.ts)
+  - No `console.log` in production code
+  - Include meaningful context: component, action, requestId, metadata
+  - Follow standards: [`docs/LOGGING-STANDARDS.md`](mdc:docs/LOGGING-STANDARDS.md)
+
+- Patterns
+
+  - On errors in cached fetchers, log via `logger.warn` or `logger.error`
+  - When adding new cached helpers, include `tags` and `revalidate` if appropriate
+
+- Testing
+  - Confirm cache invalidation via tags works during content updates
+  - Verify logs include sufficient context for debugging in production

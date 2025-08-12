@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **HAPA Website** - Official government website for Mauritania's media regulatory authority (Haute Autorité de la Presse et de l'Audiovisuel).
 
-Production-ready bilingual government website with French/Arabic support and RTL layout. Built with Payload CMS 3.44.0 headless CMS and Next.js 15.3.3 with next-intl for internationalization.
+Production-ready bilingual government website with **French/Arabic support ONLY** (no English translations) and RTL layout. Built with Payload CMS 3.44.0 headless CMS and Next.js 15.3.3 with next-intl for internationalization.
 
 **Critical Architecture Components:**
 - **CMS**: Payload CMS with localized collections and block-based page builder
@@ -97,6 +97,7 @@ Production-ready bilingual government website with French/Arabic support and RTL
 - **Admin Component Paths**: Use absolute paths from project root (e.g., `@/components/admin/MyComponent`)
 
 ### Internationalization Requirements
+- **LANGUAGES**: French (fr) and Arabic (ar) ONLY - NO English translations
 - **ALWAYS** import `Link` from `@/i18n/navigation`, never from `next/link`
 - **ALWAYS** run `pnpm generate:types` after schema changes
 - **ALWAYS** run `pnpm payload generate:importmap` after adding admin components
@@ -122,7 +123,7 @@ Production-ready bilingual government website with French/Arabic support and RTL
 - **Forms**: `/forms/media-content-complaint` and `/forms/media-content-report`
 - **Components**: `src/components/CustomForms/` with field components and schemas
 - **API**: Form submission via server actions in `src/actions/media-forms.ts`
-- **Admin View**: Custom dashboard at `/admin/media-submissions` for form management
+- **Admin View**: Custom dashboard at `/admin/media-submissions-dashboard` for form management
 
 ## Database Management
 
@@ -156,31 +157,108 @@ neonctl connection-string production --project-id damp-snow-64638673
 ## MCP Servers & Advanced Analysis
 
 ### Available MCP Servers
+
+**Core Analysis & Development:**
 - **Serena** - Advanced codebase analysis and semantic navigation
 - **Context7** - Library documentation and framework patterns  
 - **Sequential Thinking** - Complex problem solving and architectural analysis
-- **Exa/Brave Search** - Web research and documentation lookup
+- **Magic** - UI component generation and design systems
+- **Shadcn/ui** - Pre-built React UI component library
 
-### Using Serena MCP for Codebase Analysis
+**Research & Content:**
+- **Firecrawl** - Advanced web scraping and content extraction
+- **Brave Search** - Real-time web search and research
+- **Filesystem** - Advanced file system operations
+
+### When to Use Each MCP Server
+
+**🔍 Serena MCP** - *Use for codebase exploration and intelligent editing*
+- **When**: Navigating complex code, finding symbols, refactoring
+- **Best for**: Understanding project structure, symbol-based editing
+- **Examples**: Finding all collection exports, locating component definitions, intelligent refactoring
+
+**📚 Context7 MCP** - *Use for official documentation and framework patterns*
+- **When**: Need library docs, best practices, framework-specific patterns
+- **Best for**: Next.js patterns, Payload CMS documentation, TypeScript configs
+- **Examples**: Getting Next.js 15 routing patterns, Payload CMS collection schemas
+
+**🧠 Sequential Thinking MCP** - *Use for complex analysis and problem-solving*
+- **When**: Debugging complex issues, architectural decisions, systematic analysis
+- **Best for**: Multi-step reasoning, root cause analysis, system design
+- **Examples**: Performance bottleneck analysis, internationalization logic review
+
+**🎨 Magic MCP** - *Use for UI component generation*
+- **When**: Creating new components, design system integration
+- **Best for**: React components, forms, interactive elements
+- **Examples**: Government forms, accessibility-compliant components, RTL layouts
+
+**🧩 Shadcn/ui MCP** - *Use for consistent UI components*
+- **When**: Need proven UI patterns, quick component implementation
+- **Best for**: Standard components (buttons, dialogs, forms, tables)
+- **Examples**: Admin dashboard components, form elements, navigation
+
+**🕷️ Firecrawl MCP** - *Use for advanced web content extraction*
+- **When**: Need structured data from websites, research, documentation scraping
+- **Best for**: Government standards research, compliance documentation
+- **Examples**: Scraping accessibility guidelines, regulatory requirements
+
+**🔍 Brave Search MCP** - *Use for general web research*
+- **When**: Quick searches, finding resources, troubleshooting
+- **Best for**: Real-time information, documentation discovery
+- **Examples**: Latest framework updates, government web standards
+
+**📁 Filesystem MCP** - *Use for advanced file operations*
+- **When**: Bulk file operations, project structure analysis
+- **Best for**: Directory analysis, multi-file reads, file management
+- **Examples**: Project cleanup, batch file operations
+
+### MCP Usage Examples for HAPA Website
+
+**Adding New Bilingual Content Block:**
 ```typescript
-// Intelligent code navigation - finds symbols across the codebase
-mcp__serena__find_symbol("Posts", "src/collections/Posts/index.ts")
+// 1. Use Serena to understand existing block structure
+mcp__serena__get_symbols_overview("src/blocks/RenderBlocks.tsx")
 
-// Pattern search with semantic understanding
-mcp__serena__search_for_pattern("export.*Collection", "src/collections")
+// 2. Use Context7 for Payload CMS patterns
+mcp__context7__get-library-docs("/payloadcms/payload", "blocks")
 
-// Get project structure overview
-mcp__serena__get_symbols_overview("src/payload.config.ts")
+// 3. Use Magic to generate the component
+mcp__magic__21st_magic_component_builder("Government announcement block with Arabic RTL support")
 
-// Smart code editing with symbol replacement
-mcp__serena__replace_symbol_body("ComponentName", "path/to/file.ts", "new code")
+// 4. Use Shadcn/ui for consistent styling
+mcp__shadcn-ui__get_component("card")
 ```
 
-**Key Serena Commands:**
+**Debugging Internationalization Issues:**
+```typescript
+// 1. Use Sequential for systematic analysis
+mcp__sequential-thinking__sequentialthinking("Analyze RTL layout issues in Arabic locale")
+
+// 2. Use Serena to find i18n-related code
+mcp__serena__search_for_pattern("useTranslations|getTranslations", "src")
+
+// 3. Use Context7 for next-intl documentation
+mcp__context7__resolve-library-id("next-intl")
+```
+
+**Creating Government Compliance Forms:**
+```typescript
+// 1. Use Firecrawl to research government form standards
+mcp__firecrawl__firecrawl_search("Mauritania government digital forms accessibility")
+
+// 2. Use Magic to generate form components
+mcp__magic__21st_magic_component_builder("Government complaint form with Arabic support")
+
+// 3. Use Shadcn/ui for form elements
+mcp__shadcn-ui__get_component("form")
+```
+
+### Key Serena Commands
 - `find_symbol` - Locate functions, classes, exports by name/path pattern
 - `search_for_pattern` - Regex-based semantic search across files
 - `get_symbols_overview` - Analyze file structure and exports
 - `replace_symbol_body` - Edit specific symbols intelligently
+- `list_dir` - Get project structure with intelligent filtering
 
 ## Testing & Quality Assurance
 

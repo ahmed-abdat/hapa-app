@@ -18,7 +18,7 @@ import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { SlugFieldWithNotice as SlugFieldWithNotice_e83c5ccf8f9b3dccc0f0e2a7ece0904e } from '@/fields/slug/SlugFieldWithNotice.tsx'
 import { ForceLocaleMessage as ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62 } from '@/components/ForceLocaleMessage/index.tsx'
-import { default as default_9a7dd14d2e46b9cd44f3aa711d1e32b2 } from '@/components/admin/DashboardLanding/index.tsx'
+import { default as default_4422a77cfdc4eb7c4845f13c5e26d5ab } from '@/components/admin/MediaSubmissionsDashboard/index.tsx'
 import { default as default_e57a144fa5ebd49df7cfb1e3e2458701 } from '@/components/admin/CleanMediaGallery/index'
 import { default as default_102cce8ca03aca4d934be301b628260e } from '@/components/admin/ReasonRowLabel/index'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
@@ -28,7 +28,6 @@ import { default as default_bb163149bb2f5ec0480c98bcc5e9bc47 } from '@/component
 import { default as default_2b8a0745141004fb388d207202b9bc59 } from '@/components/BeforeLogin/index.tsx'
 import { default as default_d358d65a9cea1b8d5f3eeb59f16692e3 } from '@/components/AdminProvider/index.tsx'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
-import { default as default_21245ea77e9e99a8375b265cddbecf60 } from '@/components/admin/MediaSubmissionsDashboard/PayloadView.tsx'
 
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -51,7 +50,7 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@/fields/slug/SlugFieldWithNotice.tsx#SlugFieldWithNotice": SlugFieldWithNotice_e83c5ccf8f9b3dccc0f0e2a7ece0904e,
   "@/components/ForceLocaleMessage/index.tsx#ForceLocaleMessage": ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62,
-  "@/components/admin/DashboardLanding/index.tsx#default": default_9a7dd14d2e46b9cd44f3aa711d1e32b2,
+  "@/components/admin/MediaSubmissionsDashboard/index.tsx#default": default_4422a77cfdc4eb7c4845f13c5e26d5ab,
   "@/components/admin/CleanMediaGallery/index#default": default_e57a144fa5ebd49df7cfb1e3e2458701,
   "@/components/admin/ReasonRowLabel/index#default": default_102cce8ca03aca4d934be301b628260e,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
@@ -60,6 +59,5 @@ export const importMap = {
   "@/components/BeforeDashboard/index.tsx#default": default_bb163149bb2f5ec0480c98bcc5e9bc47,
   "@/components/BeforeLogin/index.tsx#default": default_2b8a0745141004fb388d207202b9bc59,
   "@/components/AdminProvider/index.tsx#default": default_d358d65a9cea1b8d5f3eeb59f16692e3,
-  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
-  "@/components/admin/MediaSubmissionsDashboard/PayloadView.tsx#default": default_21245ea77e9e99a8375b265cddbecf60
+  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }

@@ -1,0 +1,38 @@
+---
+alwaysApply: true
+---
+
+# Dev Workflow and Commit Rules
+
+- Core commands
+
+  - Dev: `pnpm dev`
+  - Types: `pnpm generate:types`
+  - Import map (admin components): `pnpm payload generate:importmap`
+  - Migrations: `pnpm payload migrate`
+  - Lint: `pnpm lint` / `pnpm lint:fix`
+  - Build: `pnpm build`
+
+- When to regenerate types/import map
+
+  - After any change in `src/collections`, `src/fields`, or `payload.config.ts` → run `pnpm generate:types`
+  - After adding new admin components → run `pnpm payload generate:importmap`
+
+- Coding standards (concise)
+
+  - Write simple, modular, readable code; keep files <200 lines when reasonable
+  - Prefer clear names and short functions; add helpful comments for non-obvious logic
+  - Avoid over-optimization; focus on correctness first
+
+- Commit style
+
+  - Lowercase commit messages
+  - Format: `<type>: <summary>` (keep first line under 20 chars)
+  - Types: fix, feat, perf, docs, style, refactor, test, chore
+  - Include detailed body for complex changes and issue refs (e.g., `#123`)
+
+- Testing and verification
+  - Test each meaningful change locally; verify both `/fr` and `/ar` paths
+  - For schema/storage changes, confirm admin works and media uploads succeed
+
+See also [CLAUDE.md](mdc:CLAUDE.md) for project conventions.

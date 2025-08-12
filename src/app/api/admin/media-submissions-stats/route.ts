@@ -1,47 +1,107 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getPayload } from "payload";
-import configPromise from "@payload-config";
-import type { PayloadSubmissionData } from "@/types/media-forms";
-import { logger } from "@/utilities/logger";
+import { NextRequest, NextResponse } from 'next/server'
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
 
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+// Cache for stats with 5-minute TTL
+const statsCache = new WeakMap<object, { data: any; timestamp: number }>()
+const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
-// Simple cache using WeakMap to avoid memory leaks in serverless environment
-const cacheWeakMap = new WeakMap();
-const cacheKey = { key: "stats-cache" };
+interface SubmissionStats {
+  totalSubmissions: number
+  reportSubmissions: number
+  complaintSubmissions: number
+  pendingCount: number
+  reviewingCount: number
+  resolvedCount: number
+  dismissedCount: number
+  todaySubmissions: number
+  weekSubmissions: number
+  monthSubmissions: number
+  urgentCount: number
+  highCount: number
+  mediumCount: number
+  lowCount: number
+  frenchSubmissions: number
+  arabicSubmissions: number
+  mediaTypeStats: {
+    television: number
+    radio: number
+    online: number
+    print: number
+    other: number
+  }
+  reportStats: {
+    total: number
+    pending: number
+    reviewing: number
+    resolved: number
+    dismissed: number
+    french: number
+    arabic: number
+    thisWeek: number
+    thisMonth: number
+  }
+  complaintStats: {
+    total: number
+    pending: number
+    reviewing: number
+    resolved: number
+    dismissed: number
+    french: number
+    arabic: number
+    thisWeek: number
+    thisMonth: number
+  }
+}
 
-// Use the generated Payload types directly instead of custom interface
-// Note: do not import the full MediaContentSubmission type here; with `select` the
-// returned docs are a narrowed shape. We'll rely on inference from Payload.
+interface Submission {
+  id: string
+  title: string
+  formType: 'report' | 'complaint'
+  submissionStatus: 'pending' | 'reviewing' | 'resolved' | 'dismissed'
+  priority: 'low' | 'medium' | 'high' | 'urgent'
+  submittedAt: string
+  locale: 'fr' | 'ar'
+  contentInfo?: {
+    programName?: string
+    mediaType?: string
+  }
+  complainantInfo?: {
+    fullName?: string
+    emailAddress?: string
+  }
+}
 
 export async function GET(req: NextRequest) {
   try {
-    // Check cache first
-    const cachedData = cacheWeakMap.get(cacheKey);
-    if (cachedData && Date.now() - cachedData.timestamp < CACHE_TTL) {
-      return NextResponse.json(cachedData.data);
-    }
-
     // Get Payload instance
-    const payload = await getPayload({ config: configPromise });
-
+    const payload = await getPayload({ config: configPromise })
+    
     // Check if user is authenticated
-    const { user } = await payload.auth({ headers: req.headers });
-
+    const { user } = await payload.auth({ headers: req.headers })
+    
     if (!user) {
       return NextResponse.json(
-        { success: false, error: "Unauthorized" },
+        { success: false, error: 'Unauthorized' },
         { status: 401 }
-      );
+      )
     }
 
-    // Fetch recent submissions with optimized query
-    const submissions = await payload.find({
-      collection: "media-content-submissions",
-      limit: 100, // Reduced for better performance
-      sort: "-submittedAt",
-      // Note: 'id' is implicitly returned by Payload and is not part of the generated Select type
+    // Check cache
+    const cached = statsCache.get(payload)
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      return NextResponse.json({
+        success: true,
+        ...cached.data,
+      })
+    }
+
+    // Fetch submissions with performance optimization
+    const allSubmissions = await payload.find({
+      collection: 'media-content-submissions',
+      limit: 1000, // Reasonable limit for performance
       select: {
+        title: true,
         formType: true,
         submissionStatus: true,
         priority: true,
@@ -49,51 +109,19 @@ export async function GET(req: NextRequest) {
         locale: true,
         contentInfo: true,
         complainantInfo: true,
-        description: true,
-        reasons: true,
-        adminNotes: true,
       },
-    });
+      sort: '-submittedAt',
+    })
 
-    // Helper: build a human-readable title similar to the admin list
-    const buildSubmissionTitle = (submission: {
-      formType: "report" | "complaint";
-      submittedAt: string;
-      contentInfo?: { programName?: string; mediaType?: string };
-      description?: string;
-    }): string => {
-      const formTypeLabel =
-        submission.formType === "complaint" ? "Plainte" : "Signalement";
-      const programName = submission.contentInfo?.programName?.trim();
-      const mediaType = submission.contentInfo?.mediaType?.trim();
-      const dateDisplay = (() => {
-        try {
-          const d = new Date(submission.submittedAt);
-          if (!isNaN(d.getTime())) {
-            return d.toLocaleDateString("fr-FR", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-            });
-          }
-        } catch {}
-        return undefined;
-      })();
-      const fallback =
-        submission.description && submission.description.trim().length > 0
-          ? submission.description.trim().slice(0, 60) +
-            (submission.description.length > 60 ? "…" : "")
-          : "Sans titre";
+    // Calculate date ranges
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
 
-      const core = `${formTypeLabel}${mediaType ? ` [${mediaType}]` : ""} - ${
-        programName || fallback
-      }`;
-      return dateDisplay ? `${core} (${dateDisplay})` : core;
-    };
-
-    // Process statistics
-    const stats = {
-      totalSubmissions: submissions.totalDocs,
+    // Initialize stats
+    const stats: SubmissionStats = {
+      totalSubmissions: 0,
       reportSubmissions: 0,
       complaintSubmissions: 0,
       pendingCount: 0,
@@ -138,209 +166,138 @@ export async function GET(req: NextRequest) {
         thisWeek: 0,
         thisMonth: 0,
       },
-    };
+    }
 
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-
-    // Process each submission for statistics
-    submissions.docs.forEach((submission) => {
-      const submittedDate = new Date(submission.submittedAt);
-
-      // Form type counts
-      if (submission.formType === "report") {
-        stats.reportSubmissions++;
-        stats.reportStats.total++;
-
+    // Process submissions
+    const recentSubmissions: Submission[] = []
+    
+    allSubmissions.docs.forEach((submission: any) => {
+      const submittedDate = new Date(submission.submittedAt)
+      
+      // Basic counts
+      stats.totalSubmissions++
+      
+      if (submission.formType === 'report') {
+        stats.reportSubmissions++
+        stats.reportStats.total++
+        
+        if (submission.locale === 'fr') stats.reportStats.french++
+        else stats.reportStats.arabic++
+        
+        if (submittedDate >= weekAgo) stats.reportStats.thisWeek++
+        if (submittedDate >= monthAgo) stats.reportStats.thisMonth++
+        
         // Status counts for reports
         switch (submission.submissionStatus) {
-          case "pending":
-            stats.reportStats.pending++;
-            break;
-          case "reviewing":
-            stats.reportStats.reviewing++;
-            break;
-          case "resolved":
-            stats.reportStats.resolved++;
-            break;
-          case "dismissed":
-            stats.reportStats.dismissed++;
-            break;
+          case 'pending': stats.reportStats.pending++; break
+          case 'reviewing': stats.reportStats.reviewing++; break
+          case 'resolved': stats.reportStats.resolved++; break
+          case 'dismissed': stats.reportStats.dismissed++; break
         }
-
-        // Language counts for reports
-        if (submission.locale === "fr") {
-          stats.reportStats.french++;
-        } else if (submission.locale === "ar") {
-          stats.reportStats.arabic++;
-        }
-
-        // Time-based counts for reports
-        if (submittedDate >= weekAgo) {
-          stats.reportStats.thisWeek++;
-        }
-        if (submittedDate >= monthStart) {
-          stats.reportStats.thisMonth++;
-        }
-      } else if (submission.formType === "complaint") {
-        stats.complaintSubmissions++;
-        stats.complaintStats.total++;
-
+      } else {
+        stats.complaintSubmissions++
+        stats.complaintStats.total++
+        
+        if (submission.locale === 'fr') stats.complaintStats.french++
+        else stats.complaintStats.arabic++
+        
+        if (submittedDate >= weekAgo) stats.complaintStats.thisWeek++
+        if (submittedDate >= monthAgo) stats.complaintStats.thisMonth++
+        
         // Status counts for complaints
         switch (submission.submissionStatus) {
-          case "pending":
-            stats.complaintStats.pending++;
-            break;
-          case "reviewing":
-            stats.complaintStats.reviewing++;
-            break;
-          case "resolved":
-            stats.complaintStats.resolved++;
-            break;
-          case "dismissed":
-            stats.complaintStats.dismissed++;
-            break;
-        }
-
-        // Language counts for complaints
-        if (submission.locale === "fr") {
-          stats.complaintStats.french++;
-        } else if (submission.locale === "ar") {
-          stats.complaintStats.arabic++;
-        }
-
-        // Time-based counts for complaints
-        if (submittedDate >= weekAgo) {
-          stats.complaintStats.thisWeek++;
-        }
-        if (submittedDate >= monthStart) {
-          stats.complaintStats.thisMonth++;
+          case 'pending': stats.complaintStats.pending++; break
+          case 'reviewing': stats.complaintStats.reviewing++; break
+          case 'resolved': stats.complaintStats.resolved++; break
+          case 'dismissed': stats.complaintStats.dismissed++; break
         }
       }
-
-      // Overall status counts
+      
+      // Status counts (overall)
       switch (submission.submissionStatus) {
-        case "pending":
-          stats.pendingCount++;
-          break;
-        case "reviewing":
-          stats.reviewingCount++;
-          break;
-        case "resolved":
-          stats.resolvedCount++;
-          break;
-        case "dismissed":
-          stats.dismissedCount++;
-          break;
+        case 'pending': stats.pendingCount++; break
+        case 'reviewing': stats.reviewingCount++; break
+        case 'resolved': stats.resolvedCount++; break
+        case 'dismissed': stats.dismissedCount++; break
       }
-
+      
       // Priority counts
       switch (submission.priority) {
-        case "urgent":
-          stats.urgentCount++;
-          break;
-        case "high":
-          stats.highCount++;
-          break;
-        case "medium":
-          stats.mediumCount++;
-          break;
-        case "low":
-          stats.lowCount++;
-          break;
+        case 'urgent': stats.urgentCount++; break
+        case 'high': stats.highCount++; break
+        case 'medium': stats.mediumCount++; break
+        case 'low': stats.lowCount++; break
       }
-
+      
       // Language counts
-      if (submission.locale === "fr") {
-        stats.frenchSubmissions++;
-      } else if (submission.locale === "ar") {
-        stats.arabicSubmissions++;
+      if (submission.locale === 'fr') {
+        stats.frenchSubmissions++
+      } else {
+        stats.arabicSubmissions++
       }
-
+      
       // Time-based counts
       if (submittedDate >= today) {
-        stats.todaySubmissions++;
+        stats.todaySubmissions++
       }
       if (submittedDate >= weekAgo) {
-        stats.weekSubmissions++;
+        stats.weekSubmissions++
       }
-      if (submittedDate >= monthStart) {
-        stats.monthSubmissions++;
+      if (submittedDate >= monthAgo) {
+        stats.monthSubmissions++
       }
-
-      // Media type counts (if available)
-      if (submission.contentInfo?.mediaType) {
-        const mediaType = submission.contentInfo.mediaType.toLowerCase();
-        if (mediaType.includes("television") || mediaType.includes("tv")) {
-          stats.mediaTypeStats.television++;
-        } else if (mediaType.includes("radio")) {
-          stats.mediaTypeStats.radio++;
-        } else if (
-          mediaType.includes("online") ||
-          mediaType.includes("web") ||
-          mediaType.includes("internet")
-        ) {
-          stats.mediaTypeStats.online++;
-        } else if (
-          mediaType.includes("print") ||
-          mediaType.includes("journal") ||
-          mediaType.includes("magazine")
-        ) {
-          stats.mediaTypeStats.print++;
-        } else {
-          stats.mediaTypeStats.other++;
-        }
+      
+      // Media type stats
+      const mediaType = submission.contentInfo?.mediaType?.toLowerCase()
+      if (mediaType === 'television' || mediaType === 'tv' || mediaType === 'télévision') {
+        stats.mediaTypeStats.television++
+      } else if (mediaType === 'radio') {
+        stats.mediaTypeStats.radio++
+      } else if (mediaType === 'online' || mediaType === 'internet' || mediaType === 'en ligne') {
+        stats.mediaTypeStats.online++
+      } else if (mediaType === 'print' || mediaType === 'presse' || mediaType === 'journal') {
+        stats.mediaTypeStats.print++
+      } else if (mediaType) {
+        stats.mediaTypeStats.other++
       }
-    });
+      
+      // Add to recent submissions (limit to first 50 for performance)
+      if (recentSubmissions.length < 50) {
+        recentSubmissions.push({
+          id: submission.id,
+          title: submission.title || 'Sans titre',
+          formType: submission.formType,
+          submissionStatus: submission.submissionStatus,
+          priority: submission.priority || 'medium',
+          submittedAt: submission.submittedAt,
+          locale: submission.locale,
+          contentInfo: submission.contentInfo,
+          complainantInfo: submission.complainantInfo,
+        })
+      }
+    })
 
-    // Prepare submissions data for table
-    const submissionsData = submissions.docs.map((submission) => ({
-      id: submission.id.toString(), // Convert number to string for frontend
-      // Build human-friendly title without relying on hidden admin-only 'title' field
-      title: buildSubmissionTitle({
-        formType: submission.formType,
-        submittedAt: submission.submittedAt,
-        contentInfo: {
-          programName: submission.contentInfo?.programName ?? undefined,
-          mediaType: submission.contentInfo?.mediaType ?? undefined,
-        },
-        description:
-          typeof submission.description === "string"
-            ? submission.description
-            : undefined,
-      }),
-      formType: submission.formType,
-      submissionStatus: submission.submissionStatus,
-      priority: submission.priority,
-      submittedAt: submission.submittedAt,
-      locale: submission.locale,
-      contentInfo: submission.contentInfo,
-      complainantInfo: submission.complainantInfo,
-      description: submission.description,
-      reasons: submission.reasons,
-      adminNotes: submission.adminNotes,
-    }));
-
-    const response = {
-      success: true,
+    const result = {
       stats,
-      submissions: submissionsData,
-    };
+      submissions: recentSubmissions,
+    }
 
-    // Cache the response
-    cacheWeakMap.set(cacheKey, {
-      data: response,
+    // Cache the result
+    statsCache.set(payload, {
+      data: result,
       timestamp: Date.now(),
-    });
+    })
 
-    return NextResponse.json(response);
+    return NextResponse.json({
+      success: true,
+      ...result,
+    })
   } catch (error) {
-    logger.error("Error fetching media submissions stats:", error);
+    console.error('Error fetching media submissions stats:', error)
+    
     return NextResponse.json(
-      { success: false, error: "Internal server error" },
+      { success: false, error: 'Internal server error' },
       { status: 500 }
-    );
+    )
   }
 }

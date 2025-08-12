@@ -22,7 +22,10 @@ import { Gutter, Link } from '@payloadcms/ui'
  * - Accessibility and mobile-friendly
  * - Production-ready performance monitoring
  */
+import { useAdminTranslation } from '@/utilities/admin-translations'
+
 export default function DashboardRedirect() {
+  const { dt } = useAdminTranslation()
   const router = useRouter()
   const [status, setStatus] = useState<'redirecting' | 'fallback' | 'error'>('redirecting')
   const [attempt, setAttempt] = useState(1)
@@ -30,7 +33,7 @@ export default function DashboardRedirect() {
   const hasRedirected = useRef(false)
   const startTime = useRef(Date.now())
 
-  const targetUrl = '/admin/media-submissions'
+  const targetUrl = '/admin/collections/dashboard-submissions'
 
   // Immediate redirect attempt - runs as soon as component is created
   useEffect(() => {
@@ -204,7 +207,7 @@ export default function DashboardRedirect() {
               <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
               <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
             </svg>
-            Accéder au Tableau de bord
+{dt('common:viewAllSubmissions')}
           </Link>
         </>
       )

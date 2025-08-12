@@ -1,0 +1,32 @@
+---
+globs: src/utilities/storage-config.ts,src/utilities/r2-client.ts,src/collections/Media.ts,src/collections/FormMedia.ts
+---
+
+# Storage and Media Rules (Cloudflare R2)
+
+- Storage backend
+
+  - Uses `@payloadcms/storage-s3` configured for Cloudflare R2 only
+  - Config file: [`src/utilities/storage-config.ts`](mdc:src/utilities/storage-config.ts)
+  - R2 client/config: [`src/utilities/r2-client.ts`](mdc:src/utilities/r2-client.ts)
+
+- Environment requirements
+
+  - `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_ACCOUNT_ID` are required
+  - Setup guide: [`docs/R2_STORAGE_SETUP.md`](mdc:docs/R2_STORAGE_SETUP.md)
+
+- Media organization
+
+  - `Media` collection sets `data.prefix` by file type (images/docs/videos/audio)
+    - See hook in [`src/collections/Media.ts`](mdc:src/collections/Media.ts)
+  - `FormMedia` collection isolates form uploads (see its config)
+
+- Rules
+
+  - Local file storage is disabled in production (R2 only)
+  - Do not set a `prefix` at the plugin level for these collections; collection hooks handle it
+  - Ensure uploaded files are accessible via generated URLs
+
+- Testing
+  - Upload via admin at `/admin`
+  - Verify file arrives under correct folder, and URL works
