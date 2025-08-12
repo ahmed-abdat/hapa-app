@@ -153,7 +153,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         formType: 'report', // Default, can be updated
         fileType: fileType,
         submissionDate: new Date().toISOString(),
-        fileSize: file.size,
+        filesize: file.size,
         mimeType: file.type,
       } : {
         alt: finalFilename,
