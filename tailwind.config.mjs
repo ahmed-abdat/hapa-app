@@ -214,6 +214,22 @@ const config = {
         success: 'hsl(var(--success))',
         error: 'hsl(var(--error))',
         warning: 'hsl(var(--warning))',
+        
+        // Enhanced HAPA Government Brand Colors
+        hapa: {
+          primary: 'hsl(var(--hapa-primary))',
+          secondary: 'hsl(var(--hapa-secondary))',
+          accent: 'hsl(var(--hapa-accent))',
+          urgent: 'hsl(var(--hapa-urgent))',
+          warning: 'hsl(var(--hapa-warning))',
+          success: 'hsl(var(--hapa-success))',
+          info: 'hsl(var(--hapa-info))',
+          neutral: 'hsl(var(--hapa-neutral))',
+          heritage: {
+            green: 'hsl(var(--hapa-heritage-green))',
+            gold: 'hsl(var(--hapa-heritage-gold))',
+          },
+        },
       },
       fontFamily: {
         mono: ['var(--font-geist-mono)'],
