@@ -1023,15 +1023,7 @@ export function ModernDashboard() {
                   {dynamicStats.topRiskyChannels.map((channel, index) => (
                     <div
                       key={channel.channel}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: "0.5rem",
-                        background: "white",
-                        borderRadius: "0.5rem",
-                        border: "1px solid #e2e8f0",
-                      }}
+                      className="flex items-center justify-between p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors"
                     >
                       <div className="flex items-center gap-2">
                         <span className="hapa-badge hapa-badge-destructive text-xs">
@@ -1117,59 +1109,20 @@ export function ModernDashboard() {
                     textAlign: "center",
                   }}
                 >
-                  <div
-                    style={{
-                      padding: "0.5rem",
-                      background: "white",
-                      borderRadius: "0.5rem",
-                      border: "1px solid #e2e8f0",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: "1.125rem",
-                        fontWeight: "bold",
-                        color: "#16a34a",
-                      }}
-                    >
+                  <div className="p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors text-center">
+                    <div className="text-lg font-bold text-green-600 dark:text-green-400">
                       {dynamicStats.evidenceQuality.withEvidence}
                     </div>
-                    <div className="text-xs hapa-text-muted">Avec preuves</div>
+                    <div className="text-xs text-muted-foreground">Avec preuves</div>
                   </div>
-                  <div
-                    style={{
-                      padding: "0.5rem",
-                      background: "white",
-                      borderRadius: "0.5rem",
-                      border: "1px solid #e2e8f0",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: "1.125rem",
-                        fontWeight: "bold",
-                        color: "#ea580c",
-                      }}
-                    >
+                  <div className="p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors text-center">
+                    <div className="text-lg font-bold text-orange-600 dark:text-orange-400">
                       {dynamicStats.evidenceQuality.withoutEvidence}
                     </div>
-                    <div className="text-xs hapa-text-muted">Sans preuves</div>
+                    <div className="text-xs text-muted-foreground">Sans preuves</div>
                   </div>
-                  <div
-                    style={{
-                      padding: "0.5rem",
-                      background: "white",
-                      borderRadius: "0.5rem",
-                      border: "1px solid #e2e8f0",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: "1.125rem",
-                        fontWeight: "bold",
-                        color: "#2563eb",
-                      }}
-                    >
+                  <div className="p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors text-center">
+                    <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
                       {Math.round(
                         (dynamicStats.evidenceQuality.withEvidence /
                           (dynamicStats.evidenceQuality.withEvidence +
@@ -1179,7 +1132,7 @@ export function ModernDashboard() {
                       )}
                       %
                     </div>
-                    <div className="text-xs hapa-text-muted">
+                    <div className="text-xs text-muted-foreground">
                       Qualité preuves
                     </div>
                   </div>
@@ -1215,21 +1168,21 @@ export function ModernDashboard() {
                     Plaintes ({dynamicStats.formTypeInsights.complaints.total})
                   </h4>
                   <div className="space-y-2">
-                    <div className="flex justify-between items-center p-2 bg-white rounded border">
-                      <span className="text-xs">En attente</span>
-                      <Badge variant="secondary">
+                    <div className="flex justify-between items-center p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors">
+                      <span className="text-sm font-medium text-card-foreground">En attente</span>
+                      <Badge variant="secondary" className="font-semibold">
                         {dynamicStats.formTypeInsights.complaints.pending}
                       </Badge>
                     </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded border">
-                      <span className="text-xs">Urgentes</span>
-                      <Badge variant="destructive">
+                    <div className="flex justify-between items-center p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors">
+                      <span className="text-sm font-medium text-card-foreground">Urgentes</span>
+                      <Badge variant="destructive" className="font-semibold">
                         {dynamicStats.formTypeInsights.complaints.urgent}
                       </Badge>
                     </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded border">
-                      <span className="text-xs">Avec contact</span>
-                      <Badge variant="outline">
+                    <div className="flex justify-between items-center p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors">
+                      <span className="text-sm font-medium text-card-foreground">Avec contact</span>
+                      <Badge variant="outline" className="font-semibold">
                         {
                           dynamicStats.formTypeInsights.complaints
                             .withComplainant
@@ -1246,21 +1199,21 @@ export function ModernDashboard() {
                     Signalements ({dynamicStats.formTypeInsights.reports.total})
                   </h4>
                   <div className="space-y-2">
-                    <div className="flex justify-between items-center p-2 bg-white rounded border">
-                      <span className="text-xs">En attente</span>
-                      <Badge variant="secondary">
+                    <div className="flex justify-between items-center p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors">
+                      <span className="text-sm font-medium text-card-foreground">En attente</span>
+                      <Badge variant="secondary" className="font-semibold">
                         {dynamicStats.formTypeInsights.reports.pending}
                       </Badge>
                     </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded border">
-                      <span className="text-xs">Urgentes</span>
-                      <Badge variant="destructive">
+                    <div className="flex justify-between items-center p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors">
+                      <span className="text-sm font-medium text-card-foreground">Urgentes</span>
+                      <Badge variant="destructive" className="font-semibold">
                         {dynamicStats.formTypeInsights.reports.urgent}
                       </Badge>
                     </div>
-                    <div className="flex justify-between items-center p-2 bg-white rounded border">
-                      <span className="text-xs">Anonymes</span>
-                      <Badge variant="outline">
+                    <div className="flex justify-between items-center p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors">
+                      <span className="text-sm font-medium text-card-foreground">Anonymes</span>
+                      <Badge variant="outline" className="font-semibold">
                         {dynamicStats.formTypeInsights.reports.anonymous}
                       </Badge>
                     </div>
