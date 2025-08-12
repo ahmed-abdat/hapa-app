@@ -419,18 +419,11 @@ export interface FormMedia {
    * Date et heure de téléchargement du fichier
    */
   submissionDate?: string | null;
-  /**
-   * Taille du fichier en octets
-   */
-  fileSize?: number | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
   thumbnailURL?: string | null;
   filename?: string | null;
-  /**
-   * Type MIME du fichier
-   */
   mimeType?: string | null;
   filesize?: number | null;
   width?: number | null;
@@ -838,7 +831,6 @@ export interface FormMediaSelect<T extends boolean = true> {
   fileType?: T;
   submissionId?: T;
   submissionDate?: T;
-  fileSize?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
