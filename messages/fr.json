@@ -142,7 +142,12 @@
     "invalidFileFormat": "Échec de validation du format de fichier - le fichier peut être corrompu ou malveillant",
     "fileValidationError": "Impossible de valider la sécurité du fichier",
     "filesValidatedSecurity": "Les fichiers sont validés pour la sécurité avant téléchargement",
-    "validatingFile": "Validation de la sécurité du fichier"
+    "validatingFile": "Validation de la sécurité du fichier",
+    "supportedFormats": "Formats supportés",
+    "dropFilesHere": "Déposez vos fichiers ici",
+    "or": "ou",
+    "clickToSelect": "cliquez pour sélectionner",
+    "maxFiles": "Maximum {count} fichiers"
   },
   
   "linkScreenshotPlaceholder": "Collez l'URL du contenu ou décrivez les captures d'écran que vous avez prises (ex: capture d'écran de la publication Facebook, photo de l'article, etc.)",
