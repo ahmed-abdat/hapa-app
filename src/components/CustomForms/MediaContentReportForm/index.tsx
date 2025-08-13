@@ -19,6 +19,7 @@ import {
   FormDateTimePicker,
   FormFileUpload
 } from '../FormFields'
+import { EnhancedFileUpload } from '../FormFields/EnhancedFileUpload'
 import { 
   createMediaContentReportSchema, 
   type MediaContentReportFormData,
@@ -402,13 +403,15 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
             className="min-h-20"
           />
 
-          <FormFileUpload
+          <EnhancedFileUpload
             name="screenshotFiles"
             label={t('screenshotFiles')}
-            accept="image/*,.pdf"
-            maxSize={5}
-            multiple
+            supportedTypes={['image', 'document']}
+            maxFiles={5}
+            enableChunkedUpload={false}
+            enablePreview={true}
             locale={locale}
+            required={false}
           />
         </div>
 
@@ -478,13 +481,15 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
           )}
 
           {selectedAttachments && selectedAttachments.length > 0 && (
-            <FormFileUpload
+            <EnhancedFileUpload
               name="attachmentFiles"
               label={t('attachmentFiles')}
-              accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.wav,.mp4,.mov"
-              maxSize={10}
-              multiple
+              supportedTypes={['video', 'audio', 'image', 'document']}
+              maxFiles={8}
+              enableChunkedUpload={true}
+              enablePreview={true}
               locale={locale}
+              required={false}
             />
           )}
         </div>

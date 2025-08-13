@@ -29,7 +29,7 @@ export function FormSelect({
       <Label htmlFor={name} className="text-sm font-medium text-gray-700">
         <bdi>
           {label}
-          {required && <span className="text-red-500 ms-1">*</span>}
+          {required && <span className="text-destructive ms-1">*</span>}
         </bdi>
       </Label>
       
@@ -39,7 +39,7 @@ export function FormSelect({
         disabled={disabled}
       >
         <SelectTrigger 
-          className={`w-full ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'}`}
+          className={error ? 'border-destructive' : ''}
           aria-invalid={error ? 'true' : 'false'}
           aria-describedby={error ? `${name}-error` : undefined}
         >
@@ -55,7 +55,7 @@ export function FormSelect({
       </Select>
       
       {error && (
-        <p id={`${name}-error`} className="text-sm text-red-600 mt-1">
+        <p id={`${name}-error`} className="text-sm text-destructive mt-1">
           {error}
         </p>
       )}

@@ -10,6 +10,11 @@ import {
 } from '@/lib/validations/media-forms'
 import type { FormSubmissionResponse } from '@/types/media-forms'
 import { validateFileSignature, sanitizeFilename } from '@/lib/file-upload'
+import { 
+  validateMultipleServerFiles, 
+  createValidationSummary,
+  type ServerValidationResult
+} from '@/lib/server-media-validation'
 
 // Node.js compatible File type checking
 const isFileObject = (value: any): value is File => {
@@ -22,17 +27,29 @@ const isFileObject = (value: any): value is File => {
          'arrayBuffer' in value
 }
 
-// Production-ready constants
-const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
+// Production-ready constants - Enhanced for video/audio support
+const MAX_VIDEO_SIZE = 100 * 1024 * 1024 // 100MB for videos
+const MAX_AUDIO_SIZE = 25 * 1024 * 1024 // 25MB for audio
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024 // 10MB for images
+const MAX_DOCUMENT_SIZE = 15 * 1024 * 1024 // 15MB for documents
+
 const ALLOWED_MIME_TYPES = [
+  // Images
   'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+  // Videos
+  'video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo', 'video/ogg',
+  // Audio
+  'audio/mpeg', 'audio/wav', 'audio/mp4', 'audio/ogg', 'audio/webm', 'audio/flac',
+  // Documents
   'application/pdf', 'text/plain', 
   'application/msword', 
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 ]
-const MAX_FILES_PER_TYPE = 5
-const UPLOAD_TIMEOUT = 30000 // 30 seconds
+
+const MAX_FILES_PER_TYPE = 8
+const UPLOAD_TIMEOUT = 60000 // 60 seconds for larger files
+const MAX_VIDEO_DURATION = 600 // 10 minutes
+const MAX_AUDIO_DURATION = 900 // 15 minutes
 
 interface ValidationResult {
   isValid: boolean
@@ -281,9 +298,15 @@ async function validateFileSecurity(files: File[], sessionId: string): Promise<V
   // Security validation for files
 
   for (const file of files) {
-    // File size validation
-    const isImage = file.type.startsWith('image/')
-    const maxSize = isImage ? MAX_IMAGE_SIZE : MAX_FILE_SIZE
+    // File size validation based on type
+    let maxSize = MAX_DOCUMENT_SIZE // Default for documents
+    if (file.type.startsWith('image/')) {
+      maxSize = MAX_IMAGE_SIZE
+    } else if (file.type.startsWith('video/')) {
+      maxSize = MAX_VIDEO_SIZE
+    } else if (file.type.startsWith('audio/')) {
+      maxSize = MAX_AUDIO_SIZE
+    }
     
     if (file.size > maxSize) {
       errors.push(`File too large: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB, max: ${maxSize / 1024 / 1024}MB)`)
