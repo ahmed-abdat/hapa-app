@@ -32,6 +32,21 @@ export const Users: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'avatar',
+      type: 'upload',
+      relationTo: 'media',
+      label: {
+        fr: 'Photo de profil',
+        ar: 'صورة الملف الشخصي'
+      },
+      admin: {
+        description: {
+          fr: 'Image de profil qui sera affichée dans l\'en-tête d\'administration',
+          ar: 'صورة الملف الشخصي التي سيتم عرضها في رأس الإدارة'
+        }
+      }
+    },
+    {
       name: 'role',
       type: 'select',
       options: [
