@@ -555,5 +555,22 @@
     "submittedOn": "Soumis le",
     "language": "Langue",
     "actions": "Actions"
-  }
+  },
+
+  "supportedFormats": "Formats supportés",
+  "dropFilesHere": "Déposez vos fichiers ici",
+  "or": "ou",
+  "clickToSelect": "cliquez pour sélectionner",
+  "maxFiles": "Maximum",
+  "complete": "terminé",
+  "validatingFiles": "Validation des fichiers...",
+  "selectedFiles": "Fichiers sélectionnés",
+  "errors": "erreurs",
+  "all": "Tous",
+  "valid": "Valides",
+  "validFile": "Fichier valide",
+  "invalidFile": "Fichier invalide",
+  "hidePreview": "Masquer l'aperçu",
+  "showPreview": "Afficher l'aperçu",
+  "removeFile": "Supprimer le fichier"
 }

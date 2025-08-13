@@ -555,5 +555,22 @@
     "submittedOn": "تاريخ التقديم",
     "language": "اللغة",
     "actions": "الإجراءات"
-  }
+  },
+
+  "supportedFormats": "التنسيقات المدعومة",
+  "dropFilesHere": "ضع ملفاتك هنا",
+  "or": "أو",
+  "clickToSelect": "انقر للاختيار",
+  "maxFiles": "أقصى عدد",
+  "complete": "مكتمل",
+  "validatingFiles": "التحقق من الملفات...",
+  "selectedFiles": "الملفات المختارة",
+  "errors": "أخطاء",
+  "all": "الكل",
+  "valid": "صحيح",
+  "validFile": "ملف صحيح",
+  "invalidFile": "ملف غير صحيح",
+  "hidePreview": "إخفاء المعاينة",
+  "showPreview": "إظهار المعاينة",
+  "removeFile": "إزالة الملف"
 }
