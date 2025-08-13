@@ -42,6 +42,11 @@
   --hapa-accent: #0f7a2e;    /* HAPA Dark Green Accent */
   --hapa-light: #f8f9fa;     /* Light background */
   --hapa-text: #111827;      /* Professional text */
+
+  /* Override Payload's theme variables with HAPA colors */
+  --theme-success-500: #138b3a; /* HAPA Primary Green */
+  --theme-success-600: #0f7a2e; /* HAPA Dark Green Accent */
+  --theme-success-300: #86efac; /* Light green for hover states */
 }
 
 /* Dark mode support - Payload uses [data-theme="dark"] */
@@ -65,6 +70,11 @@
   --border: 217.2 32.6% 17.5%;
   --input: 217.2 32.6% 17.5%;
   --ring: 212.7 26.8% 83.9%;
+
+  /* Override Payload's theme variables with HAPA colors in dark mode */
+  --theme-success-500: #138b3a; /* HAPA Primary Green */
+  --theme-success-600: #0f7a2e; /* HAPA Dark Green Accent */
+  --theme-success-300: #86efac; /* Light green for hover states */
   }
 }
 
@@ -245,6 +255,67 @@
     &:hover {
       border-color: var(--hapa-secondary) !important;
       background-color: rgba(212, 165, 116, 0.05);
+    }
+  }
+
+  /* Override PayloadCMS default blue buttons for media files */
+  .file-details__actions .btn,
+  .media-container .btn,
+  .array-field .btn,
+  .upload-file-container .btn,
+  button[style*="background"],
+  button[style*="rgb(59, 130, 246)"],
+  button[style*="#3b82f6"] {
+    background-color: var(--theme-success-500) !important;
+    border-color: var(--theme-success-500) !important;
+    color: white !important;
+
+    &:hover {
+      background-color: var(--theme-success-600) !important;
+      border-color: var(--theme-success-600) !important;
+    }
+  }
+
+  /* Additional button overrides for Payload's theme system */
+  .btn--style-primary,
+  .btn--primary,
+  [class*="btn"][class*="primary"] {
+    background-color: var(--theme-success-500) !important;
+    border-color: var(--theme-success-500) !important;
+
+    &:hover {
+      background-color: var(--theme-success-600) !important;
+      border-color: var(--theme-success-600) !important;
+    }
+  }
+
+  /* Target all blue colored buttons specifically */
+  [style*="background-color: rgb(59, 130, 246)"],
+  [style*="background: rgb(59, 130, 246)"],
+  [style*="background-color:#3b82f6"],
+  [style*="background:#3b82f6"] {
+    background-color: var(--theme-success-500) !important;
+    background: var(--theme-success-500) !important;
+
+    &:hover {
+      background-color: var(--theme-success-600) !important;
+      background: var(--theme-success-600) !important;
+    }
+  }
+
+  /* PayloadCMS modal and portal buttons */
+  .ReactModal__Content button,
+  [data-radix-portal] button,
+  .payload__modal-container button {
+    &[style*="rgb(59, 130, 246)"],
+    &[style*="#3b82f6"] {
+      background-color: var(--theme-success-500) !important;
+      border-color: var(--theme-success-500) !important;
+
+      &:hover {
+        background-color: var(--theme-success-600) !important;
+        border-color: var(--theme-success-600) !important;
+      }
     }
   }
 }

@@ -27,6 +27,11 @@ const dirname = path.dirname(filename);
 
 export default buildConfig({
   admin: {
+    // Custom avatar component for account area
+    avatar: {
+      Component: '@/components/CustomAvatar/index.tsx#CustomAvatar',
+    },
+    // Custom components for admin UI
     meta: {
       titleSuffix: "- HAPA Administration",
       description:

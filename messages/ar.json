@@ -155,7 +155,12 @@
     "invalidFileFormat": "فشل في التحقق من صيغة الملف - قد يكون الملف تالفاً أو ضاراً",
     "fileValidationError": "غير قادر على التحقق من أمان الملف",
     "filesValidatedSecurity": "يتم التحقق من أمان الملفات قبل الرفع",
-    "validatingFile": "التحقق من أمان الملف"
+    "validatingFile": "التحقق من أمان الملف",
+    "supportedFormats": "الصيغ المدعومة",
+    "dropFilesHere": "اسحب الملفات هنا",
+    "or": "أو",
+    "clickToSelect": "انقر للاختيار",
+    "maxFiles": "الحد الأقصى {count} ملفات"
   },
   
   "linkScreenshotPlaceholder": "الصق رابط المحتوى أو اوصف لقطات الشاشة التي أخذتها (مثال: لقطة شاشة من منشور فيسبوك، صورة من المقال، إلخ)",

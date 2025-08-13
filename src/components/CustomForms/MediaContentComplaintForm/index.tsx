@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 
 import { BaseForm } from '../BaseForm'
 import { ThankYouCard } from '../ThankYouCard'
+import { Checkbox } from '@/components/ui/checkbox'
 import { 
   FormInput, 
   FormTextarea, 
@@ -21,6 +22,7 @@ import {
   FormDateTimePicker,
   FormFileUpload
 } from '../FormFields'
+import { EnhancedFileUpload } from '../FormFields/EnhancedFileUpload'
 import { 
   createMediaContentComplaintSchema, 
   type MediaContentComplaintFormData,
@@ -504,13 +506,15 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
             className="min-h-20"
           />
 
-          <FormFileUpload
+          <EnhancedFileUpload
             name="screenshotFiles"
             label={t('screenshotFiles')}
-            accept="image/*,.pdf"
-            maxSize={5}
-            multiple
+            supportedTypes={['image', 'document']}
+            maxFiles={5}
+            enableChunkedUpload={false}
+            enablePreview={true}
             locale={locale}
+            required={false}
           />
         </div>
 
@@ -581,13 +585,15 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
           )}
 
           {selectedAttachments && selectedAttachments.length > 0 && (
-            <FormFileUpload
+            <EnhancedFileUpload
               name="attachmentFiles"
               label={t('attachmentFiles')}
-              accept="image/*,.pdf,.doc,.docx,.txt,.mp3,.wav,.mp4,.mov"
-              maxSize={10}
-              multiple
+              supportedTypes={['video', 'audio', 'image', 'document']}
+              maxFiles={8}
+              enableChunkedUpload={true}
+              enablePreview={true}
               locale={locale}
+              required={false}
             />
           )}
         </div>
@@ -602,37 +608,35 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
 
           <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
             <div className="flex items-start gap-3">
-              <input
-                type="checkbox"
+              <Checkbox
                 id="acceptDeclaration"
                 {...methods.register('acceptDeclaration')}
-                className="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                className="mt-1"
               />
               <label htmlFor="acceptDeclaration" className="text-sm text-gray-700 leading-relaxed">
                 {t('declarationText')}
-                <span className="text-red-500 ms-1">*</span>
+                <span className="text-destructive ms-1">*</span>
               </label>
             </div>
             {methods.formState.errors.acceptDeclaration && (
-              <p className="text-sm text-red-600 mt-1">
+              <p className="text-sm text-destructive mt-1">
                 {t('fieldRequired')}
               </p>
             )}
 
             <div className="flex items-start gap-3">
-              <input
-                type="checkbox"
+              <Checkbox
                 id="acceptConsent"
                 {...methods.register('acceptConsent')}
-                className="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                className="mt-1"
               />
               <label htmlFor="acceptConsent" className="text-sm text-gray-700 leading-relaxed">
                 {t('consentText')}
-                <span className="text-red-500 ms-1">*</span>
+                <span className="text-destructive ms-1">*</span>
               </label>
             </div>
             {methods.formState.errors.acceptConsent && (
-              <p className="text-sm text-red-600 mt-1">
+              <p className="text-sm text-destructive mt-1">
                 {t('fieldRequired')}
               </p>
             )}

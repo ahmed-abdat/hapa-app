@@ -37,7 +37,7 @@ export function FormCheckboxGroup({
       <Label className="text-sm font-medium text-gray-700">
         <bdi>
           {label}
-          {required && <span className="text-red-500 ms-1">*</span>}
+          {required && <span className="text-destructive ms-1">*</span>}
         </bdi>
       </Label>
       
@@ -47,7 +47,7 @@ export function FormCheckboxGroup({
         render={({ field }) => (
           <div className={`
             ${direction === 'vertical' ? 'space-y-3' : 'flex flex-wrap gap-4'}
-            ${error ? 'border border-red-300 rounded p-3 bg-red-50' : ''}
+            ${error ? 'border border-destructive rounded p-3 bg-destructive/10' : ''}
           `}>
             {options.map((option) => (
               <div key={option.value} className="flex items-center gap-2">
@@ -63,10 +63,7 @@ export function FormCheckboxGroup({
                       field.onChange(currentValue.filter((v: string) => v !== option.value))
                     }
                   }}
-                  className={`
-                    ${error ? 'border-red-500' : 'border-gray-300'}
-                    data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600
-                  `}
+                  className={error ? 'border-destructive' : ''}
                 />
                 <Label 
                   htmlFor={`${name}-${option.value}`}
@@ -81,7 +78,7 @@ export function FormCheckboxGroup({
       />
       
       {error && (
-        <p className="text-sm text-red-600 mt-1">
+        <p className="text-sm text-destructive mt-1">
           {error}
         </p>
       )}

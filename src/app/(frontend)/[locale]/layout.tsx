@@ -10,6 +10,7 @@ import { AdminBar } from "@/components/AdminBar";
 import { Footer } from "@/Footer/Component";
 import { Header } from "@/Header/Component";
 import { Providers } from "@/providers";
+import { Toaster } from "@/components/ui/sonner";
 import { draftMode } from "next/headers";
 import { routing } from "@/i18n/routing";
 import { GeistSans } from "geist/font/sans";
@@ -79,6 +80,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             <Footer />
           </NextIntlClientProvider>
         </Providers>
+        <Toaster />
       </body>
     </html>
   );

@@ -113,7 +113,7 @@ export function ModernDashboard() {
   const [timeRange, setTimeRange] = useState("7d");
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // Removed dialog state in favor of direct navigation to Payload admin
+  
 
   // Enhanced fetch submissions with error handling and optimizations
   const fetchSubmissions = useCallback(async (isRefresh = false) => {
@@ -122,10 +122,12 @@ export function ModernDashboard() {
 
     setError(null);
 
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort(new Error("Request timeout after 15 seconds"));
+    }, 15000); // 15s timeout
 
+    try {
       const response = await fetch("/api/admin/media-submissions-stats", {
         signal: controller.signal,
         headers: {
@@ -133,8 +135,6 @@ export function ModernDashboard() {
           Pragma: "no-cache",
         },
       });
-
-      clearTimeout(timeoutId);
 
       if (response.ok) {
         const data = await response.json();
@@ -153,15 +153,26 @@ export function ModernDashboard() {
         throw new Error(`Erreur HTTP: ${response.status}`);
       }
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Erreur inconnue";
-      console.error("Error fetching submissions:", error);
-      setError(errorMessage);
+      // Handle abort errors specifically
+      if (error instanceof Error && error.name === 'AbortError') {
+        const errorMessage = "La requête a expiré. Veuillez réessayer.";
+        console.warn("Request aborted due to timeout");
+        setError(errorMessage);
+        if (!isRefresh) {
+          toast.error(errorMessage);
+        }
+      } else {
+        const errorMessage =
+          error instanceof Error ? error.message : "Erreur inconnue";
+        console.error("Error fetching submissions:", error);
+        setError(errorMessage);
 
-      if (!isRefresh) {
-        toast.error("Erreur lors du chargement des données: " + errorMessage);
+        if (!isRefresh) {
+          toast.error("Erreur lors du chargement des données: " + errorMessage);
+        }
       }
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
       setRefreshing(false);
     }
@@ -249,13 +260,10 @@ export function ModernDashboard() {
     [submissions, fetchSubmissions]
   );
 
-  // Open submission directly in Payload admin collection
-  const handleViewDetails = (submission: MediaContentSubmission) => {
-    // Navigate to the Payload CMS admin entry page for this submission
-    window.location.href = `/admin/collections/media-content-submissions/${String(
-      submission.id
-    )}`;
-  };
+  // Navigate to Payload admin route for submission details
+  const handleViewDetails = useCallback((submission: MediaContentSubmission) => {
+    window.location.href = `/admin/collections/media-content-submissions/${submission.id}`;
+  }, []);
 
   useEffect(() => {
     // Initial load
@@ -1457,6 +1465,7 @@ export function ModernDashboard() {
           </Card>
         </div>
       </main>
+
     </div>
   );
 }

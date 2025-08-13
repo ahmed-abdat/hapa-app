@@ -247,6 +247,10 @@ export interface Category {
 export interface User {
   id: number;
   name?: string | null;
+  /**
+   * Image de profil qui sera affichée dans l'en-tête d'administration
+   */
+  avatar?: (number | null) | Media;
   role: 'admin' | 'editor' | 'user';
   updatedAt: string;
   createdAt: string;
@@ -850,6 +854,7 @@ export interface FormMediaSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  avatar?: T;
   role?: T;
   updatedAt?: T;
   createdAt?: T;

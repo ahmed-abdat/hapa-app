@@ -3,7 +3,6 @@
 import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import { Check, ChevronDown, Globe } from 'lucide-react'
-import { CircleFlag } from 'react-circle-flags'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import {
@@ -149,6 +148,13 @@ const countries = [
   { value: 'OTHER', alpha2: null, label: 'Autre pays', labelAr: 'دولة أخرى' },
 ]
 
+// Helper function to get flag URL using country-flag-icons path structure
+const getFlagUrl = (countryCode: string | null): string => {
+  if (!countryCode) return '/flags/globe.svg' // fallback
+  // Use the static flag images from country-flag-icons (uppercase format)
+  return `/flags/${countryCode.toUpperCase()}.svg`
+}
+
 interface CountryComboboxProps extends Omit<FormSelectProps, 'options'> {
   locale?: 'fr' | 'ar'
 }
@@ -211,15 +217,26 @@ export function CountryCombobox({
           >
             {selectedCountry ? (
               <div className="flex items-center flex-grow w-0 gap-2 overflow-hidden">
-                {selectedCountry.alpha2 && (
+                {selectedCountry.alpha2 ? (
                   <div className="inline-flex items-center justify-center w-5 h-5 shrink-0 overflow-hidden rounded-full">
-                    <CircleFlag
-                      countryCode={selectedCountry.alpha2.toLowerCase()}
+                    <img
+                      src={getFlagUrl(selectedCountry.alpha2)}
+                      alt={`${selectedCountry.label} flag`}
+                      width={20}
                       height={20}
+                      className="w-5 h-5 object-cover rounded-full"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        // Show globe icon as fallback
+                        const parent = target.parentElement;
+                        if (parent) {
+                          parent.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>';
+                        }
+                      }}
                     />
                   </div>
-                )}
-                {!selectedCountry.alpha2 && selectedCountry.value === 'OTHER' && (
+                ) : (
                   <Globe size={16} className="shrink-0 text-gray-500" />
                 )}
                 <bdi className="overflow-hidden text-ellipsis whitespace-nowrap">
@@ -268,15 +285,25 @@ export function CountryCombobox({
                     dir={isRTL ? 'rtl' : 'ltr'}
                   >
                     <div className="flex flex-grow w-0 gap-2 overflow-hidden">
-                      {country.alpha2 && (
+                      {country.alpha2 ? (
                         <div className="inline-flex items-center justify-center w-5 h-5 shrink-0 overflow-hidden rounded-full">
-                          <CircleFlag
-                            countryCode={country.alpha2.toLowerCase()}
+                          <img
+                            src={getFlagUrl(country.alpha2)}
+                            alt={`${country.label} flag`}
+                            width={20}
                             height={20}
+                            className="w-5 h-5 object-cover rounded-full"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const parent = target.parentElement;
+                              if (parent) {
+                                parent.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>';
+                              }
+                            }}
                           />
                         </div>
-                      )}
-                      {!country.alpha2 && country.value === 'OTHER' && (
+                      ) : (
                         <Globe size={16} className="shrink-0 text-gray-500" />
                       )}
                       <bdi className="overflow-hidden text-ellipsis whitespace-nowrap">

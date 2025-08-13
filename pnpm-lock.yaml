@@ -128,6 +128,9 @@ importers:
       country-data-list:
         specifier: ^1.4.1
         version: 1.4.1
+      country-flag-icons:
+        specifier: ^1.5.19
+        version: 1.5.19
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -173,9 +176,6 @@ importers:
       react:
         specifier: 19.1.0
         version: 19.1.0
-      react-circle-flags:
-        specifier: ^0.0.23
-        version: 0.0.23(react@19.1.0)
       react-day-picker:
         specifier: ^9.8.1
         version: 9.8.1(react@19.1.0)
@@ -2894,6 +2894,9 @@ packages:
   country-data-list@1.4.1:
     resolution: {integrity: sha512-TQoQNS0a5+7GuAgDNYKLOVG4JwVmjZ2entwcStNh/yN7YzO5SfqVwSyZPK7O9JksxM2OXDzRD3zVHp4CmLzrsg==}
 
+  country-flag-icons@1.5.19:
+    resolution: {integrity: sha512-D/ZkRyj+ywJC6b2IrAN3/tpbReMUqmuRLlcKFoY/o0+EPQN9Ev/e8tV+D3+9scvu/tarxwLErNwS73C3yzxs/g==}
+
   croner@9.0.0:
     resolution: {integrity: sha512-onMB0OkDjkXunhdW9htFjEhqrD54+M94i6ackoUkjHKbRnXdyEyKRelp4nJ1kAz32+s27jP1FsebpJCVl0BsvA==}
     engines: {node: '>=18.0'}
@@ -4562,12 +4565,6 @@ packages:
   range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
-
-  react-circle-flags@0.0.23:
-    resolution: {integrity: sha512-J35vkTnG4Iz7cgitq/UIw4/1i8aUWEkz2Z0MQTTWycWOHKezuey5+3BPAsXNr78gYMdjSBtZWmSzQc0oEeK4oQ==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: ^16.0.0 || 17.x || 18.x || 19.x
 
   react-datepicker@7.6.0:
     resolution: {integrity: sha512-9cQH6Z/qa4LrGhzdc3XoHbhrxNcMi9MKjZmYgF/1MNNaJwvdSjv3Xd+jjvrEEbKEf71ZgCA3n7fQbdwd70qCRw==}
@@ -8591,6 +8588,8 @@ snapshots:
 
   country-data-list@1.4.1: {}
 
+  country-flag-icons@1.5.19: {}
+
   croner@9.0.0: {}
 
   cross-env@7.0.3:
@@ -10488,10 +10487,6 @@ snapshots:
   quick-format-unescaped@4.0.4: {}
 
   range-parser@1.2.1: {}
-
-  react-circle-flags@0.0.23(react@19.1.0):
-    dependencies:
-      react: 19.1.0
 
   react-datepicker@7.6.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
