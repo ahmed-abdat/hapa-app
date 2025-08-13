@@ -22,14 +22,15 @@ import {
   FormDateTimePicker,
   FormFileUpload
 } from '../FormFields'
-import { EnhancedFileUpload } from '../FormFields/EnhancedFileUpload'
+import { EnhancedFileUploadV2 } from '../FormFields/EnhancedFileUploadV2'
 import { 
   createMediaContentComplaintSchema, 
   type MediaContentComplaintFormData,
   type MediaContentComplaintSubmission 
 } from '@/lib/validations/media-forms'
 import { type Locale } from '@/utilities/locale'
-import { convertToFormData } from '@/lib/file-upload'
+import { convertToFormData, validateFormDataSize, formatFileSize } from '@/lib/file-upload'
+import { validateFileProduction } from '@/lib/production-file-validation'
 import { logger } from '@/utilities/logger'
 import { FormSubmissionProgress } from '@/components/CustomForms/FormSubmissionProgress'
 
@@ -73,7 +74,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
       programName: '',
       broadcastDateTime: '',
       linkScreenshot: '',
-      screenshotFiles: [],
+      screenshotFiles: [], // Will be managed as URLs by EnhancedFileUploadV2
       // Complaint Reasons
       reasons: [],
       reasonOther: '',
@@ -82,7 +83,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
       // Attachments
       attachmentTypes: [],
       attachmentOther: '',
-      attachmentFiles: [],
+      attachmentFiles: [], // Will be managed as URLs by EnhancedFileUploadV2
       // Declaration and Consent
       acceptDeclaration: false,
       acceptConsent: false,
@@ -159,43 +160,54 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
   const onSubmit = async (data: MediaContentComplaintFormData) => {
     const clientSessionId = `CLIENT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     
-    // File validation
+    // File validation for V2 component (URLs instead of File objects)
     const screenshotCount = Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0
     const attachmentCount = Array.isArray(data.attachmentFiles) ? data.attachmentFiles.length : 0
-    
-    // File check completed
     
     // File validation with detailed logging
     const fileValidationErrors: string[] = []
     
     if (Array.isArray(data.screenshotFiles)) {
-      data.screenshotFiles.forEach((file, index) => {
-        if (!(file instanceof File)) {
-          const error = `Screenshot ${index + 1} is not a valid File`
+      data.screenshotFiles.forEach((url, index) => {
+        if (!url || typeof url !== 'string' || !url.startsWith('http')) {
+          const error = `Screenshot ${index + 1} has invalid URL: ${url}`
           fileValidationErrors.push(error)
-          logger.error('Invalid screenshot file:', { sessionId: clientSessionId, index: index + 1 })
+          logger.error('Invalid screenshot URL:', { sessionId: clientSessionId, index: index + 1, url })
         }
       })
     }
     
     if (Array.isArray(data.attachmentFiles)) {
-      data.attachmentFiles.forEach((file, index) => {
-        if (!(file instanceof File)) {
-          const error = `Attachment ${index + 1} is not a valid File`
+      data.attachmentFiles.forEach((url, index) => {
+        if (!url || typeof url !== 'string' || !url.startsWith('http')) {
+          const error = `Attachment ${index + 1} has invalid URL: ${url}`
           fileValidationErrors.push(error)
-          logger.error('Invalid attachment file:', { sessionId: clientSessionId, index: index + 1 })
+          logger.error('Invalid attachment URL:', { sessionId: clientSessionId, index: index + 1, url })
         }
       })
     }
     
     if (fileValidationErrors.length > 0) {
-      logger.error('File validation failed:', { sessionId: clientSessionId, errors: fileValidationErrors })
+      logger.error('File URL validation failed:', { sessionId: clientSessionId, errors: fileValidationErrors })
       setSubmissionError('File validation failed. Please re-upload your files.')
       return
     }
 
-    // Log form submission
-    logger.formSubmission('Complaint', { screenshots: screenshotCount, attachments: attachmentCount })
+    // Prepare submission data (files already uploaded and validated by EnhancedFileUploadV2)
+    const submissionData = {
+      ...data,
+      formType: 'complaint',
+      submittedAt: new Date().toISOString(),
+      locale,
+    }
+
+    // Log form submission (V2 component with URLs)
+    logger.formSubmission('Complaint', { 
+      screenshots: screenshotCount, 
+      attachments: attachmentCount,
+      screenshotUrls: data.screenshotFiles || [],
+      attachmentUrls: data.attachmentFiles || []
+    })
     
     setIsSubmitting(true)
     setSubmissionStage('preparing')
@@ -206,13 +218,6 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
       // Stage 1: Prepare submission data
       setSubmissionStage('preparing')
       setSubmissionProgress(10)
-      
-      const submissionData = {
-        ...data,
-        formType: 'complaint',
-        submittedAt: new Date().toISOString(),
-        locale,
-      }
 
       // Converting to FormData
       const formData = convertToFormData(submissionData)
@@ -506,16 +511,23 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
             className="min-h-20"
           />
 
-          <EnhancedFileUpload
-            name="screenshotFiles"
-            label={t('screenshotFiles')}
-            supportedTypes={['image', 'document']}
-            maxFiles={5}
-            enableChunkedUpload={false}
-            enablePreview={true}
-            locale={locale}
-            required={false}
-          />
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">
+              {t('screenshotFiles')}
+            </label>
+            <EnhancedFileUploadV2
+              value={watch('screenshotFiles') || []}
+              onChange={(urls) => methods.setValue('screenshotFiles', urls)}
+              maxFiles={5}
+              maxSize={10}
+              acceptedFileTypes={['.jpg', '.jpeg', '.png', '.gif', '.webp', '.pdf', '.doc', '.docx', '.txt']}
+              multiple={true}
+              fileType="screenshot"
+              label={t('screenshots')}
+              description={t('uploadScreenshotFiles')}
+              disabled={isSubmitting}
+            />
+          </div>
         </div>
 
         {/* Section 3: Complaint Reason */}
@@ -585,16 +597,23 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
           )}
 
           {selectedAttachments && selectedAttachments.length > 0 && (
-            <EnhancedFileUpload
-              name="attachmentFiles"
-              label={t('attachmentFiles')}
-              supportedTypes={['video', 'audio', 'image', 'document']}
-              maxFiles={8}
-              enableChunkedUpload={true}
-              enablePreview={true}
-              locale={locale}
-              required={false}
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                {t('attachmentFiles')}
+              </label>
+              <EnhancedFileUploadV2
+                value={watch('attachmentFiles') || []}
+                onChange={(urls) => methods.setValue('attachmentFiles', urls)}
+                maxFiles={8}
+                maxSize={100}
+                acceptedFileTypes={['.mp4', '.webm', '.mov', '.avi', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.pdf', '.doc', '.docx', '.txt', '.mp3', '.wav', '.m4a', '.ogg', '.flac']}
+                multiple={true}
+                fileType="attachment"
+                label={t('attachments')}
+                description={t('uploadAttachmentFiles')}
+                disabled={isSubmitting}
+              />
+            </div>
           )}
         </div>
 

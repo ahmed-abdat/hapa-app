@@ -30,13 +30,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
 import { type Locale } from '@/utilities/locale'
 import { FormFieldProps } from '../types'
+// Uses production-grade validation via media-validation wrapper
 import { 
   validateMediaFile,
   validateMultipleFiles,
-  type ValidationResult,
-  type MediaMetadata,
-  MEDIA_VALIDATION_CONFIGS
+  type MediaMetadata
 } from '@/lib/media-validation'
+import { PRODUCTION_VALIDATION_CONFIGS } from '@/lib/production-file-validation'
 
 interface EnhancedFileUploadProps extends Omit<FormFieldProps, 'placeholder'> {
   accept?: string
@@ -46,6 +46,20 @@ interface EnhancedFileUploadProps extends Omit<FormFieldProps, 'placeholder'> {
   enablePreview?: boolean
   supportedTypes?: ('video' | 'audio' | 'image' | 'document')[]
   locale?: Locale
+}
+
+interface ValidationResult {
+  isValid: boolean
+  error?: string
+  fileType: 'video' | 'audio' | 'image' | 'document' | 'unknown'
+  detectedMimeType?: string
+  codecInfo?: {
+    container: string
+    videoCodec?: string
+    audioCodec?: string
+    isSupported: boolean
+  }
+  metadata?: MediaMetadata
 }
 
 interface UploadFile {
@@ -279,9 +293,11 @@ export function EnhancedFileUpload({
     const summary: string[] = []
     
     supportedTypes.forEach(type => {
-      const config = MEDIA_VALIDATION_CONFIGS[type]
-      const extensions = config.allowedExtensions.join(', ')
-      summary.push(`${type.toUpperCase()}: .${extensions} (max ${config.maxFileSizeMB}MB)`)
+      const config = PRODUCTION_VALIDATION_CONFIGS[type]
+      if (config) {
+        const extensions = config.allowedExtensions.join(', ')
+        summary.push(`${type.toUpperCase()}: .${extensions} (max ${config.maxSizeMB}MB)`)
+      }
     })
     
     return summary

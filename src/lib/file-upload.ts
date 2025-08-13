@@ -47,38 +47,8 @@ export interface CompressionOptions {
   minQuality: number
 }
 
-// File signature validation for security
-const FILE_SIGNATURES = {
-  'image/jpeg': [[0xFF, 0xD8, 0xFF]],
-  'image/png': [[0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]],
-  'image/gif': [[0x47, 0x49, 0x46, 0x38, 0x37, 0x61], [0x47, 0x49, 0x46, 0x38, 0x39, 0x61]],
-  'application/pdf': [[0x25, 0x50, 0x44, 0x46]],
-  'text/plain': [], // Text files are harder to validate by signature
-  'application/msword': [[0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1]],
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [[0x50, 0x4B, 0x03, 0x04]],
-} as const
-
-/**
- * Validate file signature (magic numbers) for security
- */
-export async function validateFileSignature(file: File): Promise<boolean> {
-  try {
-    // Skip validation for text files as they don't have reliable signatures
-    if (file.type === 'text/plain') return true
-    
-    const buffer = await file.arrayBuffer()
-    const uint8Array = new Uint8Array(buffer)
-    const signatures = FILE_SIGNATURES[file.type as keyof typeof FILE_SIGNATURES]
-    
-    if (!signatures || signatures.length === 0) return false
-    
-    return signatures.some(signature => 
-      signature.every((byte, index) => uint8Array[index] === byte)
-    )
-  } catch {
-    return false
-  }
-}
+// Note: File validation is now handled by production-file-validation.ts
+// This module focuses on upload utilities, retry mechanisms, and file processing
 
 /**
  * Sanitize filename for security
@@ -114,14 +84,15 @@ export async function uploadFile(
       }
     }
     
-    // Validate file signature for security (non-retryable errors)
-    const isValidSignature = await validateFileSignature(file)
-    if (!isValidSignature) {
-      const error = new Error('Invalid file format detected')
+    // Validate file using production-grade validation (non-retryable errors)
+    const { validateFileProduction } = await import('@/lib/production-file-validation')
+    const validationResult = await validateFileProduction(file)
+    if (!validationResult.isValid) {
+      const error = new Error(validationResult.error || 'Invalid file format detected')
       const updatedRetryState = updateRetryState(currentRetryState, error as Error)
       return {
         success: false,
-        error: 'Invalid file format detected',
+        error: validationResult.error || 'Invalid file format detected',
         retryState: updatedRetryState,
         canRetry: false // Security errors are not retryable
       }
@@ -790,4 +761,128 @@ export async function smartCompressImage(
   }
 
   return compressImage(file, options)
+}
+
+/**
+ * Calculate total size of form data including all files and text data
+ */
+export function calculateFormDataSize(data: Record<string, any>): {
+  totalSize: number
+  fileSize: number
+  textSize: number
+  fileCount: number
+  details: {
+    screenshots: { count: number; size: number }
+    attachments: { count: number; size: number }
+    textFields: number
+  }
+} {
+  let fileSize = 0
+  let textSize = 0
+  let fileCount = 0
+  let screenshotCount = 0
+  let screenshotSize = 0
+  let attachmentCount = 0
+  let attachmentSize = 0
+
+  for (const [key, value] of Object.entries(data)) {
+    if (value === undefined || value === null) {
+      continue
+    }
+
+    if (Array.isArray(value)) {
+      if (value.length === 0) {
+        continue
+      }
+      
+      value.forEach((item) => {
+        if (item instanceof File) {
+          fileSize += item.size
+          fileCount++
+          
+          if (key === 'screenshotFiles') {
+            screenshotCount++
+            screenshotSize += item.size
+          } else if (key === 'attachmentFiles') {
+            attachmentCount++
+            attachmentSize += item.size
+          }
+        } else {
+          // Estimate text size (UTF-8 encoding)
+          const itemText = item.toString()
+          textSize += new Blob([itemText]).size
+        }
+      })
+    } else if (value instanceof File) {
+      fileSize += value.size
+      fileCount++
+    } else {
+      // Estimate text size (UTF-8 encoding)
+      const valueText = value.toString()
+      textSize += new Blob([valueText]).size
+    }
+  }
+
+  return {
+    totalSize: fileSize + textSize,
+    fileSize,
+    textSize,
+    fileCount,
+    details: {
+      screenshots: { count: screenshotCount, size: screenshotSize },
+      attachments: { count: attachmentCount, size: attachmentSize },
+      textFields: textSize
+    }
+  }
+}
+
+/**
+ * Check if form data size exceeds server action body limit
+ */
+export function validateFormDataSize(
+  data: Record<string, any>, 
+  maxSizeMB: number = 95 // Conservative limit (5MB less than 100MB server limit)
+): {
+  isValid: boolean
+  sizeInfo: ReturnType<typeof calculateFormDataSize>
+  error?: string
+  suggestions?: string[]
+} {
+  const sizeInfo = calculateFormDataSize(data)
+  const maxSizeBytes = maxSizeMB * 1024 * 1024
+  
+  if (sizeInfo.totalSize <= maxSizeBytes) {
+    return {
+      isValid: true,
+      sizeInfo
+    }
+  }
+
+  const suggestions: string[] = []
+  const exceededBy = sizeInfo.totalSize - maxSizeBytes
+  const exceededByMB = exceededBy / (1024 * 1024)
+
+  // Generate helpful suggestions
+  if (sizeInfo.details.screenshots.size > 50 * 1024 * 1024) { // > 50MB screenshots
+    suggestions.push(`Réduisez la taille ou le nombre de captures d'écran (actuellement: ${formatFileSize(sizeInfo.details.screenshots.size)})`)
+  }
+  
+  if (sizeInfo.details.attachments.size > 50 * 1024 * 1024) { // > 50MB attachments
+    suggestions.push(`Réduisez la taille ou le nombre de pièces jointes (actuellement: ${formatFileSize(sizeInfo.details.attachments.size)})`)
+  }
+
+  if (sizeInfo.fileCount > 10) {
+    suggestions.push(`Réduisez le nombre de fichiers (actuellement: ${sizeInfo.fileCount} fichiers)`)
+  }
+
+  return {
+    isValid: false,
+    sizeInfo,
+    error: `La taille totale des données (${formatFileSize(sizeInfo.totalSize)}) dépasse la limite de ${maxSizeMB}MB de ${exceededByMB.toFixed(1)}MB.`,
+    suggestions: suggestions.length > 0 ? suggestions : [
+      'Réduisez la taille des fichiers ou leur nombre',
+      'Compressez les images et vidéos',
+      'Utilisez des formats plus efficaces si possible'
+    ]
+  }
 }

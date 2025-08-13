@@ -9,12 +9,12 @@ import {
   createMediaContentComplaintSchema 
 } from '@/lib/validations/media-forms'
 import type { FormSubmissionResponse } from '@/types/media-forms'
-import { validateFileSignature, sanitizeFilename } from '@/lib/file-upload'
+import { sanitizeFilename } from '@/lib/file-upload'
 import { 
-  validateMultipleServerFiles, 
-  createValidationSummary,
-  type ServerValidationResult
-} from '@/lib/server-media-validation'
+  validateMultipleFilesProduction, 
+  createProductionValidationSummary,
+  type ValidationResult as ProductionValidationResult
+} from '@/lib/production-file-validation'
 
 // Node.js compatible File type checking
 const isFileObject = (value: any): value is File => {
@@ -27,31 +27,11 @@ const isFileObject = (value: any): value is File => {
          'arrayBuffer' in value
 }
 
-// Production-ready constants - Enhanced for video/audio support
-const MAX_VIDEO_SIZE = 100 * 1024 * 1024 // 100MB for videos
-const MAX_AUDIO_SIZE = 25 * 1024 * 1024 // 25MB for audio
-const MAX_IMAGE_SIZE = 10 * 1024 * 1024 // 10MB for images
-const MAX_DOCUMENT_SIZE = 15 * 1024 * 1024 // 15MB for documents
-
-const ALLOWED_MIME_TYPES = [
-  // Images
-  'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
-  // Videos
-  'video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo', 'video/ogg',
-  // Audio
-  'audio/mpeg', 'audio/wav', 'audio/mp4', 'audio/ogg', 'audio/webm', 'audio/flac',
-  // Documents
-  'application/pdf', 'text/plain', 
-  'application/msword', 
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-]
-
+// Production-ready constants
 const MAX_FILES_PER_TYPE = 8
 const UPLOAD_TIMEOUT = 60000 // 60 seconds for larger files
-const MAX_VIDEO_DURATION = 600 // 10 minutes
-const MAX_AUDIO_DURATION = 900 // 15 minutes
 
-interface ValidationResult {
+interface FormValidationResult {
   isValid: boolean
   errors: string[]
   fields: Record<string, any>
@@ -95,8 +75,9 @@ export async function submitMediaFormAction(formData: FormData): Promise<FormSub
     // Phase 2: Payload Connection & Security Validation
     const payload = await getPayload({ config })
     
-    // Security validation for all files
-    const securityValidation = await validateFileSecurity([...screenshots, ...attachments], sessionId)
+    // Production security validation for all files
+    const allFiles = [...screenshots, ...attachments]
+    const securityValidation = await validateFilesWithProductionStandards(allFiles, sessionId)
     if (!securityValidation.isValid) {
       return {
         success: false,
@@ -208,7 +189,7 @@ export async function submitMediaFormAction(formData: FormData): Promise<FormSub
 /**
  * Comprehensive input validation and data extraction
  */
-async function validateAndExtractData(formData: FormData, sessionId: string): Promise<ValidationResult> {
+async function validateAndExtractData(formData: FormData, sessionId: string): Promise<FormValidationResult> {
   const errors: string[] = []
   const fields: Record<string, any> = {}
   const screenshots: File[] = []
@@ -290,56 +271,112 @@ async function validateAndExtractData(formData: FormData, sessionId: string): Pr
 }
 
 /**
- * Security validation for uploaded files
+ * Production security validation for uploaded files using unified validation system
  */
-async function validateFileSecurity(files: File[], sessionId: string): Promise<ValidationResult> {
-  const errors: string[] = []
+async function validateFilesWithProductionStandards(files: File[], sessionId: string): Promise<FormValidationResult & { securityFlags?: string[]; metadata?: { fileSize: number; validationDepth: number }; declaredMime?: string }> {
+  logger.info('🔍 Starting production file validation', {
+    component: 'MediaFormAction',
+    action: 'security_validation_start',
+    sessionId,
+    metadata: { 
+      fileCount: files.length,
+      timestamp: new Date().toISOString() 
+    }
+  })
 
-  // Security validation for files
-
-  for (const file of files) {
-    // File size validation based on type
-    let maxSize = MAX_DOCUMENT_SIZE // Default for documents
-    if (file.type.startsWith('image/')) {
-      maxSize = MAX_IMAGE_SIZE
-    } else if (file.type.startsWith('video/')) {
-      maxSize = MAX_VIDEO_SIZE
-    } else if (file.type.startsWith('audio/')) {
-      maxSize = MAX_AUDIO_SIZE
+  try {
+    // Use production validation system for comprehensive security checks
+    const validationResults = await validateMultipleFilesProduction(files)
+    
+    // Create comprehensive summary
+    const summary = createProductionValidationSummary(validationResults)
+    
+    // Extract errors for response formatting
+    const errors: string[] = []
+    
+    validationResults.forEach((result, index) => {
+      if (!result.isValid) {
+        const fileName = files[index]?.name || `file_${index}`
+        if (result.error) {
+          errors.push(`${fileName}: ${result.error}`)
+        }
+        
+        // Log security flags for monitoring
+        if (result.securityFlags && result.securityFlags.length > 0) {
+          logger.warn('⚠️ Security flags detected', {
+            component: 'MediaFormAction',
+            action: 'security_flags',
+            sessionId,
+            fileName,
+            securityFlags: result.securityFlags,
+            metadata: { 
+              declaredMime: result.declaredMime,
+              detectedType: result.detectedType
+            }
+          })
+        }
+      }
+    })
+    
+    const isValid = summary.invalidFiles === 0
+    
+    if (isValid) {
+      logger.info('✅ Production file validation successful', {
+        component: 'MediaFormAction',
+        action: 'security_validation_success',
+        sessionId,
+        metadata: {
+          validFiles: summary.validFiles,
+          totalSize: `${(summary.totalSize / 1024 / 1024).toFixed(1)}MB`,
+          averageValidationDepth: `${summary.averageValidationDepth.toFixed(0)} bytes`
+        }
+      })
+    } else {
+      logger.error('❌ Production file validation failed', {
+        component: 'MediaFormAction',
+        action: 'security_validation_failed',
+        sessionId,
+        metadata: {
+          validFiles: summary.validFiles,
+          invalidFiles: summary.invalidFiles,
+          securityFlags: Array.from(new Set(summary.securityFlags)) // Remove duplicates
+        }
+      })
     }
     
-    if (file.size > maxSize) {
-      errors.push(`File too large: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)}MB, max: ${maxSize / 1024 / 1024}MB)`)
-      continue
+    return {
+      isValid,
+      errors,
+      // Include additional metadata for compatibility
+      fields: {},
+      screenshots: [],
+      attachments: [],
+      // Include production validation metadata
+      declaredMime: '',
+      metadata: {
+        fileSize: summary.totalSize,
+        validationDepth: summary.averageValidationDepth
+      },
+      securityFlags: summary.securityFlags.length > 0 ? Array.from(new Set(summary.securityFlags)) : undefined
     }
-
-    // MIME type validation
-    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-      errors.push(`Invalid file type: ${file.name} (${file.type})`)
-      continue
+    
+  } catch (error) {
+    logger.error('❌ Production file validation error', {
+      component: 'MediaFormAction',
+      action: 'security_validation_error',
+      sessionId,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    })
+    
+    return {
+      isValid: false,
+      errors: [`Production validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
+      fields: {},
+      screenshots: [],
+      attachments: [],
+      declaredMime: '',
+      securityFlags: ['PRODUCTION_VALIDATION_ERROR']
     }
-
-    // File signature validation
-    try {
-      const isValidSignature = await validateFileSignature(file)
-      if (!isValidSignature) {
-        errors.push(`Invalid file signature: ${file.name}`)
-        continue
-      }
-    } catch (error) {
-      errors.push(`File validation error: ${file.name}`)
-      logger.error('File signature validation error:', { sessionId, fileName: file.name, error })
-    }
-
-    // File validated successfully
-  }
-
-  return {
-    isValid: errors.length === 0,
-    errors,
-    fields: {},
-    screenshots: [],
-    attachments: []
   }
 }
 
@@ -352,7 +389,7 @@ async function validateSchema(
   attachments: File[], 
   t: any, 
   sessionId: string
-): Promise<ValidationResult> {
+): Promise<FormValidationResult> {
   const errors: string[] = []
 
   try {

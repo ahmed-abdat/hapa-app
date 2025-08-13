@@ -15,7 +15,6 @@ import { type Locale } from '@/utilities/locale'
 import { FormFieldProps } from '../types'
 import { useControllableState } from '@/hooks/use-controllable-state'
 import { 
-  validateFileSignature, 
   sanitizeFilename, 
   generateThumbnail, 
   isImageFile, 
@@ -29,6 +28,7 @@ import {
   uploadFileWithRetry,
   sleep
 } from '@/lib/file-upload'
+import { validateFileProduction, type ValidationResult } from '@/lib/production-file-validation'
 import { logger } from '@/utilities/logger'
 
 interface FormFileUploadProps extends Omit<FormFieldProps, 'placeholder'> {
@@ -315,47 +315,65 @@ export function FormFileUploadModern({
   }
 
   const validateFile = React.useCallback(async (file: File): Promise<{ error: string | null, retryState?: RetryState }> => {
-    // Size validation
-    if (file.size > maxSize * 1024 * 1024) {
-      return { error: t('fileTooLarge', { maxSize }) }
-    }
-
-    // File name sanitization check
-    const sanitizedName = sanitizeFilename(file.name)
-    if (sanitizedName !== file.name && sanitizedName.length < file.name.length * 0.5) {
-      return { error: t('invalidFileName') }
-    }
-
-    // Type validation (basic MIME type check)
-    const allowedTypes = accept.split(',').map(t => t.trim())
-    const isValidType = allowedTypes.some(allowedType => {
-      if (allowedType.startsWith('.')) {
-        return file.name.toLowerCase().endsWith(allowedType.toLowerCase())
-      }
-      if (allowedType.includes('*')) {
-        const baseType = allowedType.split('/')[0]
-        return file.type.startsWith(baseType + '/')
-      }
-      return file.type === allowedType
-    })
-
-    if (!isValidType) {
-      return { error: t('unsupportedFileType') }
-    }
-
-    // Advanced security validation - file signature check
+    // Use production validation system
     try {
-      const isValidSignature = await validateFileSignature(file)
-      if (!isValidSignature) {
-        return { error: t('invalidFileFormat') }
+      const validationResult: ValidationResult = await validateFileProduction(file)
+      
+      if (!validationResult.isValid) {
+        // Handle specific validation errors
+        if (validationResult.error?.includes('size')) {
+          return { error: t('fileTooLarge', { maxSize }) }
+        }
+        if (validationResult.error?.includes('MIME type')) {
+          return { error: t('unsupportedFileType') }
+        }
+        if (validationResult.error?.includes('extension')) {
+          return { error: t('unsupportedFileType') }
+        }
+        if (validationResult.securityFlags?.includes('MIME_MISMATCH')) {
+          return { error: t('invalidFileFormat') }
+        }
+        if (validationResult.securityFlags?.includes('UNDETECTABLE_SIGNATURE')) {
+          return { error: t('invalidFileFormat') }
+        }
+        
+        // Generic validation error
+        return { error: validationResult.error || t('fileValidationError') }
       }
+      
+      // Additional file name sanitization check (not covered by production validation)
+      const sanitizedName = sanitizeFilename(file.name)
+      if (sanitizedName !== file.name && sanitizedName.length < file.name.length * 0.5) {
+        return { error: t('invalidFileName') }
+      }
+      
+      // Additional type validation against accept prop
+      const allowedTypes = accept.split(',').map(t => t.trim())
+      const isValidType = allowedTypes.some(allowedType => {
+        if (allowedType.startsWith('.')) {
+          return file.name.toLowerCase().endsWith(allowedType.toLowerCase())
+        }
+        if (allowedType.includes('*')) {
+          const baseType = allowedType.split('/')[0]
+          return file.type.startsWith(baseType + '/')
+        }
+        return file.type === allowedType
+      })
+      
+      if (!isValidType) {
+        return { error: t('unsupportedFileType') }
+      }
+      
+      return { error: null }
+      
     } catch (error) {
-      logger.warn('File signature validation failed:', {
+      logger.warn('Production file validation failed:', {
         component: 'FormFileUploadModern',
-        action: 'signature_validation_failed',
+        action: 'production_validation_failed',
         filename: file.name,
         metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
       })
+      
       // Create retry state for validation errors that might be transient
       const fakeError = { message: 'File validation error' }
       const retryState = updateRetryState(createRetryState(), fakeError)
@@ -364,8 +382,6 @@ export function FormFileUploadModern({
         retryState
       }
     }
-
-    return { error: null }
   }, [maxSize, accept, t])
 
   const onDrop = React.useCallback(
@@ -696,7 +712,7 @@ export function FormFileUploadModern({
                           <div className="flex flex-col items-center gap-1 text-xs text-gray-400">
                             <p><bdi>{t('maxSizeText', { maxSize })}</bdi></p>
                             {maxFiles && <p><bdi>Max files: {maxFiles}</bdi></p>}
-                            <p><bdi>{t('filesValidatedSecurity')}</bdi></p>
+                            <p><bdi>{t('filesValidatedSecurity')} (Production Grade)</bdi></p>
                           </div>
                         </>
                       )}

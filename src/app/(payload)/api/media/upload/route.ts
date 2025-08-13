@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { validateFileSignature, sanitizeFilename } from '@/lib/file-upload'
+import { sanitizeFilename } from '@/lib/file-upload'
+import { validateFileProduction } from '@/lib/production-file-validation'
 import { logger } from '@/utilities/logger'
 
 // For Node.js compatibility - File is a browser API
@@ -84,12 +85,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       )
     }
 
-    // Validate file signature for security
-    const isValidSignature = await validateFileSignature(file)
-    if (!isValidSignature) {
-      logger.error('❌ Invalid file signature detected')
+    // Validate file using production-grade validation system
+    const validationResult = await validateFileProduction(file)
+    if (!validationResult.isValid) {
+      logger.error('❌ Production file validation failed', {
+        error: validationResult.error,
+        securityFlags: validationResult.securityFlags,
+        fileName: file.name,
+        fileType: file.type
+      })
       return NextResponse.json(
-        { error: 'Invalid file format detected' },
+        { error: validationResult.error || 'Invalid file format detected' },
         { status: 400 }
       )
     }

@@ -108,7 +108,7 @@ const config = withPayload(
         // React Compiler for better performance (React 19 feature)
         reactCompiler: false, // Enable when ready for production
         serverActions: {
-          bodySizeLimit: '5mb',
+          bodySizeLimit: '100mb', // Increased for media evidence uploads (videos, audio, screenshots)
         },
         // CSS chunking optimization (Next.js 15 default best practice)
         cssChunking: true,
