@@ -574,7 +574,7 @@ export const MediaContentSubmissions: CollectionConfig = {
               ar: 'لقطات الشاشة والصور المقدمة كأدلة. واجهة نظيفة بدون عناوين URL تقنية.',
             },
             components: {
-              Field: '@/components/admin/CleanMediaGallery/index',
+              Field: '@/components/admin/EnhancedMediaGallery/index',
             },
           },
         },
@@ -685,7 +685,7 @@ export const MediaContentSubmissions: CollectionConfig = {
           ar: 'ملفات أدلة إضافية (فيديو، صوت، مستندات). واجهة نظيفة بدون عناوين URL تقنية.',
         },
         components: {
-          Field: '@/components/admin/CleanMediaGallery/index',
+          Field: '@/components/admin/EnhancedMediaGallery/index',
         },
       },
     },
