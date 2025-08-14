@@ -22,6 +22,7 @@ import { default as default_4422a77cfdc4eb7c4845f13c5e26d5ab } from '@/component
 import { default as default_a1ca0f2c1b69618ecc25f9973ffeb812 } from '@/components/admin/EnhancedMediaGallery/index'
 import { default as default_7b4e55aec7514a0efa3c42a12b233003 } from '@/components/admin/ReasonField/index'
 import { default as default_102cce8ca03aca4d934be301b628260e } from '@/components/admin/ReasonRowLabel/index'
+import { default as default_063fcc0d2fe6b0327fcdfee32407c910 } from '@/components/admin/MediaCleanupDashboard'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { CustomAvatar as CustomAvatar_641de08406c244a7623185c85da45b0a } from '@/components/CustomAvatar/index.tsx'
@@ -56,6 +57,7 @@ export const importMap = {
   "@/components/admin/EnhancedMediaGallery/index#default": default_a1ca0f2c1b69618ecc25f9973ffeb812,
   "@/components/admin/ReasonField/index#default": default_7b4e55aec7514a0efa3c42a12b233003,
   "@/components/admin/ReasonRowLabel/index#default": default_102cce8ca03aca4d934be301b628260e,
+  "@/components/admin/MediaCleanupDashboard#default": default_063fcc0d2fe6b0327fcdfee32407c910,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@/components/CustomAvatar/index.tsx#CustomAvatar": CustomAvatar_641de08406c244a7623185c85da45b0a,

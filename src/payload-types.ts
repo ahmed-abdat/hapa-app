@@ -72,6 +72,7 @@ export interface Config {
     categories: Category;
     'dashboard-submissions': DashboardSubmission;
     'media-content-submissions': MediaContentSubmission;
+    'media-cleanup-jobs': MediaCleanupJob;
     'form-media': FormMedia;
     users: User;
     redirects: Redirect;
@@ -88,6 +89,7 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     'dashboard-submissions': DashboardSubmissionsSelect<false> | DashboardSubmissionsSelect<true>;
     'media-content-submissions': MediaContentSubmissionsSelect<false> | MediaContentSubmissionsSelect<true>;
+    'media-cleanup-jobs': MediaCleanupJobsSelect<false> | MediaCleanupJobsSelect<true>;
     'form-media': FormMediaSelect<false> | FormMediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -381,6 +383,118 @@ export interface MediaContentSubmission {
   createdAt: string;
 }
 /**
+ * Track and manage media cleanup operations for orphaned files
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-cleanup-jobs".
+ */
+export interface MediaCleanupJob {
+  id: number;
+  /**
+   * Type of cleanup operation performed
+   */
+  jobType: 'verification' | 'cleanup' | 'audit';
+  status: 'pending' | 'running' | 'completed' | 'failed' | 'partial';
+  /**
+   * When the job was started
+   */
+  executedAt?: string | null;
+  /**
+   * When the job was completed
+   */
+  completedAt?: string | null;
+  metrics?: {
+    /**
+     * Total number of files scanned in R2
+     */
+    filesScanned?: number | null;
+    /**
+     * Number of files processed
+     */
+    filesProcessed?: number | null;
+    /**
+     * Number of orphaned files identified
+     */
+    orphanedFilesFound?: number | null;
+    /**
+     * Number of files successfully deleted
+     */
+    filesDeleted?: number | null;
+    /**
+     * Number of files that failed to delete
+     */
+    deletionErrors?: number | null;
+    /**
+     * Storage space reclaimed in bytes
+     */
+    storageReclaimed?: number | null;
+  };
+  /**
+   * List of orphaned files found during scan
+   */
+  orphanedFiles?:
+    | {
+        filename: string;
+        path: string;
+        size?: number | null;
+        lastModified?: string | null;
+        status?: ('found' | 'deleted' | 'failed' | 'skipped') | null;
+        /**
+         * Error message if deletion failed
+         */
+        error?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  configuration?: {
+    /**
+     * If true, only scans and reports without deleting
+     */
+    dryRun?: boolean | null;
+    /**
+     * R2 directories to scan (default: forms/)
+     */
+    includeDirectories?:
+      | {
+          path: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * File patterns to exclude from cleanup
+     */
+    excludePatterns?:
+      | {
+          pattern: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Maximum files to process in one job
+     */
+    maxFilesToProcess?: number | null;
+    /**
+     * Keep files newer than this many days
+     */
+    retentionDays?: number | null;
+  };
+  /**
+   * Detailed log of the cleanup operation
+   */
+  executionLog?: string | null;
+  /**
+   * Error messages encountered during execution
+   */
+  errorLog?: string | null;
+  triggeredBy?: ('manual' | 'scheduled' | 'api') | null;
+  /**
+   * User who triggered the job (for manual jobs)
+   */
+  executedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Fichiers téléchargés via les formulaires de soumission. Ces fichiers ne sont pas disponibles pour la sélection dans les autres contenus.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -608,6 +722,10 @@ export interface PayloadLockedDocument {
         value: number | MediaContentSubmission;
       } | null)
     | ({
+        relationTo: 'media-cleanup-jobs';
+        value: number | MediaCleanupJob;
+      } | null)
+    | ({
         relationTo: 'form-media';
         value: number | FormMedia;
       } | null)
@@ -821,6 +939,62 @@ export interface MediaContentSubmissionsSelect<T extends boolean = true> {
         resolutionNotes?: T;
         actionTaken?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-cleanup-jobs_select".
+ */
+export interface MediaCleanupJobsSelect<T extends boolean = true> {
+  jobType?: T;
+  status?: T;
+  executedAt?: T;
+  completedAt?: T;
+  metrics?:
+    | T
+    | {
+        filesScanned?: T;
+        filesProcessed?: T;
+        orphanedFilesFound?: T;
+        filesDeleted?: T;
+        deletionErrors?: T;
+        storageReclaimed?: T;
+      };
+  orphanedFiles?:
+    | T
+    | {
+        filename?: T;
+        path?: T;
+        size?: T;
+        lastModified?: T;
+        status?: T;
+        error?: T;
+        id?: T;
+      };
+  configuration?:
+    | T
+    | {
+        dryRun?: T;
+        includeDirectories?:
+          | T
+          | {
+              path?: T;
+              id?: T;
+            };
+        excludePatterns?:
+          | T
+          | {
+              pattern?: T;
+              id?: T;
+            };
+        maxFilesToProcess?: T;
+        retentionDays?: T;
+      };
+  executionLog?: T;
+  errorLog?: T;
+  triggeredBy?: T;
+  executedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
