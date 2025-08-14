@@ -31,3 +31,4 @@ debuging/
 
 # Development tools
 .serena/
+tsconfig.tsbuildinfo

@@ -75,7 +75,7 @@ export interface DynamicMediaFormProps {
 
 // Specific prop interface for file upload
 export interface DynamicFileUploadProps extends DynamicMediaFormProps {
-  onChange?: (files: File[]) => void;
+  onChange: (files: File[]) => void;
 }
 
 export function DynamicMediaContentComplaintForm(props: DynamicMediaFormProps) {

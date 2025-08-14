@@ -347,7 +347,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ url, filename, onError }) => 
 const PDFPreviewButton: React.FC<PDFViewerProps> = ({ url, filename, onError }) => {
   const [error, setError] = useState<string | null>(null)
   
-
   const openPreview = () => {
     try {
       if (isValidUrl(url)) {
@@ -513,12 +512,10 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
   const [activeMedia, setActiveMedia] = useState<string | null>(null)
   const [mediaErrors, setMediaErrors] = useState<Set<string>>(new Set())
 
-
   // Get the actual array data from form fields
   const formFieldValue = formFields[path]?.value
   
   let actualData: MediaItem[] | null = null
-  
   
   // Try multiple data extraction methods
   
@@ -557,7 +554,6 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
     const rowData: MediaItem[] = fieldState.rows
       .map((row: any, index: number) => {
         const rowPath = `${path}.${index}`
-        
         
         // Try different ways to get the URL
         let url: string | null = null
@@ -615,7 +611,6 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
       actualData = numberedFields
     }
   }
-  
 
   // Handle empty state
   if (!actualData || !Array.isArray(actualData) || actualData.length === 0) {
