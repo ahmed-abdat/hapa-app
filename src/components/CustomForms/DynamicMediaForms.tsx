@@ -97,7 +97,7 @@ export function DynamicMediaContentReportForm(props: DynamicMediaFormProps) {
 export function DynamicEnhancedFileUpload(props: DynamicFileUploadProps) {
   return (
     <Suspense fallback={<FileUploadLoadingSkeleton />}>
-      <EnhancedFileUploadV3 onChange={() => {}} {...props} />
+      <EnhancedFileUploadV3 {...props} />
     </Suspense>
   );
 }
