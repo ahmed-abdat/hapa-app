@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { logger } from '@/utilities/logger'
+import { cleanupFormMediaHook } from './hooks/cleanupFormMedia'
 
 export const MediaContentSubmissions: CollectionConfig = {
   slug: 'media-content-submissions',
@@ -809,5 +810,6 @@ export const MediaContentSubmissions: CollectionConfig = {
         return data
       },
     ],
+    beforeDelete: [cleanupFormMediaHook],
   },
 }

@@ -9,6 +9,7 @@ import {
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
 import { ALLOWED_MIME_TYPES } from '../lib/constants'
+import { deleteFormMediaFromR2 } from './FormMedia/hooks/deleteFromR2'
 
 /**
  * Form Media Collection
@@ -78,7 +79,8 @@ export const FormMedia: CollectionConfig = {
         }
         return data
       }
-    ]
+    ],
+    beforeDelete: [deleteFormMediaFromR2],
   },
   fields: [
     {
