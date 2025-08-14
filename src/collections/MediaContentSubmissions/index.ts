@@ -786,7 +786,7 @@ export const MediaContentSubmissions: CollectionConfig = {
           
           // Auto-set priority based on reasons
           if (data.reasons && Array.isArray(data.reasons)) {
-            const urgentReasons = ['Discours de haine / Incitation à la violence', 'Désinformation / Informations mensongères', 'Désinformation / Fake news']
+            const urgentReasons = ['hateSpeech', 'fakeNews']
             const hasUrgentReason = data.reasons.some((reasonObj: { reason: string }) => 
               urgentReasons.includes(reasonObj.reason)
             )
