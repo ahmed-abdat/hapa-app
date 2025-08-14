@@ -267,6 +267,21 @@ mcp__shadcn-ui__get_component("form")
 - `pnpm lint:fix` - Auto-fix linting issues
 - **Configuration**: `eslint.config2.mjs` with TypeScript and accessibility rules
 
+### Automated Browser Testing with Playwright MCP
+
+**Pure MCP approach** using Microsoft Playwright MCP Server for AI-powered testing.
+
+**Usage:**
+```bash
+/test-auto  # Custom slash command for automated testing
+```
+
+**Benefits over JS scripts:**
+- Real-time AI analysis of test results with adaptive strategies
+- Accessibility snapshots (LLM-optimized, no manual screenshots)  
+- Self-healing tests with intelligent retry logic
+- Natural language test reports with insights
+
 ### Browser Support
 - **Modern Browsers**: Chrome 64+, Firefox 67+, Safari 12+, Edge 79+
 - **RTL Support**: Full Arabic RTL layout with proper text direction

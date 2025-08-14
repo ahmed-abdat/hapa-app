@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { validateFileSignature, sanitizeFilename } from '@/lib/file-upload'
+import { sanitizeFilename } from '@/lib/file-upload'
+import { validateFileProduction } from '@/lib/production-file-validation'
 import { logger } from '@/utilities/logger'
+import { 
+  FILE_SIZE_LIMITS, 
+  ALLOWED_MIME_TYPES, 
+  getFileSizeLimit,
+  isMimeTypeAllowed 
+} from '@/lib/constants'
 
 // For Node.js compatibility - File is a browser API
 const isFileObject = (value: any): value is File => {
@@ -15,26 +22,7 @@ const isFileObject = (value: any): value is File => {
          'arrayBuffer' in value
 }
 
-/**
- * Maximum file sizes
- */
-const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB for images
-
-/**
- * Allowed MIME types for security
- */
-const ALLOWED_MIME_TYPES = [
-  'image/jpeg',
-  'image/jpg', 
-  'image/png',
-  'image/gif',
-  'image/webp',
-  'application/pdf',
-  'text/plain',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-]
+// File size limits and MIME types are now imported from centralized constants
 
 
 /**
@@ -64,7 +52,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     logger.log('Processing file upload:', { name: file.name, size: `${(file.size / 1024).toFixed(1)}KB`, type: file.type })
 
     // Validate file type
-    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+    if (!isMimeTypeAllowed(file.type)) {
       logger.error('❌ Invalid file type:', file.type)
       return NextResponse.json(
         { error: `File type not allowed: ${file.type}` },
@@ -72,24 +60,28 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       )
     }
 
-    // Validate file size
-    const isImage = file.type.startsWith('image/')
-    const maxSize = isImage ? MAX_IMAGE_SIZE : MAX_FILE_SIZE
+    // Validate file size based on type
+    const maxSize = getFileSizeLimit(file.type)
     
     if (file.size > maxSize) {
-      logger.error('❌ File too large:', `${(file.size / 1024 / 1024).toFixed(1)}MB`)
+      logger.error('❌ File too large:', `${(file.size / 1024 / 1024).toFixed(1)}MB (max: ${maxSize / 1024 / 1024}MB)`)
       return NextResponse.json(
-        { error: `File too large. Maximum size: ${maxSize / 1024 / 1024}MB` },
+        { error: `File too large. Maximum size for ${file.type}: ${maxSize / 1024 / 1024}MB` },
         { status: 400 }
       )
     }
 
-    // Validate file signature for security
-    const isValidSignature = await validateFileSignature(file)
-    if (!isValidSignature) {
-      logger.error('❌ Invalid file signature detected')
+    // Validate file using production-grade validation system
+    const validationResult = await validateFileProduction(file)
+    if (!validationResult.isValid) {
+      logger.error('❌ Production file validation failed', {
+        error: validationResult.error,
+        securityFlags: validationResult.securityFlags,
+        fileName: file.name,
+        fileType: file.type
+      })
       return NextResponse.json(
-        { error: 'Invalid file format detected' },
+        { error: validationResult.error || 'Invalid file format detected' },
         { status: 400 }
       )
     }

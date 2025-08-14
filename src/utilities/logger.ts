@@ -47,6 +47,18 @@ export interface LogContext {
   // Additional metadata
   metadata?: Record<string, any>
   
+  // Validation context
+  validationId?: string
+  fileName?: string
+  declaredMime?: string
+  detectedMime?: string
+  detectedType?: any
+  fileCategory?: string
+  bufferSize?: number
+  expectedDepth?: number
+  securityFlags?: string[]
+  validationDepth?: number
+  
   // API context
   clientIP?: string
   limit?: number

@@ -8,6 +8,7 @@ import {
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
+import { ALLOWED_MIME_TYPES } from '../lib/constants'
 
 /**
  * Form Media Collection
@@ -216,11 +217,7 @@ export const FormMedia: CollectionConfig = {
     // No pre-generated sizes to save storage costs
     imageSizes: [],
     // File size and type restrictions for form uploads
-    mimeTypes: [
-      'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
-      'application/pdf', 'text/plain', 
-      'application/msword', 
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    ],
+    // Uses centralized ALLOWED_MIME_TYPES from constants.ts for consistency
+    mimeTypes: [...ALLOWED_MIME_TYPES],
   },
 }

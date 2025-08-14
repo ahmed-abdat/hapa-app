@@ -36,11 +36,6 @@ export interface FormTextareaProps extends FormFieldProps {
   maxLength?: number
 }
 
-export interface FormFileUploadProps extends FormFieldProps {
-  accept?: string
-  maxSize?: number
-  multiple?: boolean
-}
 
 export interface FormSubmissionResponse {
   success: boolean

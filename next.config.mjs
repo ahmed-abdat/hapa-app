@@ -108,7 +108,7 @@ const config = withPayload(
         // React Compiler for better performance (React 19 feature)
         reactCompiler: false, // Enable when ready for production
         serverActions: {
-          bodySizeLimit: '5mb',
+          bodySizeLimit: '100mb', // Increased for media evidence uploads (videos, audio, screenshots)
         },
         // CSS chunking optimization (Next.js 15 default best practice)
         cssChunking: true,
@@ -190,12 +190,31 @@ const config = withPayload(
 
         return webpackConfig
       },
-      // Security headers
+      // Security and performance headers
       async headers() {
         return [
           {
             source: '/:path*',
             headers: securityHeaders,
+          },
+          // Optimize media file caching
+          {
+            source: '/api/media/:path*',
+            headers: [
+              {
+                key: 'Cache-Control',
+                value: 'public, max-age=2592000, s-maxage=2592000, immutable', // 30 days
+              },
+            ],
+          },
+          {
+            source: '/api/form-media/:path*',
+            headers: [
+              {
+                key: 'Cache-Control',
+                value: 'public, max-age=2592000, s-maxage=2592000, immutable', // 30 days
+              },
+            ],
           },
         ]
       },

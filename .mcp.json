@@ -25,6 +25,15 @@
       "env": {
         "GITHUB_TOKEN": "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"
       }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ],
+      "env": {
+        "PLAYWRIGHT_HEADLESS": "false"
+      }
     }
   }
 }

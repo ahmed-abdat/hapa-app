@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import { useParams, useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { motion, AnimatePresence } from 'framer-motion'
 
 import { BaseForm } from '../BaseForm'
 import { ThankYouCard } from '../ThankYouCard'
@@ -20,16 +21,17 @@ import {
   TVChannelCombobox,
   RadioStationCombobox,
   FormDateTimePicker,
-  FormFileUpload
+  EnhancedFileUploadV3
 } from '../FormFields'
-import { EnhancedFileUpload } from '../FormFields/EnhancedFileUpload'
 import { 
   createMediaContentComplaintSchema, 
   type MediaContentComplaintFormData,
   type MediaContentComplaintSubmission 
 } from '@/lib/validations/media-forms'
 import { type Locale } from '@/utilities/locale'
-import { convertToFormData } from '@/lib/file-upload'
+import { convertToFormData, validateFormDataSize, formatFileSize } from '@/lib/file-upload'
+import { FormFileUploadService, type FileUploadField } from '@/lib/FormFileUploadService'
+import { validateFileProduction } from '@/lib/production-file-validation'
 import { logger } from '@/utilities/logger'
 import { FormSubmissionProgress } from '@/components/CustomForms/FormSubmissionProgress'
 
@@ -73,7 +75,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
       programName: '',
       broadcastDateTime: '',
       linkScreenshot: '',
-      screenshotFiles: [],
+      screenshotFiles: [], // Will be managed as File objects by EnhancedFileUploadV3
       // Complaint Reasons
       reasons: [],
       reasonOther: '',
@@ -82,7 +84,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
       // Attachments
       attachmentTypes: [],
       attachmentOther: '',
-      attachmentFiles: [],
+      attachmentFiles: [], // Will be managed as File objects by EnhancedFileUploadV3
       // Declaration and Consent
       acceptDeclaration: false,
       acceptConsent: false,
@@ -157,91 +159,107 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
 
 
   const onSubmit = async (data: MediaContentComplaintFormData) => {
-    const clientSessionId = `CLIENT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
-    // File validation
-    const screenshotCount = Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0
-    const attachmentCount = Array.isArray(data.attachmentFiles) ? data.attachmentFiles.length : 0
-    
-    // File check completed
-    
-    // File validation with detailed logging
-    const fileValidationErrors: string[] = []
-    
-    if (Array.isArray(data.screenshotFiles)) {
-      data.screenshotFiles.forEach((file, index) => {
-        if (!(file instanceof File)) {
-          const error = `Screenshot ${index + 1} is not a valid File`
-          fileValidationErrors.push(error)
-          logger.error('Invalid screenshot file:', { sessionId: clientSessionId, index: index + 1 })
-        }
-      })
-    }
-    
-    if (Array.isArray(data.attachmentFiles)) {
-      data.attachmentFiles.forEach((file, index) => {
-        if (!(file instanceof File)) {
-          const error = `Attachment ${index + 1} is not a valid File`
-          fileValidationErrors.push(error)
-          logger.error('Invalid attachment file:', { sessionId: clientSessionId, index: index + 1 })
-        }
-      })
-    }
-    
-    if (fileValidationErrors.length > 0) {
-      logger.error('File validation failed:', { sessionId: clientSessionId, errors: fileValidationErrors })
-      setSubmissionError('File validation failed. Please re-upload your files.')
-      return
-    }
-
-    // Log form submission
-    logger.formSubmission('Complaint', { screenshots: screenshotCount, attachments: attachmentCount })
-    
+    // Initialize loading state immediately
     setIsSubmitting(true)
     setSubmissionStage('preparing')
     setSubmissionProgress(0)
     setSubmissionError(undefined)
+
+    const clientSessionId = `CLIENT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     
     try {
-      // Stage 1: Prepare submission data
-      setSubmissionStage('preparing')
+      // File counts for logging
+      const screenshotCount = Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0
+      const attachmentCount = Array.isArray(data.attachmentFiles) ? data.attachmentFiles.length : 0
+      
+      logger.log('File check:', {
+        sessionId: clientSessionId,
+        screenshots: screenshotCount,
+        attachments: attachmentCount
+      })
+      
+      // Stage 1: File Upload (if needed)
+      setSubmissionStage('uploading')
       setSubmissionProgress(10)
       
-      const submissionData = {
-        ...data,
+      // Handle file uploads using reusable service
+      const uploadService = new FormFileUploadService(clientSessionId, {
+        setSubmissionProgress,
+        setSubmissionStage,
+        setSubmissionError,
+        setIsSubmitting
+      })
+
+      const fileFields: FileUploadField[] = [
+        {
+          files: data.screenshotFiles || [],
+          fieldName: 'screenshotFiles',
+          fileType: 'screenshot'
+        },
+        {
+          files: data.attachmentFiles || [],
+          fieldName: 'attachmentFiles', 
+          fileType: 'attachment'
+        }
+      ]
+
+      const uploadResult = await uploadService.processFileFields(fileFields)
+      
+      if (!uploadResult.success) {
+        logger.error('❌ File upload failed:', { sessionId: clientSessionId, errors: uploadResult.errors })
+        setSubmissionError(`File upload failed: ${uploadResult.errors.join('; ')}`)
+        setSubmissionStage('error')
+        setIsSubmitting(false)
+        return
+      }
+
+      // Validate uploaded URLs
+      const fileValidationErrors = uploadService.validateUploadedUrls(uploadResult.uploadedUrls)
+      
+      if (fileValidationErrors.length > 0) {
+        logger.error('File URL validation failed:', { sessionId: clientSessionId, errors: fileValidationErrors })
+        setSubmissionError('File validation failed. Please re-upload your files.')
+        setSubmissionStage('error')
+        setIsSubmitting(false)
+        return
+      }
+
+      // Prepare submission data with uploaded URLs
+      const submissionData = uploadService.createSubmissionData(data, uploadResult.uploadedUrls, {
         formType: 'complaint',
         submittedAt: new Date().toISOString(),
         locale,
-      }
+      })
+
+      // Log form submission
+      uploadService.logFormSubmission('Complaint', uploadResult.uploadedUrls)
+      
+      // Stage 2: Prepare submission data
+      setSubmissionStage('preparing')
+      setSubmissionProgress(60)
 
       // Converting to FormData
       const formData = convertToFormData(submissionData)
-      setSubmissionProgress(20)
+      setSubmissionProgress(70)
 
-      // Stage 2: Submit using Server Action
-      setSubmissionStage('uploading')
-      setSubmissionProgress(30)
+      // Stage 3: Submit using Server Action
+      setSubmissionStage('validating')
+      setSubmissionProgress(80)
 
       // Submitting form
       const { submitMediaFormAction } = await import('@/actions/media-forms')
       const result = await submitMediaFormAction(formData)
       
-      // Stage 3: Validate response
-      setSubmissionStage('validating')
-      setSubmissionProgress(70)
-
-      // Result already obtained from Server Action
+      // Stage 4: Validate response
+      setSubmissionStage('saving')
+      setSubmissionProgress(90)
 
       if (result.success) {
-        // Stage 4: Save to database
-        setSubmissionStage('saving')
-        setSubmissionProgress(90)
-        
-        // Form submitted successfully
-        
         // Stage 5: Complete
         setSubmissionStage('complete')
         setSubmissionProgress(100)
+        
+        logger.success('Form submitted successfully', result.submissionId)
         
         // Small delay to show completion state
         await new Promise(resolve => setTimeout(resolve, 1000))
@@ -309,34 +327,50 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
     }
   }
 
-  // Show thank you card if form was submitted successfully
-  if (isSubmitted) {
-    return (
-      <div className={className}>
-        <ThankYouCard 
-          locale={locale}
-          formType="complaint"
-          submissionId={submissionId}
-        />
-      </div>
-    )
-  }
-
   return (
     <div className={className}>
-      {/* Development: Show validation errors in development mode only */}
-      {process.env.NODE_ENV === 'development' && Object.keys(formState.errors).length > 0 && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <h4 className="text-red-800 font-semibold mb-2">Validation Errors (Development):</h4>
-          <div className="text-sm text-red-700 space-y-1">
-            {Object.entries(formState.errors).map(([field, error]) => (
-              <div key={field} className="border-l-2 border-red-300 pl-2">
-                <strong>{field}:</strong> {error?.message || 'Invalid value'}
+      <AnimatePresence mode="wait">
+        {isSubmitted ? (
+          <motion.div
+            key="thank-you"
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -50, scale: 0.9 }}
+            transition={{
+              duration: 0.6,
+              ease: [0.04, 0.62, 0.23, 0.98]
+            }}
+          >
+            <ThankYouCard 
+              locale={locale}
+              formType="complaint"
+              submissionId={submissionId}
+            />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="form"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{
+              duration: 0.5,
+              ease: [0.04, 0.62, 0.23, 0.98]
+            }}
+          >
+            {/* Development: Show validation errors in development mode only */}
+            {process.env.NODE_ENV === 'development' && Object.keys(formState.errors).length > 0 && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <h4 className="text-red-800 font-semibold mb-2">Validation Errors (Development):</h4>
+                <div className="text-sm text-red-700 space-y-1">
+                  {Object.entries(formState.errors).map(([field, error]) => (
+                    <div key={field} className="border-l-2 border-red-300 pl-2">
+                      <strong>{field}:</strong> {error?.message || 'Invalid value'}
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
+            )}
 
       <BaseForm
         methods={methods}
@@ -506,16 +540,23 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
             className="min-h-20"
           />
 
-          <EnhancedFileUpload
-            name="screenshotFiles"
-            label={t('screenshotFiles')}
-            supportedTypes={['image', 'document']}
-            maxFiles={5}
-            enableChunkedUpload={false}
-            enablePreview={true}
-            locale={locale}
-            required={false}
-          />
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">
+              {t('screenshotFiles')}
+            </label>
+            <EnhancedFileUploadV3
+              value={watch('screenshotFiles') || []}
+              onChange={(files) => methods.setValue('screenshotFiles', files)}
+              maxFiles={5}
+              maxSize={10}
+              acceptedFileTypes={['.jpg', '.jpeg', '.png', '.gif', '.webp', '.pdf', '.doc', '.docx', '.txt']}
+              multiple={true}
+              fileType="screenshot"
+              label={t('screenshots')}
+              description={t('uploadScreenshotFiles')}
+              disabled={isSubmitting}
+            />
+          </div>
         </div>
 
         {/* Section 3: Complaint Reason */}
@@ -585,16 +626,23 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
           )}
 
           {selectedAttachments && selectedAttachments.length > 0 && (
-            <EnhancedFileUpload
-              name="attachmentFiles"
-              label={t('attachmentFiles')}
-              supportedTypes={['video', 'audio', 'image', 'document']}
-              maxFiles={8}
-              enableChunkedUpload={true}
-              enablePreview={true}
-              locale={locale}
-              required={false}
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">
+                {t('attachmentFiles')}
+              </label>
+              <EnhancedFileUploadV3
+                value={watch('attachmentFiles') || []}
+                onChange={(files) => methods.setValue('attachmentFiles', files)}
+                maxFiles={8}
+                maxSize={100}
+                acceptedFileTypes={['.mp4', '.webm', '.mov', '.avi', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.pdf', '.doc', '.docx', '.txt', '.mp3', '.wav', '.m4a', '.ogg', '.flac']}
+                multiple={true}
+                fileType="attachment"
+                label={t('attachments')}
+                description={t('uploadAttachmentFiles')}
+                disabled={isSubmitting}
+              />
+            </div>
           )}
         </div>
 
@@ -644,14 +692,17 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
         </div>
       </BaseForm>
 
-      {/* Progress Modal */}
-      <FormSubmissionProgress
-        isVisible={isSubmitting}
-        stage={submissionStage}
-        progress={submissionProgress}
-        errorMessage={submissionError}
-        locale={locale}
-      />
-    </div>
-  )
-}
+              {/* Progress Modal */}
+              <FormSubmissionProgress
+                isVisible={isSubmitting}
+                stage={submissionStage}
+                progress={submissionProgress}
+                errorMessage={submissionError}
+                locale={locale}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    )
+  }

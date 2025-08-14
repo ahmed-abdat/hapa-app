@@ -1,7 +1,19 @@
 /**
  * Server-side Media File Validation
- * Enhanced validation for video, audio, images, and documents
- * Matches client-side validation rules for consistency
+ * 
+ * ARCHITECTURE NOTE:
+ * This module complements production-file-validation.ts by providing:
+ * 1. Server-specific validation logic (where file-type library isn't available)
+ * 2. Fallback signature validation using manual signature checking
+ * 3. Simplified validation interface for server actions
+ * 
+ * For client-side validation, use production-file-validation.ts which leverages
+ * the industry-standard file-type library for more comprehensive analysis.
+ * 
+ * USAGE:
+ * - Use this for server actions and API endpoints
+ * - Use production-file-validation.ts for client-side form validation
+ * - Both modules should maintain consistent validation rules and limits
  */
 
 export interface ServerValidationResult {
@@ -74,25 +86,31 @@ export const SERVER_VALIDATION_CONFIGS: Record<string, FileValidationConfig> = {
 
 // File signature validation (magic numbers) - Server-side compatible
 const FILE_SIGNATURES: Record<string, { signature: number[], mimeType: string }> = {
-  // Video signatures
-  mp4: { signature: [0x00, 0x00, 0x00, 0x18, 0x66, 0x74, 0x79, 0x70], mimeType: 'video/mp4' },
-  mp4_alt: { signature: [0x00, 0x00, 0x00, 0x20, 0x66, 0x74, 0x79, 0x70], mimeType: 'video/mp4' },
+  // Video signatures - Multiple MP4 variants
+  mp4_ftyp_18: { signature: [0x00, 0x00, 0x00, 0x18, 0x66, 0x74, 0x79, 0x70], mimeType: 'video/mp4' },
+  mp4_ftyp_20: { signature: [0x00, 0x00, 0x00, 0x20, 0x66, 0x74, 0x79, 0x70], mimeType: 'video/mp4' },
+  mp4_ftyp_1c: { signature: [0x00, 0x00, 0x00, 0x1C, 0x66, 0x74, 0x79, 0x70], mimeType: 'video/mp4' },
+  mp4_ftyp_24: { signature: [0x00, 0x00, 0x00, 0x24, 0x66, 0x74, 0x79, 0x70], mimeType: 'video/mp4' },
+  mp4_simple: { signature: [0x66, 0x74, 0x79, 0x70], mimeType: 'video/mp4' },
   webm: { signature: [0x1A, 0x45, 0xDF, 0xA3], mimeType: 'video/webm' },
   avi: { signature: [0x52, 0x49, 0x46, 0x46], mimeType: 'video/x-msvideo' },
   mov: { signature: [0x00, 0x00, 0x00, 0x14, 0x66, 0x74, 0x79, 0x70, 0x71, 0x74], mimeType: 'video/quicktime' },
+  ogg_video: { signature: [0x4F, 0x67, 0x67, 0x53], mimeType: 'video/ogg' },
   
   // Audio signatures  
-  mp3: { signature: [0xFF, 0xFB], mimeType: 'audio/mpeg' },
+  mp3_frame: { signature: [0xFF, 0xFB], mimeType: 'audio/mpeg' },
   mp3_id3: { signature: [0x49, 0x44, 0x33], mimeType: 'audio/mpeg' },
   wav: { signature: [0x52, 0x49, 0x46, 0x46], mimeType: 'audio/wav' },
-  ogg: { signature: [0x4F, 0x67, 0x67, 0x53], mimeType: 'audio/ogg' },
+  ogg_audio: { signature: [0x4F, 0x67, 0x67, 0x53], mimeType: 'audio/ogg' },
   flac: { signature: [0x66, 0x4C, 0x61, 0x43], mimeType: 'audio/flac' },
   m4a: { signature: [0x00, 0x00, 0x00, 0x20, 0x66, 0x74, 0x79, 0x70, 0x4D, 0x34, 0x41], mimeType: 'audio/mp4' },
+  webm_audio: { signature: [0x1A, 0x45, 0xDF, 0xA3], mimeType: 'audio/webm' },
   
   // Image signatures
   jpg: { signature: [0xFF, 0xD8, 0xFF], mimeType: 'image/jpeg' },
   png: { signature: [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A], mimeType: 'image/png' },
-  gif: { signature: [0x47, 0x49, 0x46, 0x38], mimeType: 'image/gif' },
+  gif87: { signature: [0x47, 0x49, 0x46, 0x38, 0x37, 0x61], mimeType: 'image/gif' },
+  gif89: { signature: [0x47, 0x49, 0x46, 0x38, 0x39, 0x61], mimeType: 'image/gif' },
   webp: { signature: [0x52, 0x49, 0x46, 0x46], mimeType: 'image/webp' },
   
   // Document signatures
@@ -136,15 +154,15 @@ export async function validateServerFileSignature(file: File): Promise<{ isValid
     // Check against known signatures
     for (const [type, { signature, mimeType }] of Object.entries(FILE_SIGNATURES)) {
       if (matchesSignature(bytes, signature)) {
+        // For WebP, need additional validation after RIFF header
+        if (mimeType === 'image/webp') {
+          const webpMarker = new TextDecoder().decode(bytes.slice(8, 12))
+          if (webpMarker === 'WEBP') {
+            return { isValid: true, detectedMimeType: mimeType }
+          }
+          continue // Try other signatures if WEBP validation fails
+        }
         return { isValid: true, detectedMimeType: mimeType }
-      }
-    }
-    
-    // Special case for WebP (needs additional validation after RIFF)
-    if (matchesSignature(bytes, FILE_SIGNATURES.webp.signature)) {
-      const webpMarker = new TextDecoder().decode(bytes.slice(8, 12))
-      if (webpMarker === 'WEBP') {
-        return { isValid: true, detectedMimeType: 'image/webp' }
       }
     }
     
@@ -166,6 +184,15 @@ function matchesSignature(bytes: Uint8Array, signature: number[]): boolean {
 
 /**
  * Main server-side validation function
+ * 
+ * Provides fallback validation for server environments where the file-type
+ * library isn't available. Uses manual signature checking and simplified
+ * validation logic that matches production-file-validation.ts rules.
+ * 
+ * @param file - File object to validate
+ * @returns ServerValidationResult with validation status and details
+ * 
+ * @see {@link validateFileProduction} for client-side validation with file-type library
  */
 export async function validateServerMediaFile(file: File): Promise<ServerValidationResult> {
   const fileType = detectServerFileType(file)
