@@ -124,16 +124,16 @@ export default buildConfig({
       // Use Neon connection string directly (already pooled in .env.local)
       connectionString: process.env.POSTGRES_URL || "",
 
-      // Optimized pooling settings for better timeout handling
-      max: process.env.NODE_ENV === "production" ? 15 : 5, // Reduced for better resource management
-      min: 0, // Allow pool to scale down completely when idle
-      idleTimeoutMillis: 10000, // Faster idle timeout to free connections
-      connectionTimeoutMillis: 8000, // Reduced connection timeout
-      // acquireTimeoutMillis: 10000, // Property doesn't exist in PoolConfig
+      // Increased timeouts for media update operations
+      max: process.env.NODE_ENV === "production" ? 25 : 5, // Increased pool size for production
+      min: 5, // Ensure minimum connections for better performance
+      idleTimeoutMillis: 30000, // Increased idle timeout
+      connectionTimeoutMillis: 30000, // Increased connection timeout from 8s to 30s
+      acquireTimeoutMillis: 60000, // Add acquire timeout for connection pool
 
-      // Reduced query timeouts to fail fast on problematic queries
-      statement_timeout: 10000, // 10 second timeout for statements
-      query_timeout: 10000, // Match statement timeout
+      // Increased query timeouts for complex operations like media updates
+      statement_timeout: 45000, // Increased from 10s to 45s for media operations
+      query_timeout: 45000, // Match statement timeout
 
       // Connection health and performance
       keepAlive: true,
@@ -143,9 +143,11 @@ export default buildConfig({
       maxUses: 5000, // More frequent connection rotation
       application_name: "hapa-website", // Help identify connections in Neon dashboard
 
-      // Retry configuration for unstable connections
-      // max_retry_attempts: 2, // Property doesn't exist in PoolConfig
-      // retry_delay: 500, // Property doesn't exist in PoolConfig
+      // Additional timeout configurations for stability
+      createTimeoutMillis: 30000, // Add create timeout
+      destroyTimeoutMillis: 5000, // Add destroy timeout
+      reapIntervalMillis: 1000, // Add reap interval
+      createRetryIntervalMillis: 200, // Add retry interval
     },
   }),
   // Reordered to control sidebar grouping order for "Formulaires et Soumissions":
