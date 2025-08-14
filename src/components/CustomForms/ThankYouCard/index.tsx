@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { cn } from '@/utilities/ui'
-import { motion } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 
 interface ThankYouCardProps {
   locale: 'fr' | 'ar'
@@ -24,33 +24,31 @@ export function ThankYouCard({ locale, formType }: ThankYouCardProps) {
     return isComplaint ? t('complaintForm') : t('reportForm')
   }
 
-  // Animation variants
-  const containerVariants = {
+  // Animation variants with proper typing
+  const containerVariants: Variants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
         staggerChildren: 0.15
       }
     }
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.5,
-        ease: "easeOut"
+        duration: 0.5
       }
     }
   }
 
-  const iconVariants = {
+  const iconVariants: Variants = {
     hidden: { scale: 0, rotate: -180 },
     visible: {
       scale: 1,
@@ -59,19 +57,17 @@ export function ThankYouCard({ locale, formType }: ThankYouCardProps) {
         type: "spring",
         stiffness: 100,
         damping: 10,
-        duration: 0.8,
         delay: 0.2
       }
     }
   }
 
-  const pulseVariants = {
+  const pulseVariants: Variants = {
     pulse: {
       scale: [1, 1.05, 1],
       transition: {
         duration: 2,
-        repeat: Infinity,
-        ease: "easeInOut"
+        repeat: Infinity
       }
     }
   }

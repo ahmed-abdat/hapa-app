@@ -666,7 +666,7 @@ function FullPreviewModal({ file, onClose, isRTL }: FullPreviewModalProps) {
             {file.category === 'image' && file.preview && (
               <img
                 src={file.preview}
-                alt={file.name}
+                alt={`Preview of ${file.name}`}
                 className="w-full h-auto"
               />
             )}

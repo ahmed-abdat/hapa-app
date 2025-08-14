@@ -425,7 +425,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ url, filename, onError }) => 
     return (
       <div className="image-error">
         <Image size={48} className="error-icon" aria-hidden="true" />
-        <p>Unable to load image</p>
+        <p>Unable to load image: {filename}</p>
       </div>
     )
   }
@@ -451,7 +451,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ url, filename, onError }) => 
       <div className={`image-container ${isFullscreen ? 'fullscreen' : ''}`}>
         <img
           src={url}
-          alt={filename}
+          alt={`Preview of ${filename}`}
           className="preview-image"
           onError={handleImageError}
           loading="lazy"
@@ -568,8 +568,8 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
           const rowValue = formFields[rowPath].value
           if (typeof rowValue === 'string') {
             url = rowValue
-          } else if (rowValue && typeof rowValue.url === 'string') {
-            url = rowValue.url
+          } else if (rowValue && typeof rowValue === 'object' && 'url' in rowValue && typeof (rowValue as any).url === 'string') {
+            url = (rowValue as any).url
           }
         }
         // Method 3d: From form fields at rowPath.url
@@ -596,8 +596,8 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
       
       if (typeof rowValue === 'string') {
         numberedFields.push({ url: rowValue })
-      } else if (rowValue && typeof rowValue.url === 'string') {
-        numberedFields.push({ url: rowValue.url })
+      } else if (rowValue && typeof rowValue === 'object' && 'url' in rowValue && typeof (rowValue as any).url === 'string') {
+        numberedFields.push({ url: (rowValue as any).url })
       }
       
       index++
@@ -706,7 +706,7 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
           <div className="media-thumbnail">
             <img
               src={mediaUrl}
-              alt={fileName}
+              alt={`Thumbnail preview of ${fileName}`}
               className="thumbnail-image"
               onError={() => handleMediaError(mediaUrl)}
               loading="lazy"
