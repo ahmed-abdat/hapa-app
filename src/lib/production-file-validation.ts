@@ -37,6 +37,7 @@
 
 import { fileTypeFromBuffer, type FileTypeResult } from 'file-type'
 import { logger } from '@/utilities/logger'
+import { MIME_TYPE_CATEGORIES } from './constants'
 
 export interface ValidationResult {
   isValid: boolean
@@ -58,54 +59,31 @@ export interface ValidationConfig {
   maxDurationSeconds?: number
 }
 
-// Enhanced validation configurations for government use
+// Enhanced validation configurations for government use - optimized for 2025 best practices
 export const PRODUCTION_VALIDATION_CONFIGS: Record<string, ValidationConfig> = {
   video: {
-    maxSizeMB: 100,
-    allowedMimeTypes: [
-      'video/mp4',
-      'video/webm', 
-      'video/quicktime',
-      'video/x-msvideo',
-      'video/ogg'
-    ],
+    maxSizeMB: 25, // Reduced from 100MB - optimal for evidence clips while preventing DoS
+    allowedMimeTypes: [...MIME_TYPE_CATEGORIES.VIDEO],
     allowedExtensions: ['mp4', 'webm', 'mov', 'avi', 'ogv'],
     requireSignatureMatch: true,
-    maxDurationSeconds: 600 // 10 minutes
+    maxDurationSeconds: 600 // 10 minutes - reasonable for evidence
   },
   audio: {
-    maxSizeMB: 25,
-    allowedMimeTypes: [
-      'audio/mpeg',
-      'audio/wav',
-      'audio/mp4',
-      'audio/ogg',
-      'audio/webm',
-      'audio/flac'
-    ],
+    maxSizeMB: 10, // Reduced from 25MB - sufficient for voice recordings
+    allowedMimeTypes: [...MIME_TYPE_CATEGORIES.AUDIO],
     allowedExtensions: ['mp3', 'wav', 'm4a', 'ogg', 'oga', 'flac'],
     requireSignatureMatch: true,
-    maxDurationSeconds: 900 // 15 minutes
+    maxDurationSeconds: 900 // 15 minutes - adequate for recordings
   },
   image: {
-    maxSizeMB: 10,
-    allowedMimeTypes: [
-      'image/jpeg',
-      'image/png',
-      'image/gif',
-      'image/webp'
-    ],
+    maxSizeMB: 5, // Reduced from 10MB - sufficient for high-quality photos
+    allowedMimeTypes: [...MIME_TYPE_CATEGORIES.IMAGE],
     allowedExtensions: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
     requireSignatureMatch: true
   },
   document: {
     maxSizeMB: 15,
-    allowedMimeTypes: [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'text/plain'
-    ],
+    allowedMimeTypes: [...MIME_TYPE_CATEGORIES.DOCUMENT],
     allowedExtensions: ['pdf', 'doc', 'docx', 'txt'],
     requireSignatureMatch: true
   }

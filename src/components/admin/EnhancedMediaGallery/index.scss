@@ -49,6 +49,12 @@
       background-color: #fef2f2;
     }
 
+    &.auto-preview {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
     .media-header {
       display: flex;
       align-items: center;
@@ -145,6 +151,132 @@
     .media-preview {
       padding: 1rem;
       background-color: white;
+    }
+
+    // Auto-preview components
+    .media-thumbnail {
+      .thumbnail-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        
+        &:hover {
+          transform: scale(1.02);
+        }
+      }
+    }
+
+    .media-pdf-preview {
+      .pdf-embed {
+        width: 100%;
+        height: 300px;
+        border: none;
+        background-color: #f9fafb;
+      }
+    }
+
+    .media-video-preview {
+      position: relative;
+      
+      .video-thumbnail {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        cursor: pointer;
+      }
+      
+      .video-play-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.6);
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.8);
+          transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        .play-icon {
+          color: white;
+          margin-left: 2px; // Visual alignment for play button
+        }
+      }
+    }
+
+    .media-audio-preview {
+      padding: 1rem;
+      background-color: #f9fafb;
+      
+      .audio-info-compact {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+        
+        .audio-icon {
+          color: #6366f1;
+          flex-shrink: 0;
+        }
+        
+        .audio-filename {
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: #374151;
+          flex: 1;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+      
+      .audio-compact {
+        width: 100%;
+        height: 40px;
+      }
+    }
+
+    .media-file-preview {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background-color: #f9fafb;
+      min-height: 150px;
+      
+      .file-icon-large {
+        margin-bottom: 1rem;
+        
+        svg {
+          width: 48px;
+          height: 48px;
+          color: #6b7280;
+        }
+      }
+      
+      .file-info {
+        font-size: 0.875rem;
+        color: #6b7280;
+        text-align: center;
+        word-break: break-all;
+      }
+    }
+
+    .media-preview-expanded {
+      padding: 1rem;
+      background-color: white;
+      border-top: 1px solid #e5e7eb;
     }
   }
 }
@@ -685,6 +817,61 @@
       
       .media-preview {
         padding: 0.75rem;
+      }
+
+      // Mobile styles for auto-preview components
+      .media-thumbnail {
+        .thumbnail-image {
+          height: 150px;
+        }
+      }
+
+      .media-pdf-preview {
+        .pdf-embed {
+          height: 200px;
+        }
+      }
+
+      .media-video-preview {
+        .video-thumbnail {
+          height: 150px;
+        }
+        
+        .video-play-overlay {
+          width: 50px;
+          height: 50px;
+          
+          .play-icon {
+            width: 24px;
+            height: 24px;
+          }
+        }
+      }
+
+      .media-audio-preview {
+        padding: 0.75rem;
+        
+        .audio-info-compact {
+          margin-bottom: 0.5rem;
+          
+          .audio-filename {
+            font-size: 0.8rem;
+          }
+        }
+      }
+
+      .media-file-preview {
+        padding: 1.5rem;
+        min-height: 120px;
+        
+        .file-icon-large svg {
+          width: 36px;
+          height: 36px;
+        }
+        
+        .file-info {
+          font-size: 0.8rem;
+        }
       }
     }
   }

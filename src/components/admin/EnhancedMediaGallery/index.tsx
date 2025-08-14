@@ -475,18 +475,109 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
   const [activeMedia, setActiveMedia] = useState<string | null>(null)
   const [mediaErrors, setMediaErrors] = useState<Set<string>>(new Set())
 
+  // Log the path to understand the component context
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🎯 EnhancedMediaGallery mounted with path:', path)
+  }
+
   // Get the actual array data from form fields
   const formFieldValue = formFields[path]?.value
   
   let actualData: MediaItem[] | null = null
+  
+  // Enhanced debug logging for troubleshooting
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔍 EnhancedMediaGallery Debug:', {
+      path,
+      formFieldValue,
+      formFieldValueType: typeof formFieldValue,
+      formFieldValueIsArray: Array.isArray(formFieldValue),
+      formFieldValueLength: Array.isArray(formFieldValue) ? formFieldValue.length : 'N/A',
+      fieldStateValue: fieldState.value,
+      fieldStateValueType: typeof fieldState.value,
+      fieldStateValueIsArray: Array.isArray(fieldState.value),
+      fieldStateValueLength: Array.isArray(fieldState.value) ? fieldState.value.length : 'N/A',
+      hasRows: fieldState.rows ? fieldState.rows.length : 0,
+      rowsData: fieldState.rows ? fieldState.rows.slice(0, 2) : null, // Show first 2 rows for debugging
+      isLegacyData: typeof formFieldValue === 'number' || typeof fieldState.value === 'number',
+      formFieldsKeys: Object.keys(formFields).filter(key => key.startsWith(path)).slice(0, 5) // Show related form field keys
+    })
+  }
+  
+  // Try multiple data extraction methods
+  
+  // Method 1: Direct array from formFieldValue
   if (Array.isArray(formFieldValue)) {
     actualData = formFieldValue
-  } else if (fieldState.rows && Array.isArray(fieldState.rows) && formFieldValue) {
+      .map((item: any) => {
+        // Handle both string URLs and object with url property
+        if (typeof item === 'string' && item.length > 0) {
+          return { url: item }
+        } else if (item && typeof item === 'object' && typeof item.url === 'string' && item.url.length > 0) {
+          return { url: item.url }
+        }
+        return null
+      })
+      .filter((item): item is MediaItem => item !== null && typeof item.url === 'string' && item.url.length > 0)
+  }
+  
+  // Method 2: From fieldState.value (primary Payload CMS source)
+  else if (fieldState.value && Array.isArray(fieldState.value)) {
+    actualData = fieldState.value
+      .map((item: any) => {
+        // Handle both string URLs and object with url property
+        if (typeof item === 'string' && item.length > 0) {
+          return { url: item }
+        } else if (item && typeof item === 'object' && typeof item.url === 'string' && item.url.length > 0) {
+          return { url: item.url }
+        }
+        return null
+      })
+      .filter((item): item is MediaItem => item !== null && typeof item.url === 'string' && item.url.length > 0)
+  }
+  
+  // Method 3: From fieldState.rows
+  else if (fieldState.rows && Array.isArray(fieldState.rows)) {
     const rowData: MediaItem[] = fieldState.rows
       .map((row: any, index: number) => {
         const rowPath = `${path}.${index}`
-        const data = formFields[rowPath]?.value || formFields[`${rowPath}.url`]?.value
-        return data ? { url: data as string } : null
+        
+        // Debug individual row
+        if (process.env.NODE_ENV === 'development' && index < 2) {
+          console.log(`🔎 Row ${index} debug:`, {
+            row,
+            rowPath,
+            fieldAtPath: formFields[rowPath],
+            fieldAtPathUrl: formFields[`${rowPath}.url`],
+          })
+        }
+        
+        // Try different ways to get the URL
+        let url: string | null = null
+        
+        // Method 3a: Direct from row.url
+        if (typeof row?.url === 'string') {
+          url = row.url
+        }
+        // Method 3b: From row itself if it's a string
+        else if (typeof row === 'string') {
+          url = row
+        }
+        // Method 3c: From form fields at rowPath
+        else if (formFields[rowPath]?.value) {
+          const rowValue = formFields[rowPath].value
+          if (typeof rowValue === 'string') {
+            url = rowValue
+          } else if (rowValue && typeof rowValue.url === 'string') {
+            url = rowValue.url
+          }
+        }
+        // Method 3d: From form fields at rowPath.url
+        else if (formFields[`${rowPath}.url`]?.value) {
+          url = formFields[`${rowPath}.url`].value as string
+        }
+        
+        return url ? { url } : null
       })
       .filter((item): item is MediaItem => item !== null && typeof item.url === 'string')
     
@@ -494,14 +585,62 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
       actualData = rowData
     }
   }
+  
+  // Method 4: Fallback - look for numbered field entries
+  else {
+    const numberedFields: MediaItem[] = []
+    let index = 0
+    
+    while (formFields[`${path}.${index}`] || formFields[`${path}.${index}.url`]) {
+      const rowValue = formFields[`${path}.${index}`]?.value || formFields[`${path}.${index}.url`]?.value
+      
+      if (typeof rowValue === 'string') {
+        numberedFields.push({ url: rowValue })
+      } else if (rowValue && typeof rowValue.url === 'string') {
+        numberedFields.push({ url: rowValue.url })
+      }
+      
+      index++
+      if (index > 50) break // Safety limit
+    }
+    
+    if (numberedFields.length > 0) {
+      actualData = numberedFields
+    }
+  }
+  
+  // Debug extracted data (can be removed in production)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('📊 EnhancedMediaGallery Extracted Data:', {
+      actualData,
+      dataLength: actualData ? actualData.length : 0,
+      firstItem: actualData && actualData.length > 0 ? actualData[0] : null,
+      extractionMethod: actualData ? (
+        Array.isArray(formFieldValue) ? 'Method 1: formFieldValue' :
+        Array.isArray(fieldState.value) ? 'Method 2: fieldState.value' :
+        fieldState.rows ? 'Method 3: fieldState.rows' :
+        'Method 4: numbered fields'
+      ) : 'No data extracted'
+    })
+  }
 
   // Handle empty state
   if (!actualData || !Array.isArray(actualData) || actualData.length === 0) {
+    // Check if this is legacy data (old submissions before the V3 fix)
+    // Legacy data has typeof number, new empty submissions have empty arrays or undefined
+    const isActualLegacyData = (typeof formFieldValue === 'number' && formFieldValue !== 0) || 
+                               (typeof fieldState.value === 'number' && fieldState.value !== 0)
+    
     return (
       <div className="enhanced-media-gallery">
         <div className="empty-state">
           <File size={48} className="empty-icon" />
           <span className="empty-text">Aucun média disponible</span>
+          {isActualLegacyData && process.env.NODE_ENV === 'development' && (
+            <small className="empty-help" style={{ color: '#6b7280', marginTop: '0.5rem' }}>
+              Note: Soumission créée avant la correction V3 (données héritées)
+            </small>
+          )}
         </div>
       </div>
     )
@@ -537,10 +676,15 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
   }
 
   const renderMediaPreview = (item: MediaItem, index: number) => {
-    const fileType = getFileType(item.url)
-    const fileName = getFileName(item.url)
-    const hasError = mediaErrors.has(item.url)
-    const isActive = activeMedia === item.url
+    // Ensure URL is properly formatted
+    const mediaUrl = item.url.startsWith('http') ? item.url : 
+                     item.url.startsWith('/') ? item.url : 
+                     `/${item.url}`
+    
+    const fileType = getFileType(mediaUrl)
+    const fileName = getFileName(mediaUrl)
+    const hasError = mediaErrors.has(mediaUrl)
+    const isActive = activeMedia === mediaUrl
 
     if (hasError) {
       return (
@@ -549,13 +693,87 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
             <File size={48} className="error-icon" />
             <p className="error-text">Erreur de chargement</p>
             <p className="error-filename">{fileName}</p>
+            <small className="error-url" style={{ fontSize: '10px', color: '#999' }}>{mediaUrl}</small>
           </div>
         </div>
       )
     }
 
     return (
-      <div key={`media-${index}`} className="media-item">
+      <div key={`media-${index}`} className="media-item auto-preview">
+        {/* Automatic thumbnail preview for images */}
+        {fileType === 'image' && (
+          <div className="media-thumbnail">
+            <img
+              src={mediaUrl}
+              alt={fileName}
+              className="thumbnail-image"
+              onError={() => handleMediaError(mediaUrl)}
+              loading="lazy"
+              onClick={() => setActiveMedia(isActive ? null : mediaUrl)}
+            />
+          </div>
+        )}
+        
+        {/* Preview area for PDFs - always visible with embed */}
+        {fileType === 'pdf' && (
+          <div className="media-pdf-preview">
+            <embed
+              src={`${mediaUrl}#view=FitH&toolbar=0&navpanes=0`}
+              type="application/pdf"
+              className="pdf-embed"
+              title={fileName}
+            />
+          </div>
+        )}
+        
+        {/* For video - show thumbnail with play overlay */}
+        {fileType === 'video' && (
+          <div className="media-video-preview">
+            <video
+              src={mediaUrl}
+              className="video-thumbnail"
+              onError={() => handleMediaError(mediaUrl)}
+              onClick={() => setActiveMedia(isActive ? null : mediaUrl)}
+              muted
+              preload="metadata"
+            />
+            <div 
+              className="video-play-overlay" 
+              onClick={() => setActiveMedia(isActive ? null : mediaUrl)}
+            >
+              <Play size={32} className="play-icon" />
+            </div>
+          </div>
+        )}
+        
+        {/* Audio files - show compact player */}
+        {fileType === 'audio' && (
+          <div className="media-audio-preview">
+            <div className="audio-info-compact">
+              <Music size={20} className="audio-icon" />
+              <span className="audio-filename">{fileName}</span>
+            </div>
+            <audio
+              src={mediaUrl}
+              controls
+              className="audio-compact"
+              onError={() => handleMediaError(mediaUrl)}
+              preload="metadata"
+            />
+          </div>
+        )}
+        
+        {/* For other file types, show enhanced icon preview */}
+        {!['image', 'pdf', 'video', 'audio'].includes(fileType) && (
+          <div className="media-file-preview">
+            <div className="file-icon-large">
+              {getFileIcon(fileType)}
+            </div>
+            <span className="file-info">{fileName}</span>
+          </div>
+        )}
+
         <div className="media-header">
           <div className="media-info">
             {getFileIcon(fileType)}
@@ -565,45 +783,33 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
             </div>
           </div>
           
-          <button
-            onClick={() => setActiveMedia(isActive ? null : item.url)}
-            className="preview-toggle"
-            title={isActive ? 'Masquer l\'aperçu' : 'Afficher l\'aperçu'}
-          >
-            {isActive ? <X size={16} /> : <Eye size={16} />}
-          </button>
+          {/* Keep the expand button for full-featured players */}
+          {['video', 'image'].includes(fileType) && (
+            <button
+              onClick={() => setActiveMedia(isActive ? null : mediaUrl)}
+              className="preview-toggle"
+              title={isActive ? 'Fermer la vue élargie' : 'Agrandir'}
+            >
+              {isActive ? <X size={16} /> : <Maximize2 size={16} />}
+            </button>
+          )}
         </div>
 
+        {/* Expanded view with full-featured players */}
         {isActive && (
-          <div className="media-preview">
+          <div className="media-preview-expanded">
             {fileType === 'video' && (
               <VideoPlayer
-                url={item.url}
-                onError={() => handleMediaError(item.url)}
-              />
-            )}
-            
-            {fileType === 'audio' && (
-              <AudioPlayer
-                url={item.url}
-                filename={fileName}
-                onError={() => handleMediaError(item.url)}
-              />
-            )}
-            
-            {fileType === 'pdf' && (
-              <PDFViewer
-                url={item.url}
-                filename={fileName}
-                onError={() => handleMediaError(item.url)}
+                url={mediaUrl}
+                onError={() => handleMediaError(mediaUrl)}
               />
             )}
             
             {fileType === 'image' && (
               <ImageViewer
-                url={item.url}
+                url={mediaUrl}
                 filename={fileName}
-                onError={() => handleMediaError(item.url)}
+                onError={() => handleMediaError(mediaUrl)}
               />
             )}
           </div>

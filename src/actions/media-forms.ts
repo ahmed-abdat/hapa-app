@@ -37,6 +37,8 @@ interface FormValidationResult {
   fields: Record<string, any>
   screenshots: File[]
   attachments: File[]
+  screenshotUrls: string[]
+  attachmentUrls: string[]
 }
 
 interface UploadResult {
@@ -70,7 +72,7 @@ export async function submitMediaFormAction(formData: FormData): Promise<FormSub
       }
     }
 
-    const { fields, screenshots, attachments } = validation
+    const { fields, screenshots, attachments, screenshotUrls, attachmentUrls } = validation
     
     // Phase 2: Payload Connection & Security Validation
     const payload = await getPayload({ config })
@@ -130,10 +132,14 @@ export async function submitMediaFormAction(formData: FormData): Promise<FormSub
     }
 
     // Phase 5: Database Submission
+    // Combine pre-uploaded URLs with newly uploaded URLs
+    const allScreenshotUrls = [...screenshotUrls, ...screenshotUpload.urls]
+    const allAttachmentUrls = [...attachmentUrls, ...attachmentUpload.urls]
+    
     const submissionData = buildSubmissionData(
       fields, 
-      screenshotUpload.urls, 
-      attachmentUpload.urls
+      allScreenshotUrls, 
+      allAttachmentUrls
     )
 
     // Complainant info included for complaint forms
@@ -194,30 +200,44 @@ async function validateAndExtractData(formData: FormData, sessionId: string): Pr
   const fields: Record<string, any> = {}
   const screenshots: File[] = []
   const attachments: File[] = []
+  const screenshotUrls: string[] = []
+  const attachmentUrls: string[] = []
 
   // Process FormData entries
   for (const [key, value] of formData.entries()) {
 
-    if (key === 'screenshotFiles' && isFileObject(value)) {
-      if (value.size === 0) {
-        errors.push(`Empty screenshot file: ${value.name}`)
-        continue
+    if (key === 'screenshotFiles') {
+      if (isFileObject(value)) {
+        // Handle File objects (direct upload)
+        if (value.size === 0) {
+          errors.push(`Empty screenshot file: ${value.name}`)
+          continue
+        }
+        if (screenshots.length >= MAX_FILES_PER_TYPE) {
+          errors.push(`Too many screenshot files (max: ${MAX_FILES_PER_TYPE})`)
+          continue
+        }
+        screenshots.push(value as File)
+      } else if (typeof value === 'string' && value.trim() !== '') {
+        // Handle pre-uploaded URLs
+        screenshotUrls.push(value.trim())
       }
-      if (screenshots.length >= MAX_FILES_PER_TYPE) {
-        errors.push(`Too many screenshot files (max: ${MAX_FILES_PER_TYPE})`)
-        continue
+    } else if (key === 'attachmentFiles') {
+      if (isFileObject(value)) {
+        // Handle File objects (direct upload)
+        if (value.size === 0) {
+          errors.push(`Empty attachment file: ${value.name}`)
+          continue
+        }
+        if (attachments.length >= MAX_FILES_PER_TYPE) {
+          errors.push(`Too many attachment files (max: ${MAX_FILES_PER_TYPE})`)
+          continue
+        }
+        attachments.push(value as File)
+      } else if (typeof value === 'string' && value.trim() !== '') {
+        // Handle pre-uploaded URLs
+        attachmentUrls.push(value.trim())
       }
-      screenshots.push(value as File)
-    } else if (key === 'attachmentFiles' && isFileObject(value)) {
-      if (value.size === 0) {
-        errors.push(`Empty attachment file: ${value.name}`)
-        continue
-      }
-      if (attachments.length >= MAX_FILES_PER_TYPE) {
-        errors.push(`Too many attachment files (max: ${MAX_FILES_PER_TYPE})`)
-        continue
-      }
-      attachments.push(value as File)
     } else if (key === 'reasons' || key === 'attachmentTypes') {
       // Handle array fields
       if (fields[key]) {
@@ -266,7 +286,9 @@ async function validateAndExtractData(formData: FormData, sessionId: string): Pr
     errors,
     fields,
     screenshots,
-    attachments
+    attachments,
+    screenshotUrls,
+    attachmentUrls
   }
 }
 
@@ -351,6 +373,8 @@ async function validateFilesWithProductionStandards(files: File[], sessionId: st
       fields: {},
       screenshots: [],
       attachments: [],
+      screenshotUrls: [],
+      attachmentUrls: [],
       // Include production validation metadata
       declaredMime: '',
       metadata: {
@@ -374,6 +398,8 @@ async function validateFilesWithProductionStandards(files: File[], sessionId: st
       fields: {},
       screenshots: [],
       attachments: [],
+      screenshotUrls: [],
+      attachmentUrls: [],
       declaredMime: '',
       securityFlags: ['PRODUCTION_VALIDATION_ERROR']
     }
@@ -425,7 +451,9 @@ async function validateSchema(
     errors,
     fields: {},
     screenshots: [],
-    attachments: []
+    attachments: [],
+    screenshotUrls: [],
+    attachmentUrls: []
   }
 }
 

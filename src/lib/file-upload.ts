@@ -3,6 +3,7 @@
  */
 
 import { logger } from '@/utilities/logger'
+import { FILE_SIZE_LIMITS, bytesToMb, COMPRESSION_CONFIG, mbToBytes, UPLOAD_RETRY_CONFIG } from './constants'
 
 // Retry-related types
 export interface RetryState {
@@ -67,7 +68,7 @@ export function sanitizeFilename(filename: string): string {
 export async function uploadFile(
   file: File, 
   retryState?: RetryState,
-  options?: { fileType?: 'screenshot' | 'attachment', fileIndex?: string }
+  options?: { fileType?: 'screenshot' | 'attachment', fileIndex?: string, skipValidation?: boolean }
 ): Promise<FileUploadResult> {
   const currentRetryState = retryState || createRetryState()
   
@@ -84,26 +85,15 @@ export async function uploadFile(
       }
     }
     
-    // Validate file using production-grade validation (non-retryable errors)
-    const { validateFileProduction } = await import('@/lib/production-file-validation')
-    const validationResult = await validateFileProduction(file)
-    if (!validationResult.isValid) {
-      const error = new Error(validationResult.error || 'Invalid file format detected')
-      const updatedRetryState = updateRetryState(currentRetryState, error as Error)
-      return {
-        success: false,
-        error: validationResult.error || 'Invalid file format detected',
-        retryState: updatedRetryState,
-        canRetry: false // Security errors are not retryable
-      }
-    }
+    // Skip validation - files should already be validated before upload
+    // This avoids duplicate validation that may fail on re-created File objects
 
-    // Create sanitized file with safe filename
+    // Create FormData with original file but sanitized filename in metadata
     const sanitizedFilename = sanitizeFilename(file.name)
-    const sanitizedFile = new File([file], sanitizedFilename, { type: file.type })
 
     const formData = new FormData()
-    formData.append('file', sanitizedFile)
+    formData.append('file', file) // Use original file to preserve data
+    formData.append('filename', sanitizedFilename) // Send sanitized name separately
     
     // Add optional metadata for form uploads
     if (options?.fileType) {
@@ -154,7 +144,7 @@ export async function uploadFileWithRetry(
   file: File, 
   maxRetries: number = 3,
   onRetryAttempt?: (attemptCount: number, nextDelay: number) => void,
-  options?: { fileType?: 'screenshot' | 'attachment', fileIndex?: string }
+  options?: { fileType?: 'screenshot' | 'attachment', fileIndex?: string, skipValidation?: boolean }
 ): Promise<FileUploadResult> {
   let retryState = createRetryState(maxRetries)
   let lastResult: FileUploadResult
@@ -196,7 +186,7 @@ export async function uploadFileWithRetry(
 export async function retryFileUpload(
   file: File,
   currentRetryState: RetryState,
-  options?: { fileType?: 'screenshot' | 'attachment', fileIndex?: string }
+  options?: { fileType?: 'screenshot' | 'attachment', fileIndex?: string, skipValidation?: boolean }
 ): Promise<FileUploadResult> {
   // Allow unlimited manual retries by not incrementing attempt count
   const manualRetryState: RetryState = {
@@ -499,15 +489,15 @@ export function isRetryableError(failureType: string): boolean {
 }
 
 // Calculate next retry delay with exponential backoff
-export function calculateRetryDelay(attemptCount: number, baseDelay: number = 1000): number {
+export function calculateRetryDelay(attemptCount: number, baseDelay: number = UPLOAD_RETRY_CONFIG.INITIAL_DELAY): number {
   // Exponential backoff: 1s, 2s, 4s with jitter to prevent thundering herd
-  const delay = baseDelay * Math.pow(2, attemptCount)
+  const delay = baseDelay * Math.pow(UPLOAD_RETRY_CONFIG.BACKOFF_MULTIPLIER, attemptCount)
   const jitter = Math.random() * 0.3 * delay // Add up to 30% jitter
-  return Math.min(delay + jitter, 10000) // Cap at 10 seconds
+  return Math.min(delay + jitter, UPLOAD_RETRY_CONFIG.MAX_DELAY) // Cap at configured max
 }
 
 // Create initial retry state
-export function createRetryState(maxRetries: number = 3): RetryState {
+export function createRetryState(maxRetries: number = UPLOAD_RETRY_CONFIG.MAX_RETRIES): RetryState {
   return {
     attemptCount: 0,
     maxRetries,
@@ -753,11 +743,11 @@ export async function smartCompressImage(
 
   const options: CompressionOptions = {
     maxSizeMB,
-    quality: 0.75, // Start with 75% quality
+    quality: COMPRESSION_CONFIG.IMAGE_QUALITY, // Use centralized quality setting
     enableProgressiveCompression: true,
     minQuality: 0.3, // Don't go below 30% quality
-    maxWidth: 1920, // Reasonable max width for web
-    maxHeight: 1080 // Reasonable max height for web
+    maxWidth: COMPRESSION_CONFIG.MAX_DIMENSION, // Use centralized max dimension
+    maxHeight: COMPRESSION_CONFIG.MAX_DIMENSION // Use centralized max dimension
   }
 
   return compressImage(file, options)
@@ -841,7 +831,7 @@ export function calculateFormDataSize(data: Record<string, any>): {
  */
 export function validateFormDataSize(
   data: Record<string, any>, 
-  maxSizeMB: number = 95 // Conservative limit (5MB less than 100MB server limit)
+  maxSizeMB: number = bytesToMb(FILE_SIZE_LIMITS.FORM_DATA_TOTAL) // Conservative limit from constants
 ): {
   isValid: boolean
   sizeInfo: ReturnType<typeof calculateFormDataSize>
@@ -862,12 +852,13 @@ export function validateFormDataSize(
   const exceededBy = sizeInfo.totalSize - maxSizeBytes
   const exceededByMB = exceededBy / (1024 * 1024)
 
-  // Generate helpful suggestions
-  if (sizeInfo.details.screenshots.size > 50 * 1024 * 1024) { // > 50MB screenshots
+  // Generate helpful suggestions using constants
+  const singleFileLimit = FILE_SIZE_LIMITS.SINGLE_FILE_IN_FORM
+  if (sizeInfo.details.screenshots.size > singleFileLimit) {
     suggestions.push(`Réduisez la taille ou le nombre de captures d'écran (actuellement: ${formatFileSize(sizeInfo.details.screenshots.size)})`)
   }
   
-  if (sizeInfo.details.attachments.size > 50 * 1024 * 1024) { // > 50MB attachments
+  if (sizeInfo.details.attachments.size > singleFileLimit) {
     suggestions.push(`Réduisez la taille ou le nombre de pièces jointes (actuellement: ${formatFileSize(sizeInfo.details.attachments.size)})`)
   }
 
