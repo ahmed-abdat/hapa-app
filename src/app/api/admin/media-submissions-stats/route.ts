@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import { logger } from '@/utilities/logger'
 
 // Cache for stats with 5-minute TTL
 const statsCache = new WeakMap<object, { data: any; timestamp: number }>()
@@ -293,7 +294,14 @@ export async function GET(req: NextRequest) {
       ...result,
     })
   } catch (error) {
-    console.error('Error fetching media submissions stats:', error)
+    logger.error('Error fetching media submissions stats', error, {
+      component: 'MediaSubmissionsStatsAPI',
+      action: 'fetch_stats_error',
+      metadata: { 
+        endpoint: '/api/admin/media-submissions-stats',
+        method: 'GET'
+      }
+    })
     
     return NextResponse.json(
       { success: false, error: 'Internal server error' },

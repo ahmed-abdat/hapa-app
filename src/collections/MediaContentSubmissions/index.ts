@@ -28,16 +28,8 @@ export const MediaContentSubmissions: CollectionConfig = {
       ar: 'إدارة التبليغات والشكاوى الخاصة بالمحتوى الإعلامي المرسلة عبر نماذج الموقع. عرض الملفات الإعلامية وتتبع الحالة وإدارة الطلبات.',
     },
     // Dashboard now accessible via sidebar navigation
-    preview: (doc: Record<string, any>) => {
-      const formTypeLabel = doc.formType === 'complaint' ? '📋 Plainte' : '⚠️ Signalement'
-      const program = doc.contentInfo?.programName || doc.programName || 'Programme non spécifié'
-      const mediaType = doc.contentInfo?.mediaType || doc.mediaType || ''
-      const channel = doc.contentInfo?.specificChannel || doc.specificChannel || ''
-      const status = doc.submissionStatus || 'pending'
-      const statusEmoji = status === 'resolved' ? '✅' : status === 'reviewing' ? '👀' : status === 'dismissed' ? '❌' : '⏳'
-      
-      return `${formTypeLabel}: ${program}${mediaType ? ` [${mediaType}]` : ''}${channel ? ` - ${channel}` : ''} ${statusEmoji}`
-    },
+    // Note: preview function removed to fix URL encoding issues with emojis
+    // Admin display handled by useAsTitle field with auto-generated clean titles
   },
   access: {
     read: ({ req: { user } }) => Boolean(user),

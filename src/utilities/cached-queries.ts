@@ -179,7 +179,11 @@ export const getCachedCategories = cache(
 
 //       return result
 //     } catch (error) {
-//       console.error('Error fetching cached homepage:', error)
+//       logger.error('Error fetching cached homepage', error, {
+//         component: 'CachedHomepageQuery',
+//         action: 'fetch_homepage_error',
+//         metadata: { locale }
+//       })
 //       return null
 //     }
 //   },

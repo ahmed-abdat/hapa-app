@@ -29,6 +29,9 @@ export const Media: CollectionConfig = {
     }
   },
   admin: {
+    useAsTitle: 'filename',
+    defaultColumns: ['filename', 'alt', 'width', 'height', 'filesize', 'updatedAt'],
+    listSearchableFields: ['filename', 'alt'],
     description: {
       fr: 'Fichiers média pour les contenus éditoriaux. Les fichiers des formulaires sont dans une collection séparée.',
       ar: 'ملفات الوسائط للمحتوى التحريري. ملفات النماذج موجودة في مجموعة منفصلة.'

@@ -3,6 +3,7 @@ import { getClientSideURL } from '@/utilities/getURL'
 import { RefreshRouteOnSave as PayloadLivePreview } from '@payloadcms/live-preview-react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
+import { logger } from '@/utilities/logger'
 
 export const LivePreviewListener: React.FC = () => {
   const router = useRouter()
@@ -12,17 +13,22 @@ export const LivePreviewListener: React.FC = () => {
   
   // Add some debugging for development
   React.useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('LivePreviewListener initialized', {
+    logger.debug('LivePreviewListener initialized', {
+      component: 'LivePreviewListener',
+      action: 'initialize',
+      metadata: { 
         serverURL,
         timestamp: new Date().toISOString(),
-      })
-    }
+      }
+    })
   }, [serverURL])
   
   // Don't render if we don't have a server URL
   if (!serverURL) {
-    console.warn('LivePreviewListener: No server URL available')
+    logger.warn('LivePreviewListener: No server URL available', {
+      component: 'LivePreviewListener',
+      action: 'missing_server_url'
+    })
     return null
   }
   

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { logger } from '@/utilities/logger'
 
 /**
  * Optimized media file serving route with cache-first strategy
@@ -47,7 +48,14 @@ export async function GET(
     return response
     
   } catch (error) {
-    console.error('Media serving error:', error)
+    logger.error('Media serving error', error, {
+      component: 'MediaFileAPI',
+      action: 'serve_media_error',
+      metadata: { 
+        endpoint: '/api/media/file',
+        filename: 'unknown' // params is not available in catch block
+      }
+    })
     return NextResponse.json(
       { error: 'Media file not found' },
       { status: 404 }

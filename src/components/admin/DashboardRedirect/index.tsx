@@ -23,6 +23,7 @@ import { Gutter, Link } from '@payloadcms/ui'
  * - Production-ready performance monitoring
  */
 import { useAdminTranslation } from '@/utilities/admin-translations'
+import { logger } from '@/utilities/logger'
 
 export default function DashboardRedirect() {
   const { dt } = useAdminTranslation()
@@ -46,20 +47,29 @@ export default function DashboardRedirect() {
         const redirectStart = Date.now()
         
         // Log redirect attempt for debugging
-        if (process.env.NODE_ENV === 'development') {
-          console.log(`[DashboardRedirect] Starting redirect to ${targetUrl}`)
-        }
+        logger.debug('Starting redirect to dashboard', {
+          component: 'DashboardRedirect',
+          action: 'redirect_start',
+          metadata: { targetUrl }
+        })
         
         // Immediate browser redirect as the fastest option
         window.location.replace(targetUrl)
         hasRedirected.current = true
         
         // Log successful redirect time (though this might not execute)
-        if (process.env.NODE_ENV === 'development') {
-          console.log(`[DashboardRedirect] Immediate redirect completed in ${Date.now() - redirectStart}ms`)
-        }
+        logger.debug('Immediate redirect completed', {
+          component: 'DashboardRedirect',
+          action: 'redirect_success',
+          duration: Date.now() - redirectStart,
+          metadata: { method: 'immediate' }
+        })
       } catch (error) {
-        console.warn('Immediate redirect failed, falling back to router:', error)
+        logger.warn('Immediate redirect failed, falling back to router', {
+          component: 'DashboardRedirect',
+          action: 'redirect_fallback',
+          metadata: { error: error instanceof Error ? error.message : error }
+        })
         // Continue to Next.js router attempt
       }
     }
@@ -92,7 +102,11 @@ export default function DashboardRedirect() {
           hasRedirected.current = true
           return 'router-success'
         } catch (error) {
-          console.warn('Router redirect failed:', error)
+          logger.warn('Router redirect failed', {
+            component: 'DashboardRedirect',
+            action: 'router_redirect_failed',
+            metadata: { error: error instanceof Error ? error.message : error }
+          })
           throw error
         }
       })()
@@ -123,7 +137,10 @@ export default function DashboardRedirect() {
       // Race the promises - first one to succeed wins
       await Promise.race(redirectPromises)
     } catch (error) {
-      console.warn('All redirect methods failed:', error)
+      logger.error('All redirect methods failed', error, {
+        component: 'DashboardRedirect',
+        action: 'all_redirects_failed'
+      })
       
       // Final fallback: Show manual link after shorter delay
       const errorTimeout = setTimeout(() => {
