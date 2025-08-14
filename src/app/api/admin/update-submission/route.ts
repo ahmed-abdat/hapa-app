@@ -188,6 +188,8 @@ export async function DELETE(req: NextRequest) {
     }
 
     // Perform bulk delete
+    // Note: Each payload.delete() call automatically triggers the beforeDelete hook
+    // in MediaContentSubmissions collection, which handles FormMedia cleanup via cleanupFormMediaHook
     const deletePromises = submissionIds.map(async (id) => {
       try {
         await payload.delete({

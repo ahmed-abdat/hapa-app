@@ -12,6 +12,7 @@ import { fileURLToPath } from "url";
 import { Categories } from "./collections/Categories";
 import { MediaContentSubmissions } from "./collections/MediaContentSubmissions";
 import { MediaSubmissionsDashboard } from "./collections/MediaSubmissionsDashboard";
+import { MediaCleanupJobs } from "./collections/MediaCleanupJobs";
 import { Media } from "./collections/Media";
 import { FormMedia } from "./collections/FormMedia";
 import { Posts } from "./collections/Posts";
@@ -129,7 +130,7 @@ export default buildConfig({
       min: 5, // Ensure minimum connections for better performance
       idleTimeoutMillis: 30000, // Increased idle timeout
       connectionTimeoutMillis: 30000, // Increased connection timeout from 8s to 30s
-      acquireTimeoutMillis: 60000, // Add acquire timeout for connection pool
+      // acquireTimeoutMillis: 60000, // Not available in current pool config type
 
       // Increased query timeouts for complex operations like media updates
       statement_timeout: 45000, // Increased from 10s to 45s for media operations
@@ -144,10 +145,10 @@ export default buildConfig({
       application_name: "hapa-website", // Help identify connections in Neon dashboard
 
       // Additional timeout configurations for stability
-      createTimeoutMillis: 30000, // Add create timeout
-      destroyTimeoutMillis: 5000, // Add destroy timeout
-      reapIntervalMillis: 1000, // Add reap interval
-      createRetryIntervalMillis: 200, // Add retry interval
+      // createTimeoutMillis: 30000, // Not available in current pool config type
+      // destroyTimeoutMillis: 5000, // Not available in current pool config type
+      // reapIntervalMillis: 1000, // Not available in current pool config type
+      // createRetryIntervalMillis: 200, // Not available in current pool config type
     },
   }),
   // Reordered to control sidebar grouping order for "Formulaires et Soumissions":
@@ -160,6 +161,7 @@ export default buildConfig({
     Categories,
     MediaSubmissionsDashboard,
     MediaContentSubmissions,
+    MediaCleanupJobs,
     FormMedia,
     Users,
   ],
