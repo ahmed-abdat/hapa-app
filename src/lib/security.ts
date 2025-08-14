@@ -15,21 +15,32 @@ export function isValidObjectId(id: string): boolean {
 }
 
 /**
- * Sanitize media ID to prevent XSS attacks
- * @param id - Media ID to sanitize
- * @returns string - Sanitized media ID
- * @throws Error if invalid format
+ * Sanitize media ID with strict validation (no character removal)
+ * Only trims whitespace and validates format - does not normalize or collapse characters
+ * @param id - Media ID to validate
+ * @returns string - Trimmed and validated media ID
+ * @throws TypeError if input is not a string
+ * @throws Error if invalid format or empty
  */
-export function sanitizeMediaId(id: string): string {
-  // Remove any non-alphanumeric characters
-  const cleaned = id.replace(/[^a-fA-F0-9]/g, '')
-  
-  // Validate format
-  if (!isValidObjectId(cleaned)) {
-    throw new Error('Invalid media ID format')
+export function sanitizeMediaId(id: unknown): string {
+  // Explicit type check
+  if (typeof id !== 'string') {
+    throw new TypeError('Media ID must be a string')
   }
   
-  return cleaned
+  // Only trim whitespace, no character removal
+  const trimmed = id.trim()
+  
+  // Verify non-empty and valid format
+  if (trimmed.length === 0) {
+    throw new Error('Media ID cannot be empty')
+  }
+  
+  if (!isValidObjectId(trimmed)) {
+    throw new Error(`Invalid ObjectId format: ${trimmed}`)
+  }
+  
+  return trimmed
 }
 
 /**
@@ -48,22 +59,41 @@ export function isValidUrl(url: string): boolean {
 }
 
 /**
- * Sanitize URL for safe usage - prevents XSS via javascript: protocol
- * @param url - URL to sanitize
- * @returns string - Sanitized URL
- * @throws Error if invalid format or protocol
+ * Sanitize URL for safe usage - preserves relative URLs, rejects credentials
+ * @param url - URL to validate
+ * @returns string - Validated URL (relative URLs unchanged, absolute URLs validated)
+ * @throws TypeError if input is not a string
+ * @throws URIError if invalid format, contains credentials, or invalid protocol
  */
 export function sanitizeUrl(url: string): string {
-  if (!isValidUrl(url)) {
-    throw new Error('Invalid URL format')
+  if (typeof url !== 'string') {
+    throw new TypeError('URL must be a string')
   }
   
-  // Create URL object to parse and rebuild safely
-  const urlObj = new URL(url, typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
+  const trimmed = url.trim()
   
-  // Only allow safe protocols - prevents javascript:, data:, file: attacks
+  // Check if it's a relative URL (no scheme)
+  if (!trimmed.includes('://')) {
+    // Return relative URLs unchanged
+    return trimmed
+  }
+  
+  // Handle absolute URLs
+  let urlObj: URL
+  try {
+    urlObj = new URL(trimmed) // No base URL
+  } catch (error) {
+    throw new URIError(`Invalid URL format: ${trimmed}`)
+  }
+  
+  // Reject URLs with embedded credentials
+  if (urlObj.username || urlObj.password) {
+    throw new URIError('URL contains credentials')
+  }
+  
+  // Only allow safe protocols
   if (!['http:', 'https:'].includes(urlObj.protocol)) {
-    throw new Error('Invalid URL protocol')
+    throw new URIError('Invalid URL protocol')
   }
   
   return urlObj.toString()

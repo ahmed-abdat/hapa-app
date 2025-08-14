@@ -75,7 +75,7 @@ export interface DynamicMediaFormProps {
 
 // Specific prop interface for file upload
 export interface DynamicFileUploadProps extends DynamicMediaFormProps {
-  onChange?: (files: File[]) => void;
+  onChange: (files: File[]) => void;
 }
 
 export function DynamicMediaContentComplaintForm(props: DynamicMediaFormProps) {
@@ -97,7 +97,7 @@ export function DynamicMediaContentReportForm(props: DynamicMediaFormProps) {
 export function DynamicEnhancedFileUpload(props: DynamicFileUploadProps) {
   return (
     <Suspense fallback={<FileUploadLoadingSkeleton />}>
-      <EnhancedFileUploadV3 onChange={() => {}} {...props} />
+      <EnhancedFileUploadV3 {...props} />
     </Suspense>
   );
 }

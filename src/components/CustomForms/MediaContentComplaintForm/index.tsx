@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import { useParams, useRouter } from 'next/navigation'
@@ -53,7 +53,7 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
 
   const methods = useForm<MediaContentComplaintFormData>({
     resolver: zodResolver(createMediaContentComplaintSchema(t)),
-    mode: 'onBlur', // Validate on blur for better UX
+    mode: 'onChange', // Validate on change for immediate feedback on checkboxes
     defaultValues: {
       // Complainant Information
       fullName: '',
@@ -656,10 +656,17 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
 
           <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
             <div className="flex items-start gap-3">
-              <Checkbox
-                id="acceptDeclaration"
-                {...methods.register('acceptDeclaration')}
-                className="mt-1"
+              <Controller
+                name="acceptDeclaration"
+                control={methods.control}
+                render={({ field }) => (
+                  <Checkbox
+                    id="acceptDeclaration"
+                    checked={field.value || false}
+                    onCheckedChange={field.onChange}
+                    className="mt-1"
+                  />
+                )}
               />
               <label htmlFor="acceptDeclaration" className="text-sm text-gray-700 leading-relaxed">
                 {t('declarationText')}
@@ -673,10 +680,17 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
             )}
 
             <div className="flex items-start gap-3">
-              <Checkbox
-                id="acceptConsent"
-                {...methods.register('acceptConsent')}
-                className="mt-1"
+              <Controller
+                name="acceptConsent"
+                control={methods.control}
+                render={({ field }) => (
+                  <Checkbox
+                    id="acceptConsent"
+                    checked={field.value || false}
+                    onCheckedChange={field.onChange}
+                    className="mt-1"
+                  />
+                )}
               />
               <label htmlFor="acceptConsent" className="text-sm text-gray-700 leading-relaxed">
                 {t('consentText')}

@@ -20,7 +20,7 @@ import {
   X,
   Maximize2
 } from 'lucide-react'
-import { sanitizeMediaId, isValidUrl, isValidObjectId } from '@/lib/security'
+import { isValidUrl } from '@/lib/security'
 import './index.scss'
 
 interface MediaItem {
@@ -347,51 +347,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ url, filename, onError }) => 
 const PDFPreviewButton: React.FC<PDFViewerProps> = ({ url, filename, onError }) => {
   const [error, setError] = useState<string | null>(null)
   
-  // Extract media ID with validation - SECURITY: Prevents XSS attacks
-  const getMediaId = (url: string): string | null => {
-    try {
-      // Validate URL first - prevents malicious URLs
-      if (!isValidUrl(url)) {
-        setError('Invalid URL format')
-        return null
-      }
-      
-      const patterns = [
-        /\/media\/([a-fA-F0-9]{24})\//,
-        /\/api\/media\/([a-fA-F0-9]{24})/,
-        /id=([a-fA-F0-9]{24})/,
-      ]
-      
-      for (const pattern of patterns) {
-        const match = url.match(pattern)
-        if (match && match[1]) {
-          const mediaId = match[1]
-          
-          // Validate ObjectId format - prevents injection attacks
-          if (isValidObjectId(mediaId)) {
-            return sanitizeMediaId(mediaId)
-          }
-        }
-      }
-      
-      return null
-    } catch (err) {
-      setError('Error processing media URL')
-      onError?.()
-      return null
-    }
-  }
-
-  const mediaId = getMediaId(url)
-
   const openPreview = () => {
     try {
-      if (mediaId) {
-        // Safe to use - mediaId is validated and sanitized
-        const previewUrl = `/admin/preview/pdf/${mediaId}`
-        window.open(previewUrl, '_blank', 'noopener,noreferrer')
-      } else if (isValidUrl(url)) {
-        // Fallback to direct URL (validated) - prevents XSS
+      if (isValidUrl(url)) {
+        // Direct URL access (validated) - prevents XSS
         window.open(url, '_blank', 'noopener,noreferrer')
       } else {
         setError('Cannot open preview - invalid media reference')
@@ -553,12 +512,10 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
   const [activeMedia, setActiveMedia] = useState<string | null>(null)
   const [mediaErrors, setMediaErrors] = useState<Set<string>>(new Set())
 
-
   // Get the actual array data from form fields
   const formFieldValue = formFields[path]?.value
   
   let actualData: MediaItem[] | null = null
-  
   
   // Try multiple data extraction methods
   
@@ -597,7 +554,6 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
     const rowData: MediaItem[] = fieldState.rows
       .map((row: any, index: number) => {
         const rowPath = `${path}.${index}`
-        
         
         // Try different ways to get the URL
         let url: string | null = null
@@ -655,7 +611,6 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
       actualData = numberedFields
     }
   }
-  
 
   // Handle empty state
   if (!actualData || !Array.isArray(actualData) || actualData.length === 0) {
