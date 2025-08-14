@@ -28,9 +28,8 @@ import {
   Play,
   Pause,
   Volume2,
-  Eye,
   Download,
-  Maximize2,
+
   Music,
   Film,
   Image as ImageIcon,
@@ -80,11 +79,11 @@ const FILE_TYPE_ICONS = {
 }
 
 const FILE_TYPE_COLORS = {
-  image: 'bg-blue-50 text-blue-600 border-blue-200 dark:bg-blue-950 dark:text-blue-400 dark:border-blue-800',
-  video: 'bg-purple-50 text-purple-600 border-purple-200 dark:bg-purple-950 dark:text-purple-400 dark:border-purple-800',
-  audio: 'bg-green-50 text-green-600 border-green-200 dark:bg-green-950 dark:text-green-400 dark:border-green-800',
-  document: 'bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-950 dark:text-orange-400 dark:border-orange-800',
-  unknown: 'bg-gray-50 text-gray-600 border-gray-200 dark:bg-gray-950 dark:text-gray-400 dark:border-gray-800'
+  image: 'bg-primary/10 text-primary border-primary/20 dark:bg-primary/20 dark:text-primary dark:border-primary/30',
+  video: 'bg-accent/10 text-accent border-accent/20 dark:bg-accent/20 dark:text-accent dark:border-accent/30',
+  audio: 'bg-secondary/10 text-secondary-foreground border-secondary/20 dark:bg-secondary/20 dark:text-secondary-foreground dark:border-secondary/30',
+  document: 'bg-muted text-muted-foreground border-muted-foreground/20 dark:bg-muted dark:text-muted-foreground dark:border-muted-foreground/30',
+  unknown: 'bg-muted text-muted-foreground border-muted-foreground/20 dark:bg-muted dark:text-muted-foreground dark:border-muted-foreground/30'
 }
 
 export function EnhancedFileUploadV3({
@@ -108,7 +107,7 @@ export function EnhancedFileUploadV3({
   const [files, setFiles] = useState<FileWithPreview[]>([])
   const [isValidating, setIsValidating] = useState(false)
   const [dragActive, setDragActive] = useState(false)
-  const [previewFile, setPreviewFile] = useState<FileWithPreview | null>(null)
+
 
   // Generate unique ID for each file
   const generateFileId = useCallback(() => {
@@ -305,11 +304,11 @@ export function EnhancedFileUploadV3({
   const uploadZoneClassName = useMemo(() => {
     const baseClasses = 'relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 cursor-pointer backdrop-blur-sm'
     
-    if (disabled) return cn(baseClasses, 'border-gray-200 bg-gray-50/50 cursor-not-allowed opacity-50')
-    if (isDragReject) return cn(baseClasses, 'border-red-400 bg-red-50/50 animate-pulse')
-    if (isDragAccept || dragActive) return cn(baseClasses, 'border-blue-400 bg-blue-50/50 scale-[1.02]')
+    if (disabled) return cn(baseClasses, 'border-muted bg-muted/30 cursor-not-allowed opacity-50')
+    if (isDragReject) return cn(baseClasses, 'border-destructive bg-destructive/10 animate-pulse')
+    if (isDragAccept || dragActive) return cn(baseClasses, 'border-primary bg-primary/5 scale-[1.01]')
     
-    return cn(baseClasses, 'border-gray-300 hover:border-gray-400 hover:bg-gray-50/50 dark:border-gray-700 dark:hover:border-gray-600 dark:hover:bg-gray-900/50')
+    return cn(baseClasses, 'border-border hover:border-primary/50 hover:bg-primary/5 dark:border-border dark:hover:border-primary/50 dark:hover:bg-primary/5')
   }, [disabled, isDragReject, isDragAccept, dragActive])
 
   return (
@@ -327,32 +326,32 @@ export function EnhancedFileUploadV3({
                   animate={{ scale: dragActive ? 1.1 : 1 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800">
-                    <Upload className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                  <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary/10 to-primary/20 dark:from-primary/20 dark:to-primary/30">
+                    <Upload className="w-8 h-8 text-primary dark:text-primary" />
                   </div>
                   {dragActive && (
                     <motion.div 
-                      className="absolute inset-0 rounded-full bg-blue-400 opacity-30"
-                      animate={{ scale: [1, 1.5], opacity: [0.3, 0] }}
+                      className="absolute inset-0 rounded-full bg-primary opacity-20"
+                      animate={{ scale: [1, 1.5], opacity: [0.2, 0] }}
                       transition={{ duration: 1, repeat: Infinity }}
                     />
                   )}
                 </motion.div>
                 
                 <div className="space-y-2">
-                  <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  <p className="text-lg font-semibold text-foreground">
                     {isDragActive ? t('fileUpload.dropFilesHere') : label}
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     {description}
                   </p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500">
+                  <p className="text-xs text-muted-foreground/80">
                     {t('fileUpload.maxFiles', { maxFiles })} • {maxSize}MB {t('fileUpload.maxSizeEach')}
                   </p>
                 </div>
 
                 {!disabled && (
-                  <Button variant="outline" size="sm" type="button" className="gap-2">
+                  <Button variant="outline" size="sm" type="button" className="gap-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                     <Upload className="w-4 h-4" />
                     {t('fileUpload.chooseFiles')}
                   </Button>
@@ -364,11 +363,11 @@ export function EnhancedFileUploadV3({
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="absolute inset-0 bg-white/90 dark:bg-gray-900/90 flex items-center justify-center backdrop-blur-sm"
+                  className="absolute inset-0 bg-background/90 flex items-center justify-center backdrop-blur-sm"
                 >
                   <div className="flex flex-col items-center space-y-3">
-                    <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+                    <span className="text-sm font-medium text-foreground">
                       {t('fileUpload.validatingFiles')}
                     </span>
                   </div>
@@ -392,7 +391,6 @@ export function EnhancedFileUploadV3({
                   key={file.id}
                   file={file}
                   onRemove={() => removeFile(file.id)}
-                  onPreview={() => setPreviewFile(file)}
                   isRTL={isRTL}
                 />
               ))}
@@ -405,7 +403,7 @@ export function EnhancedFileUploadV3({
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 pt-4 border-t dark:border-gray-800"
+            className="flex items-center justify-between text-sm text-muted-foreground pt-4 border-t border-border"
           >
             <span className="flex items-center gap-2">
               <FileIcon className="w-4 h-4" />
@@ -418,12 +416,7 @@ export function EnhancedFileUploadV3({
           </motion.div>
         )}
 
-        {/* Full Preview Modal */}
-        <FullPreviewModal 
-          file={previewFile} 
-          onClose={() => setPreviewFile(null)} 
-          isRTL={isRTL}
-        />
+
       </div>
     </TooltipProvider>
   )
@@ -433,11 +426,10 @@ export function EnhancedFileUploadV3({
 interface MediaPreviewCardProps {
   file: FileWithPreview
   onRemove: () => void
-  onPreview: () => void
   isRTL: boolean
 }
 
-function MediaPreviewCard({ file, onRemove, onPreview, isRTL }: MediaPreviewCardProps) {
+function MediaPreviewCard({ file, onRemove, isRTL }: MediaPreviewCardProps) {
   const t = useTranslations()
   const [isPlaying, setIsPlaying] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -470,17 +462,17 @@ function MediaPreviewCard({ file, onRemove, onPreview, isRTL }: MediaPreviewCard
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      whileHover={{ y: -4 }}
+      whileHover={{ y: -2 }}
       className="group relative"
     >
       <Card className={cn(
         'relative overflow-hidden transition-all duration-200',
-        'hover:shadow-lg dark:hover:shadow-gray-900/50',
-        file.validationResult?.isValid ? '' : 'border-red-300 dark:border-red-800'
+        'hover:shadow-sm hover:shadow-primary/10 dark:hover:shadow-primary/20',
+        file.validationResult?.isValid ? '' : 'border-destructive/50 dark:border-destructive/50'
       )}>
         <CardContent className="p-0">
           {/* Media Preview */}
-          <div className="relative h-48 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+          <div className="relative h-48 bg-gradient-to-br from-muted/30 to-muted/50 dark:from-muted dark:to-muted/80">
             {file.category === 'image' && file.preview ? (
               <Image
                 src={file.preview}
@@ -498,6 +490,7 @@ function MediaPreviewCard({ file, onRemove, onPreview, isRTL }: MediaPreviewCard
                   onEnded={() => setIsPlaying(false)}
                 />
                 <button
+                  type="button"
                   onClick={togglePlayPause}
                   className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors"
                 >
@@ -524,8 +517,9 @@ function MediaPreviewCard({ file, onRemove, onPreview, isRTL }: MediaPreviewCard
                 <Button
                   variant="outline"
                   size="sm"
+                  type="button"
                   onClick={togglePlayPause}
-                  className="gap-2"
+                  className="gap-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                 >
                   {isPlaying ? (
                     <><Pause className="w-4 h-4" /> {t('fileUpload.pause')}</>
@@ -543,30 +537,14 @@ function MediaPreviewCard({ file, onRemove, onPreview, isRTL }: MediaPreviewCard
             )}
 
             {/* Action Buttons Overlay */}
-            <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              {/* Only show preview button for supported media types */}
-              {(file.category === 'image' || file.category === 'video' || file.category === 'audio') && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="secondary"
-                      size="icon"
-                      className="w-8 h-8 bg-white/90 hover:bg-white"
-                      onClick={onPreview}
-                    >
-                      <Maximize2 className="w-4 h-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>{t('fileUpload.preview')}</TooltipContent>
-                </Tooltip>
-              )}
-              
+            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     variant="destructive"
                     size="icon"
                     className="w-8 h-8"
+                    type="button"
                     onClick={onRemove}
                   >
                     <X className="w-4 h-4" />
@@ -591,14 +569,14 @@ function MediaPreviewCard({ file, onRemove, onPreview, isRTL }: MediaPreviewCard
           <div className="p-4 space-y-2">
             <Tooltip>
               <TooltipTrigger asChild>
-                <p className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate">
+                <p className="font-medium text-sm text-foreground truncate">
                   {file.name}
                 </p>
               </TooltipTrigger>
               <TooltipContent>{file.name}</TooltipContent>
             </Tooltip>
             
-            <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
                 <IconComponent className="w-3 h-3" />
                 {file.category}
@@ -608,8 +586,8 @@ function MediaPreviewCard({ file, onRemove, onPreview, isRTL }: MediaPreviewCard
 
             {/* Validation Error */}
             {file.validationResult && !file.validationResult.isValid && (
-              <div className="pt-2 border-t dark:border-gray-800">
-                <p className="text-xs text-red-600 dark:text-red-400">
+              <div className="pt-2 border-t border-border">
+                <p className="text-xs text-destructive">
                   {file.validationResult.error}
                 </p>
               </div>
@@ -621,82 +599,6 @@ function MediaPreviewCard({ file, onRemove, onPreview, isRTL }: MediaPreviewCard
   )
 }
 
-// Full Preview Modal Component
-interface FullPreviewModalProps {
-  file: FileWithPreview | null
-  onClose: () => void
-  isRTL: boolean
-}
 
-function FullPreviewModal({ file, onClose, isRTL }: FullPreviewModalProps) {
-  if (!file) return null
-
-  return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
-        onClick={onClose}
-      >
-        <motion.div
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          exit={{ scale: 0.9 }}
-          className="relative max-w-4xl max-h-[90vh] bg-white dark:bg-gray-900 rounded-xl overflow-hidden"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b dark:border-gray-800">
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-              {file.name}
-            </h3>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-            >
-              <X className="w-5 h-5" />
-            </Button>
-          </div>
-
-          {/* Content */}
-          <div className="p-4 max-h-[calc(90vh-8rem)] overflow-auto">
-            {file.category === 'image' && file.preview && (
-              <img
-                src={file.preview}
-                alt={`Preview of ${file.name}`}
-                className="w-full h-auto"
-              />
-            )}
-            {file.category === 'video' && file.preview && (
-              <video
-                src={file.preview}
-                controls
-                className="w-full h-auto"
-              />
-            )}
-            {file.category === 'audio' && file.preview && (
-              <audio
-                src={file.preview}
-                controls
-                className="w-full"
-              />
-            )}
-            {(file.category === 'document' || file.category === 'unknown') && (
-              <div className="flex flex-col items-center justify-center py-12">
-                <FileText className="w-16 h-16 text-gray-400 mb-4" />
-                <p className="text-gray-600 dark:text-gray-400">
-                  Preview not available for this file type
-                </p>
-              </div>
-            )}
-          </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
-  )
-}
 
 export default EnhancedFileUploadV3
