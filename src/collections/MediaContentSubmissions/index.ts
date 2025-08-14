@@ -585,6 +585,16 @@ export const MediaContentSubmissions: CollectionConfig = {
         {
           name: 'reason',
           type: 'text',
+          label: {
+            fr: 'Motif',
+            ar: 'السبب',
+          },
+          admin: {
+            readOnly: true,
+            components: {
+              Field: '@/components/admin/ReasonField/index',
+            },
+          },
         },
       ],
       admin: {
@@ -776,7 +786,7 @@ export const MediaContentSubmissions: CollectionConfig = {
           
           // Auto-set priority based on reasons
           if (data.reasons && Array.isArray(data.reasons)) {
-            const urgentReasons = ['Discours de haine / Incitation à la violence', 'Désinformation / Informations mensongères', 'Désinformation / Fake news']
+            const urgentReasons = ['hateSpeech', 'fakeNews', 'misinformation']
             const hasUrgentReason = data.reasons.some((reasonObj: { reason: string }) => 
               urgentReasons.includes(reasonObj.reason)
             )

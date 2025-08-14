@@ -20,6 +20,7 @@ import { SlugFieldWithNotice as SlugFieldWithNotice_e83c5ccf8f9b3dccc0f0e2a7ece0
 import { ForceLocaleMessage as ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62 } from '@/components/ForceLocaleMessage/index.tsx'
 import { default as default_4422a77cfdc4eb7c4845f13c5e26d5ab } from '@/components/admin/MediaSubmissionsDashboard/index.tsx'
 import { default as default_a1ca0f2c1b69618ecc25f9973ffeb812 } from '@/components/admin/EnhancedMediaGallery/index'
+import { default as default_7b4e55aec7514a0efa3c42a12b233003 } from '@/components/admin/ReasonField/index'
 import { default as default_102cce8ca03aca4d934be301b628260e } from '@/components/admin/ReasonRowLabel/index'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
@@ -53,6 +54,7 @@ export const importMap = {
   "@/components/ForceLocaleMessage/index.tsx#ForceLocaleMessage": ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62,
   "@/components/admin/MediaSubmissionsDashboard/index.tsx#default": default_4422a77cfdc4eb7c4845f13c5e26d5ab,
   "@/components/admin/EnhancedMediaGallery/index#default": default_a1ca0f2c1b69618ecc25f9973ffeb812,
+  "@/components/admin/ReasonField/index#default": default_7b4e55aec7514a0efa3c42a12b233003,
   "@/components/admin/ReasonRowLabel/index#default": default_102cce8ca03aca4d934be301b628260e,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
