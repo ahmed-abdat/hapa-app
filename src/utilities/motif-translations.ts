@@ -48,6 +48,15 @@ export const MOTIF_CONFIGS: Record<string, MotifConfig> = {
     color: '#ea580c', // orange-600
     bgColor: '#fff7ed', // orange-50
   },
+  misinformation: {
+    key: 'misinformation',
+    label: 'Désinformation / Informations mensongères',
+    description: 'Contenu contenant de fausses informations ou de la désinformation',
+    icon: MessageSquareWarning,
+    severity: 'critical',
+    color: '#ea580c', // orange-600
+    bgColor: '#fff7ed', // orange-50
+  },
   privacyViolation: {
     key: 'privacyViolation',
     label: 'Atteinte à la vie privée / Diffamation',
