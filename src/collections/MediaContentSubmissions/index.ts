@@ -585,6 +585,16 @@ export const MediaContentSubmissions: CollectionConfig = {
         {
           name: 'reason',
           type: 'text',
+          label: {
+            fr: 'Motif',
+            ar: 'السبب',
+          },
+          admin: {
+            readOnly: true,
+            components: {
+              Field: '@/components/admin/ReasonField/index',
+            },
+          },
         },
       ],
       admin: {
