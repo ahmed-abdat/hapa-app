@@ -32,7 +32,7 @@ export function ThankYouCard({ locale, formType }: ThankYouCardProps) {
       y: 0,
       transition: {
         duration: 0.6,
-        ease: [0.04, 0.62, 0.23, 0.98],
+        ease: "easeOut",
         staggerChildren: 0.15
       }
     }
@@ -45,7 +45,7 @@ export function ThankYouCard({ locale, formType }: ThankYouCardProps) {
       y: 0,
       transition: {
         duration: 0.5,
-        ease: [0.04, 0.62, 0.23, 0.98]
+        ease: "easeOut"
       }
     }
   }
