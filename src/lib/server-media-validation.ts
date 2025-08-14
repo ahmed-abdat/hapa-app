@@ -16,6 +16,8 @@
  * - Both modules should maintain consistent validation rules and limits
  */
 
+import { logger } from '@/utilities/logger'
+
 export interface ServerValidationResult {
   isValid: boolean
   error?: string
@@ -168,7 +170,13 @@ export async function validateServerFileSignature(file: File): Promise<{ isValid
     
     return { isValid: false }
   } catch (error) {
-    console.error('Server file signature validation error:', error)
+    logger.error('Server file signature validation error', error, {
+      component: 'ServerMediaValidation',
+      action: 'signature_validation_error',
+      metadata: { 
+        validationType: 'file_signature'
+      }
+    })
     return { isValid: false }
   }
 }

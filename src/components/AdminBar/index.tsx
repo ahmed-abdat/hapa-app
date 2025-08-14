@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation'
 import './index.scss'
 
 import { getClientSideURL } from '@/utilities/getURL'
+import { logger } from '@/utilities/logger'
 
 const baseClass = 'admin-bar'
 
@@ -90,10 +91,16 @@ export const AdminBar: React.FC<{
                 router.push(currentPath)
                 router.refresh()
               } else {
-                console.error('Failed to exit preview mode')
+                logger.error('Failed to exit preview mode', undefined, {
+                  component: 'AdminBar',
+                  action: 'exit_preview_failed'
+                })
               }
             } catch (error) {
-              console.error('Error exiting preview mode:', error)
+              logger.error('Error exiting preview mode', error, {
+                component: 'AdminBar',
+                action: 'exit_preview_error'
+              })
             } finally {
               setIsExitingPreview(false)
             }

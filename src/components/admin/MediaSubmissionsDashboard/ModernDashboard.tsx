@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 // Removed admin translations here as we no longer use local modal labels
 import { useParams } from "next/navigation";
+import { logger } from "@/utilities/logger";
 import { useTheme } from "@/providers/Theme";
 import {
   Card,
@@ -156,7 +157,11 @@ export function ModernDashboard() {
       // Handle abort errors specifically
       if (error instanceof Error && error.name === 'AbortError') {
         const errorMessage = "La requête a expiré. Veuillez réessayer.";
-        console.warn("Request aborted due to timeout");
+        logger.warn("Request aborted due to timeout", {
+          component: 'ModernDashboard',
+          action: 'fetch_timeout',
+          metadata: { isRefresh }
+        });
         setError(errorMessage);
         if (!isRefresh) {
           toast.error(errorMessage);
@@ -164,7 +169,11 @@ export function ModernDashboard() {
       } else {
         const errorMessage =
           error instanceof Error ? error.message : "Erreur inconnue";
-        console.error("Error fetching submissions:", error);
+        logger.error("Error fetching submissions", error, {
+          component: 'ModernDashboard',
+          action: 'fetch_error',
+          metadata: { isRefresh }
+        });
         setError(errorMessage);
 
         if (!isRefresh) {
@@ -247,7 +256,11 @@ export function ModernDashboard() {
         toast.dismiss(loadingToast);
         setSubmissions(previousSubmissions);
 
-        console.error("Error updating submission:", error);
+        logger.error("Error updating submission", error, {
+          component: 'ModernDashboard',
+          action: 'update_error',
+          metadata: { submissionId: id, status: updates.submissionStatus }
+        });
         toast.error(
           "Erreur lors de la mise à jour: " +
             (error instanceof Error ? error.message : "Erreur inconnue"),

@@ -88,6 +88,10 @@ const config = withPayload(
       },
       // Suppress hydration warnings from browser extensions
       reactStrictMode: false,
+      // Remove transpilePackages until properly tested
+      // transpilePackages: ['@tanstack/react-table'], // TODO: Test and re-enable if needed
+      // Keep source maps disabled in production for better performance
+      productionBrowserSourceMaps: false,
       experimental: {
         // Package import optimization for better performance (Next.js 15 best practice)
         optimizePackageImports: [
@@ -104,6 +108,10 @@ const config = withPayload(
           '@radix-ui/react-tabs',
           'lucide-react',
           '@hookform/resolvers',
+          'recharts', // Heavy charting library - optimize imports
+          // Removed @tanstack/react-table from optimizePackageImports due to module parsing issues
+          'framer-motion', // Animation library - optimize imports
+          'date-fns', // Date utility library - tree-shake unused functions
         ],
         // React Compiler for better performance (React 19 feature)
         reactCompiler: false, // Enable when ready for production
@@ -116,6 +124,8 @@ const config = withPayload(
         staticGenerationRetryCount: 3, // Retry failed page generation up to 3 times
         staticGenerationMaxConcurrency: 6, // Process up to 6 pages per worker (reduced from default)
         staticGenerationMinPagesPerWorker: 10, // Start new worker after 10 pages (reduced from default)
+        // Remove experimental features until properly tested
+        // These will be re-enabled after validation in staging
       },
       // Turbopack configuration for enhanced performance
       turbopack: {
@@ -175,7 +185,7 @@ const config = withPayload(
           },
         ],
       },
-      webpack: (webpackConfig) => {
+      webpack: (webpackConfig, { dev, isServer }) => {
         webpackConfig.resolve.extensionAlias = {
           '.cjs': ['.cts', '.cjs'],
           '.js': ['.ts', '.tsx', '.js', '.jsx'],
@@ -187,6 +197,10 @@ const config = withPayload(
           ...(webpackConfig.ignoreWarnings ?? []),
           /Critical dependency: the request of a dependency is an expression/,
         ]
+
+        // REMOVED: Dangerous production optimizations that could break builds
+        // These will be re-added one by one after proper testing in staging
+        // See docs/PRODUCTION_READINESS_AUDIT.md for details
 
         return webpackConfig
       },
@@ -219,7 +233,11 @@ const config = withPayload(
         ]
       },
     })),
-    { configPath: path.resolve(dirname, 'src/payload.config.ts') },
+    { 
+      configPath: path.resolve(dirname, 'src/payload.config.ts'),
+      // Performance optimization: Disable server package bundling in development for faster compilation
+      devBundleServerPackages: false 
+    },
 )
 
 export default config

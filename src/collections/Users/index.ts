@@ -23,6 +23,7 @@ export const Users: CollectionConfig = {
   },
   admin: {
     defaultColumns: ['name', 'email'],
+    listSearchableFields: ['name', 'email'],
     useAsTitle: 'name',
   },
   auth: true,

@@ -20,6 +20,7 @@ import {
   X,
   Maximize2
 } from 'lucide-react'
+import { sanitizeMediaId, isValidUrl, isValidObjectId } from '@/lib/security'
 import './index.scss'
 
 interface MediaItem {
@@ -342,57 +343,134 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ url, filename, onError }) => 
   )
 }
 
-// PDF Viewer Component
-const PDFViewer: React.FC<PDFViewerProps> = ({ url, filename, onError }) => {
-  const [isFullscreen, setIsFullscreen] = useState(false)
-  const iframeRef = useRef<HTMLIFrameElement>(null)
+// PDF Preview Button Component - SECURE VERSION (FIXED: XSS Prevention)
+const PDFPreviewButton: React.FC<PDFViewerProps> = ({ url, filename, onError }) => {
+  const [error, setError] = useState<string | null>(null)
+  
+  // Extract media ID with validation - SECURITY: Prevents XSS attacks
+  const getMediaId = (url: string): string | null => {
+    try {
+      // Validate URL first - prevents malicious URLs
+      if (!isValidUrl(url)) {
+        setError('Invalid URL format')
+        return null
+      }
+      
+      const patterns = [
+        /\/media\/([a-fA-F0-9]{24})\//,
+        /\/api\/media\/([a-fA-F0-9]{24})/,
+        /id=([a-fA-F0-9]{24})/,
+      ]
+      
+      for (const pattern of patterns) {
+        const match = url.match(pattern)
+        if (match && match[1]) {
+          const mediaId = match[1]
+          
+          // Validate ObjectId format - prevents injection attacks
+          if (isValidObjectId(mediaId)) {
+            return sanitizeMediaId(mediaId)
+          }
+        }
+      }
+      
+      return null
+    } catch (err) {
+      setError('Error processing media URL')
+      onError?.()
+      return null
+    }
+  }
 
-  const openInNewTab = () => {
-    window.open(url, '_blank')
+  const mediaId = getMediaId(url)
+
+  const openPreview = () => {
+    try {
+      if (mediaId) {
+        // Safe to use - mediaId is validated and sanitized
+        const previewUrl = `/admin/preview/pdf/${mediaId}`
+        window.open(previewUrl, '_blank', 'noopener,noreferrer')
+      } else if (isValidUrl(url)) {
+        // Fallback to direct URL (validated) - prevents XSS
+        window.open(url, '_blank', 'noopener,noreferrer')
+      } else {
+        setError('Cannot open preview - invalid media reference')
+      }
+    } catch (err) {
+      setError('Failed to open preview')
+    }
   }
 
   const downloadFile = () => {
-    const link = document.createElement('a')
-    link.href = url
-    link.download = filename
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    try {
+      if (!isValidUrl(url)) {
+        setError('Invalid download URL')
+        return
+      }
+      
+      const link = document.createElement('a')
+      link.href = url
+      link.download = filename || 'document.pdf'
+      link.rel = 'noopener noreferrer'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (err) {
+      setError('Download failed')
+    }
   }
 
-  const toggleFullscreen = () => {
-    setIsFullscreen(!isFullscreen)
+  // Simple error handling - just disable buttons if there's an error
+  if (error) {
+    return (
+      <div className="pdf-preview-card">
+        <div className="pdf-card-header">
+          <div className="pdf-icon-wrapper">
+            <FileText size={24} className="pdf-icon" />
+          </div>
+          <div className="pdf-meta">
+            <div className="pdf-title">{filename}</div>
+            <div className="pdf-badge">PDF Document - Error</div>
+          </div>
+        </div>
+        <div className="pdf-preview-area">
+          <div className="pdf-placeholder">
+            <FileText size={48} className="pdf-placeholder-icon" />
+            <p className="pdf-placeholder-text">{error}</p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="enhanced-pdf-viewer">
-      <div className="pdf-toolbar">
-        <div className="pdf-info">
-          <FileText size={20} className="pdf-icon" />
-          <span className="pdf-title">{filename}</span>
+    <div className="pdf-preview-card">
+      <div className="pdf-card-header">
+        <div className="pdf-icon-wrapper">
+          <FileText size={24} className="pdf-icon" />
         </div>
-        
-        <div className="pdf-actions">
-          <button onClick={toggleFullscreen} className="control-btn" title="Toggle fullscreen">
-            {isFullscreen ? <X size={16} /> : <ZoomIn size={16} />}
-          </button>
-          <button onClick={openInNewTab} className="control-btn" title="Open in new tab">
-            <ExternalLink size={16} />
-          </button>
-          <button onClick={downloadFile} className="control-btn" title="Download">
-            <Download size={16} />
-          </button>
+        <div className="pdf-meta">
+          <div className="pdf-title">{filename}</div>
+          <div className="pdf-badge">PDF Document</div>
         </div>
       </div>
       
-      <div className={`pdf-container ${isFullscreen ? 'fullscreen' : ''}`}>
-        <iframe
-          ref={iframeRef}
-          src={`${url}#toolbar=1&navpanes=1&scrollbar=1&page=1&view=FitH`}
-          className="pdf-iframe"
-          title={`PDF: ${filename}`}
-          onError={onError}
-        />
+      <div className="pdf-preview-area">
+        <div className="pdf-placeholder">
+          <FileText size={48} className="pdf-placeholder-icon" />
+          <p className="pdf-placeholder-text">Cliquez sur Prévisualiser pour ouvrir le PDF</p>
+        </div>
+      </div>
+      
+      <div className="pdf-actions-bar">
+        <button onClick={openPreview} className="pdf-preview-btn">
+          <Eye size={18} />
+          <span>Prévisualiser</span>
+        </button>
+        <button onClick={downloadFile} className="pdf-download-btn">
+          <Download size={18} />
+          <span>Télécharger</span>
+        </button>
       </div>
     </div>
   )
@@ -475,34 +553,12 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
   const [activeMedia, setActiveMedia] = useState<string | null>(null)
   const [mediaErrors, setMediaErrors] = useState<Set<string>>(new Set())
 
-  // Log the path to understand the component context
-  if (process.env.NODE_ENV === 'development') {
-    console.log('🎯 EnhancedMediaGallery mounted with path:', path)
-  }
 
   // Get the actual array data from form fields
   const formFieldValue = formFields[path]?.value
   
   let actualData: MediaItem[] | null = null
   
-  // Enhanced debug logging for troubleshooting
-  if (process.env.NODE_ENV === 'development') {
-    console.log('🔍 EnhancedMediaGallery Debug:', {
-      path,
-      formFieldValue,
-      formFieldValueType: typeof formFieldValue,
-      formFieldValueIsArray: Array.isArray(formFieldValue),
-      formFieldValueLength: Array.isArray(formFieldValue) ? formFieldValue.length : 'N/A',
-      fieldStateValue: fieldState.value,
-      fieldStateValueType: typeof fieldState.value,
-      fieldStateValueIsArray: Array.isArray(fieldState.value),
-      fieldStateValueLength: Array.isArray(fieldState.value) ? fieldState.value.length : 'N/A',
-      hasRows: fieldState.rows ? fieldState.rows.length : 0,
-      rowsData: fieldState.rows ? fieldState.rows.slice(0, 2) : null, // Show first 2 rows for debugging
-      isLegacyData: typeof formFieldValue === 'number' || typeof fieldState.value === 'number',
-      formFieldsKeys: Object.keys(formFields).filter(key => key.startsWith(path)).slice(0, 5) // Show related form field keys
-    })
-  }
   
   // Try multiple data extraction methods
   
@@ -542,15 +598,6 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
       .map((row: any, index: number) => {
         const rowPath = `${path}.${index}`
         
-        // Debug individual row
-        if (process.env.NODE_ENV === 'development' && index < 2) {
-          console.log(`🔎 Row ${index} debug:`, {
-            row,
-            rowPath,
-            fieldAtPath: formFields[rowPath],
-            fieldAtPathUrl: formFields[`${rowPath}.url`],
-          })
-        }
         
         // Try different ways to get the URL
         let url: string | null = null
@@ -609,20 +656,6 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
     }
   }
   
-  // Debug extracted data (can be removed in production)
-  if (process.env.NODE_ENV === 'development') {
-    console.log('📊 EnhancedMediaGallery Extracted Data:', {
-      actualData,
-      dataLength: actualData ? actualData.length : 0,
-      firstItem: actualData && actualData.length > 0 ? actualData[0] : null,
-      extractionMethod: actualData ? (
-        Array.isArray(formFieldValue) ? 'Method 1: formFieldValue' :
-        Array.isArray(fieldState.value) ? 'Method 2: fieldState.value' :
-        fieldState.rows ? 'Method 3: fieldState.rows' :
-        'Method 4: numbered fields'
-      ) : 'No data extracted'
-    })
-  }
 
   // Handle empty state
   if (!actualData || !Array.isArray(actualData) || actualData.length === 0) {
@@ -636,11 +669,6 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
         <div className="empty-state">
           <File size={48} className="empty-icon" />
           <span className="empty-text">Aucun média disponible</span>
-          {isActualLegacyData && process.env.NODE_ENV === 'development' && (
-            <small className="empty-help" style={{ color: '#6b7280', marginTop: '0.5rem' }}>
-              Note: Soumission créée avant la correction V3 (données héritées)
-            </small>
-          )}
         </div>
       </div>
     )
@@ -715,14 +743,13 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
           </div>
         )}
         
-        {/* Preview area for PDFs - always visible with embed */}
+        {/* PDF preview with simple button */}
         {fileType === 'pdf' && (
           <div className="media-pdf-preview">
-            <embed
-              src={`${mediaUrl}#view=FitH&toolbar=0&navpanes=0`}
-              type="application/pdf"
-              className="pdf-embed"
-              title={fileName}
+            <PDFPreviewButton
+              url={mediaUrl}
+              filename={fileName}
+              onError={() => handleMediaError(mediaUrl)}
             />
           </div>
         )}

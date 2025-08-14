@@ -164,6 +164,7 @@ neonctl connection-string production --project-id damp-snow-64638673
 - **Sequential Thinking** - Complex problem solving and architectural analysis
 - **Magic** - UI component generation and design systems
 - **Shadcn/ui** - Pre-built React UI component library
+- **Tweakcn** - Enhanced shadcn/ui components with custom themes and styling
 
 **Research & Content:**
 - **Firecrawl** - Advanced web scraping and content extraction
@@ -197,6 +198,11 @@ neonctl connection-string production --project-id damp-snow-64638673
 - **Best for**: Standard components (buttons, dialogs, forms, tables)
 - **Examples**: Admin dashboard components, form elements, navigation
 
+**🎯 Tweakcn MCP** - *Use for enhanced shadcn/ui components with custom themes*
+- **When**: Need advanced styling, custom themes, enhanced component variants
+- **Best for**: Themed components, custom styling, design system extensions
+- **Examples**: Government branding, custom color schemes, enhanced form components
+
 **🕷️ Firecrawl MCP** - *Use for advanced web content extraction*
 - **When**: Need structured data from websites, research, documentation scraping
 - **Best for**: Government standards research, compliance documentation
@@ -227,6 +233,9 @@ mcp__magic__21st_magic_component_builder("Government announcement block with Ara
 
 // 4. Use Shadcn/ui for consistent styling
 mcp__shadcn-ui__get_component("card")
+
+// 5. Use Tweakcn for enhanced themed components
+mcp__tweakcn__get_themed_component("government-announcement-card")
 ```
 
 **Debugging Internationalization Issues:**
@@ -251,6 +260,9 @@ mcp__magic__21st_magic_component_builder("Government complaint form with Arabic 
 
 // 3. Use Shadcn/ui for form elements
 mcp__shadcn-ui__get_component("form")
+
+// 4. Use Tweakcn for government-themed form styling
+mcp__tweakcn__get_themed_component("government-form")
 ```
 
 ### Key Serena Commands

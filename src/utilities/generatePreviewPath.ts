@@ -1,5 +1,6 @@
 import { PayloadRequest, CollectionSlug } from 'payload'
 import { defaultLocale } from './locale'
+import { logger } from './logger'
 
 const collectionPrefixMap: Partial<Record<CollectionSlug, string>> = {
   posts: '/posts',
@@ -51,10 +52,14 @@ export const generatePreviewPath = ({ collection, slug, locale }: Props) => {
     
     return url
   } catch (error) {
-    // Log errors in development to help developers debug
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[generatePreviewPath] Unexpected error:', error instanceof Error ? error.message : String(error))
-    }
+    // Log errors using structured logging
+    logger.error('generatePreviewPath unexpected error', error, {
+      component: 'GeneratePreviewPath',
+      action: 'path_generation_error',
+      metadata: { 
+        errorMessage: error instanceof Error ? error.message : String(error)
+      }
+    })
     return `/next/preview?error=unexpected-error`
   }
 }

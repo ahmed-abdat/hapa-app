@@ -24,6 +24,18 @@ export const Categories: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
+    defaultColumns: ['title', 'slug', 'updatedAt'],
+    listSearchableFields: ['title'],
+    preview: (data, { req, locale }) => {
+      const slug = typeof data.slug === 'string' ? data.slug : ''
+      if (!slug) return ''
+      
+      const currentLocale = (locale && typeof locale === 'object' && 'code' in locale) 
+        ? String((locale as { code: string }).code) 
+        : String(locale || 'fr')
+      
+      return `/${currentLocale}/publications/${slug}`
+    },
   },
   fields: [
     {

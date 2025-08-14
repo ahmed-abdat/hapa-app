@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { logger } from '@/utilities/logger';
 
 interface BulkActionsProps {
   selectedIds: string[];
@@ -109,7 +110,11 @@ export function BulkActions({
         onDeselectAll();
       }
     } catch (error) {
-      console.error('Bulk action error:', error);
+      logger.error('Bulk action error', error, {
+        component: 'BulkActions',
+        action: 'bulk_operation_failed',
+        metadata: { action, selectedCount: selectedIds.length }
+      });
       toast.error("Erreur lors de l'action groupée");
     } finally {
       setIsLoading(false);
