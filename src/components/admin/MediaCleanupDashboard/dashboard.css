@@ -1,0 +1,560 @@
+/* HAPA Media Cleanup Dashboard - Professional UI matching MediaSubmissionsDashboard style */
+/* Consistent with existing HAPA dashboard design patterns */
+
+.cleanup-dashboard-container {
+  position: relative;
+  z-index: 5;
+  isolation: isolate;
+  padding: 1.5rem;
+  background: hsl(var(--background));
+}
+
+/* Professional Header matching MediaSubmissionsDashboard */
+.cleanup-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  height: auto;
+  min-height: 4rem;
+  align-items: center;
+  gap: 1.5rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 
+    0 1px 3px hsl(var(--foreground) / 0.1),
+    0 1px 2px hsl(var(--foreground) / 0.06);
+  margin-bottom: 2rem;
+  transition: all 0.2s ease;
+  isolation: isolate;
+}
+
+/* Stats Cards matching existing style */
+.cleanup-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.cleanup-stat-card {
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px 0 hsl(var(--foreground) / 0.05);
+  border: 1px solid hsl(var(--border));
+  overflow: hidden;
+  transition: all 0.2s ease;
+  padding: 1.5rem;
+}
+
+.cleanup-stat-card:hover {
+  box-shadow: 
+    0 4px 6px -1px hsl(var(--foreground) / 0.1),
+    0 2px 4px -2px hsl(var(--foreground) / 0.1);
+  transform: translateY(-2px);
+}
+
+/* Color variants for stat cards */
+.cleanup-stat-card.green {
+  border-left: 4px solid hsl(var(--primary));
+}
+
+.cleanup-stat-card.green .stat-value {
+  color: hsl(var(--primary));
+}
+
+.cleanup-stat-card.blue {
+  border-left: 4px solid hsl(217 91% 60%);
+}
+
+.cleanup-stat-card.blue .stat-value {
+  color: hsl(217 91% 60%);
+}
+
+.cleanup-stat-card.orange {
+  border-left: 4px solid hsl(27 87% 67%);
+}
+
+.cleanup-stat-card.orange .stat-value {
+  color: hsl(27 87% 67%);
+}
+
+.cleanup-stat-card.red {
+  border-left: 4px solid hsl(var(--destructive));
+}
+
+.cleanup-stat-card.red .stat-value {
+  color: hsl(var(--destructive));
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  transition: all 0.3s ease;
+}
+
+.stat-description {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  margin-top: 0.5rem;
+}
+
+/* Main content area */
+.cleanup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Settings Panel (replaced modal) */
+.cleanup-settings-panel {
+  background: hsl(var(--card));
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--border));
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.setting-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.setting-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--foreground));
+}
+
+.setting-description {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  margin-top: 0.25rem;
+}
+
+/* Scan Results Section */
+.scan-results-section {
+  background: hsl(var(--card));
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--border));
+  overflow: hidden;
+}
+
+.scan-results-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 0.3);
+}
+
+.scan-results-content {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* Enhanced Table Styling */
+.cleanup-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cleanup-table thead {
+  background: hsl(var(--muted) / 0.3);
+  border-bottom: 2px solid hsl(var(--border));
+}
+
+.cleanup-table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: hsl(var(--foreground) / 0.8);
+}
+
+.cleanup-table tbody tr {
+  border-bottom: 1px solid hsl(var(--border) / 0.3);
+  transition: background 0.2s ease;
+}
+
+.cleanup-table tbody tr:hover {
+  background: hsl(var(--muted) / 0.3);
+}
+
+.cleanup-table tbody tr:nth-child(even) {
+  background: hsl(var(--muted) / 0.1);
+}
+
+.cleanup-table td {
+  padding: 1rem;
+  font-size: 0.875rem;
+}
+
+/* Job History Section */
+.job-history-section {
+  background: hsl(var(--card));
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--border));
+  overflow: hidden;
+}
+
+.job-card {
+  padding: 1.5rem;
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
+  transition: background 0.2s ease;
+}
+
+.job-card:hover {
+  background: hsl(var(--muted) / 0.2);
+}
+
+.job-card:last-child {
+  border-bottom: none;
+}
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.job-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.job-metrics {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.job-metric {
+  display: flex;
+  flex-direction: column;
+}
+
+.job-metric-label {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.job-metric-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+/* Job Details Panel (replaced modal) */
+.job-details-panel {
+  background: hsl(var(--card));
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--border));
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.job-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.job-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.job-detail-label {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.job-detail-value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--foreground));
+}
+
+/* Log Display */
+.log-display {
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-family: monospace;
+  font-size: 0.75rem;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 1rem;
+}
+
+.error-log {
+  background: hsl(var(--destructive) / 0.1);
+  color: hsl(var(--destructive));
+  border: 1px solid hsl(var(--destructive) / 0.3);
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.cleanup-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.cleanup-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 10px 25px hsl(var(--foreground) / 0.1),
+    0 4px 10px hsl(var(--foreground) / 0.05);
+}
+
+.cleanup-button:active {
+  transform: translateY(0);
+}
+
+.cleanup-button.primary {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.cleanup-button.primary:hover {
+  background: hsl(var(--primary) / 0.9);
+}
+
+.cleanup-button.outline {
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+.cleanup-button.outline:hover {
+  background: hsl(var(--muted));
+}
+
+.cleanup-button.destructive {
+  background: hsl(var(--destructive));
+  color: hsl(var(--destructive-foreground));
+}
+
+.cleanup-button.destructive:hover {
+  background: hsl(var(--destructive) / 0.9);
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.025em;
+  transition: all 0.2s ease;
+}
+
+.status-badge.pending {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+.status-badge.running {
+  background-color: hsl(217 91% 60% / 0.1);
+  color: hsl(217 91% 60%);
+  border: 1px solid hsl(217 91% 60% / 0.3);
+}
+
+.status-badge.completed {
+  background-color: hsl(var(--primary) / 0.1);
+  color: hsl(var(--primary));
+  border: 1px solid hsl(var(--primary) / 0.3);
+}
+
+.status-badge.failed {
+  background-color: hsl(var(--destructive) / 0.1);
+  color: hsl(var(--destructive));
+  border: 1px solid hsl(var(--destructive) / 0.3);
+}
+
+.status-badge.partial {
+  background-color: hsl(27 87% 67% / 0.1);
+  color: hsl(27 87% 67%);
+  border: 1px solid hsl(27 87% 67% / 0.3);
+}
+
+/* Job Type Badges */
+.job-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.job-type-badge.verification {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+}
+
+.job-type-badge.cleanup {
+  background-color: hsl(var(--primary) / 0.1);
+  color: hsl(var(--primary));
+}
+
+.job-type-badge.audit {
+  background-color: hsl(258 90% 66% / 0.1);
+  color: hsl(258 90% 66%);
+}
+
+/* Loading States */
+.loading-skeleton {
+  background: linear-gradient(90deg, 
+    hsl(var(--muted)) 25%, 
+    hsl(var(--muted) / 0.5) 50%, 
+    hsl(var(--muted)) 75%
+  );
+  background-size: 200px 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+  border-radius: 0.375rem;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .cleanup-dashboard-container {
+    padding: 1rem;
+  }
+  
+  .cleanup-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .cleanup-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .job-metrics {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .cleanup-button {
+    width: 100%;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1023px) {
+  .cleanup-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Animation for cards */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cleanup-stat-card,
+.job-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.cleanup-stat-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.cleanup-stat-card:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.cleanup-stat-card:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+/* Ensure Payload dropdowns appear above */
+.payload-locale-picker,
+.payload__popup,
+.payload__dropdown-menu {
+  z-index: 100 !important;
+}

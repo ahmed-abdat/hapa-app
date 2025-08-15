@@ -22,7 +22,7 @@ export const MediaCleanupJobs: CollectionConfig = {
     components: {
       views: {
         list: {
-          Component: '@/components/admin/MediaCleanupDashboard',
+          Component: '@/components/admin/MediaCleanupDashboard/index.tsx',
         },
       },
     },
