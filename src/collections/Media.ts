@@ -14,7 +14,7 @@ import { authenticated } from '../access/authenticated'
  * 
  * This collection is reserved for admin-uploaded media files that should
  * be available for selection in posts, pages, and other content.
- * Form submission files are stored in the separate 'form-media' collection.
+ * Form submission files are now stored in the unified 'media' collection.
  */
 export const Media: CollectionConfig = {
   slug: 'media',

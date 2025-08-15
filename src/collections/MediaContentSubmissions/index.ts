@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { logger } from '@/utilities/logger'
-import { cleanupFormMediaHook } from './hooks/cleanupFormMedia'
+// Cleanup hook removed - using unified media collection
 
 export const MediaContentSubmissions: CollectionConfig = {
   slug: 'media-content-submissions',
@@ -810,6 +810,6 @@ export const MediaContentSubmissions: CollectionConfig = {
         return data
       },
     ],
-    beforeDelete: [cleanupFormMediaHook],
+    // beforeDelete: [cleanupFormMediaHook], // Disabled - FormMedia collection removed
   },
 }

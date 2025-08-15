@@ -73,7 +73,6 @@ export interface Config {
     'dashboard-submissions': DashboardSubmission;
     'media-content-submissions': MediaContentSubmission;
     'media-cleanup-jobs': MediaCleanupJob;
-    'form-media': FormMedia;
     users: User;
     redirects: Redirect;
     search: Search;
@@ -90,7 +89,6 @@ export interface Config {
     'dashboard-submissions': DashboardSubmissionsSelect<false> | DashboardSubmissionsSelect<true>;
     'media-content-submissions': MediaContentSubmissionsSelect<false> | MediaContentSubmissionsSelect<true>;
     'media-cleanup-jobs': MediaCleanupJobsSelect<false> | MediaCleanupJobsSelect<true>;
-    'form-media': FormMediaSelect<false> | FormMediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
@@ -495,62 +493,6 @@ export interface MediaCleanupJob {
   createdAt: string;
 }
 /**
- * Fichiers téléchargés via les formulaires de soumission. Ces fichiers ne sont pas disponibles pour la sélection dans les autres contenus.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "form-media".
- */
-export interface FormMedia {
-  id: number;
-  /**
-   * Description du fichier pour l'accessibilité
-   */
-  alt?: string | null;
-  caption?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * Type de formulaire d'origine
-   */
-  formType?: ('report' | 'complaint') | null;
-  /**
-   * Catégorie du fichier uploadé
-   */
-  fileType?: ('screenshot' | 'attachment') | null;
-  /**
-   * Identifiant de la soumission de formulaire associée
-   */
-  submissionId?: string | null;
-  /**
-   * Date et heure de téléchargement du fichier
-   */
-  submissionDate?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-  sizes?: {};
-}
-/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
@@ -724,10 +666,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media-cleanup-jobs';
         value: number | MediaCleanupJob;
-      } | null)
-    | ({
-        relationTo: 'form-media';
-        value: number | FormMedia;
       } | null)
     | ({
         relationTo: 'users';
@@ -997,30 +935,6 @@ export interface MediaCleanupJobsSelect<T extends boolean = true> {
   executedBy?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "form-media_select".
- */
-export interface FormMediaSelect<T extends boolean = true> {
-  alt?: T;
-  caption?: T;
-  formType?: T;
-  fileType?: T;
-  submissionId?: T;
-  submissionDate?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-  sizes?: T | {};
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
