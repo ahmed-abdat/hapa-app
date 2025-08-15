@@ -20,8 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read
-      issues: read
+      pull-requests: write  # Required for Claude to comment on PRs
+      issues: write         # Required for Claude to comment on issues
       id-token: write
       actions: read # Required for Claude to read CI results on PRs
     steps:
@@ -30,9 +30,42 @@ jobs:
         with:
           fetch-depth: 1
 
+      # Setup Node.js with caching for faster builds
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      # Cache dependencies and Next.js build cache
+      - name: Cache dependencies and Next.js
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+      # Setup GitHub CLI for advanced PR analysis
+      - name: Setup GitHub CLI
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+          gh auth status
+          gh repo set-default ${{ github.repository }}
+
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@beta
+        env:
+          # IMPORTANT: Pass GitHub token for gh CLI access
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 
@@ -49,14 +82,43 @@ jobs:
           # Optional: Trigger when specific user is assigned to an issue
           # assignee_trigger: "claude-bot"
           
-          # Optional: Allow Claude to run specific commands
-          # allowed_tools: "Bash(npm install),Bash(npm run build),Bash(npm run test:*),Bash(npm run lint:*)"
+          # HAPA-specific tools for comprehensive review
+          allowed_tools: |
+            Bash(gh --version),
+            Bash(gh auth status),
+            Bash(gh pr view *),
+            Bash(gh pr diff *),
+            Bash(gh pr checks *),
+            Bash(gh pr reviews *),
+            Bash(gh api repos/${{ github.repository }}/pulls/*),
+            Bash(pnpm lint),
+            Bash(pnpm lint:fix),
+            Bash(pnpm typecheck),
+            Bash(pnpm generate:types),
+            Bash(pnpm payload generate:importmap),
+            Bash(git diff *),
+            Bash(git log *),
+            Bash(git show *)
           
-          # Optional: Add custom instructions for Claude to customize its behavior for your project
-          # custom_instructions: |
-          #   Follow our coding standards
-          #   Ensure all new code has tests
-          #   Use TypeScript for new files
+          # HAPA Government Website - Custom Instructions
+          custom_instructions: |
+            You are reviewing code for the HAPA Government Website (Haute Autorité de la Presse et de l'Audiovisuel - Mauritania).
+            
+            **Critical Requirements:**
+            1. **Bilingual Support**: Verify French (fr) and Arabic (ar) translations are complete
+            2. **RTL Layout**: Ensure Arabic content supports right-to-left layout properly
+            3. **Government Compliance**: Check for security, accessibility (WCAG 2.1 AA), and performance standards
+            4. **Payload CMS**: Verify type generation and admin component registration after schema changes
+            
+            **Review Focus:**
+            - French/Arabic translation completeness in messages/ directory
+            - RTL layout support and proper text direction
+            - Security vulnerabilities and government data protection
+            - Accessibility compliance for government websites
+            - Payload CMS best practices (collections, blocks, localization)
+            - Next.js 15 optimization and performance
+            
+            Always use gh CLI to analyze PR details and run project linting/type checking.
           
           # Optional: Custom environment variables for Claude
           # claude_env: |

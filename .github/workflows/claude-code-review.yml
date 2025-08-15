@@ -21,35 +21,132 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read
-      issues: read
+      pull-requests: write  # Required for Claude to comment on PRs
+      issues: write         # Required for Claude to comment on issues
       id-token: write
+      actions: read         # Required for Claude to read CI results
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0  # Full history for better diff analysis
+
+      # Setup Node.js with caching for faster builds
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      # Cache dependencies and Next.js build cache
+      - name: Cache dependencies and Next.js
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@beta
+        env:
+          # Environment variables for GitHub CLI access
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 
-          # Optional: Specify model (defaults to Claude Sonnet 4, uncomment for Claude Opus 4)
-          # model: "claude-opus-4-20250514"
+          # Use Claude Opus for thorough government website reviews
+          model: "claude-opus-4-20250514"
           
-          # Direct prompt for automated review (no @claude mention needed)
+          # Enhanced tools for HAPA website analysis
+          allowed_tools: |
+            Bash(gh pr view ${{ github.event.pull_request.number }} --json *),
+            Bash(gh pr diff ${{ github.event.pull_request.number }}),
+            Bash(gh pr checks ${{ github.event.pull_request.number }}),
+            Bash(gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files),
+            Bash(pnpm lint),
+            Bash(pnpm typecheck),
+            Bash(pnpm generate:types),
+            Bash(git diff main...HEAD),
+            Bash(git log --oneline main...HEAD)
+          
+          # HAPA Government Website Comprehensive Review
           direct_prompt: |
-            Please review this pull request and provide feedback on:
-            - Code quality and best practices
-            - Potential bugs or issues
-            - Performance considerations
-            - Security concerns
-            - Test coverage
+            🏛️ **HAPA Government Website PR Review** 
             
-            Be constructive and helpful in your feedback.
+            You are reviewing PR #${{ github.event.pull_request.number }} for the official Mauritania government media regulatory authority website.
+            
+            **Essential Analysis Steps:**
+            1. Get PR overview: `gh pr view ${{ github.event.pull_request.number }} --json title,body,files,additions,deletions`
+            2. Analyze changes: `gh pr diff ${{ github.event.pull_request.number }}`
+            3. Check CI status: `gh pr checks ${{ github.event.pull_request.number }}`
+            4. Run quality checks: `pnpm lint && pnpm typecheck`
+            
+            **Government Website Requirements:**
+            
+            🌐 **Internationalization (Critical)**
+            - Verify French (fr) and Arabic (ar) translations in `messages/` directory
+            - Check RTL layout support for Arabic content
+            - Ensure proper locale routing and direction handling
+            - Validate `Link` imports from `@/i18n/navigation` (NOT `next/link`)
+            
+            🏗️ **Payload CMS Compliance**
+            - Check if schema changes require `pnpm generate:types`
+            - Verify admin components need `pnpm payload generate:importmap`
+            - Validate collection localization configuration
+            - Ensure blocks are registered in `RenderBlocks.tsx`
+            
+            🔒 **Government Security & Compliance**
+            - Scan for security vulnerabilities and data exposure
+            - Verify WCAG 2.1 AA accessibility compliance
+            - Check for proper error handling and validation
+            - Ensure no sensitive government data in logs/comments
+            
+            ⚡ **Performance & Optimization**
+            - Validate Next.js 15 App Router best practices
+            - Check Core Web Vitals impact
+            - Verify proper caching and optimization
+            - Review bundle size implications
+            
+            🧪 **Code Quality**
+            - TypeScript type safety and proper interfaces
+            - Component patterns and architecture
+            - Error boundaries and fallback handling
+            - Consistent coding standards
+            
+            **Review Format:**
+            ## 🔍 PR Analysis Summary
+            - **Changes**: Brief overview of modifications
+            - **Impact**: Government website impact assessment
+            
+            ## ✅ Compliance Status
+            - **Internationalization**: ✅/⚠️/❌ Status with details
+            - **Security**: ✅/⚠️/❌ Government compliance check
+            - **Accessibility**: ✅/⚠️/❌ WCAG 2.1 AA compliance
+            - **Performance**: ✅/⚠️/❌ Core Web Vitals impact
+            
+            ## 💡 Recommendations
+            - Specific actionable improvements
+            - Government website specific suggestions
+            
+            ## 🚨 Critical Issues (if any)
+            - Security vulnerabilities
+            - Accessibility violations
+            - Internationalization problems
+            
+            Be thorough but constructive. Focus on government website standards and user experience for French/Arabic speakers.
 
           # Optional: Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
           # use_sticky_comment: true
