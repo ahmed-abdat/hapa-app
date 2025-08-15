@@ -76,7 +76,7 @@ export function CleanupDashboard() {
   const [showSettings, setShowSettings] = useState(false)
   const [expandedJobId, setExpandedJobId] = useState<string | null>(null)
   const [scanSettings, setScanSettings] = useState<ScanSettings>({
-    directories: ['forms/'],
+    directories: ['images/', 'docs/', 'videos/', 'audio/', 'media/', 'forms/'],
     maxFiles: 1000,
     retentionDays: 30,
     dryRun: false,
