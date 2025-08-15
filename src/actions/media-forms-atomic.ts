@@ -9,11 +9,17 @@ import {
   createMediaContentComplaintSchema 
 } from '@/lib/validations/media-forms'
 import type { FormSubmissionResponse } from '@/types/media-forms'
-import { sanitizeFilename } from '@/lib/file-upload'
+import { sanitizeFilename, sleep, calculateRetryDelay, categorizeError } from '@/lib/file-upload'
 import { 
   validateMultipleFilesProduction, 
   createProductionValidationSummary,
 } from '@/lib/production-file-validation'
+import { uploadMetrics } from '@/lib/upload-metrics'
+import { UPLOAD_RETRY_CONFIG } from '@/lib/constants'
+import { rateLimiters, getClientIdentifier } from '@/lib/rate-limiter'
+import { BatchUploadProcessor, DEFAULT_BATCH_CONFIG, type ProgressCallback } from '@/lib/batch-upload'
+
+const BATCH_SIZE = 2 // Upload 2 files at a time
 
 // Node.js compatible File type checking
 const isFileObject = (value: any): value is File => {
@@ -30,6 +36,18 @@ const isFileObject = (value: any): value is File => {
 const MAX_FILES_PER_TYPE = 8
 const UPLOAD_TIMEOUT = 60000 // 60 seconds for larger files
 const ORPHAN_EXPIRY_HOURS = 24 // Files expire after 24 hours if not confirmed
+
+// Progress tracking interface
+interface BatchUploadProgress {
+  totalFiles: number
+  uploadedFiles: number
+  currentBatch: number
+  totalBatches: number
+  progress: number // percentage
+  errors: string[]
+}
+
+type ProgressCallback = (progress: BatchUploadProgress) => void
 
 interface FormValidationResult {
   isValid: boolean
@@ -48,6 +66,17 @@ interface UploadResult {
   errors: string[]
   uploadedCount: number
   totalCount: number
+  retryableErrors: string[]
+  finalErrors: string[]
+}
+
+interface RetryableUploadResult {
+  success: boolean
+  url?: string
+  fileId?: string
+  error?: string
+  isRetryable: boolean
+  attempts: number
 }
 
 /**
@@ -58,14 +87,39 @@ export async function submitMediaFormActionAtomic(formData: FormData): Promise<F
   const startTime = Date.now()
   const sessionId = `SA_ATOMIC_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   
+  // Rate limiting check - use form submission rate limiter
+  const clientIP = formData.get('clientIP')?.toString() || 'unknown'
+  const rateLimitResult = rateLimiters.formSubmission.check(clientIP)
+  
+  if (!rateLimitResult.allowed) {
+    logger.warn('🚫 Rate limit exceeded', { 
+      sessionId, 
+      clientIP, 
+      retryAfter: rateLimitResult.retryAfter,
+      limit: rateLimitResult.limit,
+      remaining: rateLimitResult.remaining
+    })
+    return {
+      success: false,
+      message: `Too many submissions. Please try again in ${rateLimitResult.retryAfter} seconds.`,
+      errorCode: 'RATE_LIMIT_EXCEEDED',
+      retryAfter: rateLimitResult.retryAfter
+    }
+  }
+  
   logger.info('🔄 Starting atomic form submission', { sessionId })
 
   // Initialize Payload
   const payload = await getPayload({ config })
   
   // Initialize transaction variables
-  let transactionID: string | undefined
+  let transactionID: string | number | null = null
   const uploadedFileIds: string[] = []
+  
+  // Transaction timeout configuration
+  const TRANSACTION_TIMEOUT = 30000 // 30 seconds
+  const MAX_RETRIES = 3
+  const RETRY_DELAY = 1000 // 1 second
   
   try {
     // Phase 1: Input Validation & Data Extraction
@@ -106,9 +160,20 @@ export async function submitMediaFormActionAtomic(formData: FormData): Promise<F
       }
     }
 
-    // Phase 4: BEGIN ATOMIC TRANSACTION
+    // Phase 4: BEGIN ATOMIC TRANSACTION WITH TIMEOUT
     // Based on research: Use payload.db transaction API with proper parameter passing
-    transactionID = await payload.db.beginTransaction()
+    const txResult = await Promise.race([
+      payload.db.beginTransaction(),
+      new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error('Transaction timeout')), TRANSACTION_TIMEOUT)
+      )
+    ])
+    
+    if (txResult === null) {
+      throw new Error('Failed to start transaction')
+    }
+    
+    transactionID = txResult
     logger.info('🔒 Transaction started', { sessionId, transactionID })
 
     try {
@@ -155,8 +220,8 @@ export async function submitMediaFormActionAtomic(formData: FormData): Promise<F
         transactionID 
       })
 
-      // Step 2: Upload files with submission reference
-      const screenshotUpload = await uploadFilesWithSubmissionReference(
+      // Step 2: Upload files with batching and retry logic
+      const screenshotUpload = await uploadFilesWithBatchingAndRetry(
         screenshots, 
         'screenshot', 
         submission.id.toString(),
@@ -165,7 +230,7 @@ export async function submitMediaFormActionAtomic(formData: FormData): Promise<F
         transactionID
       )
       
-      const attachmentUpload = await uploadFilesWithSubmissionReference(
+      const attachmentUpload = await uploadFilesWithBatchingAndRetry(
         attachments, 
         'attachment', 
         submission.id.toString(),
@@ -206,7 +271,7 @@ export async function submitMediaFormActionAtomic(formData: FormData): Promise<F
         } as any,
         locale: 'fr',
         overrideAccess: true,
-        transaction: transactionID // Use correct parameter per research
+        req: { transactionID: transactionID as string } // Pass transaction via req per Payload v3 API
       })
 
       // Step 4: Update submission status to complete within transaction
@@ -218,7 +283,7 @@ export async function submitMediaFormActionAtomic(formData: FormData): Promise<F
         } as any,
         locale: 'fr',
         overrideAccess: true,
-        transaction: transactionID
+        req: { transactionID: transactionID as string } // Pass transaction via req per Payload v3 API
       })
 
       // Step 5: COMMIT TRANSACTION
@@ -229,6 +294,9 @@ export async function submitMediaFormActionAtomic(formData: FormData): Promise<F
       if (uploadedFileIds.length > 0) {
         await confirmUploadedFiles(uploadedFileIds, payload, sessionId)
       }
+
+      // Record successful submission for rate limiting
+      rateLimiters.formSubmission.recordResult(clientIP, true)
 
       // Phase 5: Success Response
       const totalTime = Date.now() - startTime
@@ -269,6 +337,9 @@ export async function submitMediaFormActionAtomic(formData: FormData): Promise<F
   } catch (error) {
     const totalTime = Date.now() - startTime
     
+    // Record failed submission for rate limiting
+    rateLimiters.formSubmission.recordResult(clientIP, false)
+    
     logger.error('❌ Atomic form submission failed:', { 
       sessionId, 
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -287,112 +358,145 @@ export async function submitMediaFormActionAtomic(formData: FormData): Promise<F
 }
 
 /**
- * Upload files with submission reference and transaction support
+ * Upload files with batching, retry logic, and progress tracking
  */
-async function uploadFilesWithSubmissionReference(
+async function uploadFilesWithBatchingAndRetry(
   files: File[], 
   fileType: 'screenshot' | 'attachment',
   submissionId: string,
   payload: any, 
   sessionId: string,
-  transactionID?: string
+  transactionID?: string,
+  progressCallback?: ProgressCallback
 ): Promise<UploadResult> {
   const urls: string[] = []
   const fileIds: string[] = []
   const errors: string[] = []
+  const retryableErrors: string[] = []
+  const finalErrors: string[] = []
   let uploadedCount = 0
+  const totalBatches = Math.ceil(files.length / BATCH_SIZE)
 
-  logger.info(`📤 Uploading ${files.length} ${fileType} files`, { 
+  logger.info(`📤 Uploading ${files.length} ${fileType} files in ${totalBatches} batches`, { 
     sessionId, 
     submissionId,
-    transactionID 
+    transactionID,
+    batchSize: BATCH_SIZE
   })
 
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i]
-    const fileId = `${fileType}_${i}_${file.name}`
+  // Upload files in batches
+  for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
+    const batchStart = batchIndex * BATCH_SIZE
+    const batchEnd = Math.min(batchStart + BATCH_SIZE, files.length)
+    const batchFiles = files.slice(batchStart, batchEnd)
     
-    try {
-      // Calculate expiry date for orphan cleanup
-      const expiresAt = new Date()
-      expiresAt.setHours(expiresAt.getHours() + ORPHAN_EXPIRY_HOURS)
+    logger.info(`📦 Processing batch ${batchIndex + 1}/${totalBatches}`, {
+      sessionId,
+      batchSize: batchFiles.length,
+      batchStart,
+      batchEnd
+    })
 
-      // Upload with timeout and transaction support
-      const uploadPromise = payload.create({
-        collection: 'form-media',
-        data: { 
-          alt: sanitizeFilename(file.name),
-          caption: {
-            root: {
-              type: 'root',
-              children: [{
-                type: 'paragraph',
-                children: [{
-                  text: `${fileType} uploaded via media form submission ${submissionId}`,
-                  type: 'text',
-                  version: 1,
-                }],
-                direction: 'ltr',
-                format: '',
-                indent: 0,
-                version: 1,
-              }],
-              direction: 'ltr',
-              format: '',
-              indent: 0,
-              version: 1,
-            },
-          },
-          // Atomic fields
-          submissionId: submissionId,
-          uploadStatus: 'staging', // Start as staging
-          expiresAt: expiresAt.toISOString(),
-          // Form metadata
-          formType: 'report', // Will be updated based on actual form type
-          fileType: fileType,
-          submissionDate: new Date().toISOString(),
-          fileSize: file.size,
-          mimeType: file.type,
-        },
-        file: {
-          data: Buffer.from(await file.arrayBuffer()),
-          mimetype: file.type,
-          name: `hapa_form_${fileType}_${submissionId}_${i}_${sanitizeFilename(file.name)}`,
-          size: file.size,
-        },
-        overrideAccess: true,
-        transaction: transactionID // Use correct parameter format per research
-      })
-
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Upload timeout')), UPLOAD_TIMEOUT)
-      )
-
-      const result = await Promise.race([uploadPromise, timeoutPromise]) as any
-      
-      if (result && result.url) {
-        urls.push(result.url)
-        fileIds.push(result.id)
-        uploadedCount++
-        logger.info(`✅ File uploaded`, { 
-          sessionId, 
-          fileId: result.id,
-          fileName: file.name 
-        })
-      } else {
-        errors.push(`Upload failed: ${fileId} - No URL returned`)
-        logger.error(`Upload failed: ${file.name} - No URL returned`, { sessionId })
+    // Progress update
+    if (progressCallback) {
+      const progress: BatchUploadProgress = {
+        totalFiles: files.length,
+        uploadedFiles: uploadedCount,
+        currentBatch: batchIndex + 1,
+        totalBatches,
+        progress: Math.round((uploadedCount / files.length) * 100),
+        errors: [...errors]
       }
+      progressCallback(progress)
+    }
 
-    } catch (error) {
-      const errorMsg = `Upload failed: ${fileId} - ${error instanceof Error ? error.message : 'Unknown error'}`
-      errors.push(errorMsg)
-      logger.error(`Upload error: ${file.name}`, { 
-        sessionId, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
-      })
+    // Upload files in current batch concurrently
+    const batchPromises = batchFiles.map(async (file, batchFileIndex) => {
+      const globalIndex = batchStart + batchFileIndex
+      const fileId = `${fileType}_${globalIndex}_${file.name}`
+      
+      return await uploadSingleFileWithRetry(
+        file,
+        fileId,
+        fileType,
+        submissionId,
+        payload,
+        sessionId,
+        transactionID
+      )
+    })
+
+    // Wait for current batch to complete
+    const batchResults = await Promise.allSettled(batchPromises)
+    
+    // Process batch results
+    for (const result of batchResults) {
+      if (result.status === 'fulfilled') {
+        const uploadResult = result.value
+        if (uploadResult.success && uploadResult.url && uploadResult.fileId) {
+          urls.push(uploadResult.url)
+          fileIds.push(uploadResult.fileId)
+          uploadedCount++
+          
+          // Record success metrics
+          uploadMetrics.recordUploadSuccess(
+            uploadResult.fileId,
+            0, // We don't have individual file size here
+            uploadResult.attempts * 1000, // Estimated duration
+            uploadResult.url
+          )
+        } else if (uploadResult.error) {
+          if (uploadResult.isRetryable) {
+            retryableErrors.push(uploadResult.error)
+          } else {
+            finalErrors.push(uploadResult.error)
+          }
+          errors.push(uploadResult.error)
+          
+          // Record error metrics
+          uploadMetrics.recordUploadError(
+            uploadResult.fileId || 'unknown',
+            0,
+            uploadResult.attempts * 1000,
+            uploadResult.error,
+            categorizeError(uploadResult.error)
+          )
+        }
+      } else {
+        const error = `Batch upload failed: ${result.reason}`
+        errors.push(error)
+        finalErrors.push(error)
+        logger.error(`Batch upload failed:`, { sessionId, error: result.reason })
+      }
+    }
+
+    // Small delay between batches to avoid overwhelming the server
+    if (batchIndex < totalBatches - 1) {
+      await sleep(100) // 100ms delay between batches
     }
   }
+
+  // Final progress update
+  if (progressCallback) {
+    const finalProgress: BatchUploadProgress = {
+      totalFiles: files.length,
+      uploadedFiles: uploadedCount,
+      currentBatch: totalBatches,
+      totalBatches,
+      progress: 100,
+      errors: [...errors]
+    }
+    progressCallback(finalProgress)
+  }
+
+  // Record batch metrics
+  uploadMetrics.recordBatchUpload({
+    total: files.length,
+    successful: uploadedCount,
+    failed: errors.length,
+    totalTime: Date.now() - Date.now(), // This will be updated with actual timing
+    errors
+  })
 
   return {
     success: uploadedCount === files.length,
@@ -400,9 +504,155 @@ async function uploadFilesWithSubmissionReference(
     fileIds,
     errors,
     uploadedCount,
-    totalCount: files.length
+    totalCount: files.length,
+    retryableErrors,
+    finalErrors
   }
 }
+
+/**
+ * Upload a single file with exponential backoff retry logic
+ */
+async function uploadSingleFileWithRetry(
+  file: File,
+  fileId: string,
+  fileType: 'screenshot' | 'attachment',
+  submissionId: string,
+  payload: any,
+  sessionId: string,
+  transactionID?: string
+): Promise<RetryableUploadResult> {
+  let lastError: string = ''
+  let attempts = 0
+  const maxRetries = UPLOAD_RETRY_CONFIG.MAX_RETRIES
+
+  for (attempts = 1; attempts <= maxRetries + 1; attempts++) {
+    try {
+        // Record upload start
+        uploadMetrics.recordUploadStart(file.name, file.size)
+        
+        // Calculate expiry date for orphan cleanup
+        const expiresAt = new Date()
+        expiresAt.setHours(expiresAt.getHours() + ORPHAN_EXPIRY_HOURS)
+
+        // Upload with timeout and transaction support
+        const uploadPromise = payload.create({
+          collection: 'form-media',
+          data: { 
+            alt: sanitizeFilename(file.name),
+            caption: {
+              root: {
+                type: 'root',
+                children: [{
+                  type: 'paragraph',
+                  children: [{
+                    text: `${fileType} uploaded via media form submission ${submissionId} (attempt ${attempts})`,
+                    type: 'text',
+                    version: 1,
+                  }],
+                  direction: 'ltr',
+                  format: '',
+                  indent: 0,
+                  version: 1,
+                }],
+                direction: 'ltr',
+                format: '',
+                indent: 0,
+                version: 1,
+              },
+            },
+            // Atomic fields
+            submissionId: submissionId,
+            uploadStatus: 'staging', // Start as staging
+            expiresAt: expiresAt.toISOString(),
+            // Form metadata
+            formType: 'report', // Will be updated based on actual form type
+            fileType: fileType,
+            submissionDate: new Date().toISOString(),
+            fileSize: file.size,
+            mimeType: file.type,
+            retryAttempt: attempts, // Track retry attempts
+          },
+          file: {
+            data: Buffer.from(await file.arrayBuffer()),
+            mimetype: file.type,
+            name: `hapa_form_${fileType}_${submissionId}_${Date.now()}_${sanitizeFilename(file.name)}`,
+            size: file.size,
+          },
+          overrideAccess: true,
+          transaction: transactionID
+        })
+
+        const timeoutPromise = new Promise<never>((_, reject) => 
+          setTimeout(() => reject(new Error('Upload timeout')), UPLOAD_TIMEOUT)
+        )
+
+        const result = await Promise.race([uploadPromise, timeoutPromise]) as any
+        
+        if (result && result.url) {
+          logger.info(`✅ File uploaded successfully`, { 
+            sessionId, 
+            fileId: result.id,
+            fileName: file.name,
+            attempt: attempts
+          })
+          
+          return {
+            success: true,
+            url: result.url,
+            fileId: result.id,
+            isRetryable: false,
+            attempts
+          }
+        } else {
+          throw new Error('No URL returned from upload')
+        }
+        
+      } catch (error) {
+        lastError = error instanceof Error ? error.message : 'Unknown upload error'
+        const errorCategory = categorizeError(error)
+        const isRetryable = ['network', 'server', 'unknown'].includes(errorCategory) && attempts <= maxRetries
+        
+        logger.warn(`⚠️ Upload attempt ${attempts} failed for ${file.name}`, {
+          sessionId,
+          error: lastError,
+          errorCategory,
+          isRetryable,
+          attemptsRemaining: maxRetries - attempts + 1
+        })
+        
+        // If this is the last attempt or error is not retryable, return failure
+        if (!isRetryable || attempts > maxRetries) {
+          return {
+            success: false,
+            error: lastError,
+            isRetryable: isRetryable && attempts <= maxRetries,
+            attempts
+          }
+        }
+        
+        // Calculate exponential backoff delay
+        const delay = calculateRetryDelay(attempts - 1, UPLOAD_RETRY_CONFIG.INITIAL_DELAY)
+        logger.info(`⏳ Retrying upload in ${delay}ms`, {
+          sessionId,
+          fileName: file.name,
+          attempt: attempts,
+          delay
+        })
+        
+        await sleep(delay)
+      }
+    }
+    
+    // This shouldn't be reached, but just in case
+    return {
+      success: false,
+      error: lastError || 'Maximum retries exceeded',
+      isRetryable: false,
+      attempts
+    }
+}
+
 
 /**
  * Mark uploaded files as confirmed after successful transaction

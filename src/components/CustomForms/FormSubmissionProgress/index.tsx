@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress'
 import { Upload, CheckCircle, AlertCircle, Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useFramerMotionSafe, getMotionClasses } from '@/hooks/useReducedMotion'
 
 interface FormSubmissionProgressProps {
   isVisible: boolean
@@ -50,6 +51,8 @@ export function FormSubmissionProgress({
   const t = useTranslations()
   const isRTL = locale === 'ar'
   const messages = stageMessages[locale]
+  const { shouldReduceMotion, variants } = useFramerMotionSafe()
+  const motionClasses = getMotionClasses()
 
   // Remove early return to allow AnimatePresence to work
   // if (!isVisible) return null
@@ -57,12 +60,12 @@ export function FormSubmissionProgress({
   const getStageIcon = () => {
     switch (stage) {
       case 'preparing':
-        return <Clock className="h-5 w-5 text-blue-500 animate-pulse" />
+        return <Clock className={cn("h-5 w-5 text-blue-500", motionClasses.pulse)} />
       case 'uploading':
-        return <Upload className="h-5 w-5 text-blue-500 animate-bounce" />
+        return <Upload className={cn("h-5 w-5 text-blue-500", motionClasses.bounce)} />
       case 'validating':
       case 'saving':
-        return <Clock className="h-5 w-5 text-blue-500 animate-spin" />
+        return <Clock className={cn("h-5 w-5 text-blue-500", motionClasses.spin)} />
       case 'complete':
         return <CheckCircle className="h-5 w-5 text-green-500" />
       case 'error':
@@ -89,10 +92,10 @@ export function FormSubmissionProgress({
     <AnimatePresence mode="wait">
       {isVisible && (
         <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
+          variants={variants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm"
           dir={isRTL ? 'rtl' : 'ltr'}
         >
