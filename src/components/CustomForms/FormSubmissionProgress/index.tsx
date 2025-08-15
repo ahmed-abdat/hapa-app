@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { Progress } from '@/components/ui/progress'
 import { Upload, CheckCircle, AlertCircle, Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { AnimatePresence, motion } from 'framer-motion'
 
 interface FormSubmissionProgressProps {
   isVisible: boolean
@@ -50,7 +51,8 @@ export function FormSubmissionProgress({
   const isRTL = locale === 'ar'
   const messages = stageMessages[locale]
 
-  if (!isVisible) return null
+  // Remove early return to allow AnimatePresence to work
+  // if (!isVisible) return null
 
   const getStageIcon = () => {
     switch (stage) {
@@ -84,102 +86,176 @@ export function FormSubmissionProgress({
   }
 
   return (
-    <div 
-      className={cn(
-        "fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm",
-        "transition-all duration-300"
+    <AnimatePresence mode="wait">
+      {isVisible && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm"
+          dir={isRTL ? 'rtl' : 'ltr'}
+        >
+          <motion.div 
+            initial={{ scale: 0.9, y: 20, opacity: 0 }}
+            animate={{ scale: 1, y: 0, opacity: 1 }}
+            exit={{ scale: 0.9, y: 20, opacity: 0 }}
+            transition={{ 
+              duration: 0.3, 
+              ease: [0.04, 0.62, 0.23, 0.98],
+              delay: 0.1 
+            }}
+            className="bg-white rounded-lg shadow-2xl p-6 max-w-md w-full mx-4"
+          >
+            {/* Header with stagger animation */}
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className={cn(
+                "flex items-center gap-3 mb-4",
+                isRTL && "flex-row-reverse"
+              )}
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ 
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 15,
+                  delay: 0.3
+                }}
+              >
+                {getStageIcon()}
+              </motion.div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-900">
+                  <bdi>{messages[stage]}</bdi>
+                </h3>
+                {uploadStats && stage === 'uploading' && (
+                  <p className="text-sm text-gray-600 mt-1">
+                    <bdi>
+                      {uploadStats.completed}/{uploadStats.total} {t('filesUploaded')}
+                      {uploadStats.failed > 0 && ` (${uploadStats.failed} ${t('uploadFailures')})`}
+                    </bdi>
+                  </p>
+                )}
+              </div>
+            </motion.div>
+
+            {/* Progress Bar with animation */}
+            <motion.div 
+              initial={{ opacity: 0, scaleX: 0 }}
+              animate={{ opacity: 1, scaleX: 1 }}
+              transition={{ delay: 0.35, duration: 0.3 }}
+              className="mb-4 origin-left"
+            >
+              <Progress 
+                value={progress} 
+                className={cn(
+                  "h-3 transition-all duration-500",
+                  stage === 'error' && "opacity-50"
+                )}
+              />
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className={cn(
+                  "flex justify-between items-center mt-2 text-sm text-gray-600",
+                  isRTL && "flex-row-reverse"
+                )}
+              >
+                <span>{Math.round(progress)}%</span>
+                {stage === 'uploading' && uploadStats && (
+                  <span>
+                    <bdi>
+                      {uploadStats.completed + uploadStats.failed}/{uploadStats.total}
+                    </bdi>
+                  </span>
+                )}
+              </motion.div>
+            </motion.div>
+
+            {/* Error Message with animation */}
+            <AnimatePresence>
+              {stage === 'error' && errorMessage && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4 overflow-hidden"
+                >
+                  <div className={cn(
+                    "flex items-start gap-2",
+                    isRTL && "flex-row-reverse"
+                  )}>
+                    <AlertCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-red-700">
+                      <bdi>{errorMessage}</bdi>
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Success Message with animation */}
+            <AnimatePresence>
+              {stage === 'complete' && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ 
+                    type: "spring",
+                    stiffness: 200,
+                    damping: 20
+                  }}
+                  className="bg-green-50 border border-green-200 rounded-lg p-3"
+                >
+                  <div className={cn(
+                    "flex items-center gap-2",
+                    isRTL && "flex-row-reverse"
+                  )}>
+                    <motion.div
+                      initial={{ rotate: -180, scale: 0 }}
+                      animate={{ rotate: 0, scale: 1 }}
+                      transition={{ 
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 15,
+                        delay: 0.1
+                      }}
+                    >
+                      <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+                    </motion.div>
+                    <p className="text-sm text-green-700">
+                      <bdi>{t('submissionSuccessfullyRecorded')}</bdi>
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Upload Details for Error State */}
+            {stage === 'error' && uploadStats && uploadStats.failed > 0 && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="text-xs text-gray-500 text-center"
+              >
+                <bdi>
+                  {t('filesSuccessful')}: {uploadStats.completed}, 
+                  {t('failures')}: {uploadStats.failed}
+                </bdi>
+              </motion.div>
+            )}
+          </motion.div>
+        </motion.div>
       )}
-      dir={isRTL ? 'rtl' : 'ltr'}
-    >
-      <div className={cn(
-        "bg-white rounded-lg shadow-2xl p-6 max-w-md w-full mx-4",
-        "transform transition-all duration-300 scale-100"
-      )}>
-        {/* Header */}
-        <div className={cn(
-          "flex items-center gap-3 mb-4",
-          isRTL && "flex-row-reverse"
-        )}>
-          {getStageIcon()}
-          <div className="flex-1">
-            <h3 className="font-semibold text-gray-900">
-              <bdi>{messages[stage]}</bdi>
-            </h3>
-            {uploadStats && stage === 'uploading' && (
-              <p className="text-sm text-gray-600 mt-1">
-                <bdi>
-                  {uploadStats.completed}/{uploadStats.total} {t('filesUploaded')}
-                  {uploadStats.failed > 0 && ` (${uploadStats.failed} ${t('uploadFailures')})`}
-                </bdi>
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="mb-4">
-          <Progress 
-            value={progress} 
-            className={cn(
-              "h-3 transition-all duration-300",
-              stage === 'error' && "opacity-50"
-            )}
-          />
-          <div className={cn(
-            "flex justify-between items-center mt-2 text-sm text-gray-600",
-            isRTL && "flex-row-reverse"
-          )}>
-            <span>{Math.round(progress)}%</span>
-            {stage === 'uploading' && uploadStats && (
-              <span>
-                <bdi>
-                  {uploadStats.completed + uploadStats.failed}/{uploadStats.total}
-                </bdi>
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Error Message */}
-        {stage === 'error' && errorMessage && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
-            <div className={cn(
-              "flex items-start gap-2",
-              isRTL && "flex-row-reverse"
-            )}>
-              <AlertCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
-              <p className="text-sm text-red-700">
-                <bdi>{errorMessage}</bdi>
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Success Message */}
-        {stage === 'complete' && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-            <div className={cn(
-              "flex items-center gap-2",
-              isRTL && "flex-row-reverse"
-            )}>
-              <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-              <p className="text-sm text-green-700">
-                <bdi>{t('submissionSuccessfullyRecorded')}</bdi>
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Upload Details for Error State */}
-        {stage === 'error' && uploadStats && uploadStats.failed > 0 && (
-          <div className="text-xs text-gray-500 text-center">
-            <bdi>
-              {t('filesSuccessful')}: {uploadStats.completed}, 
-              {t('failures')}: {uploadStats.failed}
-            </bdi>
-          </div>
-        )}
-      </div>
-    </div>
+    </AnimatePresence>
   )
 }

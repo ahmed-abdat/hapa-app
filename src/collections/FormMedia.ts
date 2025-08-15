@@ -190,6 +190,63 @@ export const FormMedia: CollectionConfig = {
       },
     },
     {
+      name: 'uploadStatus',
+      type: 'select',
+      label: {
+        fr: 'Statut du téléchargement',
+        ar: 'حالة الرفع'
+      },
+      defaultValue: 'staging',
+      options: [
+        {
+          label: {
+            fr: 'En attente',
+            ar: 'قيد الانتظار',
+          },
+          value: 'staging',
+        },
+        {
+          label: {
+            fr: 'Confirmé',
+            ar: 'مؤكد',
+          },
+          value: 'confirmed',
+        },
+        {
+          label: {
+            fr: 'Orphelin',
+            ar: 'يتيم',
+          },
+          value: 'orphaned',
+        },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: {
+          fr: 'Statut du fichier dans le processus de soumission',
+          ar: 'حالة الملف في عملية الإرسال'
+        }
+      },
+    },
+    {
+      name: 'expiresAt',
+      type: 'date',
+      label: {
+        fr: 'Date d\'expiration',
+        ar: 'تاريخ انتهاء الصلاحية'
+      },
+      admin: {
+        position: 'sidebar',
+        date: {
+          pickerAppearance: 'dayAndTime',
+        },
+        description: {
+          fr: 'Date après laquelle le fichier sera automatiquement supprimé s\'il n\'est pas confirmé',
+          ar: 'التاريخ الذي سيتم بعده حذف الملف تلقائيًا إذا لم يتم تأكيده'
+        }
+      },
+    },
+    {
       name: 'submissionDate',
       type: 'date',
       label: {

@@ -67,7 +67,7 @@ export function ThankYouCard({ locale, formType }: ThankYouCardProps) {
       scale: [1, 1.05, 1],
       transition: {
         duration: 2,
-        repeat: Infinity
+        repeat: 2 // Reduced from Infinity to 2 repeats
       }
     }
   }
@@ -81,23 +81,13 @@ export function ThankYouCard({ locale, formType }: ThankYouCardProps) {
         className="relative"
       >
         <motion.div
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 300 }}
+          whileHover={{ scale: 1.01 }} // Reduced from 1.02 to 1.01
+          transition={{ type: "spring", stiffness: 400, damping: 30 }} // Added damping for smoother animation
         >
           <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5 shadow-lg overflow-hidden">
             <CardContent className="p-8 text-center relative">
-              {/* Background decorative elements */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-50"
-                animate={{
-                  background: [
-                    "linear-gradient(45deg, rgba(59, 130, 246, 0.1), transparent)",
-                    "linear-gradient(45deg, rgba(34, 197, 94, 0.1), transparent)",
-                    "linear-gradient(45deg, rgba(59, 130, 246, 0.1), transparent)"
-                  ]
-                }}
-                transition={{ duration: 3, repeat: Infinity }}
-              />
+              {/* Background decorative elements - Static gradient, no animation */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5 opacity-50" />
 
               {/* Success Icon with sophisticated animation */}
               <motion.div
@@ -115,17 +105,18 @@ export function ThankYouCard({ locale, formType }: ThankYouCardProps) {
                     <CheckCircle className="h-16 w-16 text-primary" />
                   </motion.div>
                   
-                  {/* Ripple effect */}
+                  {/* Ripple effect - Single animation on mount */}
                   <motion.div
                     className="absolute inset-0 rounded-full border-2 border-primary/20"
+                    initial={{ scale: 1, opacity: 0.5 }}
                     animate={{
-                      scale: [1, 1.2, 1.4],
+                      scale: [1, 1.3, 1.5],
                       opacity: [0.5, 0.2, 0]
                     }}
                     transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      delay: 0.5
+                      duration: 1.5,
+                      repeat: 0, // Changed from Infinity to 0 (run once)
+                      delay: 0.3
                     }}
                   />
                 </motion.div>
@@ -158,7 +149,6 @@ export function ThankYouCard({ locale, formType }: ThankYouCardProps) {
               {/* Processing Info with subtle animation */}
               <motion.div
                 variants={itemVariants}
-                whileHover={{ scale: 1.02 }}
                 className="bg-white/60 rounded-lg p-6 mb-8 border border-primary/20 relative z-10 backdrop-blur-sm"
               >
                 <p className="text-sm font-medium text-primary">
@@ -172,9 +162,9 @@ export function ThankYouCard({ locale, formType }: ThankYouCardProps) {
                 className="relative z-10"
               >
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  whileHover={{ scale: 1.02 }} // Reduced from 1.05 to 1.02
+                  whileTap={{ scale: 0.98 }} // Reduced from 0.95 to 0.98
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 >
                   <Button
                     onClick={() => router.push(`/${locale}`)}
