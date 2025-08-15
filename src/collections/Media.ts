@@ -46,8 +46,10 @@ export const Media: CollectionConfig = {
   hooks: {
     beforeChange: [
       // R2 folder organization by media type only
-      ({ data, req }) => {
-        if (req.file?.name) {
+      ({ data, req, operation }) => {
+        // Only set prefix on create or when updating WITH a new file
+        // This prevents errors during metadata-only updates (alt text, caption, etc.)
+        if ((operation === 'create' || operation === 'update') && req.file?.name) {
           // Get file extension to determine folder type
           const extension = req.file.name.split('.').pop()?.toLowerCase()
           let folder = 'media'
@@ -65,8 +67,10 @@ export const Media: CollectionConfig = {
           
           // Simple structure: just store by type
           data.prefix = folder
-          
         }
+        
+        // IMPORTANT: Always return data to prevent undefined errors
+        // This is critical for metadata-only updates (no file present)
         return data
       }
     ]

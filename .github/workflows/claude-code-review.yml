@@ -41,7 +41,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10.12.4
 
       # Cache dependencies and Next.js build cache
       - name: Cache dependencies and Next.js
