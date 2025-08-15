@@ -16,12 +16,6 @@ public/sitemap*.xml
 # Debugging screenshots development
 debging-screenshots/*
 
-# Playwright
-node_modules/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
 hapa_backup/
 
 # Debug and temporary files
