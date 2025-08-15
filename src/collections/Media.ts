@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { DeleteObjectCommand } from '@aws-sdk/client-s3'
 
 import {
   FixedToolbarFeature,
@@ -8,6 +9,34 @@ import {
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
+import { getR2Client } from '../utilities/r2-client'
+import { logger } from '../utilities/logger'
+
+/**
+ * Extract R2 storage key from media URL for cleanup operations
+ * @param url - Full URL to the media file 
+ * @returns R2 key path or null if invalid URL
+ */
+function extractR2KeyFromUrl(url: string): string | null {
+  if (!url || typeof url !== 'string') {
+    return null
+  }
+
+  try {
+    const urlObj = new URL(url.trim())
+    const key = urlObj.pathname.startsWith('/') 
+      ? urlObj.pathname.substring(1) 
+      : urlObj.pathname
+    
+    return key || null
+  } catch (error) {
+    logger.error('Failed to extract R2 key from URL', error as Error, {
+      component: 'Media',
+      metadata: { url }
+    })
+    return null
+  }
+}
 
 /**
  * Admin Media Collection
@@ -72,6 +101,43 @@ export const Media: CollectionConfig = {
         // IMPORTANT: Always return data to prevent undefined errors
         // This is critical for metadata-only updates (no file present)
         return data
+      }
+    ],
+    afterDelete: [
+      // Clean up R2 storage when media records are deleted
+      async ({ doc }) => {
+        if (!doc?.url) {
+          return // No URL, nothing to delete
+        }
+
+        const r2Key = extractR2KeyFromUrl(doc.url)
+        if (!r2Key) {
+          return // Invalid URL format
+        }
+
+        try {
+          const r2Client = getR2Client()
+          await r2Client.send(new DeleteObjectCommand({
+            Bucket: process.env.R2_BUCKET_NAME!,
+            Key: r2Key
+          }))
+          
+          logger.info('Successfully deleted R2 file', {
+            component: 'Media',
+            action: 'after_delete',
+            filename: doc.filename,
+            metadata: { r2Key }
+          })
+        } catch (error) {
+          // Log error but don't throw - prevents database rollback
+          // Orphaned files will be cleaned up by the cleanup job
+          logger.error('Failed to delete R2 file', error as Error, {
+            component: 'Media',
+            action: 'after_delete',
+            filename: doc.filename,
+            metadata: { r2Key, url: doc.url }
+          })
+        }
       }
     ]
   },
