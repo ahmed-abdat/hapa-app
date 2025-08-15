@@ -111,6 +111,8 @@ export interface FormSubmissionResponse {
     failed?: number
   }
   errorId?: string
+  errorCode?: string
+  retryAfter?: number
 }
 
 // File upload API response
