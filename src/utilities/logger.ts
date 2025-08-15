@@ -66,6 +66,18 @@ export interface LogContext {
   
   // Cache context  
   page?: number
+  
+  // Transaction context
+  submissionId?: string
+  transactionID?: string | number
+  
+  // Batch upload context
+  batchSize?: number
+  fileId?: string
+  attempt?: number
+  
+  // Job context
+  job?: string
 }
 
 // Enhanced logger with structured logging

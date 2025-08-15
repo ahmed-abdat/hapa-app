@@ -50,16 +50,24 @@ interface UploadResult {
 }
 
 /**
- * Production-ready Server Action for media form submissions
- * Handles all edge cases, validation, error recovery, and debugging
+ * Atomic Server Action for media form submissions with transaction support
+ * Minimal wrapper that ensures atomic operations while keeping existing logic
  */
 export async function submitMediaFormAction(formData: FormData): Promise<FormSubmissionResponse> {
   const startTime = Date.now()
   const sessionId = `SA_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   
-  // Form submission started
+  // Initialize Payload
+  const payload = await getPayload({ config })
+  let transactionID: string | number | null = null
 
   try {
+    // Start atomic transaction
+    transactionID = await payload.db.beginTransaction()
+    if (!transactionID) {
+      throw new Error('Failed to start transaction')
+    }
+    logger.info('🔒 Transaction started', { sessionId, transactionID })
     // Phase 1: Input Validation & Data Extraction
     const validation = await validateAndExtractData(formData, sessionId)
     
@@ -74,8 +82,7 @@ export async function submitMediaFormAction(formData: FormData): Promise<FormSub
 
     const { fields, screenshots, attachments, screenshotUrls, attachmentUrls } = validation
     
-    // Phase 2: Payload Connection & Security Validation
-    const payload = await getPayload({ config })
+    // Phase 2: Security Validation
     
     // Production security validation for all files
     const allFiles = [...screenshots, ...attachments]
@@ -101,12 +108,12 @@ export async function submitMediaFormAction(formData: FormData): Promise<FormSub
       }
     }
 
-    // Phase 4: File Upload Processing
+    // Phase 4: File Upload Processing (within transaction)
     const screenshotUpload = await uploadFilesWithRetry(
-      screenshots, 'screenshot', payload, sessionId
+      screenshots, 'screenshot', payload, sessionId, transactionID
     )
     const attachmentUpload = await uploadFilesWithRetry(
-      attachments, 'attachment', payload, sessionId
+      attachments, 'attachment', payload, sessionId, transactionID
     )
 
     // Check upload results
@@ -149,11 +156,18 @@ export async function submitMediaFormAction(formData: FormData): Promise<FormSub
       // Type assertion needed due to complex Payload nested types
       data: submissionData as any,
       locale: 'fr',
+      overrideAccess: true,
+      req: { transactionID: transactionID as string }
     })
+
+    // Commit transaction
+    if (transactionID) {
+      await payload.db.commitTransaction(transactionID)
+      logger.info('✅ Transaction committed', { sessionId, transactionID })
+    }
 
     // Phase 6: Success Response
     const totalTime = Date.now() - startTime
-    // Form submitted successfully
 
     return {
       success: true,
@@ -169,6 +183,12 @@ export async function submitMediaFormAction(formData: FormData): Promise<FormSub
     }
 
   } catch (error) {
+    // Rollback transaction on any error
+    if (transactionID) {
+      await payload.db.rollbackTransaction(transactionID)
+      logger.warn('⚠️ Transaction rolled back', { sessionId, transactionID })
+    }
+    
     const totalTime = Date.now() - startTime
     const errorDetails = {
       sessionId,
@@ -464,7 +484,8 @@ async function uploadFilesWithRetry(
   files: File[], 
   fileType: 'screenshot' | 'attachment', 
   payload: any, 
-  sessionId: string
+  sessionId: string,
+  transactionID?: string | number | null
 ): Promise<UploadResult> {
   const urls: string[] = []
   const errors: string[] = []
@@ -479,9 +500,9 @@ async function uploadFilesWithRetry(
     try {
       // Uploading file
 
-      // Upload with timeout to FormMedia collection (isolated from admin media)
+      // Upload with timeout to existing Media collection 
       const uploadPromise = payload.create({
-        collection: 'form-media',
+        collection: 'media',
         data: { 
           alt: sanitizeFilename(file.name),
           caption: {
@@ -518,6 +539,8 @@ async function uploadFilesWithRetry(
           name: `hapa_form_${fileType}_${Date.now()}_${i}_${sanitizeFilename(file.name)}`,
           size: file.size,
         },
+        overrideAccess: true,
+        ...(transactionID && { req: { transactionID: transactionID as string } })
       })
 
       const timeoutPromise = new Promise((_, reject) => 

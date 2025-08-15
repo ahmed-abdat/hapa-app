@@ -21,6 +21,7 @@ import {
   Maximize2
 } from 'lucide-react'
 import { isValidUrl } from '@/lib/security'
+import NextImage from 'next/image'
 import './index.scss'
 
 interface MediaItem {
@@ -486,9 +487,12 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ url, filename, onError }) => 
       </div>
       
       <div className={`image-container ${isFullscreen ? 'fullscreen' : ''}`}>
-        <img
+        <NextImage
           src={url}
           alt={`Preview of ${filename}`}
+          width={800}
+          height={600}
+          style={{ objectFit: 'contain', width: '100%', height: 'auto' }}
           className="preview-image"
           onError={handleImageError}
           loading="lazy"
@@ -687,9 +691,12 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
         {/* Automatic thumbnail preview for images */}
         {fileType === 'image' && (
           <div className="media-thumbnail">
-            <img
+            <NextImage
               src={mediaUrl}
               alt={`Thumbnail preview of ${fileName}`}
+              width={150}
+              height={150}
+              style={{ objectFit: 'cover' }}
               className="thumbnail-image"
               onError={() => handleMediaError(mediaUrl)}
               loading="lazy"

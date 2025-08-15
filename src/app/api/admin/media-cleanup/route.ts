@@ -84,7 +84,7 @@ async function scanForOrphanedFiles(
             
             // Check if file exists in FormMedia collection
             const mediaExists = await payload.find({
-              collection: 'form-media',
+              collection: 'media',
               where: {
                 filename: {
                   equals: filename,

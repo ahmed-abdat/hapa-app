@@ -108,7 +108,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Determine collection based on fileType - form uploads go to separate collection
     const isFormUpload = fileType === 'screenshot' || fileType === 'attachment'
-    const collection = isFormUpload ? 'form-media' : 'media'
+    const collection = 'media' // Use unified media collection
     
     // Upload file through Payload CMS
     const result = await payload.create({
@@ -141,12 +141,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             version: 1,
           },
         },
-        // Form-specific metadata
-        formType: 'report', // Default, can be updated
-        fileType: fileType,
-        submissionDate: new Date().toISOString(),
-        filesize: file.size,
-        mimeType: file.type,
+        // Form uploads use standard media fields
+        // fileType and other metadata stored in caption text
       } : {
         alt: finalFilename,
         // Regular admin upload caption

@@ -49,18 +49,19 @@ export function FormSubmissionProgress({
   const t = useTranslations()
   const isRTL = locale === 'ar'
   const messages = stageMessages[locale]
-
+  
+  // Early return if not visible
   if (!isVisible) return null
 
   const getStageIcon = () => {
     switch (stage) {
       case 'preparing':
-        return <Clock className="h-5 w-5 text-blue-500 animate-pulse" />
+        return <Clock className="h-5 w-5 text-blue-500 motion-safe:animate-pulse" />
       case 'uploading':
-        return <Upload className="h-5 w-5 text-blue-500 animate-bounce" />
+        return <Upload className="h-5 w-5 text-blue-500 motion-safe:animate-bounce" />
       case 'validating':
       case 'saving':
-        return <Clock className="h-5 w-5 text-blue-500 animate-spin" />
+        return <Clock className="h-5 w-5 text-blue-500 motion-safe:animate-spin" />
       case 'complete':
         return <CheckCircle className="h-5 w-5 text-green-500" />
       case 'error':
@@ -85,22 +86,20 @@ export function FormSubmissionProgress({
 
   return (
     <div 
-      className={cn(
-        "fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm",
-        "transition-all duration-300"
-      )}
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm motion-safe:animate-in motion-safe:fade-in motion-safe:duration-300"
       dir={isRTL ? 'rtl' : 'ltr'}
     >
-      <div className={cn(
-        "bg-white rounded-lg shadow-2xl p-6 max-w-md w-full mx-4",
-        "transform transition-all duration-300 scale-100"
-      )}>
+      <div className="bg-white rounded-lg shadow-2xl p-6 max-w-md w-full mx-4 motion-safe:animate-in motion-safe:slide-in-from-bottom-4 motion-safe:fade-in motion-safe:duration-500">
         {/* Header */}
-        <div className={cn(
-          "flex items-center gap-3 mb-4",
-          isRTL && "flex-row-reverse"
-        )}>
-          {getStageIcon()}
+        <div 
+          className={cn(
+            "flex items-center gap-3 mb-4 motion-safe:animate-in motion-safe:slide-in-from-top-2 motion-safe:fade-in motion-safe:duration-700",
+            isRTL && "flex-row-reverse"
+          )}
+        >
+          <div className="motion-safe:animate-in motion-safe:zoom-in motion-safe:duration-500 motion-safe:delay-300">
+            {getStageIcon()}
+          </div>
           <div className="flex-1">
             <h3 className="font-semibold text-gray-900">
               <bdi>{messages[stage]}</bdi>
@@ -117,16 +116,16 @@ export function FormSubmissionProgress({
         </div>
 
         {/* Progress Bar */}
-        <div className="mb-4">
+        <div className="mb-4 motion-safe:animate-in motion-safe:slide-in-from-left motion-safe:fade-in motion-safe:duration-500 motion-safe:delay-500">
           <Progress 
             value={progress} 
             className={cn(
-              "h-3 transition-all duration-300",
+              "h-3 transition-all duration-500",
               stage === 'error' && "opacity-50"
             )}
           />
           <div className={cn(
-            "flex justify-between items-center mt-2 text-sm text-gray-600",
+            "flex justify-between items-center mt-2 text-sm text-gray-600 motion-safe:animate-in motion-safe:fade-in motion-safe:duration-300 motion-safe:delay-700",
             isRTL && "flex-row-reverse"
           )}>
             <span>{Math.round(progress)}%</span>
@@ -142,7 +141,7 @@ export function FormSubmissionProgress({
 
         {/* Error Message */}
         {stage === 'error' && errorMessage && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4 motion-safe:animate-in motion-safe:slide-in-from-bottom-2 motion-safe:fade-in motion-safe:duration-300">
             <div className={cn(
               "flex items-start gap-2",
               isRTL && "flex-row-reverse"
@@ -157,12 +156,12 @@ export function FormSubmissionProgress({
 
         {/* Success Message */}
         {stage === 'complete' && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+          <div className="bg-green-50 border border-green-200 rounded-lg p-3 motion-safe:animate-in motion-safe:zoom-in motion-safe:fade-in motion-safe:duration-500">
             <div className={cn(
               "flex items-center gap-2",
               isRTL && "flex-row-reverse"
             )}>
-              <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+              <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0 motion-safe:animate-in motion-safe:zoom-in motion-safe:duration-300 motion-safe:delay-200" />
               <p className="text-sm text-green-700">
                 <bdi>{t('submissionSuccessfullyRecorded')}</bdi>
               </p>
@@ -172,7 +171,7 @@ export function FormSubmissionProgress({
 
         {/* Upload Details for Error State */}
         {stage === 'error' && uploadStats && uploadStats.failed > 0 && (
-          <div className="text-xs text-gray-500 text-center">
+          <div className="text-xs text-gray-500 text-center motion-safe:animate-in motion-safe:fade-in motion-safe:duration-300 motion-safe:delay-1000">
             <bdi>
               {t('filesSuccessful')}: {uploadStats.completed}, 
               {t('failures')}: {uploadStats.failed}

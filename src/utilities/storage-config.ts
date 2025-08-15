@@ -29,11 +29,7 @@ export function getStorageConfig() {
             // This allows Media.ts to organize files by type: images/, docs/, videos/, audio/
           },
           // Form Media Collection - isolated with forms/ prefix
-          'form-media': {
-            disableLocalStorage: true,
-            // CRITICAL: No prefix here - let FormMedia collection hook handle it
-            // This allows FormMedia.ts to organize files with forms/ prefix: forms/images/, forms/documents/, etc.
-          },
+          // 'form-media' collection removed - using unified 'media' collection
         },
         config: getR2StorageConfig(),
         bucket: process.env.R2_BUCKET_NAME || '',

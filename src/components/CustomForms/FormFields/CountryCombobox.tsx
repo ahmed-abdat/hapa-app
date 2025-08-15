@@ -22,6 +22,7 @@ import { cn } from '@/lib/utils'
 import { useLocale, useTranslations } from 'next-intl'
 import { type Locale } from '@/utilities/locale'
 import { type FormSelectProps } from '../types'
+import Image from 'next/image'
 
 // Enhanced country list with ISO alpha-2 codes and bilingual support
 const countries = [
@@ -219,7 +220,7 @@ export function CountryCombobox({
               <div className="flex items-center flex-grow w-0 gap-2 overflow-hidden">
                 {selectedCountry.alpha2 ? (
                   <div className="inline-flex items-center justify-center w-5 h-5 shrink-0 overflow-hidden rounded-full">
-                    <img
+                    <Image
                       src={getFlagUrl(selectedCountry.alpha2)}
                       alt={`${selectedCountry.label} flag`}
                       width={20}
@@ -287,7 +288,7 @@ export function CountryCombobox({
                     <div className="flex flex-grow w-0 gap-2 overflow-hidden">
                       {country.alpha2 ? (
                         <div className="inline-flex items-center justify-center w-5 h-5 shrink-0 overflow-hidden rounded-full">
-                          <img
+                          <Image
                             src={getFlagUrl(country.alpha2)}
                             alt={`${country.label} flag`}
                             width={20}
