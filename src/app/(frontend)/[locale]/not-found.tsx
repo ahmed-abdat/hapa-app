@@ -5,11 +5,8 @@ import React, { useEffect } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { 
   Home, 
-  Phone, 
-  Mail, 
   AlertCircle,
   HelpCircle
 } from 'lucide-react'
@@ -71,41 +68,6 @@ export default function NotFound() {
       </section>
 
 
-      {/* Emergency Contact Section */}
-      <section className="py-12 sm:py-16 md:py-20 bg-primary/5">
-        <div className="hapa-container">
-          <Card className="max-w-2xl border-primary/20 shadow-lg mx-4">
-            <CardContent className="p-6 sm:p-8 md:p-10 text-center">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                <Mail className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
-              </div>
-              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-3 sm:mb-4 md:mb-6">
-                {locale === 'fr' ? 'Besoin d\'aide immédiate ?' : 'تحتاج مساعدة فورية؟'}
-              </h3>
-              <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-6 sm:mb-8 max-w-lg mx-auto leading-relaxed">
-                {locale === 'fr'
-                  ? 'Notre équipe est disponible pour vous aider à naviguer sur notre site et trouver l\'information dont vous avez besoin.'
-                  : 'فريقنا متاح لمساعدتك في التنقل في موقعنا والعثور على المعلومات التي تحتاجها.'
-                }
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-                <Button asChild variant="outline" className="gap-2 w-full sm:w-auto">
-                  <Link href="/contact">
-                    <Mail className="w-4 h-4" />
-                    {locale === 'fr' ? 'Nous écrire' : 'راسلنا'}
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" className="gap-2 w-full sm:w-auto">
-                  <a href="tel:+22245252525">
-                    <Phone className="w-4 h-4" />
-                    {locale === 'fr' ? 'Nous appeler' : 'اتصل بنا'}
-                  </a>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
     </div>
   )
 }

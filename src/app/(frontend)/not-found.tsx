@@ -12,7 +12,6 @@ import {
   Search, 
   Home, 
   Phone, 
-  Mail, 
   ArrowRight,
   FileText,
   Scale,
@@ -216,38 +215,6 @@ export default function NotFound() {
         </div>
       </section>
 
-      {/* Emergency Contact Section */}
-      <section className="section-spacing-sm bg-primary/5">
-        <div className="hapa-container">
-          <Card className="max-w-2xl mx-auto border-primary/20">
-            <CardContent className="p-8 text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Mail className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-bold text-foreground mb-4">
-                Besoin d&apos;aide immédiate ?
-              </h3>
-              <p className="text-muted-foreground mb-6">
-                Notre équipe est disponible pour vous aider à naviguer sur notre site et trouver l&apos;information dont vous avez besoin.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild variant="outline" className="gap-2">
-                  <Link href="/fr/contact">
-                    <Mail className="w-4 h-4" />
-                    Nous écrire
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" className="gap-2">
-                  <a href="tel:+22245252525">
-                    <Phone className="w-4 h-4" />
-                    Nous appeler
-                  </a>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
     </div>
   )
 }
