@@ -181,7 +181,7 @@ export interface Post {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Fichiers média pour les contenus éditoriaux. Les fichiers des formulaires sont dans une collection séparée.
+ * Fichiers média pour les contenus éditoriaux. Les pièces jointes des formulaires sont automatiquement filtrées de cette vue.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
@@ -205,6 +205,7 @@ export interface Media {
     [k: string]: unknown;
   } | null;
   prefix?: string | null;
+  source?: ('admin' | 'form') | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -738,6 +739,7 @@ export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
   prefix?: T;
+  source?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
