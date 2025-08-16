@@ -3,7 +3,7 @@
 import React from 'react'
 
 interface ErrorStateProps {
-  type?: 'network' | 'not-found' | 'permission' | 'generic'
+  type?: 'network' | 'notFound' | 'permission' | 'generic'
   locale?: 'fr' | 'ar'
   onRetry?: () => void
   onGoHome?: () => void
@@ -66,7 +66,7 @@ const getIcon = (type: ErrorStateProps['type']) => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
         </svg>
       )
-    case 'not-found':
+    case 'notFound':
       return (
         <svg className={iconClass} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
@@ -127,7 +127,7 @@ export function ErrorState({
           </button>
         )}
         
-        {(type === 'not-found' || type === 'permission') && onGoHome && (
+        {(type === 'notFound' || type === 'permission') && onGoHome && (
           <button
             onClick={onGoHome}
             className="px-6 py-2 bg-[#138B3A] text-white rounded-lg text-sm font-medium hover:bg-[#0F7A2E] transition-colors focus:outline-none focus:ring-2 focus:ring-[#138B3A] focus:ring-offset-2"

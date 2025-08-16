@@ -32,7 +32,7 @@ export class ErrorBoundary extends Component<Props, State> {
     // Simple error logging
     const errorId = logger.error('Component error', error, {
       component: 'ErrorBoundary',
-      componentStack: errorInfo.componentStack,
+      stack: errorInfo.componentStack || undefined,
       locale: this.props.locale
     })
     
