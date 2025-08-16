@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Where } from 'payload'
 import { DeleteObjectCommand } from '@aws-sdk/client-s3'
 
 import {
@@ -46,21 +46,20 @@ export const Media: CollectionConfig = {
     read: ({ req }) => {
       // In admin context, hide form submission media to keep admin gallery clean
       if (req.url?.includes('/admin/')) {
-        return {
+        const whereClause: Where = {
           and: [
-            // Either no source field (legacy files) or source is 'admin'
             {
               or: [
                 { source: { exists: false } },
                 { source: { equals: 'admin' } }
               ]
             },
-            // Additional filter: exclude files starting with 'hapa_form_' as fallback
             {
               filename: { not_like: 'hapa_form_%' }
             }
           ]
         }
+        return whereClause
       }
       // For API and frontend requests, show all files
       return true
