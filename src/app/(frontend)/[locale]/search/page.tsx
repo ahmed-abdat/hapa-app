@@ -90,7 +90,7 @@ export default async function Page({
             </div>
 
             {/* Enhanced Search Component */}
-            <div className="max-w-2xl mx-auto mb-8">
+            <div className="max-w-3xl mx-auto mb-8">
               <Search
                 variant="hero"
                 showQuickResults={true}
@@ -98,17 +98,23 @@ export default async function Page({
               />
             </div>
 
-            {/* Search Stats */}
+            {/* Enhanced Search Stats */}
             {query && (
-              <div className="text-white/80 text-sm">
-                {posts.totalDocs > 0 && (
-                  <p>
-                    {t("searchStats", {
-                      count: posts.totalDocs,
-                      query,
-                      plural: posts.totalDocs > 1 ? "s" : "",
-                    })}
-                  </p>
+              <div className="text-white/90 text-sm">
+                {posts.totalDocs > 0 ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <p className="font-medium">
+                      {locale === "fr"
+                        ? `${posts.totalDocs} résultat${posts.totalDocs > 1 ? "s" : ""} trouvé${posts.totalDocs > 1 ? "s" : ""}`
+                        : `تم العثور على ${posts.totalDocs} نتيجة`}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                    <p>{locale === "fr" ? "Aucun résultat trouvé" : "لا توجد نتائج"}</p>
+                  </div>
                 )}
               </div>
             )}
@@ -117,23 +123,36 @@ export default async function Page({
       </section>
 
       {/* Search Results Section */}
-      <section className="py-12 lg:py-16">
-        <div className="container px-0">
+      <section className="py-8 lg:py-12">
+        <div className="container px-4 lg:px-0">
           {query ? (
             posts.totalDocs > 0 ? (
               <div className="space-y-8">
-                {/* Results Header */}
-                <div className="border-b border-gray-200 pb-6">
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                    {t("searchResults")}
-                  </h2>
-                  <p className="text-gray-600">
-                    {locale === "fr"
-                      ? `Affichage de ${posts.totalDocs} résultat${
-                          posts.totalDocs > 1 ? "s" : ""
-                        }`
-                      : `عرض ${posts.totalDocs} نتيجة`}
-                  </p>
+                {/* Enhanced Results Header */}
+                <div className="bg-gradient-to-r from-white to-gray-50 rounded-2xl p-6 mb-8 border border-gray-100 shadow-sm">
+                  <div className="flex items-center justify-between flex-wrap gap-4">
+                    <div>
+                      <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+                        {t("searchResults")}
+                      </h2>
+                      <p className="text-gray-600 flex items-center gap-2">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary">
+                          {posts.totalDocs}
+                        </span>
+                        {locale === "fr"
+                          ? `résultat${posts.totalDocs > 1 ? "s" : ""} trouvé${posts.totalDocs > 1 ? "s" : ""} pour "${query}"`
+                          : `نتيجة موجودة لـ "${query}"`}
+                      </p>
+                    </div>
+                    
+                    {/* Search Quality Indicator */}
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <div className="flex items-center gap-1">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>{locale === "fr" ? "Résultats pertinents" : "نتائج ذات صلة"}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Results Grid */}
@@ -143,59 +162,96 @@ export default async function Page({
                 />
               </div>
             ) : (
-              /* No Results */
-              <div className="max-w-2xl mx-auto text-center py-16">
-                <div className="mb-8">
-                  <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              /* Simplified No Results State */
+              <div className="max-w-2xl mx-auto py-12 lg:py-16">
+                {/* Simple No Results Message */}
+                <div className="text-center mb-8">
+                  {/* Simple Icon */}
+                  <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
                     <SearchIcon className="w-12 h-12 text-gray-400" />
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-4">
+                  
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">
                     {t("noResults")}
                   </h3>
-                  <p className="text-gray-600 mb-8">
-                    {t("noResultsText", { query })}
+                  <p className="text-gray-600 max-w-md mx-auto">
+                    {locale === "fr" 
+                      ? `Aucun résultat trouvé pour "${query}". Essayez d'affiner votre recherche.`
+                      : `لم يتم العثور على نتائج للبحث عن "${query}". حاول تعديل البحث.`
+                    }
                   </p>
                 </div>
 
-                {/* Search Suggestions */}
-                <div className="bg-gray-50 rounded-2xl p-8">
-                  <h4 className="text-lg font-medium text-gray-900 mb-4">
-                    {t("searchSuggestions")}
-                  </h4>
-                  <div className="flex flex-wrap gap-3 justify-center">
+                {/* Simple Popular Searches */}
+                {popularTerms.length > 0 && (
+                  <div className="text-center">
+                    <p className="text-sm text-gray-500 mb-4">
+                      {locale === "fr" ? "Recherches populaires:" : "البحث الشائع:"}
+                    </p>
                     <SearchSuggestions
-                      suggestions={popularTerms.slice(0, 4)}
+                      suggestions={popularTerms.slice(0, 3)}
                       locale={locale as "fr" | "ar"}
+                      variant="compact"
                     />
                   </div>
-                </div>
+                )}
               </div>
             )
           ) : (
-            /* Welcome State - No Query */
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                  {locale === "fr" ? "Explorez notre contenu" : "ابدأ البحث"}
-                </h2>
-                <p className="text-lg text-gray-600">
-                  {locale === "fr"
-                    ? "Découvrez nos dernières publications, décisions et actualités"
-                    : "ابحث في مقالاتنا وقراراتنا ومنشوراتنا الرسمية"}
-                </p>
+            /* Enhanced Welcome State - No Query */
+            <div className="max-w-6xl mx-auto">
+              {/* Welcome Header */}
+              <div className="text-center mb-12 lg:mb-16 px-4">
+                <div className="relative mb-6 lg:mb-8">
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 lg:mb-6 leading-tight">
+                    {locale === "fr" ? "Explorez notre contenu" : "ابدأ البحث"}
+                  </h2>
+                  <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed px-2">
+                    {locale === "fr"
+                      ? "Découvrez nos dernières publications, décisions réglementaires et actualités du secteur audiovisuel mauritanien"
+                      : "استكشف أحدث منشوراتنا وقراراتنا التنظيمية وأخبار قطاع الإعلام الموريتاني"}
+                  </p>
+                </div>
+
+                {/* Quick Search Categories */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+                  <CategoryCards 
+                    locale={locale as "fr" | "ar"} 
+                    variant="default"
+                  />
+                </div>
               </div>
 
-              {/* Recent Posts Preview */}
+              {/* Recent Posts Preview with Enhanced Layout */}
               {posts.totalDocs > 0 && (
-                <div>
-                  <div className="flex items-center justify-between mb-8">
-                    <h3 className="text-2xl font-bold text-gray-900">
-                      {locale === "fr"
-                        ? "Publications récentes"
-                        : "المنشورات الحديثة"}
-                    </h3>
-                    <ViewAllButton text={t("viewAll")} href="/actualites" />
+                <div className="space-y-8">
+                  {/* Section Header */}
+                  <div className="bg-gradient-to-r from-white to-gray-50 rounded-2xl p-8 border border-gray-100 shadow-sm">
+                    <div className="flex items-center justify-between flex-wrap gap-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                          <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="text-2xl lg:text-3xl font-bold text-gray-900">
+                            {locale === "fr"
+                              ? "Publications récentes"
+                              : "المنشورات الحديثة"}
+                          </h3>
+                          <p className="text-gray-600 mt-1">
+                            {locale === "fr"
+                              ? "Nos derniers contenus officiels"
+                              : "أحدث محتوياتنا الرسمية"}
+                          </p>
+                        </div>
+                      </div>
+                      <ViewAllButton text={t("viewAll")} href="/actualites" />
+                    </div>
                   </div>
+
+                  {/* Posts Grid */}
                   <CollectionArchive
                     posts={posts.docs.slice(0, 6) as CardPostData[]}
                     locale={locale}

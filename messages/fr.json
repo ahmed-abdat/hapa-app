@@ -622,5 +622,8 @@
   "screenshots": "Captures d'écran",
   "attachments": "Pièces jointes",
   "uploadScreenshotFiles": "Télécharger des fichiers de capture d'écran (images ou documents)",
-  "uploadAttachmentFiles": "Télécharger des fichiers joints (vidéo, audio, images ou documents)"
+  "uploadAttachmentFiles": "Télécharger des fichiers joints (vidéo, audio, images ou documents)",
+  "events": "Événements",
+  "eventsDesc": "Événements et conférences organisés par HAPA",
+  "decisionsDesc": "Décisions réglementaires et administratives officielles"
 }

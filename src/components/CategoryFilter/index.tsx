@@ -56,7 +56,7 @@ export function CategoryFilter({
         <div className={`absolute ${isRtl ? 'right-0' : 'left-0'} top-0 bottom-0 w-8 ${isRtl ? 'bg-gradient-to-l' : 'bg-gradient-to-r'} from-gray-50 to-transparent z-10 pointer-events-none`} />
         <div className={`absolute ${isRtl ? 'left-0' : 'right-0'} top-0 bottom-0 w-8 ${isRtl ? 'bg-gradient-to-r' : 'bg-gradient-to-l'} from-gray-50 to-transparent z-10 pointer-events-none`} />
         
-        <ScrollArea className="w-full" type="scroll">
+        <ScrollArea className="w-full" type="scroll" dir={isRtl ? 'rtl' : 'ltr'}>
           <div className={`flex gap-3 pb-4 px-2 `} style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {/* All Categories Button */}
             <motion.div
@@ -74,6 +74,7 @@ export function CategoryFilter({
                 }
               `}
               onClick={() => handleClearFilter()}
+              dir={isRtl ? 'rtl' : 'ltr'}
             >
               {locale === 'ar' ? 'جميع المقالات' : 'Tous les articles'}
             </Button>
@@ -103,13 +104,14 @@ export function CategoryFilter({
                   }
                 `}
                 onClick={() => handleCategorySelect(category.slug ?? '')}
+                dir={isRtl ? 'rtl' : 'ltr'}
               >
                 {category.title}
               </Button>
             </motion.div>
           ))}
           </div>
-          <ScrollBar orientation="horizontal" />
+          <ScrollBar orientation="horizontal" dir={isRtl ? 'rtl' : 'ltr'} />
         </ScrollArea>
       </div>
 

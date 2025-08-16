@@ -2,7 +2,7 @@ import React from 'react'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
-import { AlertTriangle, Shield, Clock, CheckCircle } from 'lucide-react'
+import { Bell, Shield, Clock, CheckCircle } from 'lucide-react'
 
 import { DynamicMediaContentReportForm } from '@/components/CustomForms/DynamicMediaContentReportForm'
 import { isValidLocale } from '@/utilities/locale'
@@ -44,70 +44,70 @@ export default async function MediaContentReportPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-white to-accent/5">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary to-accent text-white py-16">
+      {/* Hero Section - Mobile Optimized */}
+      <div className="bg-gradient-to-r from-primary to-accent text-white py-8 md:py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="flex justify-center mb-6">
-              <div className="bg-white/20 rounded-full p-4">
-                <AlertTriangle className="h-12 w-12" />
+            <div className="flex justify-center mb-3 md:mb-4">
+              <div className="bg-white/20 rounded-full p-2 md:p-3">
+                <Bell className="h-6 w-6 md:h-8 md:w-8" />
               </div>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-3">
               {t('mediaContentReportTitle')}
             </h1>
-            <p className="text-xl opacity-90 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-sm md:text-base lg:text-lg opacity-90 max-w-2xl mx-auto leading-relaxed">
               {t('mediaContentReportDesc')}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Information Cards */}
-      <div className="container mx-auto px-4 -mt-8 relative z-10">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      {/* Information Cards - Mobile Optimized */}
+      <div className="container mx-auto px-4 -mt-4 md:-mt-6 relative z-10">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
             {/* Quick Process */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-primary/20">
-              <div className="flex items-center mb-4 gap-x-2">
-                <div className="bg-primary/10 rounded-lg p-3 flex items-center justify-center gap-x-2">
-                  <Clock className="h-6 w-6 text-primary" />
+            <div className="bg-white rounded-lg shadow-md p-4 md:p-5 border border-primary/20">
+              <div className="flex items-center mb-3 gap-x-2">
+                <div className="bg-primary/10 rounded-lg p-2 flex items-center justify-center">
+                  <Clock className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-sm md:text-base font-semibold text-gray-900">
                   {t('quickProcess')}
                 </h3>
               </div>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
                 {t('quickProcessDesc')}
               </p>
             </div>
 
             {/* Confidential */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-primary/20">
-              <div className="flex items-center mb-4 gap-x-2">
-                <div className="bg-primary/10 rounded-lg p-3 flex items-center justify-center gap-x-2">
-                  <Shield className="h-6 w-6 text-primary" />
+            <div className="bg-white rounded-lg shadow-md p-4 md:p-5 border border-primary/20">
+              <div className="flex items-center mb-3 gap-x-2">
+                <div className="bg-primary/10 rounded-lg p-2 flex items-center justify-center">
+                  <Shield className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-sm md:text-base font-semibold text-gray-900">
                   {t('confidential')}
                 </h3>
               </div>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
                 {t('confidentialDesc')}
               </p>
             </div>
 
             {/* Follow-up */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-primary/20">
-              <div className="flex items-center mb-4 gap-x-2">
-                <div className="bg-primary/10 rounded-lg p-3 flex items-center justify-center gap-x-2">
-                  <CheckCircle className="h-6 w-6 text-primary" />
+            <div className="bg-white rounded-lg shadow-md p-4 md:p-5 border border-primary/20">
+              <div className="flex items-center mb-3 gap-x-2">
+                <div className="bg-primary/10 rounded-lg p-2 flex items-center justify-center">
+                  <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-sm md:text-base font-semibold text-gray-900">
                   {t('guaranteedFollowup')}
                 </h3>
               </div>
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
                 {t('guaranteedFollowupDesc')}
               </p>
             </div>
@@ -122,26 +122,26 @@ export default async function MediaContentReportPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Help Section */}
-      <div className="bg-gray-50 py-12">
+      {/* Help Section - Mobile Optimized */}
+      <div className="bg-gray-50 py-8 md:py-10">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-3">
               {t('needHelpQuestion')}
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-sm md:text-base text-gray-600 mb-6">
               {t('helpTeamAvailable')}
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
               <a
                 href={`/${locale}/contact`}
-                className="inline-flex items-center justify-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-accent transition-colors font-medium"
+                className="inline-flex items-center justify-center px-4 md:px-6 py-2.5 md:py-3 bg-primary text-white rounded-lg hover:bg-accent transition-colors font-medium text-sm md:text-base"
               >
                 {t('contactUs')}
               </a>
               <a
                 href={`/${locale}/forms/media-content-complaint`}
-                className="inline-flex items-center justify-center px-6 py-3 bg-white text-primary border border-primary rounded-lg hover:bg-primary/5 transition-colors font-medium"
+                className="inline-flex items-center justify-center px-4 md:px-6 py-2.5 md:py-3 bg-white text-primary border border-primary rounded-lg hover:bg-primary/5 transition-colors font-medium text-sm md:text-base"
               >
                 {t('officialComplaint')}
               </a>
