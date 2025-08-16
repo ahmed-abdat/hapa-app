@@ -19,4 +19,18 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
 )
 Input.displayName = "Input"
 
-export { Input }
+const InputWrapper = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn("relative flex items-center", className)}
+      {...props}
+    />
+  )
+})
+InputWrapper.displayName = "InputWrapper"
+
+export { Input, InputWrapper }

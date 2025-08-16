@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations, useLocale } from 'next-intl';
-import { ArrowRight, ArrowLeft, AlertTriangle, MessageCircle, CheckCircle, HelpCircle } from "lucide-react";
+import { ArrowRight, ArrowLeft, Bell, Scale, CheckCircle, HelpCircle } from "lucide-react";
 
 export const MediaReportingCTA: React.FC = () => {
   const t = useTranslations();
@@ -29,7 +29,7 @@ export const MediaReportingCTA: React.FC = () => {
             <div className="bg-gradient-to-br from-orange-500 to-red-500 p-6 text-white">
               <div className={`flex items-center gap-4`}>
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                  <AlertTriangle className="w-6 h-6" />
+                  <Bell className="w-6 h-6" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold">
@@ -83,7 +83,7 @@ export const MediaReportingCTA: React.FC = () => {
             <div className="bg-gradient-to-br from-primary to-accent p-6 text-white">
               <div className={`flex items-center gap-4`}>
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                  <MessageCircle className="w-6 h-6" />
+                  <Scale className="w-6 h-6" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold">

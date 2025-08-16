@@ -3,13 +3,13 @@ import {
   FileText,
   Gavel,
   Users,
-  MessageCircle,
+  Scale,
   BookOpen,
   Phone,
   Home,
   User,
   ClipboardList,
-  AlertTriangle,
+  Bell,
 } from "lucide-react";
 
 export interface NavigationItem {
@@ -138,7 +138,7 @@ export const navigationItems: NavigationItem[] = [
           fr: "Signaler un contenu médiatique inapproprié",
           ar: "الإبلاغ عن محتوى إعلامي غير مناسب",
         },
-        icon: AlertTriangle,
+        icon: Bell,
       },
       {
         title: { fr: "Plainte concernant un contenu médiatique", ar: "شكوى بخصوص محتوى إعلامي" },
@@ -147,7 +147,7 @@ export const navigationItems: NavigationItem[] = [
           fr: "Déposer une plainte officielle concernant un contenu médiatique",
           ar: "تقديم شكوى رسمية بخصوص محتوى إعلامي",
         },
-        icon: MessageCircle,
+        icon: Scale,
       },
     ],
   },
@@ -158,7 +158,7 @@ export const navigationItems: NavigationItem[] = [
       fr: "Dernières nouvelles et actualités",
       ar: "آخر الأخبار والمستجدات",
     },
-    icon: MessageCircle,
+    icon: FileText,
   },
   {
     title: { fr: "Contact", ar: "اتصل بنا" },

@@ -2,6 +2,7 @@ import type { Metadata } from "next/types";
 import { CollectionArchive } from "@/components/CollectionArchive";
 import { PageRange } from "@/components/PageRange";
 import { PaginationSuspense } from "@/components/Pagination/PaginationSuspense";
+import { ActualitesHero } from "@/heros/ActualitesHero";
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
 import React from "react";
@@ -10,6 +11,7 @@ import { notFound } from "next/navigation";
 import type { Category, Post, Media } from "@/payload-types";
 import { CardPostData } from "@/components/Card";
 import { logger } from "@/utilities/logger";
+import { Newspaper } from "lucide-react";
 
 // Force dynamic rendering to avoid database connectivity issues during build
 export const dynamic = "force-dynamic";
@@ -103,49 +105,58 @@ export default async function ActualitesPage({ params: paramsPromise }: Args) {
       : "Actualités";
 
   return (
-    <div className="py-8">
-      {/* Category Header */}
-      <div className="container mb-12">
-        <div className="prose dark:prose-invert max-w-none">
-          <h1>{categoryTitle}</h1>
-        </div>
-      </div>
+    <div className="pb-24">
+      {/* Hero Section */}
+      <ActualitesHero 
+        locale={locale}
+        totalDocs={posts.totalDocs}
+      />
 
-      {/* Posts Grid or Empty State */}
-      {posts.docs.length > 0 ? (
-        <CollectionArchive posts={posts.docs} locale={locale} />
-      ) : (
-        <div className="container">
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">
-              {locale === "ar"
-                ? "لا توجد أخبار حاليًا"
-                : "Aucune actualité pour le moment"}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Pagination Info and Navigation */}
-      <div className="container mt-8 space-y-4">
-        {posts.docs.length > 0 && (
+      {/* Content Section */}
+      <div className="hapa-container">
+        {/* Posts Count */}
+        <div className="mb-6">
           <PageRange
             collection="posts"
             currentPage={posts.page}
             limit={12}
             totalDocs={posts.totalDocs}
             locale={locale}
-            className="text-center"
           />
+        </div>
+
+        {/* Posts Grid or Empty State */}
+        {posts.docs.length > 0 ? (
+          <CollectionArchive posts={posts.docs} locale={locale} />
+        ) : (
+          <div className="text-center py-16">
+            <div className="max-w-md mx-auto">
+              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Newspaper className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                {locale === "ar"
+                  ? "لا توجد أخبار"
+                  : "Aucune actualité"}
+              </h3>
+              <p className="text-gray-600">
+                {locale === "ar"
+                  ? "لا توجد أخبار متاحة حاليًا."
+                  : "Aucune actualité n'est disponible pour le moment."}
+              </p>
+            </div>
+          </div>
         )}
 
+        {/* Pagination */}
         {posts.totalDocs > 12 && (
-          <PaginationSuspense
-            totalItems={posts.totalDocs}
-            itemsPerPage={12}
-            currentPage={posts.page || 1}
-            className="mt-8"
-          />
+          <div className="mt-12">
+            <PaginationSuspense
+              totalItems={posts.totalDocs}
+              itemsPerPage={12}
+              currentPage={posts.page || 1}
+            />
+          </div>
         )}
       </div>
     </div>
