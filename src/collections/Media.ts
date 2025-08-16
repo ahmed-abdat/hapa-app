@@ -36,20 +36,49 @@ export const Media: CollectionConfig = {
     defaultColumns: ['filename', 'alt', 'width', 'height', 'filesize', 'updatedAt'],
     listSearchableFields: ['filename', 'alt'],
     description: {
-      fr: 'Fichiers média pour les contenus éditoriaux. Les fichiers des formulaires sont dans une collection séparée.',
-      ar: 'ملفات الوسائط للمحتوى التحريري. ملفات النماذج موجودة في مجموعة منفصلة.'
+      fr: 'Fichiers média pour les contenus éditoriaux. Les pièces jointes des formulaires sont automatiquement filtrées de cette vue.',
+      ar: 'ملفات الوسائط للمحتوى التحريري. يتم تصفية مرفقات النماذج تلقائياً من هذا العرض.'
     },
   },
   access: {
     create: authenticated,
     delete: authenticated,
-    read: anyone,
+    read: ({ req }) => {
+      // In admin context, hide form submission media to keep admin gallery clean
+      if (req.url?.includes('/admin/')) {
+        return {
+          and: [
+            // Either no source field (legacy files) or source is 'admin'
+            {
+              or: [
+                { source: { exists: false } },
+                { source: { equals: 'admin' } }
+              ]
+            },
+            // Additional filter: exclude files starting with 'hapa_form_' as fallback
+            {
+              filename: { not_like: 'hapa_form_%' }
+            }
+          ]
+        }
+      }
+      // For API and frontend requests, show all files
+      return true
+    },
     update: authenticated,
   },
   hooks: {
     beforeChange: [
       // R2 folder organization by media type only
       ({ data, req, operation }) => {
+        // Auto-set source field based on filename if not already set
+        if (operation === 'create' && req.file?.name && !data.source) {
+          if (req.file.name.startsWith('hapa_form_')) {
+            data.source = 'form'
+          } else {
+            data.source = 'admin'
+          }
+        }
         // Only set prefix on create or when updating WITH a new file
         // This prevents errors during metadata-only updates (alt text, caption, etc.)
         if ((operation === 'create' || operation === 'update') && req.file?.name) {
@@ -158,6 +187,19 @@ export const Media: CollectionConfig = {
     {
       name: 'prefix',
       type: 'text',
+      hidden: true, // Hidden from UI since it's auto-generated
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: 'source',
+      type: 'select',
+      options: [
+        { label: 'Admin Upload', value: 'admin' },
+        { label: 'Form Submission', value: 'form' }
+      ],
+      defaultValue: 'admin',
       hidden: true, // Hidden from UI since it's auto-generated
       admin: {
         readOnly: true,
