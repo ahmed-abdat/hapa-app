@@ -115,6 +115,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       collection,
       data: isFormUpload ? {
         alt: finalFilename,
+        source: 'form', // Mark as form submission
         // Add metadata for tracking via caption
         caption: {
           root: {
@@ -145,6 +146,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         // fileType and other metadata stored in caption text
       } : {
         alt: finalFilename,
+        source: 'admin', // Mark as admin upload
         // Regular admin upload caption
         caption: {
           root: {
