@@ -41,12 +41,18 @@ export const plugins: Plugin[] = [
     searchOverrides: {
       labels: {
         singular: {
-          fr: 'Résultat de recherche',
-          ar: 'نتيجة البحث'
+          fr: 'Index de recherche (Auto)',
+          ar: 'فهرس البحث (تلقائي)'
         },
         plural: {
-          fr: 'Résultats de recherche',
-          ar: 'نتائج البحث'
+          fr: 'Index de recherche (Auto)',
+          ar: 'فهرس البحث (تلقائي)'
+        }
+      },
+      admin: {
+        description: {
+          fr: 'Collection automatique pour l\'indexation des contenus. Mise à jour lors de la création/modification d\'articles. Utilisée par le moteur de recherche du site.',
+          ar: 'مجموعة تلقائية لفهرسة المحتويات. يتم تحديثها عند إنشاء/تعديل المقالات. تستخدم من قبل محرك البحث في الموقع.'
         }
       },
       fields: ({ defaultFields }) => {

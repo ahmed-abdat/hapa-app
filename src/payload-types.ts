@@ -492,7 +492,7 @@ export interface MediaCleanupJob {
   createdAt: string;
 }
 /**
- * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
+ * Collection automatique pour l'indexation des contenus. Mise à jour lors de la création/modification d'articles. Utilisée par le moteur de recherche du site.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "search".
