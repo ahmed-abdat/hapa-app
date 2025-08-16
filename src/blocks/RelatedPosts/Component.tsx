@@ -63,8 +63,10 @@ export const RelatedPosts: React.FC<RelatedPostsProps> = async (props) => {
               ? doc.heroImage
               : undefined;
 
-            // Get title
-            const title = typeof doc.title === 'string' ? doc.title : doc.title?.fr || '';
+            // Get title - handle localized titles
+            const title = typeof doc.title === 'string' 
+              ? doc.title 
+              : (doc.title as { fr?: string; ar?: string })?.fr || '';
 
             return (
               <PostCard

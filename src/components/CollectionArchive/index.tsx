@@ -32,8 +32,10 @@ export const CollectionArchive: React.FC<Props> = (props) => {
               ? result.meta.image 
               : undefined;
 
-            // Get title
-            const title = typeof result.title === 'string' ? result.title : result.title?.fr || '';
+            // Get title - handle localized titles
+            const title = typeof result.title === 'string' 
+              ? result.title 
+              : (result.title as { fr?: string; ar?: string })?.fr || '';
 
             return (
               <PostCard
