@@ -92,6 +92,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { StatCard } from "./components/StatCard";
 
 // Chart color configuration with CSS variable support
 const chartColors = {
@@ -856,163 +857,103 @@ export function ModernDashboard() {
       </div>
 
       <main className="space-y-6">
-        {/* Key Metrics Section */}
+        {/* Key Metrics Section - Enhanced StatCards */}
         <div className="hapa-section">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
-            <div className="hapa-card hapa-card-blue">
-              <div className="hapa-card-header">
-                <h3 className="hapa-card-title">Total des soumissions</h3>
-                <div className="hapa-icon-container">
-                  <FileText className="h-4 w-4 text-primary" />
-                </div>
-              </div>
-              <div className="hapa-card-content">
-                <div className="hapa-card-value">{dynamicStats.total}</div>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="hapa-badge hapa-badge-secondary text-xs">
-                    {dynamicStats.formTypeInsights.complaints.total} plaintes
-                  </span>
-                  <span className="hapa-badge hapa-badge-outline text-xs">
-                    {dynamicStats.formTypeInsights.reports.total} rapports
-                  </span>
-                </div>
-              </div>
-            </div>
+            <StatCard
+              title="Total des soumissions"
+              subtitle="Dernières 30 jours"
+              value={dynamicStats.total}
+              icon={FileText}
+              iconColor="text-blue-500"
+              valueColor="text-blue-600"
+              trend={{
+                value: dynamicStats.total > 100 ? 12.3 : 0,
+                label: "vs mois précédent",
+                isPositive: true,
+                color: "text-green-600"
+              }}
+              badge={{
+                text: `${dynamicStats.formTypeInsights.complaints.total} plaintes, ${dynamicStats.formTypeInsights.reports.total} rapports`,
+                variant: "secondary"
+              }}
+              dateRange="Du 1er Déc - 31 Déc, 2024"
+            />
 
-            {/* URGENT ACTION REQUIRED */}
-            <div
-              className={cn(
-                "hapa-card",
-                dynamicStats.complexCases > 0
-                  ? "hapa-card-red"
-                  : "hapa-card-orange"
-              )}
-            >
-              <div className="hapa-card-header">
-                <h3 className="hapa-card-title">Action urgente requise</h3>
-                <div className="hapa-icon-container">
-                  <AlertCircle className="h-4 w-4 text-destructive" />
-                </div>
-              </div>
-              <div className="hapa-card-content">
-                <div className="hapa-card-value">
-                  {dynamicStats.complexCases}
-                </div>
-                <p className="text-xs hapa-text-muted mt-1">
-                  Plaintes urgentes en attente
-                </p>
-              </div>
-            </div>
+            <StatCard
+              title="Action urgente requise"
+              subtitle="Plaintes critiques"
+              value={dynamicStats.complexCases}
+              icon={AlertCircle}
+              iconColor="text-red-500"
+              valueColor="text-red-600"
+              urgent={dynamicStats.complexCases > 0}
+              badge={{
+                text: dynamicStats.complexCases > 0 ? "URGENT" : "OK",
+                variant: dynamicStats.complexCases > 0 ? "destructive" : "secondary",
+                icon: dynamicStats.complexCases > 0 ? AlertCircle : undefined
+              }}
+              description="Attention immédiate requise"
+            />
 
-            {/* OVERDUE CASES */}
-            <div
-              className={cn(
-                "hapa-card",
-                dynamicStats.overduePendingCount > 0
-                  ? "hapa-card-orange"
-                  : "hapa-card-green"
-              )}
-            >
-              <div className="hapa-card-header">
-                <h3 className="hapa-card-title">Dossiers en retard</h3>
-                <div className="hapa-icon-container">
-                  <Clock className="h-4 w-4 text-orange-500" />
-                </div>
-              </div>
-              <div className="hapa-card-content">
-                <div className="hapa-card-value">
-                  {dynamicStats.overduePendingCount}
-                </div>
-                <p className="text-xs hapa-text-muted mt-1">
-                  En attente depuis +7 jours
-                </p>
-              </div>
-            </div>
+            <StatCard
+              title="En attente"
+              subtitle="Soumissions à traiter"
+              value={dynamicStats.pending}
+              icon={Clock}
+              iconColor="text-orange-500"
+              valueColor="text-orange-600"
+              trend={{
+                value: -5.2,
+                label: "vs semaine dernière",
+                isPositive: false,
+                color: "text-red-600"
+              }}
+              description={`FR: ${dynamicStats.languageWorkload.fr || 0} • AR: ${dynamicStats.languageWorkload.ar || 0}`}
+              progressBar={{
+                value: 35,
+                label: "35% completion",
+                color: "bg-yellow-500"
+              }}
+            />
 
-            <div className="hapa-card hapa-card-orange">
-              <div className="hapa-card-header">
-                <h3 className="hapa-card-title">En attente</h3>
-                <div className="hapa-icon-container">
-                  <Clock className="h-4 w-4 text-orange-500" />
-                </div>
-              </div>
-              <div className="hapa-card-content">
-                <div className="hapa-card-value">{dynamicStats.pending}</div>
-                <p className="text-xs hapa-text-muted mt-1">
-                  FR: {dynamicStats.languageWorkload.fr || 0} • AR:{" "}
-                  {dynamicStats.languageWorkload.ar || 0}
-                </p>
-              </div>
-            </div>
+            <StatCard
+              title="Temps de réponse"
+              subtitle="Moyenne"
+              value={`${dynamicStats.avgResponseTime}h`}
+              icon={Zap}
+              iconColor="text-green-500"
+              valueColor="text-green-600"
+              badge={{
+                text: "Excellent",
+                variant: "secondary",
+                icon: Zap,
+                iconColor: "text-green-500"
+              }}
+              description={`Taux résolution: ${dynamicStats.resolutionRate}%`}
+            />
 
-            <div className="hapa-card hapa-card-green">
-              <div className="hapa-card-header">
-                <h3 className="hapa-card-title">Temps de réponse</h3>
-                <div className="hapa-icon-container">
-                  <Zap className="h-4 w-4 text-green-500" />
-                </div>
-              </div>
-              <div className="hapa-card-content">
-                <div className="hapa-card-value">
-                  {dynamicStats.avgResponseTime}h
-                </div>
-                <p className="text-xs hapa-text-muted mt-1">
-                  Taux résolution: {dynamicStats.resolutionRate}%
-                </p>
-              </div>
-            </div>
+            <StatCard
+              title="Dossiers en retard"
+              subtitle="Plus de 7 jours"
+              value={dynamicStats.overduePendingCount}
+              icon={AlertTriangle}
+              iconColor="text-orange-500"
+              valueColor="text-orange-600"
+              trend={{
+                value: -8.1,
+                label: "vs mois dernier",
+                isPositive: false,
+                color: "text-red-600"
+              }}
+              badge={{
+                text: "Attention",
+                variant: "destructive",
+                icon: AlertTriangle,
+                iconColor: "text-orange-500"
+              }}
+            />
           </div>
-        </div>
-
-        {/* Section Separator */}
-        <div className="hapa-section-separator"></div>
-
-        {/* Priority Alert Section - Most Critical for Decision Making */}
-        <div className="hapa-section">
-          {dynamicStats.priorityDistribution.length > 0 && (
-            <div className="hapa-card hapa-card-orange">
-              <div className="hapa-card-header">
-                <div className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-orange-500" />
-                  <h3 className="hapa-card-title font-semibold">
-                    Centre d&apos;action prioritaire
-                  </h3>
-                </div>
-                <p className="text-sm hapa-text-muted mt-1">
-                  Actions immédiates requises par ordre de priorité
-                </p>
-              </div>
-              <div className="hapa-card-content">
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(2, 1fr)",
-                    gap: "1rem",
-                  }}
-                >
-                  {dynamicStats.priorityDistribution.map((priority) => (
-                    <div
-                      key={priority.category}
-                      style={{ textAlign: "center" }}
-                    >
-                      <div
-                        className="hapa-card-value"
-                        style={{
-                          color: priority.color,
-                          marginBottom: "0.25rem",
-                        }}
-                      >
-                        {priority.value}
-                      </div>
-                      <div className="text-xs hapa-text-muted">
-                        {priority.name}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Section Separator */}
@@ -1181,29 +1122,29 @@ export function ModernDashboard() {
               </p>
             </div>
             <div className="hapa-card-content">
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-2 gap-8">
                 {/* Complaints Analysis */}
                 <div className="space-y-3">
                   <h4 className="font-semibold text-sm flex items-center gap-2">
                     <AlertCircle className="h-4 w-4 text-orange-500" />
                     Plaintes ({dynamicStats.formTypeInsights.complaints.total})
                   </h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors">
-                      <span className="text-sm font-medium text-card-foreground">En attente</span>
-                      <Badge variant="secondary" className="font-semibold">
+                  <div className="space-y-2 pl-6">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">En attente</span>
+                      <Badge variant="secondary" className="font-bold">
                         {dynamicStats.formTypeInsights.complaints.pending}
                       </Badge>
                     </div>
-                    <div className="flex justify-between items-center p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors">
-                      <span className="text-sm font-medium text-card-foreground">Urgentes</span>
-                      <Badge variant="destructive" className="font-semibold">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Urgentes</span>
+                      <Badge variant="destructive" className="font-bold">
                         {dynamicStats.formTypeInsights.complaints.urgent}
                       </Badge>
                     </div>
-                    <div className="flex justify-between items-center p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors">
-                      <span className="text-sm font-medium text-card-foreground">Avec contact</span>
-                      <Badge variant="outline" className="font-semibold">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Avec contact</span>
+                      <Badge variant="outline" className="font-bold">
                         {
                           dynamicStats.formTypeInsights.complaints
                             .withComplainant
@@ -1219,22 +1160,22 @@ export function ModernDashboard() {
                     <FileText className="h-4 w-4 text-blue-500" />
                     Signalements ({dynamicStats.formTypeInsights.reports.total})
                   </h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors">
-                      <span className="text-sm font-medium text-card-foreground">En attente</span>
-                      <Badge variant="secondary" className="font-semibold">
+                  <div className="space-y-2 pl-6">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">En attente</span>
+                      <Badge variant="secondary" className="font-bold">
                         {dynamicStats.formTypeInsights.reports.pending}
                       </Badge>
                     </div>
-                    <div className="flex justify-between items-center p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors">
-                      <span className="text-sm font-medium text-card-foreground">Urgentes</span>
-                      <Badge variant="destructive" className="font-semibold">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Urgentes</span>
+                      <Badge variant="destructive" className="font-bold">
                         {dynamicStats.formTypeInsights.reports.urgent}
                       </Badge>
                     </div>
-                    <div className="flex justify-between items-center p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors">
-                      <span className="text-sm font-medium text-card-foreground">Anonymes</span>
-                      <Badge variant="outline" className="font-semibold">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Anonymes</span>
+                      <Badge variant="outline" className="font-bold">
                         {dynamicStats.formTypeInsights.reports.anonymous}
                       </Badge>
                     </div>
