@@ -41,9 +41,6 @@ importers:
       '@payloadcms/plugin-nested-docs':
         specifier: 3.44.0
         version: 3.44.0(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))
-      '@payloadcms/plugin-redirects':
-        specifier: 3.44.0
-        version: 3.44.0(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))
       '@payloadcms/plugin-search':
         specifier: 3.44.0
         version: 3.44.0(@types/react@19.1.0)(graphql@16.11.0)(monaco-editor@0.52.2)(next@15.3.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.7.3)
@@ -1246,11 +1243,6 @@ packages:
 
   '@payloadcms/plugin-nested-docs@3.44.0':
     resolution: {integrity: sha512-/3f4B817dpQ2x7mBQ7+BJyX8vpTkc7lmqS9EmnSOwFAZioZR99gJmOYTxwZSCUNNvZZPfzgjTrLl44iC0ZqmiQ==}
-    peerDependencies:
-      payload: 3.44.0
-
-  '@payloadcms/plugin-redirects@3.44.0':
-    resolution: {integrity: sha512-FbIX4SVy5PDfTqV8YH7q5hMDRgHh7KvwiA4gDfCHxX6dkq4RkHBbugB1ccB1gxVReQBDkP0ZeDQu4Pm5q5SZvg==}
     peerDependencies:
       payload: 3.44.0
 
@@ -6997,10 +6989,6 @@ snapshots:
       - typescript
 
   '@payloadcms/plugin-nested-docs@3.44.0(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))':
-    dependencies:
-      payload: 3.44.0(graphql@16.11.0)(typescript@5.7.3)
-
-  '@payloadcms/plugin-redirects@3.44.0(payload@3.44.0(graphql@16.11.0)(typescript@5.7.3))':
     dependencies:
       payload: 3.44.0(graphql@16.11.0)(typescript@5.7.3)
 

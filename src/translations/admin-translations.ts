@@ -6,7 +6,6 @@ export const adminTranslations = {
   fr: {
     // Plugin-generated collections
     general: {
-      redirects: "Redirections",
       search: "Résultats de recherche", 
       dashboard: "Tableau de bord HAPA",
       adminPanel: "Interface d'administration HAPA",
@@ -322,7 +321,6 @@ export const adminTranslations = {
   ar: {
     // Plugin-generated collections
     general: {
-      redirects: "عمليات إعادة التوجيه",
       search: "نتائج البحث",
       dashboard: "لوحة تحكم هابا",
       adminPanel: "واجهة إدارة هابا",
