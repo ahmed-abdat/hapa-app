@@ -179,7 +179,7 @@ export default async function Page({
 
         {/* Posts Grid or Empty State */}
         {posts.docs.length > 0 ? (
-          <CollectionArchive posts={posts.docs} locale={locale as Locale} />
+          <CollectionArchive posts={posts.docs} locale={locale as Locale} showDescription={true} />
         ) : (
           <div className="text-center py-16">
             <div className="max-w-md mx-auto">

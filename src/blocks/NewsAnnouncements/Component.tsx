@@ -3,6 +3,7 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import { Link } from "@/i18n/navigation";
+import { PostCard } from "@/components/PostCard";
 
 // Dynamically import motion components and types
 const MotionDiv = dynamic(() => 
@@ -50,6 +51,7 @@ type NewsAnnouncementsProps = {
   description?: string;
   posts?: Post[];
   showFeatured?: boolean;
+  showPostDescriptions?: boolean;
   maxPosts?: number;
   locale?: Locale;
 };
@@ -110,6 +112,7 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
   description,
   posts = [],
   showFeatured: _showFeatured = true,
+  showPostDescriptions = false,
   maxPosts = 6,
   locale: localeProp,
 }) => {
@@ -159,121 +162,47 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
             viewport={{ once: true, margin: "-50px" }}
             className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid-spacing"
           >
-            {posts.slice(0, maxPosts).map((post, index) => (
-            <MotionDiv
-              key={post.id || index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-                transition: {
-                  duration: 0.6,
-                  ease: [0.25, 1, 0.5, 1],
-                  delay: index * 0.1,
-                }
-              }}
-              viewport={{ once: true, margin: "-50px" }}
-              className="group h-full"
-            >
-              <Link href={`/posts/${post.slug}`} className="block h-full">
-                <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 hover:-translate-y-2 border border-gray-100/80 hover:border-primary/30 h-full flex flex-col group relative backdrop-blur-sm">
-                  {/* Modern gradient overlay for depth */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                  
-                  {/* Image section - consistent height */}
-                  <div className="relative h-40 sm:h-48 bg-gradient-to-br from-primary/10 to-accent/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                    {post.heroImage && typeof post.heroImage === 'object' && 'url' in post.heroImage && post.heroImage.url ? (
-                      <Image 
-                        src={getMediaUrl(post.heroImage.url, post.heroImage.updatedAt)} 
-                        alt={post.heroImage.alt || getLocalizedTitle(post.title, locale)}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover"
-                        loading="lazy"
-                        placeholder="blur"
-                        blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAEXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAVlpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KTMInWQAAAVBJREFUWAnt1rEKgkAUhmHPU9B7OLWFYw"
-                      />
-                    ) : (
-                      <FileText className="h-10 w-10 text-primary/40" />
-                    )}
-                    
-                    {/* Enhanced gradient overlay on image */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    
-                    {/* Category badges */}
-                    {post.categories && Array.isArray(post.categories) && post.categories.length > 0 && (
-                      <div className="absolute bottom-4 left-4 right-4">
-                        <div className="flex gap-2 flex-wrap">
-                          {post.categories.slice(0, 2).map((category) => {
-                            if (typeof category === 'object' && category !== null) {
-                              const categoryTitle = category.title || t('untitledCategory')
-                              return (
-                                <span 
-                                  key={category.id}
-                                  className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-primary/90 backdrop-blur-md text-white border border-white/20 hover:bg-primary transition-colors duration-200"
-                                >
-                                  {categoryTitle}
-                                </span>
-                              )
-                            }
-                            return null
-                          })}
-                          {post.categories.length > 2 && (
-                            <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-accent/90 backdrop-blur-md text-white border border-white/20">
-                              +{post.categories.length - 2}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Modern corner accent */}
-                    <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-secondary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
-                  
-                  {/* Content section - flex grow to fill remaining space */}
-                  <div className="p-4 sm:p-6 flex flex-col flex-grow relative">
-                    {/* Publication Date with Icon */}
-                    <div className="flex items-center gap-2 text-xs text-gray-500 mb-3 flex-shrink-0">
-                      <Calendar className="h-3.5 w-3.5 text-primary/60" />
-                      <time dateTime={post.publishedAt || undefined} className="font-medium">
-                        {post.publishedAt ? formatDate(post.publishedAt, locale) : ''}
-                      </time>
-                    </div>
-                    
-                    {/* Enhanced Title */}
-                    <h3 className="font-bold text-lg sm:text-xl leading-tight tracking-tight text-gray-900 mb-3 group-hover:text-primary transition-colors duration-300 line-clamp-2 flex-shrink-0">
-                      {getLocalizedTitle(post.title, locale)}
-                    </h3>
-                    
-                    {/* Enhanced Description */}
-                    {getLocalizedDescription(post.meta?.description, locale) && (
-                      <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-4 flex-grow">
-                        {getLocalizedDescription(post.meta?.description, locale)}
-                      </p>
-                    )}
-                    
-                    {/* Modern Read More Section */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100 group-hover:border-primary/20 transition-colors duration-300 flex-shrink-0 mt-auto">
-                      <span className="text-primary font-semibold text-sm group-hover:text-accent transition-colors duration-300">
-                        {t("readMore")}
-                      </span>
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 group-hover:bg-primary transition-all duration-300 group-hover:scale-110">
-                        {isRtl ? (
-                          <ArrowLeft className="h-4 w-4 text-primary group-hover:text-white transition-colors duration-300" />
-                        ) : (
-                          <ArrowRight className="h-4 w-4 text-primary group-hover:text-white transition-colors duration-300" />
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Subtle HAPA brand accent line */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                </div>
-              </Link>
-            </MotionDiv>
-            ))}
+            {posts.slice(0, maxPosts).map((post, index) => {
+              // Get category for the PostCard
+              const category = post.categories && Array.isArray(post.categories) && post.categories.length > 0 
+                ? (typeof post.categories[0] === 'object' && post.categories[0] !== null 
+                    ? post.categories[0].title || t('untitledCategory')
+                    : '') 
+                : undefined;
+
+              // Get image for the PostCard - pass the whole media object
+              const image = post.heroImage && typeof post.heroImage === 'object' && 'url' in post.heroImage 
+                ? post.heroImage
+                : undefined;
+
+              return (
+                <MotionDiv
+                  key={post.id || index}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                    transition: {
+                      duration: 0.6,
+                      ease: [0.25, 1, 0.5, 1],
+                      delay: index * 0.1,
+                    }
+                  }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  className="h-full"
+                >
+                  <PostCard
+                    title={getLocalizedTitle(post.title, locale)}
+                    description={getLocalizedDescription(post.meta?.description, locale)}
+                    href={`/posts/${post.slug}`}
+                    image={image}
+                    category={category}
+                    date={post.publishedAt || undefined}
+                    showDescription={showPostDescriptions}
+                  />
+                </MotionDiv>
+              );
+            })}
           </MotionDiv>
         ) : (
           /* No posts available fallback */

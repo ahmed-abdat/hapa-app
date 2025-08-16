@@ -155,10 +155,11 @@ export default async function Page({
                   </div>
                 </div>
 
-                {/* Results Grid */}
+                {/* Results Grid - Show descriptions for search results */}
                 <CollectionArchive
                   posts={posts.docs as CardPostData[]}
                   locale={locale}
+                  showDescription={true}
                 />
               </div>
             ) : (
@@ -251,10 +252,11 @@ export default async function Page({
                     </div>
                   </div>
 
-                  {/* Posts Grid */}
+                  {/* Posts Grid - Don't show descriptions for recent posts preview */}
                   <CollectionArchive
                     posts={posts.docs.slice(0, 6) as CardPostData[]}
                     locale={locale}
+                    showDescription={false}
                   />
                 </div>
               )}
