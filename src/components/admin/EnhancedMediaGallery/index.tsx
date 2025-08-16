@@ -13,7 +13,7 @@ import {
   ZoomIn,
   FileText,
   File,
-  Image,
+  Image as ImageIcon,
   VideoIcon,
   Music,
   Eye,
@@ -462,7 +462,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ url, filename, onError }) => 
   if (imageError) {
     return (
       <div className="image-error">
-        <Image size={48} className="error-icon" aria-hidden="true" />
+        <ImageIcon size={48} className="error-icon" aria-hidden="true" />
         <p>Unable to load image: {filename}</p>
       </div>
     )
@@ -472,7 +472,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ url, filename, onError }) => 
     <div className="enhanced-image-viewer">
       <div className="image-toolbar">
         <div className="image-info">
-          <Image size={20} className="image-icon" aria-hidden="true" />
+          <ImageIcon size={20} className="image-icon" aria-hidden="true" />
           <span className="image-title">{filename}</span>
         </div>
         
@@ -645,7 +645,7 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
 
   const getFileIcon = (fileType: string): React.ReactElement => {
     switch (fileType) {
-      case 'image': return <Image size={24} aria-hidden="true" />
+      case 'image': return <ImageIcon size={24} aria-hidden="true" />
       case 'video': return <VideoIcon size={24} aria-hidden="true" />
       case 'audio': return <Music size={24} aria-hidden="true" />
       case 'pdf': return <FileText size={24} aria-hidden="true" />

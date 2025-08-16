@@ -1,16 +1,18 @@
 import { cn } from '@/utilities/ui'
 import React from 'react'
 
-import { Card, CardPostData } from '@/components/Card'
+import { PostCard } from '@/components/PostCard'
+import { CardPostData } from '@/components/Card'
 import { type Locale } from '@/utilities/locale'
 
 export type Props = {
   posts: CardPostData[]
   locale: Locale
+  showDescription?: boolean
 }
 
 export const CollectionArchive: React.FC<Props> = (props) => {
-  const { posts, locale } = props
+  const { posts, locale, showDescription = false } = props
 
   return (
     <div className={cn('hapa-container')}>
@@ -18,14 +20,34 @@ export const CollectionArchive: React.FC<Props> = (props) => {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid-spacing">
         {posts?.map((result) => {
           if (typeof result === 'object' && result !== null) {
+            // Get category for the PostCard
+            const category = result.categories && Array.isArray(result.categories) && result.categories.length > 0 
+              ? (typeof result.categories[0] === 'object' && result.categories[0] !== null 
+                  ? result.categories[0].title || 'Catégorie'
+                  : '') 
+              : undefined;
+
+            // Get image for the PostCard - pass the whole media object
+            const image = result.meta?.image && typeof result.meta.image === 'object' 
+              ? result.meta.image 
+              : undefined;
+
+            // Get title - handle localized titles
+            const title = typeof result.title === 'string' 
+              ? result.title 
+              : (result.title as { fr?: string; ar?: string })?.fr || '';
+
             return (
-              <Card 
+              <PostCard
                 key={result.id}
-                className="h-full flex flex-col w-full" 
-                doc={result} 
-                relationTo="posts" 
-                showCategories 
-                locale={locale}
+                title={title}
+                description={result.meta?.description || undefined}
+                href={`/posts/${result.slug}`}
+                image={image}
+                category={category}
+                date={result.publishedAt || result.createdAt || undefined}
+                showDescription={showDescription}
+                className="h-full"
               />
             )
           }
