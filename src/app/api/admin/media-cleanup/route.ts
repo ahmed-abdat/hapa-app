@@ -18,11 +18,12 @@ interface CleanupRequest {
 }
 
 /**
- * Scan R2 storage for orphaned files not referenced in FormMedia collection
+ * Scan R2 storage for orphaned files not referenced in Media collection
+ * Now supports the new folder structure: images/, docs/, videos/, audio/, media/
  */
 async function scanForOrphanedFiles(
   payload: any,
-  directories: string[] = ['forms/'],
+  directories: string[] = ['images/', 'docs/', 'videos/', 'audio/', 'media/', 'forms/'],
   maxFiles: number = 1000,
   retentionDays: number = 30
 ): Promise<{
@@ -53,6 +54,49 @@ async function scanForOrphanedFiles(
   cutoffDate.setDate(cutoffDate.getDate() - retentionDays)
 
   try {
+    // First, get all media records from database for efficient comparison
+    const allMediaRecords = await payload.find({
+      collection: 'media',
+      limit: 100000, // Get all records
+      select: {
+        filename: true,
+        prefix: true,
+        url: true,
+      },
+    })
+    
+    // Create a Set of all valid R2 paths from database records
+    const validPaths = new Set<string>()
+    allMediaRecords.docs.forEach((doc: any) => {
+      if (doc.filename) {
+        // Handle files with prefix
+        if (doc.prefix) {
+          validPaths.add(`${doc.prefix}/${doc.filename}`)
+        } else {
+          // For older files without prefix, try to extract from URL
+          if (doc.url && typeof doc.url === 'string') {
+            // Extract path from URL (e.g., /api/media/file/images/test.jpg -> images/test.jpg)
+            const urlMatch = doc.url.match(/\/api\/media\/file\/(.+)/)
+            if (urlMatch && urlMatch[1]) {
+              validPaths.add(decodeURIComponent(urlMatch[1]))
+            }
+          }
+          // Also add without prefix for backward compatibility
+          validPaths.add(`media/${doc.filename}`)
+          validPaths.add(doc.filename)
+        }
+      }
+    })
+    
+    logger.info('Database media scan complete', {
+      component: 'MediaCleanup',
+      action: 'database_scan',
+      metadata: {
+        totalRecords: allMediaRecords.totalDocs,
+        validPaths: validPaths.size,
+      },
+    })
+    
     // Scan each directory in R2
     for (const directory of directories) {
       let continuationToken: string | undefined
@@ -73,6 +117,9 @@ async function scanForOrphanedFiles(
             
             filesScanned++
             
+            // Skip directories (keys ending with /)
+            if (object.Key.endsWith('/')) continue
+            
             // Skip files newer than retention period
             if (object.LastModified && object.LastModified > cutoffDate) {
               continue
@@ -82,19 +129,12 @@ async function scanForOrphanedFiles(
             const filename = object.Key.split('/').pop()
             if (!filename) continue
             
-            // Check if file exists in FormMedia collection
-            const mediaExists = await payload.find({
-              collection: 'media',
-              where: {
-                filename: {
-                  equals: filename,
-                },
-              },
-              limit: 1,
-            })
+            // Check if this exact path exists in our valid paths set
+            const isOrphaned = !validPaths.has(object.Key) && 
+                               !validPaths.has(decodeURIComponent(object.Key))
             
-            // If not found in database, it's orphaned
-            if (mediaExists.totalDocs === 0) {
+            // If not found in database paths, it's orphaned
+            if (isOrphaned) {
               orphanedFiles.push({
                 filename,
                 path: object.Key,
@@ -224,9 +264,17 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url)
     const dryRun = searchParams.get('dryRun') === 'true'
-    const directories = searchParams.get('directories')?.split(',') || ['forms/']
-    const maxFiles = parseInt(searchParams.get('maxFiles') || '1000', 10)
-    const retentionDays = parseInt(searchParams.get('retentionDays') || '30', 10)
+    
+    // Validate and sanitize directories input
+    const ALLOWED_DIRECTORIES = ['images/', 'docs/', 'videos/', 'audio/', 'media/', 'forms/']
+    const requestedDirs = searchParams.get('directories')?.split(',') || ALLOWED_DIRECTORIES
+    const directories = requestedDirs.filter(dir => 
+      ALLOWED_DIRECTORIES.includes(dir) && !dir.includes('..')
+    )
+    
+    // Apply reasonable limits to prevent resource exhaustion
+    const maxFiles = Math.min(parseInt(searchParams.get('maxFiles') || '1000', 10), 5000)
+    const retentionDays = Math.min(Math.max(parseInt(searchParams.get('retentionDays') || '30', 10), 1), 365)
 
     logger.info('Starting orphaned files scan', {
       component: 'MediaCleanup',
@@ -358,12 +406,31 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       )
     }
+    
+    // Validate file paths - simple security check
+    const MAX_FILES_PER_BATCH = 1000
+    const validFiles = orphanedFiles
+      .slice(0, MAX_FILES_PER_BATCH) // Limit batch size
+      .filter(file => 
+        typeof file === 'string' &&
+        file.length > 0 &&
+        file.length < 500 && // Reasonable path length
+        !file.includes('..') && // No directory traversal
+        !file.startsWith('/') // No absolute paths
+      )
+    
+    if (validFiles.length === 0) {
+      return NextResponse.json(
+        { success: false, error: 'No valid files provided' },
+        { status: 400 }
+      )
+    }
 
     logger.info('Starting orphaned files cleanup', {
       component: 'MediaCleanup',
       action: 'cleanup_start',
       metadata: {
-        fileCount: orphanedFiles.length,
+        fileCount: validFiles.length,
         dryRun,
         userId: user.id,
       },
@@ -378,9 +445,9 @@ export async function POST(req: NextRequest) {
         executedAt: new Date().toISOString(),
         configuration: {
           dryRun,
-          maxFilesToProcess: orphanedFiles.length,
+          maxFilesToProcess: validFiles.length,
         },
-        orphanedFiles: orphanedFiles.map(path => ({
+        orphanedFiles: validFiles.map(path => ({
           path,
           filename: path.split('/').pop() || path,
           status: 'found',
@@ -392,10 +459,10 @@ export async function POST(req: NextRequest) {
 
     try {
       // Execute the cleanup
-      const cleanupResult = await deleteOrphanedFiles(orphanedFiles, dryRun)
+      const cleanupResult = await deleteOrphanedFiles(validFiles, dryRun)
 
       // Update job with results
-      const updatedOrphanedFiles = orphanedFiles.map(path => {
+      const updatedOrphanedFiles = validFiles.map(path => {
         const filename = path.split('/').pop() || path
         const wasDeleted = !cleanupResult.errors.some(err => err.startsWith(path))
         
@@ -414,16 +481,16 @@ export async function POST(req: NextRequest) {
           status: cleanupResult.failed > 0 ? 'partial' : 'completed',
           completedAt: new Date().toISOString(),
           metrics: {
-            filesProcessed: orphanedFiles.length,
+            filesProcessed: validFiles.length,
             filesDeleted: cleanupResult.deleted,
             deletionErrors: cleanupResult.failed,
-            orphanedFilesFound: orphanedFiles.length,
-            filesScanned: orphanedFiles.length,
+            orphanedFilesFound: validFiles.length,
+            filesScanned: validFiles.length,
             storageReclaimed: 0, // Would need to track file sizes
           },
           orphanedFiles: updatedOrphanedFiles,
           executionLog: dryRun 
-            ? `Dry run completed. Would delete ${orphanedFiles.length} files.`
+            ? `Dry run completed. Would delete ${validFiles.length} files.`
             : `Cleanup completed. Deleted ${cleanupResult.deleted} files, ${cleanupResult.failed} failed.`,
           errorLog: cleanupResult.errors.length > 0 
             ? cleanupResult.errors.join('\n')

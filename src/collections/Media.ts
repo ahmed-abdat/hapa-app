@@ -13,32 +13,6 @@ import { getR2Client } from '../utilities/r2-client'
 import { logger } from '../utilities/logger'
 
 /**
- * Extract R2 storage key from media URL for cleanup operations
- * @param url - Full URL to the media file 
- * @returns R2 key path or null if invalid URL
- */
-function extractR2KeyFromUrl(url: string): string | null {
-  if (!url || typeof url !== 'string') {
-    return null
-  }
-
-  try {
-    const urlObj = new URL(url.trim())
-    const key = urlObj.pathname.startsWith('/') 
-      ? urlObj.pathname.substring(1) 
-      : urlObj.pathname
-    
-    return key || null
-  } catch (error) {
-    logger.error('Failed to extract R2 key from URL', error as Error, {
-      component: 'Media',
-      metadata: { url }
-    })
-    return null
-  }
-}
-
-/**
  * Admin Media Collection
  * 
  * This collection is reserved for admin-uploaded media files that should
@@ -106,14 +80,28 @@ export const Media: CollectionConfig = {
     afterDelete: [
       // Clean up R2 storage when media records are deleted
       async ({ doc }) => {
-        if (!doc?.url) {
-          return // No URL, nothing to delete
+        if (!doc?.filename) {
+          return // No filename, nothing to delete
         }
 
-        const r2Key = extractR2KeyFromUrl(doc.url)
-        if (!r2Key) {
-          return // Invalid URL format
+        // Determine the prefix based on file extension if not stored
+        let prefix = doc.prefix
+        if (!prefix) {
+          // Fallback: determine folder based on file extension
+          const extension = doc.filename.split('.').pop()?.toLowerCase()
+          if (['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif', 'svg'].includes(extension || '')) {
+            prefix = 'images'
+          } else if (['pdf', 'doc', 'docx', 'txt', 'rtf'].includes(extension || '')) {
+            prefix = 'docs'
+          } else if (['mp4', 'mov', 'avi', 'webm', 'mkv'].includes(extension || '')) {
+            prefix = 'videos'
+          } else if (['mp3', 'wav', 'ogg', 'aac', 'm4a'].includes(extension || '')) {
+            prefix = 'audio'
+          } else {
+            prefix = 'media'
+          }
         }
+        const r2Key = `${prefix}/${doc.filename}`
 
         try {
           const r2Client = getR2Client()
@@ -126,17 +114,28 @@ export const Media: CollectionConfig = {
             component: 'Media',
             action: 'after_delete',
             filename: doc.filename,
-            metadata: { r2Key }
+            metadata: { r2Key, prefix }
           })
         } catch (error) {
-          // Log error but don't throw - prevents database rollback
-          // Orphaned files will be cleaned up by the cleanup job
-          logger.error('Failed to delete R2 file', error as Error, {
-            component: 'Media',
-            action: 'after_delete',
-            filename: doc.filename,
-            metadata: { r2Key, url: doc.url }
-          })
+          const errorDetails = error as Error
+          
+          // Don't log as error if file doesn't exist (already deleted)
+          if (errorDetails.name === 'NoSuchKey') {
+            logger.warn('R2 file not found - may have been already deleted', {
+              component: 'Media',
+              action: 'after_delete',
+              filename: doc.filename,
+              metadata: { r2Key, prefix }
+            })
+          } else {
+            // Log real errors
+            logger.error('Failed to delete R2 file', errorDetails, {
+              component: 'Media',
+              action: 'after_delete',
+              filename: doc.filename,
+              metadata: { r2Key, prefix, url: doc.url }
+            })
+          }
         }
       }
     ]
@@ -155,6 +154,14 @@ export const Media: CollectionConfig = {
           return [...rootFeatures, FixedToolbarFeature(), InlineToolbarFeature()]
         },
       }),
+    },
+    {
+      name: 'prefix',
+      type: 'text',
+      hidden: true, // Hidden from UI since it's auto-generated
+      admin: {
+        readOnly: true,
+      },
     },
   ],
   upload: {
