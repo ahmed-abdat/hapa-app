@@ -17,6 +17,42 @@
   padding: 1.5rem;
 }
 
+/* Fix Tailwind shadow utilities in Payload CMS context with enhanced visibility */
+.dashboard-tailwind .shadow-sm {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.04) !important;
+}
+
+.dashboard-tailwind .shadow {
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.08) !important;
+}
+
+.dashboard-tailwind .shadow-md {
+  box-shadow: 0 4px 8px -1px rgb(0 0 0 / 0.12), 0 2px 4px -2px rgb(0 0 0 / 0.08) !important;
+}
+
+.dashboard-tailwind .shadow-lg {
+  box-shadow: 0 10px 20px -3px rgb(0 0 0 / 0.15), 0 4px 8px -4px rgb(0 0 0 / 0.1) !important;
+}
+
+.dashboard-tailwind .shadow-xl {
+  box-shadow: 0 20px 30px -5px rgb(0 0 0 / 0.15), 0 8px 12px -6px rgb(0 0 0 / 0.1) !important;
+}
+
+.dashboard-tailwind .shadow-2xl {
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.3) !important;
+}
+
+.dashboard-tailwind .shadow-none {
+  box-shadow: 0 0 #0000 !important;
+}
+
+/* Subtle micro hover effect for cards */
+.dashboard-tailwind .hover\:shadow-lg:hover {
+  box-shadow: 0 6px 12px -2px rgb(0 0 0 / 0.12), 0 3px 6px -3px rgb(0 0 0 / 0.08) !important;
+  transform: translateY(-1px);
+  transition: all 0.15s ease;
+}
+
 /* Clean Professional Header */
 .hapa-header {
   position: sticky;
