@@ -505,6 +505,7 @@ async function uploadFilesWithRetry(
         collection: 'media',
         data: { 
           alt: sanitizeFilename(file.name),
+          source: 'form', // Mark as form submission
           caption: {
             root: {
               type: 'root',
