@@ -67,8 +67,8 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 
-          # Use Claude Opus for thorough government website reviews
-          model: "claude-opus-4-20250514"
+          # Use Claude Sonnet 4 for government website reviews
+          model: "claude-sonnet-4-20250514"
           
           # Enhanced tools for HAPA website analysis
           allowed_tools: |
