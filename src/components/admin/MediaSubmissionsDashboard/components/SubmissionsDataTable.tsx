@@ -470,7 +470,7 @@ export function SubmissionsDataTable({
         },
       },
     ],
-    [onUpdateSubmission, onViewDetails, i18n, dt]
+    [onUpdateSubmission, onViewDetails, dt]
   );
 
   const table = useReactTable({

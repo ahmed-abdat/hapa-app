@@ -669,7 +669,7 @@ export function ModernDashboard() {
       evidenceQuality,
       formTypeInsights: formBreakdown,
     };
-  }, [submissions, stats, i18n]);
+  }, [submissions, stats, dt]);
 
   if (loading) {
     return (
