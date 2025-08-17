@@ -381,7 +381,7 @@ export interface MediaContentSubmission {
   createdAt: string;
 }
 /**
- * Track and manage media cleanup operations for orphaned files
+ * Suivre et gérer les opérations de nettoyage des fichiers média orphelins
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media-cleanup-jobs".
@@ -389,46 +389,46 @@ export interface MediaContentSubmission {
 export interface MediaCleanupJob {
   id: number;
   /**
-   * Type of cleanup operation performed
+   * Type d'opération de nettoyage effectuée
    */
   jobType: 'verification' | 'cleanup' | 'audit';
   status: 'pending' | 'running' | 'completed' | 'failed' | 'partial';
   /**
-   * When the job was started
+   * Quand la tâche a été démarrée
    */
   executedAt?: string | null;
   /**
-   * When the job was completed
+   * Quand la tâche a été terminée
    */
   completedAt?: string | null;
   metrics?: {
     /**
-     * Total number of files scanned in R2
+     * Nombre total de fichiers scannés dans R2
      */
     filesScanned?: number | null;
     /**
-     * Number of files processed
+     * Nombre de fichiers traités
      */
     filesProcessed?: number | null;
     /**
-     * Number of orphaned files identified
+     * Nombre de fichiers orphelins identifiés
      */
     orphanedFilesFound?: number | null;
     /**
-     * Number of files successfully deleted
+     * Nombre de fichiers supprimés avec succès
      */
     filesDeleted?: number | null;
     /**
-     * Number of files that failed to delete
+     * Nombre de fichiers qui ont échoué à la suppression
      */
     deletionErrors?: number | null;
     /**
-     * Storage space reclaimed in bytes
+     * Espace de stockage récupéré en octets
      */
     storageReclaimed?: number | null;
   };
   /**
-   * List of orphaned files found during scan
+   * Liste des fichiers orphelins trouvés pendant le scan
    */
   orphanedFiles?:
     | {
@@ -438,7 +438,7 @@ export interface MediaCleanupJob {
         lastModified?: string | null;
         status?: ('found' | 'deleted' | 'failed' | 'skipped') | null;
         /**
-         * Error message if deletion failed
+         * Message d'erreur si la suppression a échoué
          */
         error?: string | null;
         id?: string | null;
@@ -446,11 +446,11 @@ export interface MediaCleanupJob {
     | null;
   configuration?: {
     /**
-     * If true, only scans and reports without deleting
+     * Si vrai, scanne et rapporte seulement sans supprimer
      */
     dryRun?: boolean | null;
     /**
-     * R2 directories to scan (default: forms/)
+     * Répertoires R2 à scanner (par défaut: forms/)
      */
     includeDirectories?:
       | {
@@ -459,7 +459,7 @@ export interface MediaCleanupJob {
         }[]
       | null;
     /**
-     * File patterns to exclude from cleanup
+     * Motifs de fichiers à exclure du nettoyage
      */
     excludePatterns?:
       | {
@@ -468,25 +468,25 @@ export interface MediaCleanupJob {
         }[]
       | null;
     /**
-     * Maximum files to process in one job
+     * Maximum de fichiers à traiter dans une tâche
      */
     maxFilesToProcess?: number | null;
     /**
-     * Keep files newer than this many days
+     * Garder les fichiers plus récents que ce nombre de jours
      */
     retentionDays?: number | null;
   };
   /**
-   * Detailed log of the cleanup operation
+   * Journal détaillé de l'opération de nettoyage
    */
   executionLog?: string | null;
   /**
-   * Error messages encountered during execution
+   * Messages d'erreur rencontrés pendant l'exécution
    */
   errorLog?: string | null;
   triggeredBy?: ('manual' | 'scheduled' | 'api') | null;
   /**
-   * User who triggered the job (for manual jobs)
+   * Utilisateur qui a déclenché la tâche (pour les tâches manuelles)
    */
   executedBy?: (number | null) | User;
   updatedAt: string;

@@ -82,15 +82,15 @@ export default function DashboardLanding(): React.JSX.Element {
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
           <div>
-            <h2 style={{ margin: 0, color: 'var(--hapa-primary)' }}>{dt('dashboard:title')}</h2>
+            <h2 style={{ margin: 0, color: 'var(--hapa-primary)' }}>{dt('dashboard.title')}</h2>
             <p style={{ margin: 0, color: '#4b5563', fontSize: 14 }}>Vue d’ensemble des signalements et plaintes</p>
           </div>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             <Link href="/admin/collections/dashboard-submissions" style={buttonPrimaryStyle}>
-              <BarChart3 style={iconStyle} /> {dt('common:openInAdmin')}
+              <BarChart3 style={iconStyle} /> {dt('common.openInAdmin')}
             </Link>
             <Link href="/admin/collections/media-content-submissions" style={buttonOutlineStyle}>
-              <ListChecks style={iconStyle} /> {dt('common:viewAllSubmissions')}
+              <ListChecks style={iconStyle} /> {dt('common.viewAllSubmissions')}
             </Link>
           </div>
         </div>
@@ -102,7 +102,7 @@ export default function DashboardLanding(): React.JSX.Element {
             <div style={cardStyle}>
               <div style={cardIconWrap('#138b3a10')}><Inbox style={iconPrimary} /></div>
               <div style={cardStatWrap}>
-                <span style={cardStatLabel}>{dt('stats:total')}</span>
+                <span style={cardStatLabel}>{dt('stats.total')}</span>
                 <strong style={cardStatValue}>{state.data?.stats.totalSubmissions ?? (state.loading ? '…' : 0)}</strong>
               </div>
             </div>
@@ -111,7 +111,7 @@ export default function DashboardLanding(): React.JSX.Element {
             <div style={cardStyle}>
               <div style={cardIconWrap('#e6e61920')}><TriangleAlert style={{ ...iconPrimary, color: '#b45309' }} /></div>
               <div style={cardStatWrap}>
-                <span style={cardStatLabel}>{dt('status:pending')}</span>
+                <span style={cardStatLabel}>{dt('status.pending')}</span>
                 <strong style={cardStatValue}>{state.data?.stats.pendingCount ?? (state.loading ? '…' : 0)}</strong>
               </div>
             </div>
@@ -120,7 +120,7 @@ export default function DashboardLanding(): React.JSX.Element {
             <div style={cardStyle}>
               <div style={cardIconWrap('#0f7a2e15')}><Clock style={{ ...iconPrimary, color: '#065f46' }} /></div>
               <div style={cardStatWrap}>
-                <span style={cardStatLabel}>{dt('stats:thisWeek')}</span>
+                <span style={cardStatLabel}>{dt('stats.thisWeek')}</span>
                 <strong style={cardStatValue}>{state.data?.stats.weekSubmissions ?? (state.loading ? '…' : 0)}</strong>
               </div>
             </div>
@@ -130,36 +130,36 @@ export default function DashboardLanding(): React.JSX.Element {
           <div style={gridSpan(12, 12)}>
             <div style={{ ...panelStyle }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                <h3 style={{ margin: 0, color: 'var(--hapa-primary)', fontSize: 16 }}>{dt('recent:title')}</h3>
-                <Link href="/admin/collections/media-content-submissions" style={linkStyle}>{dt('recent:viewAll')}</Link>
+                <h3 style={{ margin: 0, color: 'var(--hapa-primary)', fontSize: 16 }}>{dt('recent.title')}</h3>
+                <Link href="/admin/collections/media-content-submissions" style={linkStyle}>{dt('recent.viewAll')}</Link>
               </div>
 
               <div style={{ overflowX: 'auto' }}>
                 <table style={tableStyle}>
                   <thead>
                     <tr>
-                      <th style={thStyle}>{dt('table:title')}</th>
-                      <th style={thStyle}>{dt('table:type')}</th>
-                      <th style={thStyle}>{dt('table:status')}</th>
-                      <th style={thStyle}>{dt('table:priority')}</th>
-                      <th style={thStyle}>{dt('table:submittedOn')}</th>
+                      <th style={thStyle}>{dt('table.title')}</th>
+                      <th style={thStyle}>{dt('table.type')}</th>
+                      <th style={thStyle}>{dt('table.status')}</th>
+                      <th style={thStyle}>{dt('table.priority')}</th>
+                      <th style={thStyle}>{dt('table.submittedOn')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {state.loading && (
                       <tr>
-                        <td colSpan={5} style={tdStyle}>{dt('common:loading')}</td>
+                        <td colSpan={5} style={tdStyle}>{dt('common.loading')}</td>
                       </tr>
                     )}
                     {!state.loading && latestSubmissions.length === 0 && (
                       <tr>
-                        <td colSpan={5} style={tdStyle}>{dt('recent:subtitle')}</td>
+                        <td colSpan={5} style={tdStyle}>{dt('recent.subtitle')}</td>
                       </tr>
                     )}
                     {latestSubmissions.map((s) => (
                       <tr key={s.id}>
                         <td style={tdStyle}>{s.title}</td>
-                        <td style={tdStyle}><span style={badgeStyle(s.formType === 'complaint' ? '#f59e0b' : '#0ea5e9')}>{s.formType === 'complaint' ? dt('forms:complaint') : dt('forms:report')}</span></td>
+                        <td style={tdStyle}><span style={badgeStyle(s.formType === 'complaint' ? '#f59e0b' : '#0ea5e9')}>{s.formType === 'complaint' ? dt('forms.complaint') : dt('forms.report')}</span></td>
                         <td style={tdStyle}><StatusBadge status={s.submissionStatus} /></td>
                         <td style={tdStyle}><PriorityBadge priority={s.priority} /></td>
                         <td style={tdStyle}>{formatDate(s.submittedAt)}</td>
@@ -237,10 +237,10 @@ const badgeStyle = (color: string): React.CSSProperties => ({
 function StatusBadge({ status }: { status: Submission['submissionStatus'] }): React.JSX.Element {
   const { dt } = useAdminTranslation()
   const map: Record<Submission['submissionStatus'], { label: string; color: string }> = {
-    pending: { label: dt('status:pending'), color: '#f59e0b' },
-    reviewing: { label: dt('status:reviewing'), color: '#3b82f6' },
-    resolved: { label: dt('status:resolved'), color: '#10b981' },
-    dismissed: { label: dt('status:dismissed'), color: '#ef4444' },
+    pending: { label: dt('status.pending'), color: '#f59e0b' },
+    reviewing: { label: dt('status.reviewing'), color: '#3b82f6' },
+    resolved: { label: dt('status.resolved'), color: '#10b981' },
+    dismissed: { label: dt('status.dismissed'), color: '#ef4444' },
   }
   const { label, color } = map[status]
   return <span style={badgeStyle(color)}>{label}</span>
@@ -249,10 +249,10 @@ function StatusBadge({ status }: { status: Submission['submissionStatus'] }): Re
 function PriorityBadge({ priority }: { priority: Submission['priority'] }): React.JSX.Element {
   const { dt } = useAdminTranslation()
   const map: Record<Submission['priority'], { label: string; color: string }> = {
-    low: { label: dt('priority:low'), color: '#6b7280' },
-    medium: { label: dt('priority:medium'), color: '#6366f1' },
-    high: { label: dt('priority:high'), color: '#f97316' },
-    urgent: { label: dt('priority:urgent'), color: '#dc2626' },
+    low: { label: dt('priority.low'), color: '#6b7280' },
+    medium: { label: dt('priority.medium'), color: '#6366f1' },
+    high: { label: dt('priority.high'), color: '#f97316' },
+    urgent: { label: dt('priority.urgent'), color: '#dc2626' },
   }
   const { label, color } = map[priority]
   return <span style={badgeStyle(color)}>{label}</span>

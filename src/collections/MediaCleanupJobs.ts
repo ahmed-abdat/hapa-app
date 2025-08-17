@@ -9,15 +9,31 @@ import { isAdmin } from '@/access/isAdmin'
  */
 export const MediaCleanupJobs: CollectionConfig = {
   slug: 'media-cleanup-jobs',
+  labels: {
+    singular: {
+      fr: "Tâche de Nettoyage Média",
+      ar: "مهمة تنظيف الوسائط",
+    },
+    plural: {
+      fr: "Tâches de Nettoyage Média",
+      ar: "مهام تنظيف الوسائط",
+    },
+  },
   
   admin: {
-    group: 'System',
+    group: {
+      fr: "Système",
+      ar: "النظام",
+    },
     defaultColumns: ['jobType', 'status', 'filesProcessed', 'filesDeleted', 'executedAt'],
     listSearchableFields: ['jobType', 'status'],
-    description: 'Track and manage media cleanup operations for orphaned files',
+    description: {
+      fr: "Suivre et gérer les opérations de nettoyage des fichiers média orphelins",
+      ar: "تتبع وإدارة عمليات تنظيف ملفات الوسائط اليتيمة",
+    },
     meta: {
-      titleSuffix: ' – Media Cleanup Jobs',
-      description: 'Manage automated cleanup of orphaned media files',
+      titleSuffix: " – Media Cleanup Jobs",
+      description: "Manage automated cleanup of orphaned media files",
     },
     components: {
       views: {
@@ -42,20 +58,32 @@ export const MediaCleanupJobs: CollectionConfig = {
       required: true,
       options: [
         {
-          label: 'Verification Scan',
+          label: {
+            fr: "Scan de Vérification",
+            ar: "فحص التحقق",
+          },
           value: 'verification',
         },
         {
-          label: 'Cleanup Orphaned Files',
+          label: {
+            fr: "Nettoyage des Fichiers Orphelins",
+            ar: "تنظيف الملفات اليتيمة",
+          },
           value: 'cleanup',
         },
         {
-          label: 'Full Audit',
+          label: {
+            fr: "Audit Complet",
+            ar: "مراجعة شاملة",
+          },
           value: 'audit',
         },
       ],
       admin: {
-        description: 'Type of cleanup operation performed',
+        description: {
+          fr: "Type d'opération de nettoyage effectuée",
+          ar: "نوع عملية التنظيف المنفذة",
+        },
       },
     },
     {
@@ -65,23 +93,38 @@ export const MediaCleanupJobs: CollectionConfig = {
       defaultValue: 'pending',
       options: [
         {
-          label: 'Pending',
+          label: {
+            fr: "En Attente",
+            ar: "في الانتظار",
+          },
           value: 'pending',
         },
         {
-          label: 'Running',
+          label: {
+            fr: "En Cours",
+            ar: "قيد التشغيل",
+          },
           value: 'running',
         },
         {
-          label: 'Completed',
+          label: {
+            fr: "Terminé",
+            ar: "مكتمل",
+          },
           value: 'completed',
         },
         {
-          label: 'Failed',
+          label: {
+            fr: "Échoué",
+            ar: "فشل",
+          },
           value: 'failed',
         },
         {
-          label: 'Partially Completed',
+          label: {
+            fr: "Partiellement Terminé",
+            ar: "مكتمل جزئياً",
+          },
           value: 'partial',
         },
       ],
@@ -93,7 +136,10 @@ export const MediaCleanupJobs: CollectionConfig = {
         date: {
           pickerAppearance: 'dayAndTime',
         },
-        description: 'When the job was started',
+        description: {
+          fr: "Quand la tâche a été démarrée",
+          ar: "وقت بدء المهمة",
+        },
       },
     },
     {
@@ -103,7 +149,10 @@ export const MediaCleanupJobs: CollectionConfig = {
         date: {
           pickerAppearance: 'dayAndTime',
         },
-        description: 'When the job was completed',
+        description: {
+          fr: "Quand la tâche a été terminée",
+          ar: "وقت انتهاء المهمة",
+        },
       },
     },
     {
@@ -116,7 +165,10 @@ export const MediaCleanupJobs: CollectionConfig = {
           min: 0,
           defaultValue: 0,
           admin: {
-            description: 'Total number of files scanned in R2',
+            description: {
+              fr: "Nombre total de fichiers scannés dans R2",
+              ar: "العدد الإجمالي للملفات المفحوصة في R2",
+            },
           },
         },
         {
@@ -125,7 +177,10 @@ export const MediaCleanupJobs: CollectionConfig = {
           min: 0,
           defaultValue: 0,
           admin: {
-            description: 'Number of files processed',
+            description: {
+              fr: "Nombre de fichiers traités",
+              ar: "عدد الملفات المعالجة",
+            },
           },
         },
         {
@@ -134,7 +189,10 @@ export const MediaCleanupJobs: CollectionConfig = {
           min: 0,
           defaultValue: 0,
           admin: {
-            description: 'Number of orphaned files identified',
+            description: {
+              fr: "Nombre de fichiers orphelins identifiés",
+              ar: "عدد الملفات اليتيمة المحددة",
+            },
           },
         },
         {
@@ -143,7 +201,10 @@ export const MediaCleanupJobs: CollectionConfig = {
           min: 0,
           defaultValue: 0,
           admin: {
-            description: 'Number of files successfully deleted',
+            description: {
+              fr: "Nombre de fichiers supprimés avec succès",
+              ar: "عدد الملفات المحذوفة بنجاح",
+            },
           },
         },
         {
@@ -152,7 +213,10 @@ export const MediaCleanupJobs: CollectionConfig = {
           min: 0,
           defaultValue: 0,
           admin: {
-            description: 'Number of files that failed to delete',
+            description: {
+              fr: "Nombre de fichiers qui ont échoué à la suppression",
+              ar: "عدد الملفات التي فشل حذفها",
+            },
           },
         },
         {
@@ -161,7 +225,10 @@ export const MediaCleanupJobs: CollectionConfig = {
           min: 0,
           defaultValue: 0,
           admin: {
-            description: 'Storage space reclaimed in bytes',
+            description: {
+              fr: "Espace de stockage récupéré en octets",
+              ar: "مساحة التخزين المستردة بالبايت",
+            },
           },
         },
       ],
@@ -170,7 +237,10 @@ export const MediaCleanupJobs: CollectionConfig = {
       name: 'orphanedFiles',
       type: 'array',
       admin: {
-        description: 'List of orphaned files found during scan',
+        description: {
+          fr: "Liste des fichiers orphelins trouvés pendant le scan",
+          ar: "قائمة الملفات اليتيمة الموجودة أثناء الفحص",
+        },
       },
       fields: [
         {
@@ -197,19 +267,31 @@ export const MediaCleanupJobs: CollectionConfig = {
           type: 'select',
           options: [
             {
-              label: 'Found',
+              label: {
+                fr: "Trouvé",
+                ar: "موجود",
+              },
               value: 'found',
             },
             {
-              label: 'Deleted',
+              label: {
+                fr: "Supprimé",
+                ar: "محذوف",
+              },
               value: 'deleted',
             },
             {
-              label: 'Delete Failed',
+              label: {
+                fr: "Suppression Échouée",
+                ar: "فشل الحذف",
+              },
               value: 'failed',
             },
             {
-              label: 'Skipped',
+              label: {
+                fr: "Ignoré",
+                ar: "تم تخطيه",
+              },
               value: 'skipped',
             },
           ],
@@ -219,7 +301,10 @@ export const MediaCleanupJobs: CollectionConfig = {
           name: 'error',
           type: 'text',
           admin: {
-            description: 'Error message if deletion failed',
+            description: {
+              fr: "Message d'erreur si la suppression a échoué",
+              ar: "رسالة الخطأ في حالة فشل الحذف",
+            },
           },
         },
       ],
@@ -233,7 +318,10 @@ export const MediaCleanupJobs: CollectionConfig = {
           type: 'checkbox',
           defaultValue: false,
           admin: {
-            description: 'If true, only scans and reports without deleting',
+            description: {
+              fr: "Si vrai, scanne et rapporte seulement sans supprimer",
+              ar: "إذا كان صحيحاً، يفحص ويبلغ فقط دون حذف",
+            },
           },
         },
         {
@@ -247,7 +335,10 @@ export const MediaCleanupJobs: CollectionConfig = {
             },
           ],
           admin: {
-            description: 'R2 directories to scan (default: forms/)',
+            description: {
+              fr: "Répertoires R2 à scanner (par défaut: forms/)",
+              ar: "مجلدات R2 للفحص (افتراضي: forms/)",
+            },
           },
         },
         {
@@ -261,7 +352,10 @@ export const MediaCleanupJobs: CollectionConfig = {
             },
           ],
           admin: {
-            description: 'File patterns to exclude from cleanup',
+            description: {
+              fr: "Motifs de fichiers à exclure du nettoyage",
+              ar: "أنماط الملفات المستبعدة من التنظيف",
+            },
           },
         },
         {
@@ -270,7 +364,10 @@ export const MediaCleanupJobs: CollectionConfig = {
           min: 1,
           defaultValue: 1000,
           admin: {
-            description: 'Maximum files to process in one job',
+            description: {
+              fr: "Maximum de fichiers à traiter dans une tâche",
+              ar: "الحد الأقصى للملفات المعالجة في مهمة واحدة",
+            },
           },
         },
         {
@@ -279,7 +376,10 @@ export const MediaCleanupJobs: CollectionConfig = {
           min: 0,
           defaultValue: 30,
           admin: {
-            description: 'Keep files newer than this many days',
+            description: {
+              fr: "Garder les fichiers plus récents que ce nombre de jours",
+              ar: "الاحتفاظ بالملفات الأحدث من هذا العدد من الأيام",
+            },
           },
         },
       ],
@@ -288,7 +388,10 @@ export const MediaCleanupJobs: CollectionConfig = {
       name: 'executionLog',
       type: 'textarea',
       admin: {
-        description: 'Detailed log of the cleanup operation',
+        description: {
+          fr: "Journal détaillé de l'opération de nettoyage",
+          ar: "سجل مفصل لعملية التنظيف",
+        },
         readOnly: true,
       },
     },
@@ -296,7 +399,10 @@ export const MediaCleanupJobs: CollectionConfig = {
       name: 'errorLog',
       type: 'textarea',
       admin: {
-        description: 'Error messages encountered during execution',
+        description: {
+          fr: "Messages d'erreur rencontrés pendant l'exécution",
+          ar: "رسائل الخطأ المواجهة أثناء التنفيذ",
+        },
         readOnly: true,
       },
     },
@@ -305,15 +411,24 @@ export const MediaCleanupJobs: CollectionConfig = {
       type: 'select',
       options: [
         {
-          label: 'Manual',
+          label: {
+            fr: "Manuel",
+            ar: "يدوي",
+          },
           value: 'manual',
         },
         {
-          label: 'Scheduled',
+          label: {
+            fr: "Programmé",
+            ar: "مجدول",
+          },
           value: 'scheduled',
         },
         {
-          label: 'API',
+          label: {
+            fr: "API",
+            ar: "واجهة برمجة التطبيقات",
+          },
           value: 'api',
         },
       ],
@@ -324,7 +439,10 @@ export const MediaCleanupJobs: CollectionConfig = {
       type: 'relationship',
       relationTo: 'users',
       admin: {
-        description: 'User who triggered the job (for manual jobs)',
+        description: {
+          fr: "Utilisateur qui a déclenché la tâche (pour les tâches manuelles)",
+          ar: "المستخدم الذي أطلق المهمة (للمهام اليدوية)",
+        },
       },
     },
   ],

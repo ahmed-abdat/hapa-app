@@ -9,7 +9,7 @@ import type { AdminTranslationsObject, AdminTranslationsKeys } from '@/translati
  * Usage:
  * ```tsx
  * const { dt } = useAdminTranslation()
- * return <h1>{dt('dashboard:title')}</h1>
+ * return <h1>{dt('dashboard.title')}</h1>
  * ```
  */
 export const useAdminTranslation = () => {
@@ -20,8 +20,8 @@ export const useAdminTranslation = () => {
    * @param key - Translation key in format 'namespace:key'
    * @returns Translated string
    */
-  const dt = (key: AdminTranslationsKeys): string => {
-    return t(key)
+  const dt = (key: AdminTranslationsKeys | string): string => {
+    return t(key as AdminTranslationsKeys)
   }
   
   return { 
