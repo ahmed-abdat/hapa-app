@@ -31,6 +31,7 @@ import {
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { logger } from '@/utilities/logger';
+import { useAdminTranslation } from '@/utilities/admin-translations';
 
 interface BulkActionsProps {
   selectedIds: string[];
@@ -49,6 +50,7 @@ export function BulkActions({
   onBulkUpdate,
   onBulkDelete
 }: BulkActionsProps) {
+  const { dt } = useAdminTranslation();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleBulkAction = async (action: string) => {
@@ -167,7 +169,7 @@ export function BulkActions({
               className="text-green-600 hover:text-green-700 hover:bg-green-50"
             >
               <CheckCircle2 className="h-4 w-4 mr-1" />
-              Résolu
+              {dt('modernDashboard.dataTable.resolvedStatus')}
             </Button>
             
             <Button
@@ -178,7 +180,7 @@ export function BulkActions({
               className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
             >
               <Clock className="h-4 w-4 mr-1" />
-              Révision
+              {dt('modernDashboard.dataTable.reviewingStatus')}
             </Button>
             
             <Button
@@ -189,7 +191,7 @@ export function BulkActions({
               className="text-red-600 hover:text-red-700 hover:bg-red-50"
             >
               <XCircle className="h-4 w-4 mr-1" />
-              Rejeté
+              {dt('modernDashboard.dataTable.dismissedStatus')}
             </Button>
           </div>
 
@@ -207,27 +209,27 @@ export function BulkActions({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              <DropdownMenuLabel>Actions groupées</DropdownMenuLabel>
+              <DropdownMenuLabel>{dt('modernDashboard.bulkActions')}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               
               {/* Priority actions */}
               <DropdownMenuItem onClick={() => handleBulkAction('priority-high')}>
                 <AlertTriangle className="h-4 w-4 mr-2 text-red-500" />
-                Priorité haute
+                {dt('modernDashboard.dataTable.highPriority')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleBulkAction('priority-medium')}>
                 <AlertTriangle className="h-4 w-4 mr-2 text-orange-500" />
-                Priorité moyenne
+                {dt('modernDashboard.dataTable.mediumPriority')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleBulkAction('priority-low')}>
                 <AlertTriangle className="h-4 w-4 mr-2 text-gray-500" />
-                Priorité basse
+                {dt('modernDashboard.dataTable.lowPriority')}
               </DropdownMenuItem>
               
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleBulkAction('mark-pending')}>
                 <Clock className="h-4 w-4 mr-2" />
-                Marquer en attente
+                {dt('modernDashboard.dataTable.pendingStatus')}
               </DropdownMenuItem>
               
               {onBulkDelete && (

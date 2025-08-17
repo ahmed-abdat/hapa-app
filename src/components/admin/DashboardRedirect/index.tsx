@@ -224,7 +224,7 @@ export default function DashboardRedirect() {
               <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
               <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
             </svg>
-{dt('common:viewAllSubmissions')}
+{dt('common.viewAllSubmissions')}
           </Link>
         </>
       )

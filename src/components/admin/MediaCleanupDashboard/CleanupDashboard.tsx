@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react'
 import { toast } from 'sonner'
+import { useAdminTranslation } from '@/utilities/admin-translations'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -67,6 +68,7 @@ interface ScanSettings {
 }
 
 export function CleanupDashboard() {
+  const { dt, i18n } = useAdminTranslation()
   const [jobs, setJobs] = useState<CleanupJob[]>([])
   const [selectedJob, setSelectedJob] = useState<CleanupJob | null>(null)
   const [scanResults, setScanResults] = useState<any>(null)
@@ -130,10 +132,11 @@ export function CleanupDashboard() {
         setSelectedFiles(new Set(data.orphanedFiles.map((f: any) => f.path)))
       }
 
-      toast.success(`Found ${data.orphanedFiles?.length || 0} orphaned files`)
+      const message = dt('mediaCleanupJobs.messagesFoundOrphanedFiles').replace('{count}', String(data.orphanedFiles?.length || 0))
+      toast.success(message)
       await loadJobs()
     } catch (error) {
-      toast.error('Failed to scan for orphaned files')
+      toast.error(dt('mediaCleanupJobs.errorsScanFailed'))
       console.error('Scan error:', error)
     } finally {
       setIsScanning(false)
@@ -143,7 +146,7 @@ export function CleanupDashboard() {
   // Execute cleanup
   const handleCleanup = async () => {
     if (selectedFiles.size === 0) {
-      toast.error('No files selected for cleanup')
+      toast.error(dt('mediaCleanupJobs.errorsNoFilesSelected'))
       return
     }
 
@@ -169,16 +172,18 @@ export function CleanupDashboard() {
       const data = await response.json()
       
       if (scanSettings.dryRun) {
-        toast.info(`Dry run completed. Would delete ${selectedFiles.size} files`)
+        const dryRunMessage = dt('mediaCleanupJobs.messagesDryRunCompleted').replace('{count}', String(selectedFiles.size))
+        toast.info(dryRunMessage)
       } else {
-        toast.success(`Deleted ${data.results?.deleted || 0} files`)
+        const successMessage = dt('mediaCleanupJobs.messagesFilesDeleted').replace('{count}', String(data.results?.deleted || 0))
+        toast.success(successMessage)
       }
 
       setScanResults(null)
       setSelectedFiles(new Set())
       await loadJobs()
     } catch (error) {
-      toast.error('Failed to execute cleanup')
+      toast.error(dt('mediaCleanupJobs.errorsCleanupFailed'))
       console.error('Cleanup error:', error)
     } finally {
       setIsCleaning(false)
@@ -207,9 +212,14 @@ export function CleanupDashboard() {
 
   // Format file size
   const formatSize = (bytes: number) => {
-    if (bytes === 0) return '0 B'
+    if (bytes === 0) return `0 ${dt('mediaCleanupJobs.unitsBytes')}`
     const k = 1024
-    const sizes = ['B', 'KB', 'MB', 'GB']
+    const sizes = [
+      dt('mediaCleanupJobs.unitsBytes'),
+      dt('mediaCleanupJobs.unitsKilobytes'),
+      dt('mediaCleanupJobs.unitsMegabytes'),
+      dt('mediaCleanupJobs.unitsGigabytes')
+    ]
     const i = Math.floor(Math.log(bytes) / Math.log(k))
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`
   }
@@ -224,21 +234,35 @@ export function CleanupDashboard() {
       partial: AlertTriangleIcon,
     }
     
+    const statusLabels = {
+      pending: dt('mediaCleanupJobs.statusPending'),
+      running: dt('mediaCleanupJobs.statusRunning'),
+      completed: dt('mediaCleanupJobs.statusCompleted'),
+      failed: dt('mediaCleanupJobs.statusFailed'),
+      partial: dt('mediaCleanupJobs.statusPartial'),
+    }
+    
     const Icon = icons[status as keyof typeof icons] || ClockIcon
     
     return (
       <span className={cn('status-badge', status)}>
         <Icon className="h-3 w-3" />
-        {status}
+        {statusLabels[status as keyof typeof statusLabels] || status}
       </span>
     )
   }
 
   // Get job type badge
   const getJobTypeBadge = (type: string) => {
+    const typeLabels = {
+      verification: dt('mediaCleanupJobs.jobTypesVerification'),
+      cleanup: dt('mediaCleanupJobs.jobTypesCleanup'),
+      audit: dt('mediaCleanupJobs.jobTypesAudit'),
+    }
+    
     return (
       <span className={cn('job-type-badge', type)}>
-        {type === 'verification' ? 'Scan' : type === 'cleanup' ? 'Cleanup' : 'Audit'}
+        {typeLabels[type as keyof typeof typeLabels] || type}
       </span>
     )
   }
@@ -252,9 +276,9 @@ export function CleanupDashboard() {
             <HardDriveIcon size={20} className="text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-bold">Media Cleanup Dashboard</h1>
+            <h1 className="text-xl font-bold">{dt('mediaCleanupJobs.dashboardTitle')}</h1>
             <p className="text-sm text-muted-foreground">
-              Manage orphaned media files and cleanup operations
+              {dt('mediaCleanupJobs.dashboardSubtitle')}
             </p>
           </div>
         </div>
@@ -265,7 +289,7 @@ export function CleanupDashboard() {
             className="cleanup-button outline"
           >
             <SettingsIcon className="h-4 w-4" />
-            Settings
+            {dt('mediaCleanupJobs.settings')}
           </Button>
           <Button
             onClick={handleScan}
@@ -275,12 +299,12 @@ export function CleanupDashboard() {
             {isScanning ? (
               <>
                 <RefreshCwIcon className="h-4 w-4 animate-spin" />
-                Scanning...
+                {dt('mediaCleanupJobs.scanning')}
               </>
             ) : (
               <>
                 <ScanIcon className="h-4 w-4" />
-                Scan for Orphaned Files
+                {dt('mediaCleanupJobs.scanForOrphaned')}
               </>
             )}
           </Button>
@@ -291,7 +315,7 @@ export function CleanupDashboard() {
       {showSettings && (
         <div className="cleanup-settings-panel">
           <div className="settings-header">
-            <h3 className="text-lg font-semibold">Scan Settings</h3>
+            <h3 className="text-lg font-semibold">{dt('mediaCleanupJobs.scanSettings')}</h3>
             <Button
               variant="ghost"
               size="sm"
@@ -303,7 +327,7 @@ export function CleanupDashboard() {
           <div className="settings-grid">
             <div className="setting-field">
               <Label htmlFor="directories" className="setting-label">
-                Directories to Scan
+                {dt('mediaCleanupJobs.directoriesToScan')}
               </Label>
               <Input
                 id="directories"
@@ -314,15 +338,15 @@ export function CleanupDashboard() {
                     directories: e.target.value.split(',').map((d) => d.trim()),
                   })
                 }
-                placeholder="forms/, media/"
+                placeholder={dt('mediaCleanupJobs.labelsPlaceholderDirectories')}
               />
               <p className="setting-description">
-                Comma-separated list of R2 directories
+                {dt('mediaCleanupJobs.directoriesToScanDesc')}
               </p>
             </div>
             <div className="setting-field">
               <Label htmlFor="maxFiles" className="setting-label">
-                Maximum Files to Process
+                {dt('mediaCleanupJobs.maxFilesToProcess')}
               </Label>
               <Input
                 id="maxFiles"
@@ -338,7 +362,7 @@ export function CleanupDashboard() {
             </div>
             <div className="setting-field">
               <Label htmlFor="retentionDays" className="setting-label">
-                Retention Period (days)
+                {dt('mediaCleanupJobs.retentionPeriod')}
               </Label>
               <Input
                 id="retentionDays"
@@ -352,7 +376,7 @@ export function CleanupDashboard() {
                 }
               />
               <p className="setting-description">
-                Only scan files older than this many days
+                {dt('mediaCleanupJobs.retentionPeriodDesc')}
               </p>
             </div>
             <div className="setting-field">
@@ -371,7 +395,7 @@ export function CleanupDashboard() {
                   htmlFor="dryRun"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  Dry Run Mode (preview only, no actual deletion)
+                  {dt('mediaCleanupJobs.dryRunMode')}
                 </Label>
               </div>
             </div>
@@ -384,45 +408,45 @@ export function CleanupDashboard() {
         <div className="cleanup-stat-card green">
           <div className="stat-label">
             <FileIcon className="h-4 w-4" />
-            Total Scanned
+            {dt('mediaCleanupJobs.totalScanned')}
           </div>
           <div className="stat-value">
             {jobs.reduce((acc, job) => acc + (job.metrics?.filesScanned || 0), 0)}
           </div>
-          <div className="stat-description">Files checked in all scans</div>
+          <div className="stat-description">{dt('mediaCleanupJobs.filesChecked')}</div>
         </div>
         
         <div className="cleanup-stat-card orange">
           <div className="stat-label">
             <AlertTriangleIcon className="h-4 w-4" />
-            Orphaned Found
+            {dt('mediaCleanupJobs.orphanedFound')}
           </div>
           <div className="stat-value">
             {jobs.reduce((acc, job) => acc + (job.metrics?.orphanedFilesFound || 0), 0)}
           </div>
-          <div className="stat-description">Files without references</div>
+          <div className="stat-description">{dt('mediaCleanupJobs.orphanedIdentified')}</div>
         </div>
         
         <div className="cleanup-stat-card blue">
           <div className="stat-label">
             <TrashIcon className="h-4 w-4" />
-            Files Deleted
+            {dt('mediaCleanupJobs.filesDeleted')}
           </div>
           <div className="stat-value">
             {jobs.reduce((acc, job) => acc + (job.metrics?.filesDeleted || 0), 0)}
           </div>
-          <div className="stat-description">Successfully removed</div>
+          <div className="stat-description">{dt('mediaCleanupJobs.successfullyDeleted')}</div>
         </div>
         
         <div className="cleanup-stat-card red">
           <div className="stat-label">
             <HardDriveIcon className="h-4 w-4" />
-            Storage Reclaimed
+            {dt('mediaCleanupJobs.storageReclaimed')}
           </div>
           <div className="stat-value">
             {formatSize(jobs.reduce((acc, job) => acc + (job.metrics?.storageReclaimed || 0), 0))}
           </div>
-          <div className="stat-description">Space freed up</div>
+          <div className="stat-description">{dt('mediaCleanupJobs.totalSpaceReclaimed')}</div>
         </div>
       </div>
 
@@ -432,10 +456,10 @@ export function CleanupDashboard() {
           <div className="scan-results-header">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold">Scan Results</h3>
+                <h3 className="text-lg font-semibold">{dt('mediaCleanupJobs.scanResults')}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Found {scanResults.orphanedFiles?.length || 0} orphaned files
-                  ({formatSize(scanResults.metrics?.storageSize || 0)} total)
+                  {scanResults.orphanedFiles?.length || 0} {dt('mediaCleanupJobs.foundOrphaned')}
+                  ({formatSize(scanResults.metrics?.storageSize || 0)} {dt('mediaCleanupJobs.labelsTotal')})
                 </p>
               </div>
               <div className="action-buttons">
@@ -445,8 +469,8 @@ export function CleanupDashboard() {
                   onClick={toggleAllFiles}
                 >
                   {selectedFiles.size === scanResults.orphanedFiles?.length
-                    ? 'Deselect All'
-                    : 'Select All'}
+                    ? dt('mediaCleanupJobs.selectAll')
+                    : dt('mediaCleanupJobs.selectAll')}
                 </Button>
                 <Button
                   size="sm"
@@ -461,12 +485,12 @@ export function CleanupDashboard() {
                   {isCleaning ? (
                     <>
                       <RefreshCwIcon className="h-4 w-4 animate-spin" />
-                      Processing...
+                      {dt('mediaCleanupJobs.cleaningInProgress')}
                     </>
                   ) : (
                     <>
                       <TrashIcon className="h-4 w-4" />
-                      {scanSettings.dryRun ? 'Dry Run' : 'Delete Selected'}
+                      {dt('mediaCleanupJobs.cleanupSelected')}
                       {selectedFiles.size > 0 && ` (${selectedFiles.size})`}
                     </>
                   )}
@@ -484,10 +508,10 @@ export function CleanupDashboard() {
                       onCheckedChange={toggleAllFiles}
                     />
                   </th>
-                  <th>Filename</th>
-                  <th>Path</th>
-                  <th>Size</th>
-                  <th>Last Modified</th>
+                  <th>{dt('mediaCleanupJobs.fieldsOrphanedFilesFilename')}</th>
+                  <th>{dt('mediaCleanupJobs.fieldsOrphanedFilesPath')}</th>
+                  <th>{dt('mediaCleanupJobs.size')}</th>
+                  <th>{dt('mediaCleanupJobs.lastModified')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -522,7 +546,7 @@ export function CleanupDashboard() {
       {/* Recent Jobs */}
       <div className="job-history-section">
         <div className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Recent Cleanup Jobs</h3>
+          <h3 className="text-lg font-semibold mb-4">{dt('mediaCleanupJobs.jobHistory')}</h3>
           <div className="space-y-4">
             {jobs.map((job) => (
               <div key={job.id} className="job-card">
@@ -553,24 +577,24 @@ export function CleanupDashboard() {
                 
                 <div className="job-metrics">
                   <div className="job-metric">
-                    <span className="job-metric-label">Files Scanned</span>
+                    <span className="job-metric-label">{dt('mediaCleanupJobs.filesScanned')}</span>
                     <span className="job-metric-value">
                       {job.metrics?.filesScanned || 0}
                     </span>
                   </div>
                   <div className="job-metric">
-                    <span className="job-metric-label">Orphaned Found</span>
+                    <span className="job-metric-label">{dt('mediaCleanupJobs.orphanedFound')}</span>
                     <span className="job-metric-value">
                       {job.metrics?.orphanedFilesFound || 0}
                     </span>
                   </div>
                   <div className="job-metric">
-                    <span className="job-metric-label">Files Deleted</span>
+                    <span className="job-metric-label">{dt('mediaCleanupJobs.filesDeleted')}</span>
                     <span className="job-metric-value">
                       {job.metrics?.filesDeleted || 0}
                       {job.metrics?.deletionErrors ? (
                         <span className="text-destructive text-sm ml-1">
-                          ({job.metrics.deletionErrors} failed)
+                          ({job.metrics.deletionErrors} {dt('mediaCleanupJobs.deletionErrors')})
                         </span>
                       ) : null}
                     </span>
@@ -582,22 +606,22 @@ export function CleanupDashboard() {
                   <div className="job-details-panel">
                     <div className="job-details-grid">
                       <div className="job-detail-item">
-                        <span className="job-detail-label">Job Type</span>
+                        <span className="job-detail-label">{dt('mediaCleanupJobs.fieldsJobTypeLabel')}</span>
                         <span className="job-detail-value">{job.jobType}</span>
                       </div>
                       <div className="job-detail-item">
-                        <span className="job-detail-label">Status</span>
+                        <span className="job-detail-label">{dt('mediaCleanupJobs.fieldsStatusLabel')}</span>
                         <span className="job-detail-value">{job.status}</span>
                       </div>
                       <div className="job-detail-item">
-                        <span className="job-detail-label">Executed At</span>
+                        <span className="job-detail-label">{dt('mediaCleanupJobs.executedAt')}</span>
                         <span className="job-detail-value">
                           {new Date(job.executedAt).toLocaleString()}
                         </span>
                       </div>
                       {job.completedAt && (
                         <div className="job-detail-item">
-                          <span className="job-detail-label">Completed At</span>
+                          <span className="job-detail-label">{dt('mediaCleanupJobs.completedAt')}</span>
                           <span className="job-detail-value">
                             {new Date(job.completedAt).toLocaleString()}
                           </span>
@@ -607,7 +631,7 @@ export function CleanupDashboard() {
 
                     {job.executionLog && (
                       <div>
-                        <Label className="text-sm">Execution Log</Label>
+                        <Label className="text-sm">{dt('mediaCleanupJobs.executionLog')}</Label>
                         <div className="log-display">
                           {job.executionLog}
                         </div>
@@ -616,7 +640,7 @@ export function CleanupDashboard() {
 
                     {job.errorLog && (
                       <div>
-                        <Label className="text-sm">Error Log</Label>
+                        <Label className="text-sm">{dt('mediaCleanupJobs.errorLog')}</Label>
                         <div className="log-display error-log">
                           {job.errorLog}
                         </div>

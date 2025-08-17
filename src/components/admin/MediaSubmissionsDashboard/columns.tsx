@@ -72,7 +72,7 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label={dt('actions:selectAll')}
+        aria-label={dt('actions.selectAll')}
         className="translate-y-[2px]"
       />
     ),
@@ -80,7 +80,7 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label={dt('actions:selectRow')}
+        aria-label={dt('actions.selectRow')}
         className="translate-y-[2px]"
       />
     ),
@@ -97,7 +97,7 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="h-8 px-2 lg:px-3"
         >
-          {dt('table:title')}
+          {dt('table.title')}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
@@ -107,7 +107,7 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
       return (
         <div className="flex flex-col gap-1">
           <span className="font-medium text-sm">
-            {submission.title || dt('common:untitled')}
+            {submission.title || dt('common.untitled')}
           </span>
           {submission.contentInfo?.programName && (
             <span className="text-xs text-muted-foreground">
@@ -128,7 +128,7 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="h-8 px-2 lg:px-3"
         >
-          {dt('table:type')}
+          {dt('table.type')}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
@@ -137,7 +137,7 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
       const type = row.getValue("formType") as string
       return (
         <Badge variant={type === "complaint" ? "destructive" : "default"} className="text-xs">
-          {type === "complaint" ? dt('forms:complaint') : dt('forms:report')}
+          {type === "complaint" ? dt('forms.complaint') : dt('forms.report')}
         </Badge>
       )
     },
@@ -152,7 +152,7 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="h-8 px-2 lg:px-3"
         >
-          {dt('table:status')}
+          {dt('table.status')}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
@@ -169,10 +169,10 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
       }
       
       const statusLabels = {
-        pending: dt('status:pending'),
-        reviewing: dt('status:reviewing'),
-        resolved: dt('status:resolved'), 
-        dismissed: dt('status:dismissed')
+        pending: dt('status.pending'),
+        reviewing: dt('status.reviewing'),
+        resolved: dt('status.resolved'), 
+        dismissed: dt('status.dismissed')
       }
 
       return (
@@ -193,10 +193,10 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="pending">{dt('status:pending')}</SelectItem>
-            <SelectItem value="reviewing">{dt('status:reviewing')}</SelectItem>
-            <SelectItem value="resolved">{dt('status:resolved')}</SelectItem>
-            <SelectItem value="dismissed">{dt('status:dismissed')}</SelectItem>
+            <SelectItem value="pending">{dt('status.pending')}</SelectItem>
+            <SelectItem value="reviewing">{dt('status.reviewing')}</SelectItem>
+            <SelectItem value="resolved">{dt('status.resolved')}</SelectItem>
+            <SelectItem value="dismissed">{dt('status.dismissed')}</SelectItem>
           </SelectContent>
         </Select>
       )
@@ -212,7 +212,7 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="h-8 px-2 lg:px-3"
         >
-          {dt('table:priority')}
+          {dt('table.priority')}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
@@ -229,10 +229,10 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
       }
       
       const priorityLabels = {
-        low: dt('priority:low'),
-        medium: dt('priority:medium'),
-        high: dt('priority:high'),
-        urgent: dt('priority:urgent')
+        low: dt('priority.low'),
+        medium: dt('priority.medium'),
+        high: dt('priority.high'),
+        urgent: dt('priority.urgent')
       }
 
       return (
@@ -253,10 +253,10 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="low">{dt('priority:low')}</SelectItem>
-            <SelectItem value="medium">{dt('priority:medium')}</SelectItem>
-            <SelectItem value="high">{dt('priority:high')}</SelectItem>
-            <SelectItem value="urgent">{dt('priority:urgent')}</SelectItem>
+            <SelectItem value="low">{dt('priority.low')}</SelectItem>
+            <SelectItem value="medium">{dt('priority.medium')}</SelectItem>
+            <SelectItem value="high">{dt('priority.high')}</SelectItem>
+            <SelectItem value="urgent">{dt('priority.urgent')}</SelectItem>
           </SelectContent>
         </Select>
       )
@@ -272,7 +272,7 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="h-8 px-2 lg:px-3"
         >
-          {dt('table:submittedOn')}
+          {dt('table.submittedOn')}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
@@ -294,7 +294,7 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
   },
   {
     accessorKey: "locale",
-    header: dt('table:language'),
+    header: dt('table.language'),
     cell: ({ row }) => {
       const locale = row.getValue("locale") as string
       return (
@@ -307,7 +307,7 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
   },
   {
     id: "actions",
-    header: dt('table:actions'),
+    header: dt('table.actions'),
     cell: ({ row }) => {
       const submission = row.original
 
@@ -319,21 +319,21 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
             onClick={() => onViewDetails(submission)}
             className="h-7 px-2 text-xs"
           >
-            {dt('actions:details')}
+            {dt('actions.details')}
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-7 w-7 p-0">
-                <span className="sr-only">{dt('actions:openMenu')}</span>
+                <span className="sr-only">{dt('actions.openMenu')}</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{dt('table:actions')}</DropdownMenuLabel>
+              <DropdownMenuLabel>{dt('table.actions')}</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(submission.id)}
               >
-                {dt('actions:copyId')}
+                {dt('actions.copyId')}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
@@ -344,12 +344,12 @@ export const useSubmissionColumns = ({ updateSubmission, onViewDetails }: Column
                   className="flex items-center w-full"
                 >
                   <ExternalLink className="mr-2 h-4 w-4" />
-                  {dt('common:openInAdmin')}
+                  {dt('common.openInAdmin')}
                 </a>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-red-600">
-                {dt('actions:delete')}
+                {dt('actions.delete')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

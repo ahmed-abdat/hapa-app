@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useMemo, useCallback } from "react";
-// Removed admin translations here as we no longer use local modal labels
+import { useAdminTranslation } from "@/utilities/admin-translations"
 import { useParams } from "next/navigation";
 import { logger } from "@/utilities/logger";
 import { useTheme } from "@/providers/Theme";
@@ -108,6 +108,7 @@ const chartColors = {
 export function ModernDashboard() {
   const { locale } = useParams();
   const { theme } = useTheme();
+  const { dt, i18n } = useAdminTranslation();
   const [submissions, setSubmissions] = useState<MediaContentSubmission[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -146,10 +147,10 @@ export function ModernDashboard() {
           setLastUpdate(new Date());
 
           if (isRefresh) {
-            toast.success("Données mises à jour", { duration: 2000 });
+            toast.success(dt('modernDashboard.dataUpdated'), { duration: 2000 });
           }
         } else {
-          throw new Error(data.error || "Erreur inconnue");
+          throw new Error(data.error || dt('modernDashboard.unknownError'));
         }
       } else {
         throw new Error(`Erreur HTTP: ${response.status}`);
@@ -157,7 +158,7 @@ export function ModernDashboard() {
     } catch (error) {
       // Handle abort errors specifically
       if (error instanceof Error && error.name === 'AbortError') {
-        const errorMessage = "La requête a expiré. Veuillez réessayer.";
+        const errorMessage = dt('modernDashboard.requestTimeout');
         logger.warn("Request aborted due to timeout", {
           component: 'ModernDashboard',
           action: 'fetch_timeout',
@@ -169,7 +170,7 @@ export function ModernDashboard() {
         }
       } else {
         const errorMessage =
-          error instanceof Error ? error.message : "Erreur inconnue";
+          error instanceof Error ? error.message : dt('modernDashboard.unknownError');
         logger.error("Error fetching submissions", error, {
           component: 'ModernDashboard',
           action: 'fetch_error',
@@ -178,7 +179,7 @@ export function ModernDashboard() {
         setError(errorMessage);
 
         if (!isRefresh) {
-          toast.error("Erreur lors du chargement des données: " + errorMessage);
+          toast.error(dt('modernDashboard.loadingDataError') + ": " + errorMessage);
         }
       }
     } finally {
@@ -186,7 +187,7 @@ export function ModernDashboard() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [dt]);
 
   // Enhanced update submission with optimistic updates and immediate dashboard refresh
   const handleUpdateSubmission = useCallback(
@@ -198,7 +199,7 @@ export function ModernDashboard() {
       }>
     ) => {
       // Show loading state
-      const loadingToast = toast.loading("Mise à jour en cours...");
+      const loadingToast = toast.loading(dt('modernDashboard.updatingInProgress'));
 
       // Optimistic update for immediate UI feedback
       const previousSubmissions = [...submissions];
@@ -228,17 +229,17 @@ export function ModernDashboard() {
             // Get status text for notification
             const statusText =
               updates.submissionStatus === "resolved"
-                ? "résolu"
+                ? dt('modernDashboard.resolved')
                 : updates.submissionStatus === "reviewing"
-                ? "en révision"
+                ? dt('modernDashboard.inReview')
                 : updates.submissionStatus === "dismissed"
-                ? "rejeté"
-                : "en attente";
+                ? dt('modernDashboard.dismissed')
+                : dt('modernDashboard.pending');
 
-            toast.success(`Soumission marquée comme ${statusText}`, {
+            toast.success(`${dt('modernDashboard.markedAs')} ${statusText}`, {
               duration: 4000,
               action: {
-                label: "Voir détails",
+                label: dt('modernDashboard.viewDetails'),
                 onClick: () =>
                   (window.location.href = `/admin/collections/media-content-submissions/${id}`),
               },
@@ -247,7 +248,7 @@ export function ModernDashboard() {
             // Immediate refresh to ensure accurate stats and counts
             await fetchSubmissions(true);
           } else {
-            throw new Error(result.error || "Erreur lors de la mise à jour");
+            throw new Error(result.error || dt('modernDashboard.updateError'));
           }
         } else {
           throw new Error(`Erreur HTTP: ${response.status}`);
@@ -263,15 +264,15 @@ export function ModernDashboard() {
           metadata: { submissionId: id, status: updates.submissionStatus }
         });
         toast.error(
-          "Erreur lors de la mise à jour: " +
-            (error instanceof Error ? error.message : "Erreur inconnue"),
+          dt('modernDashboard.updateError') + ": " +
+            (error instanceof Error ? error.message : dt('modernDashboard.unknownError')),
           {
             duration: 5000,
           }
         );
       }
     },
-    [submissions, fetchSubmissions]
+    [submissions, fetchSubmissions, dt]
   );
 
   // Navigate to Payload admin route for submission details
@@ -282,7 +283,8 @@ export function ModernDashboard() {
   useEffect(() => {
     // Initial load
     fetchSubmissions();
-  }, [fetchSubmissions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
 
   // Calculate enhanced dynamic statistics with actionable insights
   const dynamicStats = useMemo(() => {
@@ -459,7 +461,15 @@ export function ModernDashboard() {
 
     // Weekly trend data (real data from last 7 days)
     const weeklyData = (() => {
-      const days = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+      const days = [
+        dt('modernDashboard.days.sun'),
+        dt('modernDashboard.days.mon'),
+        dt('modernDashboard.days.tue'),
+        dt('modernDashboard.days.wed'),
+        dt('modernDashboard.days.thu'),
+        dt('modernDashboard.days.fri'),
+        dt('modernDashboard.days.sat')
+      ];
       const data = [];
       const now = new Date();
 
@@ -489,25 +499,25 @@ export function ModernDashboard() {
     // Status distribution for pie chart (filter out zero values)
     const statusDistribution = [
       {
-        name: "En attente",
+        name: dt('status.pending'),
         value: pending,
         color: chartColors.pending,
         percentage: 0,
       },
       {
-        name: "Résolu",
+        name: dt('status.resolved'),
         value: resolved,
         color: chartColors.resolved,
         percentage: 0,
       },
       {
-        name: "Rejeté",
+        name: dt('status.dismissed'),
         value: rejected,
         color: chartColors.rejected,
         percentage: 0,
       },
       {
-        name: "En révision",
+        name: dt('status.reviewing'),
         value: inReview,
         color: chartColors.inReview,
         percentage: 0,
@@ -522,18 +532,18 @@ export function ModernDashboard() {
     // Monthly trend data (real data from last 6 months)
     const monthlyTrend = (() => {
       const months = [
-        "Jan",
-        "Fév",
-        "Mar",
-        "Avr",
-        "Mai",
-        "Jun",
-        "Jul",
-        "Aoû",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Déc",
+        dt('modernDashboard.months.jan'),
+        dt('modernDashboard.months.feb'),
+        dt('modernDashboard.months.mar'),
+        dt('modernDashboard.months.apr'),
+        dt('modernDashboard.months.may'),
+        dt('modernDashboard.months.jun'),
+        dt('modernDashboard.months.jul'),
+        dt('modernDashboard.months.aug'),
+        dt('modernDashboard.months.sep'),
+        dt('modernDashboard.months.oct'),
+        dt('modernDashboard.months.nov'),
+        dt('modernDashboard.months.dec')
       ];
       const data = [];
       const now = new Date();
@@ -579,13 +589,13 @@ export function ModernDashboard() {
     // Priority distribution for urgent action
     const priorityDistribution = [
       {
-        name: "Urgent",
+        name: dt('priority.urgent'),
         value: urgentComplaintsByStatus.pending || 0,
         color: "#ef4444",
         category: "urgent",
       },
       {
-        name: "Haute priorité",
+        name: dt('priority.high'),
         value: submissions.filter(
           (s) => s.priority === "high" && s.submissionStatus === "pending"
         ).length,
@@ -593,7 +603,7 @@ export function ModernDashboard() {
         category: "high",
       },
       {
-        name: "Moyenne priorité",
+        name: dt('priority.medium'),
         value: submissions.filter(
           (s) => s.priority === "medium" && s.submissionStatus === "pending"
         ).length,
@@ -601,7 +611,7 @@ export function ModernDashboard() {
         category: "medium",
       },
       {
-        name: "Faible priorité",
+        name: dt('priority.low'),
         value: submissions.filter(
           (s) => s.priority === "low" && s.submissionStatus === "pending"
         ).length,
@@ -617,18 +627,18 @@ export function ModernDashboard() {
       .map(([type, count]) => ({
         type:
           type === "hateSpeech"
-            ? "Discours de haine"
+            ? dt('modernDashboard.hateSpeech')
             : type === "misinformation"
-            ? "Désinformation"
+            ? dt('modernDashboard.misinformation')
             : type === "privacy"
-            ? "Vie privée"
+            ? dt('modernDashboard.privacy')
             : type === "inappropriate"
-            ? "Contenu choquant"
+            ? dt('modernDashboard.shockingContent')
             : type === "pluralism"
-            ? "Pluralisme"
+            ? dt('modernDashboard.pluralism')
             : type === "advertising"
-            ? "Publicité mensongère"
-            : "Autres",
+            ? dt('modernDashboard.falseAdvertising')
+            : dt('modernDashboard.others'),
         count,
         severity:
           type === "hateSpeech" || type === "misinformation"
@@ -659,7 +669,7 @@ export function ModernDashboard() {
       evidenceQuality,
       formTypeInsights: formBreakdown,
     };
-  }, [submissions, stats]);
+  }, [submissions, stats, dt]);
 
   if (loading) {
     return (
@@ -732,12 +742,12 @@ export function ModernDashboard() {
           <CardHeader className="text-center">
             <CardTitle className="flex items-center justify-center gap-2">
               <AlertCircle className="h-5 w-5 text-destructive" />
-              {error ? "Erreur de connexion" : "Aucune donnée"}
+              {error ? dt('modernDashboard.connectionError') : dt('modernDashboard.noData')}
             </CardTitle>
             <CardDescription>
               {error
-                ? "Impossible de charger les données du tableau de bord"
-                : "Aucune donnée disponible pour le moment"}
+                ? dt('modernDashboard.unableToLoadDashboard')
+                : dt('modernDashboard.noDataAvailable')}
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center space-y-4">
@@ -755,7 +765,7 @@ export function ModernDashboard() {
                 <RefreshCw
                   className={cn("h-4 w-4 mr-2", loading && "animate-spin")}
                 />
-                Réessayer
+                {dt('modernDashboard.retry')}
               </Button>
               <Button
                 variant="outline"
@@ -765,7 +775,7 @@ export function ModernDashboard() {
                 }}
                 className="w-full"
               >
-                Voir les soumissions directement
+                {dt('modernDashboard.viewSubmissionsDirectly')}
               </Button>
             </div>
           </CardContent>
@@ -788,10 +798,10 @@ export function ModernDashboard() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-foreground tracking-tight">
-                  Centre de contrôle HAPA
+                  {dt('modernDashboard.controlCenterTitle')}
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                  Gestion des soumissions médiatiques
+                  {dt('modernDashboard.mediaSubmissionsManagement')}
                 </p>
               </div>
             </div>
@@ -812,30 +822,30 @@ export function ModernDashboard() {
                     <Button variant="outline" size="sm" className="h-9">
                       <Calendar className="h-4 w-4 mr-2" />
                       {timeRange === "7d"
-                        ? "7j"
+                        ? dt('modernDashboard.timeRange7d')
                         : timeRange === "30d"
-                        ? "30j"
-                        : "Tout"}
+                        ? dt('modernDashboard.timeRange30d')
+                        : dt('modernDashboard.timeRangeAll')}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={() => setTimeRange("7d")}>
                       <Clock className="h-4 w-4 mr-2" />
-                      Derniers 7 jours
+                      {dt('modernDashboard.last7Days')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setTimeRange("30d")}>
                       <Calendar className="h-4 w-4 mr-2" />
-                      Derniers 30 jours
+                      {dt('modernDashboard.last30Days')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setTimeRange("all")}>
                       <Activity className="h-4 w-4 mr-2" />
-                      Toutes les données
+                      {dt('modernDashboard.allData')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Période d&apos;analyse des données</p>
+                <p>{dt('modernDashboard.dataAnalysisPeriod')}</p>
               </TooltipContent>
             </ShadcnTooltip>
             <ShadcnTooltip>
@@ -845,11 +855,11 @@ export function ModernDashboard() {
                   className="h-9 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  Exporter
+                  {dt('modernDashboard.export')}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Exporter les données au format Excel</p>
+                <p>{dt('modernDashboard.exportToExcel')}</p>
               </TooltipContent>
             </ShadcnTooltip>
           </div>
@@ -861,93 +871,93 @@ export function ModernDashboard() {
         <div className="hapa-section">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
             <StatCard
-              title="Total des soumissions"
-              subtitle="Dernières 30 jours"
+              title={dt('modernDashboard.totalSubmissions')}
+              subtitle={dt('modernDashboard.last30DaysLabel')}
               value={dynamicStats.total}
               icon={FileText}
               iconColor="text-blue-500"
               valueColor="text-blue-600"
               trend={{
                 value: dynamicStats.total > 100 ? 12.3 : 0,
-                label: "vs mois précédent",
+                label: dt('modernDashboard.vsPreviousMonth'),
                 isPositive: true,
                 color: "text-green-600"
               }}
               badge={{
-                text: `${dynamicStats.formTypeInsights.complaints.total} plaintes, ${dynamicStats.formTypeInsights.reports.total} rapports`,
+                text: `${dynamicStats.formTypeInsights.complaints.total} ${dt('modernDashboard.complaints')}, ${dynamicStats.formTypeInsights.reports.total} ${dt('modernDashboard.reports')}`,
                 variant: "secondary"
               }}
-              dateRange="Du 1er Déc - 31 Déc, 2024"
+              dateRange={dt('modernDashboard.dateRange')}
             />
 
             <StatCard
-              title="Action urgente requise"
-              subtitle="Plaintes critiques"
+              title={dt('modernDashboard.urgentActionRequired')}
+              subtitle={dt('modernDashboard.criticalComplaints')}
               value={dynamicStats.complexCases}
               icon={AlertCircle}
               iconColor="text-red-500"
               valueColor="text-red-600"
               urgent={dynamicStats.complexCases > 0}
               badge={{
-                text: dynamicStats.complexCases > 0 ? "URGENT" : "OK",
+                text: dynamicStats.complexCases > 0 ? dt('priority.urgent').toUpperCase() : "OK",
                 variant: dynamicStats.complexCases > 0 ? "destructive" : "secondary",
                 icon: dynamicStats.complexCases > 0 ? AlertCircle : undefined
               }}
-              description="Attention immédiate requise"
+              description={dt('modernDashboard.immediateAttentionRequired')}
             />
 
             <StatCard
-              title="En attente"
-              subtitle="Soumissions à traiter"
+              title={dt('modernDashboard.pending')}
+              subtitle={dt('modernDashboard.submissionsToProcess')}
               value={dynamicStats.pending}
               icon={Clock}
               iconColor="text-orange-500"
               valueColor="text-orange-600"
               trend={{
                 value: -5.2,
-                label: "vs semaine dernière",
+                label: dt('modernDashboard.vsLastWeek'),
                 isPositive: false,
                 color: "text-red-600"
               }}
               description={`FR: ${dynamicStats.languageWorkload.fr || 0} • AR: ${dynamicStats.languageWorkload.ar || 0}`}
               progressBar={{
                 value: 35,
-                label: "35% completion",
+                label: dt('modernDashboard.completionPercentage'),
                 color: "bg-yellow-500"
               }}
             />
 
             <StatCard
-              title="Temps de réponse"
-              subtitle="Moyenne"
+              title={dt('modernDashboard.responseTime')}
+              subtitle={dt('modernDashboard.average')}
               value={`${dynamicStats.avgResponseTime}h`}
               icon={Zap}
               iconColor="text-green-500"
               valueColor="text-green-600"
               badge={{
-                text: "Excellent",
+                text: dt('modernDashboard.excellent'),
                 variant: "secondary",
                 icon: Zap,
                 iconColor: "text-green-500"
               }}
-              description={`Taux résolution: ${dynamicStats.resolutionRate}%`}
+              description={`${dt('modernDashboard.resolutionRate')}: ${dynamicStats.resolutionRate}%`}
             />
 
             <StatCard
-              title="Dossiers en retard"
-              subtitle="Plus de 7 jours"
+              title={dt('modernDashboard.overdueFiles')}
+              subtitle={dt('modernDashboard.moreThan7Days')}
               value={dynamicStats.overduePendingCount}
               icon={AlertTriangle}
               iconColor="text-orange-500"
               valueColor="text-orange-600"
               trend={{
                 value: -8.1,
-                label: "vs mois dernier",
+                label: dt('modernDashboard.vsLastMonth'),
                 isPositive: false,
                 color: "text-red-600"
               }}
               badge={{
-                text: "Attention",
+                text: dt('modernDashboard.attention'),
                 variant: "destructive",
                 icon: AlertTriangle,
                 iconColor: "text-orange-500"
@@ -967,11 +977,11 @@ export function ModernDashboard() {
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-red-600" />
                   <h3 className="hapa-card-title font-semibold">
-                    Analyse des risques médiatiques
+                    {dt('modernDashboard.mediaRiskAnalysis')}
                   </h3>
                 </div>
                 <p className="text-sm hapa-text-muted mt-1">
-                  Chaînes/programmes avec le plus de plaintes en attente
+                  {dt('modernDashboard.channelsWithMostComplaints')}
                 </p>
               </div>
               <div className="hapa-card-content">
@@ -996,7 +1006,7 @@ export function ModernDashboard() {
                         </span>
                       </div>
                       <span className="hapa-badge hapa-badge-outline">
-                        {channel.complaints} plaintes
+                        {channel.complaints} {dt('modernDashboard.complaints')}
                       </span>
                     </div>
                   ))}
@@ -1012,12 +1022,11 @@ export function ModernDashboard() {
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="h-5 w-5 text-red-600" />
                   <h3 className="hapa-card-title font-semibold">
-                    Analyse des violations critiques
+                    {dt('modernDashboard.criticalViolationsAnalysis')}
                   </h3>
                 </div>
                 <p className="text-sm hapa-text-muted mt-1">
-                  Types de violations les plus fréquents nécessitant une action
-                  réglementaire
+                  {dt('modernDashboard.mostFrequentViolations')}
                 </p>
               </div>
               <div className="hapa-card-content">
@@ -1037,10 +1046,10 @@ export function ModernDashboard() {
                             <div className="rounded-lg border bg-background p-3 shadow-sm">
                               <p className="font-medium">{label}</p>
                               <p className="text-sm text-muted-foreground">
-                                {payload[0].value} cas • Sévérité:{" "}
+                                {payload[0].value} {dt('modernDashboard.cases')} • {dt('modernDashboard.severity')}:{" "}
                                 {data.severity === "high"
-                                  ? "Élevée"
-                                  : "Modérée"}
+                                  ? dt('modernDashboard.high')
+                                  : dt('modernDashboard.moderate')}
                               </p>
                             </div>
                           );
@@ -1075,13 +1084,13 @@ export function ModernDashboard() {
                     <div className="text-lg font-bold text-green-600 dark:text-green-400">
                       {dynamicStats.evidenceQuality.withEvidence}
                     </div>
-                    <div className="text-xs text-muted-foreground">Avec preuves</div>
+                    <div className="text-xs text-muted-foreground">{dt('modernDashboard.withEvidence')}</div>
                   </div>
                   <div className="p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors text-center">
                     <div className="text-lg font-bold text-orange-600 dark:text-orange-400">
                       {dynamicStats.evidenceQuality.withoutEvidence}
                     </div>
-                    <div className="text-xs text-muted-foreground">Sans preuves</div>
+                    <div className="text-xs text-muted-foreground">{dt('modernDashboard.withoutEvidence')}</div>
                   </div>
                   <div className="p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors text-center">
                     <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
@@ -1095,7 +1104,7 @@ export function ModernDashboard() {
                       %
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      Qualité preuves
+                      {dt('modernDashboard.evidenceQuality')}
                     </div>
                   </div>
                 </div>
@@ -1114,11 +1123,11 @@ export function ModernDashboard() {
               <div className="flex items-center gap-2">
                 <BarChart3 className="h-5 w-5" style={{ color: "#2563eb" }} />
                 <h3 className="hapa-card-title font-semibold">
-                  Analyse des types de formulaires
+                  {dt('modernDashboard.formTypesAnalysis')}
                 </h3>
               </div>
               <p className="text-sm hapa-text-muted mt-1">
-                Répartition et priorités par type de soumission
+                {dt('modernDashboard.distributionAndPriorities')}
               </p>
             </div>
             <div className="hapa-card-content">
@@ -1127,23 +1136,23 @@ export function ModernDashboard() {
                 <div className="space-y-3">
                   <h4 className="font-semibold text-sm flex items-center gap-2">
                     <AlertCircle className="h-4 w-4 text-orange-500" />
-                    Plaintes ({dynamicStats.formTypeInsights.complaints.total})
+                    {dt('modernDashboard.complaintsLabel')} ({dynamicStats.formTypeInsights.complaints.total})
                   </h4>
                   <div className="space-y-2 pl-6">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">En attente</span>
+                      <span className="text-sm text-muted-foreground">{dt('modernDashboard.pending')}</span>
                       <Badge variant="secondary" className="font-bold">
                         {dynamicStats.formTypeInsights.complaints.pending}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Urgentes</span>
+                      <span className="text-sm text-muted-foreground">{dt('modernDashboard.urgent')}</span>
                       <Badge variant="destructive" className="font-bold">
                         {dynamicStats.formTypeInsights.complaints.urgent}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Avec contact</span>
+                      <span className="text-sm text-muted-foreground">{dt('modernDashboard.withContact')}</span>
                       <Badge variant="outline" className="font-bold">
                         {
                           dynamicStats.formTypeInsights.complaints
@@ -1158,23 +1167,23 @@ export function ModernDashboard() {
                 <div className="space-y-3">
                   <h4 className="font-semibold text-sm flex items-center gap-2">
                     <FileText className="h-4 w-4 text-blue-500" />
-                    Signalements ({dynamicStats.formTypeInsights.reports.total})
+                    {dt('modernDashboard.reportsLabel')} ({dynamicStats.formTypeInsights.reports.total})
                   </h4>
                   <div className="space-y-2 pl-6">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">En attente</span>
+                      <span className="text-sm text-muted-foreground">{dt('modernDashboard.pending')}</span>
                       <Badge variant="secondary" className="font-bold">
                         {dynamicStats.formTypeInsights.reports.pending}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Urgentes</span>
+                      <span className="text-sm text-muted-foreground">{dt('modernDashboard.urgent')}</span>
                       <Badge variant="destructive" className="font-bold">
                         {dynamicStats.formTypeInsights.reports.urgent}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Anonymes</span>
+                      <span className="text-sm text-muted-foreground">{dt('modernDashboard.anonymous')}</span>
                       <Badge variant="outline" className="font-bold">
                         {dynamicStats.formTypeInsights.reports.anonymous}
                       </Badge>
@@ -1196,10 +1205,10 @@ export function ModernDashboard() {
             <div className="hapa-card col-span-2">
               <div className="hapa-card-header">
                 <h3 className="hapa-card-title font-semibold">
-                  Tendance hebdomadaire
+                  {dt('modernDashboard.weeklyTrend')}
                 </h3>
                 <p className="text-sm hapa-text-muted mt-1">
-                  Soumissions et résolutions sur les 7 derniers jours
+                  {dt('modernDashboard.submissionsAndResolutions7Days')}
                 </p>
               </div>
               <div className="hapa-card-content">
@@ -1253,7 +1262,7 @@ export function ModernDashboard() {
                       stroke={chartColors.primary}
                       fillOpacity={1}
                       fill="url(#colorSubmissions)"
-                      name="Soumissions"
+                      name={dt('modernDashboard.submissions')}
                     />
                     <Area
                       type="monotone"
@@ -1261,7 +1270,7 @@ export function ModernDashboard() {
                       stroke={chartColors.accent}
                       fillOpacity={1}
                       fill="url(#colorResolved)"
-                      name="Résolu"
+                      name={dt('modernDashboard.resolved')}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -1271,9 +1280,9 @@ export function ModernDashboard() {
             {/* Status Distribution Pie Chart - Improved */}
             <Card>
               <CardHeader>
-                <CardTitle>Répartition des statuts</CardTitle>
+                <CardTitle>{dt('modernDashboard.statusDistribution')}</CardTitle>
                 <CardDescription>
-                  Distribution actuelle des soumissions
+                  {dt('modernDashboard.currentDistribution')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -1343,9 +1352,9 @@ export function ModernDashboard() {
         <div className="hapa-section">
           <Card>
             <CardHeader>
-              <CardTitle>Analyse mensuelle</CardTitle>
+              <CardTitle>{dt('modernDashboard.monthlyAnalysis')}</CardTitle>
               <CardDescription>
-                Évolution réelle des soumissions sur les 6 derniers mois
+                {dt('modernDashboard.realEvolution6Months')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -1379,17 +1388,17 @@ export function ModernDashboard() {
                   <Bar
                     dataKey="total"
                     fill={chartColors.primary}
-                    name="Total"
+                    name={dt('modernDashboard.total')}
                   />
                   <Bar
                     dataKey="resolved"
                     fill={chartColors.accent}
-                    name="Résolu"
+                    name={dt('modernDashboard.resolved')}
                   />
                   <Bar
                     dataKey="pending"
                     fill={chartColors.pending}
-                    name="En attente"
+                    name={dt('modernDashboard.pending')}
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -1404,9 +1413,9 @@ export function ModernDashboard() {
         <div className="hapa-section">
           <Card>
             <CardHeader>
-              <CardTitle>Soumissions récentes</CardTitle>
+              <CardTitle>{dt('modernDashboard.recentSubmissions')}</CardTitle>
               <CardDescription>
-                Toutes les soumissions avec pagination, tri et filtrage avancé
+                {dt('modernDashboard.allSubmissionsWithPagination')}
               </CardDescription>
             </CardHeader>
             <CardContent>

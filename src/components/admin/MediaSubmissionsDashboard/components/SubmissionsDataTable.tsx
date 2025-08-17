@@ -66,6 +66,7 @@ import {
   Globe,
 } from "lucide-react";
 import type { MediaContentSubmission } from "@/payload-types";
+import { useAdminTranslation } from "@/utilities/admin-translations";
 
 interface SubmissionsDataTableProps {
   submissions: MediaContentSubmission[];
@@ -84,6 +85,7 @@ export function SubmissionsDataTable({
   onUpdateSubmission,
   onViewDetails,
 }: SubmissionsDataTableProps) {
+  const { dt, i18n } = useAdminTranslation();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -95,7 +97,7 @@ export function SubmissionsDataTable({
     () => [
       {
         accessorKey: "formType",
-        header: "Type",
+        header: dt('modernDashboard.dataTable.typeHeader'),
         cell: ({ row }) => {
           const formType = row.getValue("formType") as string;
           const submission = row.original;
@@ -121,12 +123,12 @@ export function SubmissionsDataTable({
               </div>
               <div>
                 <span className="text-sm font-semibold">
-                  {formType === "complaint" ? "Plainte" : "Signalement"}
+                  {formType === "complaint" ? dt('modernDashboard.dataTable.complaint') : dt('modernDashboard.dataTable.report')}
                 </span>
                 {isUrgent && (
                   <div className="flex items-center gap-1 mt-0.5">
                     <AlertTriangle className="h-3 w-3 text-red-500" />
-                    <span className="text-xs text-red-600 font-medium">URGENT</span>
+                    <span className="text-xs text-red-600 font-medium">{dt('modernDashboard.dataTable.urgentPriority').toUpperCase()}</span>
                   </div>
                 )}
               </div>
@@ -139,7 +141,7 @@ export function SubmissionsDataTable({
       },
       {
         accessorKey: "complainantInfo.fullName",
-        header: "Soumetteur",
+        header: dt('modernDashboard.dataTable.submitterHeader'),
         cell: ({ row }) => {
           const submission = row.original;
           const hasComplainant = submission.complainantInfo?.fullName;
@@ -157,7 +159,7 @@ export function SubmissionsDataTable({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm truncate">
-                  {hasComplainant ? submission.complainantInfo?.fullName : "Anonyme"}
+                  {hasComplainant ? submission.complainantInfo?.fullName : dt('modernDashboard.dataTable.anonymous')}
                 </p>
                 {submission.complainantInfo?.emailAddress && (
                   <div className="flex items-center gap-1 mt-0.5">
@@ -168,7 +170,7 @@ export function SubmissionsDataTable({
                   </div>
                 )}
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {submission.locale === 'fr' ? '🇫🇷 Français' : '🇦🇷 العربية'}
+                  {submission.locale === 'fr' ? dt('modernDashboard.dataTable.french') : dt('modernDashboard.dataTable.arabic')}
                 </p>
               </div>
             </div>
@@ -177,7 +179,7 @@ export function SubmissionsDataTable({
       },
       {
         accessorKey: "contentInfo.mediaType",
-        header: "Média/Programme",
+        header: dt('modernDashboard.dataTable.mediaHeader'),
         cell: ({ row }) => {
           const submission = row.original;
           const mediaType = submission.contentInfo?.mediaType;
@@ -209,7 +211,7 @@ export function SubmissionsDataTable({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">
-                  {mediaType || "Non spécifié"}
+                  {mediaType || dt('modernDashboard.dataTable.notSpecified')}
                 </p>
                 {(programName || channel) && (
                   <div className="space-y-0.5">
@@ -239,7 +241,7 @@ export function SubmissionsDataTable({
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
               className="h-8 p-0 hover:bg-transparent"
             >
-              Date
+              {dt('modernDashboard.dataTable.dateHeader')}
               {column.getIsSorted() === "asc" ? (
                 <ArrowUp className="ml-2 h-4 w-4" />
               ) : column.getIsSorted() === "desc" ? (
@@ -257,10 +259,10 @@ export function SubmissionsDataTable({
           const diffDays = Math.floor(diffHours / 24);
           
           const getTimeStatus = (hours: number) => {
-            if (hours < 1) return { text: 'Récent', color: 'text-green-600', bg: 'bg-green-50 dark:bg-green-950/20' };
+            if (hours < 1) return { text: dt('modernDashboard.dataTable.recent'), color: 'text-green-600', bg: 'bg-green-50 dark:bg-green-950/20' };
             if (hours < 24) return { text: `${hours}h`, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-950/20' };
             if (hours < 168) return { text: `${diffDays}j`, color: 'text-orange-600', bg: 'bg-orange-50 dark:bg-orange-950/20' };
-            return { text: 'Ancien', color: 'text-red-600', bg: 'bg-red-50 dark:bg-red-950/20' };
+            return { text: dt('modernDashboard.dataTable.old'), color: 'text-red-600', bg: 'bg-red-50 dark:bg-red-950/20' };
           };
           
           const timeStatus = getTimeStatus(diffHours);
@@ -294,7 +296,7 @@ export function SubmissionsDataTable({
       },
       {
         accessorKey: "submissionStatus",
-        header: "Statut",
+        header: dt('modernDashboard.dataTable.statusHeader'),
         cell: ({ row }) => {
           const status = row.getValue("submissionStatus") as string;
           
@@ -303,28 +305,28 @@ export function SubmissionsDataTable({
               case 'pending':
                 return {
                   icon: <Clock className="h-3 w-3" />,
-                  text: 'En attente',
+                  text: dt('modernDashboard.dataTable.pendingStatus'),
                   variant: 'secondary' as const,
                   className: 'bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-100 dark:bg-yellow-950/20 dark:text-yellow-400'
                 };
               case 'resolved':
                 return {
                   icon: <CheckCircle2 className="h-3 w-3" />,
-                  text: 'Résolu',
+                  text: dt('modernDashboard.dataTable.resolvedStatus'),
                   variant: 'default' as const,
                   className: 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100 dark:bg-green-950/20 dark:text-green-400'
                 };
               case 'dismissed':
                 return {
                   icon: <XCircleIcon className="h-3 w-3" />,
-                  text: 'Rejeté',
+                  text: dt('modernDashboard.dataTable.dismissedStatus'),
                   variant: 'destructive' as const,
                   className: 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100 dark:bg-red-950/20 dark:text-red-400'
                 };
               case 'reviewing':
                 return {
                   icon: <Eye className="h-3 w-3" />,
-                  text: 'En révision',
+                  text: dt('modernDashboard.dataTable.reviewingStatus'),
                   variant: 'outline' as const,
                   className: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100 dark:bg-blue-950/20 dark:text-blue-400'
                 };
@@ -353,7 +355,7 @@ export function SubmissionsDataTable({
       },
       {
         accessorKey: "priority",
-        header: "Priorité",
+        header: dt('modernDashboard.dataTable.priorityHeader'),
         cell: ({ row }) => {
           const priority = row.getValue("priority") as string;
           
@@ -362,25 +364,25 @@ export function SubmissionsDataTable({
               case 'urgent':
                 return {
                   icon: <Zap className="h-3 w-3" />,
-                  text: 'Urgent',
+                  text: dt('modernDashboard.dataTable.urgentPriority'),
                   className: 'bg-red-100 text-red-800 border-red-300 font-bold animate-pulse dark:bg-red-950/20 dark:text-red-400'
                 };
               case 'high':
                 return {
                   icon: <ArrowUp className="h-3 w-3" />,
-                  text: 'Haute',
+                  text: dt('modernDashboard.dataTable.highPriority'),
                   className: 'bg-orange-100 text-orange-800 border-orange-300 font-semibold dark:bg-orange-950/20 dark:text-orange-400'
                 };
               case 'medium':
                 return {
                   icon: <ArrowUpDown className="h-3 w-3" />,
-                  text: 'Moyenne',
+                  text: dt('modernDashboard.dataTable.mediumPriority'),
                   className: 'bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-950/20 dark:text-yellow-600'
                 };
               case 'low':
                 return {
                   icon: <ArrowDown className="h-3 w-3" />,
-                  text: 'Basse',
+                  text: dt('modernDashboard.dataTable.lowPriority'),
                   className: 'bg-gray-100 text-gray-700 border-gray-300 dark:bg-gray-800 dark:text-gray-300'
                 };
               default:
@@ -407,7 +409,7 @@ export function SubmissionsDataTable({
       },
       {
         id: "actions",
-        header: "Actions",
+        header: dt('modernDashboard.dataTable.actionsHeader'),
         enableHiding: false,
         cell: ({ row }) => {
           const submission = row.original;
@@ -425,7 +427,7 @@ export function SubmissionsDataTable({
                     className="flex items-center gap-2"
                   >
                     <Eye className="h-4 w-4" />
-                    Voir détails
+                    {dt('modernDashboard.dataTable.viewDetails')}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
@@ -437,7 +439,7 @@ export function SubmissionsDataTable({
                     className="flex items-center gap-2"
                   >
                     <Eye className="h-4 w-4 text-blue-600" />
-                    Marquer en révision
+                    {dt('modernDashboard.dataTable.markInReview')}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() =>
@@ -448,7 +450,7 @@ export function SubmissionsDataTable({
                     className="flex items-center gap-2"
                   >
                     <CheckCircle2 className="h-4 w-4 text-green-600" />
-                    Marquer comme résolu
+                    {dt('modernDashboard.dataTable.markResolved')}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() =>
@@ -459,7 +461,7 @@ export function SubmissionsDataTable({
                     className="flex items-center gap-2 text-destructive focus:text-destructive"
                   >
                     <XCircleIcon className="h-4 w-4" />
-                    Rejeter
+                    {dt('modernDashboard.dataTable.reject')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -468,7 +470,7 @@ export function SubmissionsDataTable({
         },
       },
     ],
-    [onUpdateSubmission, onViewDetails]
+    [onUpdateSubmission, onViewDetails, dt]
   );
 
   const table = useReactTable({
@@ -522,7 +524,7 @@ export function SubmissionsDataTable({
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Rechercher (nom, email, programme, média)..."
+            placeholder={dt('modernDashboard.dataTable.searchPlaceholder')}
             value={globalFilter}
             onChange={(event) => setGlobalFilter(event.target.value)}
             className="pl-8"
@@ -534,14 +536,14 @@ export function SubmissionsDataTable({
           onValueChange={(value) => setStatusFilter(value === "all" ? [] : [value])}
         >
           <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Statut" />
+            <SelectValue placeholder={dt('modernDashboard.dataTable.statusFilter')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Tous les statuts</SelectItem>
-            <SelectItem value="pending">En attente</SelectItem>
-            <SelectItem value="reviewing">En révision</SelectItem>
-            <SelectItem value="resolved">Résolu</SelectItem>
-            <SelectItem value="dismissed">Rejeté</SelectItem>
+            <SelectItem value="all">{dt('modernDashboard.dataTable.allStatuses')}</SelectItem>
+            <SelectItem value="pending">{dt('modernDashboard.dataTable.pendingStatus')}</SelectItem>
+            <SelectItem value="reviewing">{dt('modernDashboard.dataTable.reviewingStatus')}</SelectItem>
+            <SelectItem value="resolved">{dt('modernDashboard.dataTable.resolvedStatus')}</SelectItem>
+            <SelectItem value="dismissed">{dt('modernDashboard.dataTable.dismissedStatus')}</SelectItem>
           </SelectContent>
         </Select>
 
@@ -550,14 +552,14 @@ export function SubmissionsDataTable({
           onValueChange={(value) => setPriorityFilter(value === "all" ? [] : [value])}
         >
           <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Priorité" />
+            <SelectValue placeholder={dt('modernDashboard.dataTable.priorityFilter')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Toutes priorités</SelectItem>
-            <SelectItem value="urgent">Urgent</SelectItem>
-            <SelectItem value="high">Haute</SelectItem>
-            <SelectItem value="medium">Moyenne</SelectItem>
-            <SelectItem value="low">Basse</SelectItem>
+            <SelectItem value="all">{dt('modernDashboard.dataTable.allPriorities')}</SelectItem>
+            <SelectItem value="urgent">{dt('modernDashboard.dataTable.urgentPriority')}</SelectItem>
+            <SelectItem value="high">{dt('modernDashboard.dataTable.highPriority')}</SelectItem>
+            <SelectItem value="medium">{dt('modernDashboard.dataTable.mediumPriority')}</SelectItem>
+            <SelectItem value="low">{dt('modernDashboard.dataTable.lowPriority')}</SelectItem>
           </SelectContent>
         </Select>
 
@@ -566,12 +568,12 @@ export function SubmissionsDataTable({
           onValueChange={(value) => setFormTypeFilter(value === "all" ? [] : [value])}
         >
           <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Type" />
+            <SelectValue placeholder={dt('modernDashboard.dataTable.typeFilter')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Tous types</SelectItem>
-            <SelectItem value="complaint">Plaintes</SelectItem>
-            <SelectItem value="report">Signalements</SelectItem>
+            <SelectItem value="all">{dt('modernDashboard.dataTable.allTypes')}</SelectItem>
+            <SelectItem value="complaint">{dt('modernDashboard.dataTable.complaints')}</SelectItem>
+            <SelectItem value="report">{dt('modernDashboard.dataTable.reports')}</SelectItem>
           </SelectContent>
         </Select>
 
@@ -587,7 +589,7 @@ export function SubmissionsDataTable({
           className="bg-background hover:bg-muted transition-colors"
         >
           <XCircle className="h-4 w-4 mr-2" />
-          Réinitialiser les filtres
+          {dt('modernDashboard.dataTable.resetFilters')}
         </Button>
       </div>
 
@@ -642,8 +644,8 @@ export function SubmissionsDataTable({
                 >
                   <div className="flex flex-col items-center gap-2">
                     <AlertCircle className="h-8 w-8 text-muted-foreground/50" />
-                    <p className="font-medium">Aucune soumission trouvée</p>
-                    <p className="text-sm">Essayez de modifier vos filtres ou votre recherche</p>
+                    <p className="font-medium">{dt('modernDashboard.dataTable.noDataFound')}</p>
+                    <p className="text-sm">{dt('modernDashboard.dataTable.noDataMessage')}</p>
                   </div>
                 </TableCell>
               </TableRow>
@@ -655,7 +657,7 @@ export function SubmissionsDataTable({
       {/* Enhanced Pagination */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-muted/20 rounded-lg border border-border/50">
         <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium">Lignes par page:</p>
+          <p className="text-sm font-medium">{dt('modernDashboard.dataTable.rowsPerPage')}</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
@@ -678,9 +680,7 @@ export function SubmissionsDataTable({
         <div className="flex items-center space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
             <p className="text-sm text-muted-foreground">
-              Page {table.getState().pagination.pageIndex + 1} sur{" "}
-              {table.getPageCount()} ({table.getFilteredRowModel().rows.length} résultat
-              {table.getFilteredRowModel().rows.length > 1 ? "s" : ""})
+              {dt('modernDashboard.dataTable.pageOf')} {table.getState().pagination.pageIndex + 1} / {table.getPageCount()} ({table.getFilteredRowModel().rows.length} {table.getFilteredRowModel().rows.length > 1 ? dt('modernDashboard.dataTable.resultPlural') : dt('modernDashboard.dataTable.resultSingle')})
             </p>
           </div>
 
@@ -725,7 +725,7 @@ export function SubmissionsDataTable({
             variant="outline"
             onClick={() => window.open("/admin/collections/media-content-submissions", "_blank")}
           >
-            Voir dans Payload CMS
+            {dt('modernDashboard.dataTable.viewInPayload')}
           </Button>
         </div>
       </div>
