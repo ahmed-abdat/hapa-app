@@ -1,14 +1,19 @@
+'use client'
+
 import { Banner } from "@payloadcms/ui/elements/Banner";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Inbox, FolderCog } from "lucide-react"; // Modern descriptive icons
+import { useAdminTranslation } from '@/utilities/admin-translations'
 
 import "./index.scss";
 
 const baseClass = "before-dashboard";
 
 const BeforeDashboard: React.FC = () => {
+  const { dt } = useAdminTranslation()
+  
   return (
     <div className={baseClass}>
       <Banner className={`${baseClass}__banner`} type="success">
@@ -30,11 +35,10 @@ const BeforeDashboard: React.FC = () => {
             />
             <div>
               <h4 style={{ margin: 0, color: "#138B3A" }}>
-                Tableau de bord HAPA
+                {dt('beforeDashboard.title')}
               </h4>
               <p style={{ margin: 0, fontSize: "14px", color: "#666" }}>
-                Interface d&apos;administration - Haute Autorité de la Presse et
-                de l&apos;Audiovisuel
+                {dt('beforeDashboard.subtitle')}
               </p>
             </div>
           </div>
@@ -44,21 +48,21 @@ const BeforeDashboard: React.FC = () => {
               href="/admin/collections/media-content-submissions"
               /* Enhanced UI/UX via scoped CSS (no Tailwind dependency in admin) */
               className="admin-action admin-action--outline"
-              aria-label="Gérer les collections"
-              title="Gérer les Collections"
+              aria-label={dt('beforeDashboard.manageCollectionsAria')}
+              title={dt('beforeDashboard.manageCollections')}
             >
               <FolderCog className="admin-action__icon" aria-hidden="true" />
-              Gérer les Collections
+              {dt('beforeDashboard.manageCollections')}
             </Link>
             <Link
               href="/admin/collections/dashboard-submissions"
               /* Enhanced UI/UX via scoped CSS (no Tailwind dependency in admin) */
               className="admin-action admin-action--primary"
-              aria-label="Ouvrir les soumissions médiatiques"
-              title="Soumissions Médiatiques"
+              aria-label={dt('beforeDashboard.mediaSubmissionsAria')}
+              title={dt('beforeDashboard.mediaSubmissions')}
             >
               <Inbox className="admin-action__icon" aria-hidden="true" />
-              Soumissions Médiatiques
+              {dt('beforeDashboard.mediaSubmissions')}
             </Link>
           </div>
         </div>

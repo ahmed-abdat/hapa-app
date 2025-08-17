@@ -63,14 +63,14 @@ export default function DashboardLanding(): React.JSX.Element {
         const json = (await response.json()) as StatsResponse
         if (!ignore) setState({ loading: false, error: null, data: json })
       } catch (error) {
-        if (!ignore) setState({ loading: false, error: 'Impossible de charger les statistiques', data: null })
+        if (!ignore) setState({ loading: false, error: dt('errors.fetchFailed'), data: null })
       }
     }
     fetchStats()
     return () => {
       ignore = true
     }
-  }, [])
+  }, [dt])
 
   const latestSubmissions = useMemo(() => {
     return state.data?.submissions?.slice(0, 6) ?? []
@@ -83,7 +83,7 @@ export default function DashboardLanding(): React.JSX.Element {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
           <div>
             <h2 style={{ margin: 0, color: 'var(--hapa-primary)' }}>{dt('dashboard.title')}</h2>
-            <p style={{ margin: 0, color: '#4b5563', fontSize: 14 }}>Vue d’ensemble des signalements et plaintes</p>
+            <p style={{ margin: 0, color: '#4b5563', fontSize: 14 }}>{dt('dashboard.subtitle')}</p>
           </div>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             <Link href="/admin/collections/dashboard-submissions" style={buttonPrimaryStyle}>

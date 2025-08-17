@@ -707,6 +707,14 @@ export const adminTranslations = {
     // Additional labels
     'mediaCleanupJobs.labelsTotal': "total",
     'mediaCleanupJobs.labelsPlaceholderDirectories': "forms/, media/",
+    
+    // BeforeDashboard component translations - FLATTENED
+    'beforeDashboard.title': "Tableau de bord HAPA",
+    'beforeDashboard.subtitle': "Interface d'administration - Haute Autorité de la Presse et de l'Audiovisuel",
+    'beforeDashboard.mediaSubmissions': "Soumissions Médiatiques",
+    'beforeDashboard.manageCollections': "Gérer les Collections",
+    'beforeDashboard.mediaSubmissionsAria': "Ouvrir les soumissions médiatiques",
+    'beforeDashboard.manageCollectionsAria': "Gérer les collections",
   },
   ar: {
     // Plugin-generated collections
@@ -1438,6 +1446,14 @@ export const adminTranslations = {
     // Additional labels
     'mediaCleanupJobs.labelsTotal': "المجموع",
     'mediaCleanupJobs.labelsPlaceholderDirectories': "forms/, media/",
+    
+    // BeforeDashboard component translations - FLATTENED
+    'beforeDashboard.title': "لوحة تحكم هابا",
+    'beforeDashboard.subtitle': "واجهة الإدارة - الهيئة العليا للصحافة والسمعيات والبصريات",
+    'beforeDashboard.mediaSubmissions': "إرسالات الوسائط",
+    'beforeDashboard.manageCollections': "إدارة المجموعات",
+    'beforeDashboard.mediaSubmissionsAria': "فتح إرسالات الوسائط",
+    'beforeDashboard.manageCollectionsAria': "إدارة المجموعات",
   }
 }
 
