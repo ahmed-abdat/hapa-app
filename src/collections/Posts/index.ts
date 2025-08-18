@@ -258,19 +258,8 @@ export const Posts: CollectionConfig<'posts'> = {
             }),
             MetaImageField({
               relationTo: 'media',
-              filterOptions: {
-                and: [
-                  {
-                    or: [
-                      { source: { exists: false } },
-                      { source: { equals: 'admin' } }
-                    ]
-                  },
-                  {
-                    filename: { not_like: 'hapa_form_%' }
-                  }
-                ]
-              },
+              // Note: filterOptions not supported by MetaImageField
+              // Media collection access control handles filtering
             }),
 
             MetaDescriptionField({}),
