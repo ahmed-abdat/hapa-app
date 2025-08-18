@@ -14,7 +14,7 @@ export async function generateLocalizedMetadata(locale: 'fr' | 'ar' = 'fr'): Pro
     metadataBase: new URL(getServerSideURL()),
     title: {
       default: `HAPA - ${t('organizationName')}`,
-      template: "%s | HAPA"
+      template: "%s"
     },
     description: t('siteDescription'),
     keywords,

@@ -44,16 +44,20 @@ export const Media: CollectionConfig = {
     create: authenticated,
     delete: authenticated,
     read: ({ req }) => {
-      // In admin context, hide form submission media to keep admin gallery clean
-      if (req.url?.includes('/admin/')) {
+      // Always filter out form submission media for authenticated users
+      // This is the most reliable way to hide form media from the admin UI
+      if (req.user) {
+        // For authenticated users (admin), always filter out form submissions
         const whereClause: Where = {
           and: [
+            // Either source is not set OR source is 'admin' (not 'form')
             {
               or: [
                 { source: { exists: false } },
                 { source: { equals: 'admin' } }
               ]
             },
+            // AND filename doesn't start with 'hapa_form_'
             {
               filename: { not_like: 'hapa_form_%' }
             }
@@ -61,7 +65,7 @@ export const Media: CollectionConfig = {
         }
         return whereClause
       }
-      // For API and frontend requests, show all files
+      // For frontend and public API requests (no auth), show all files
       return true
     },
     update: authenticated,

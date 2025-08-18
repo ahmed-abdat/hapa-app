@@ -18,7 +18,6 @@ import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidateDelete, revalidatePost } from './hooks/revalidatePost'
 import { enforceFrenchLocale } from '@/utilities/hooks/enforceFrenchLocale'
-
 import {
   MetaDescriptionField,
   MetaImageField,
@@ -179,6 +178,19 @@ export const Posts: CollectionConfig<'posts'> = {
               name: 'heroImage',
               type: 'upload',
               relationTo: 'media',
+              filterOptions: {
+                and: [
+                  {
+                    or: [
+                      { source: { exists: false } },
+                      { source: { equals: 'admin' } }
+                    ]
+                  },
+                  {
+                    filename: { not_like: 'hapa_form_%' }
+                  }
+                ]
+              },
             },
             {
               name: 'content',
@@ -246,6 +258,19 @@ export const Posts: CollectionConfig<'posts'> = {
             }),
             MetaImageField({
               relationTo: 'media',
+              filterOptions: {
+                and: [
+                  {
+                    or: [
+                      { source: { exists: false } },
+                      { source: { equals: 'admin' } }
+                    ]
+                  },
+                  {
+                    filename: { not_like: 'hapa_form_%' }
+                  }
+                ]
+              },
             }),
 
             MetaDescriptionField({}),
