@@ -6,21 +6,66 @@ import { seoPlugin } from '@payloadcms/plugin-seo'
 import { searchPlugin } from '@payloadcms/plugin-search'
 import { Plugin } from 'payload'
 // import { revalidateRedirects } from '@/hooks/revalidateRedirects' // Removed with redirects
-import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
+import { GenerateTitle, GenerateURL, GenerateDescription } from '@payloadcms/plugin-seo/types'
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 
 import { Post } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
+import { generateSEOTitle, generateSEODescription } from '@/utilities/seo'
 
-const generateTitle: GenerateTitle<Post> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | HAPA` : 'HAPA - Haute Autorité de la Presse et de l\'Audiovisuel'
+const generateTitle: GenerateTitle<Post> = ({ doc, locale }) => {
+  // Get the title based on locale
+  let title = ''
+  
+  if (doc?.title) {
+    if (typeof doc.title === 'object' && locale) {
+      // Handle localized title
+      const currentLocale = typeof locale === 'string' ? locale : (locale as any)?.code || 'fr'
+      title = (doc.title as any)[currentLocale] || (doc.title as any).fr || ''
+    } else if (typeof doc.title === 'string') {
+      title = doc.title
+    }
+  }
+  
+  return generateSEOTitle(title, 'HAPA')
 }
 
-const generateURL: GenerateURL<Post> = ({ doc }) => {
-  const url = getServerSideURL()
+const generateDescription: GenerateDescription<Post> = ({ doc, locale }) => {
+  // Get the content based on locale
+  let content = null
+  let title = ''
+  
+  if (doc?.content) {
+    if (typeof doc.content === 'object' && 'root' in doc.content) {
+      // Direct content object
+      content = doc.content
+    } else if (locale && typeof doc.content === 'object') {
+      // Localized content
+      const currentLocale = typeof locale === 'string' ? locale : (locale as any)?.code || 'fr'
+      content = (doc.content as any)[currentLocale] || (doc.content as any).fr || null
+    }
+  }
+  
+  // Get title as fallback
+  if (doc?.title) {
+    if (typeof doc.title === 'object' && locale) {
+      const currentLocale = typeof locale === 'string' ? locale : (locale as any)?.code || 'fr'
+      title = (doc.title as any)[currentLocale] || (doc.title as any).fr || ''
+    } else if (typeof doc.title === 'string') {
+      title = doc.title
+    }
+  }
+  
+  // Generate description from content, with title as fallback
+  return generateSEODescription(content, title)
+}
 
-  return doc?.slug ? `${url}/${doc.slug}` : url
+const generateURL: GenerateURL<Post> = ({ doc, locale }) => {
+  const url = getServerSideURL()
+  const currentLocale = typeof locale === 'string' ? locale : (locale as any)?.code || 'fr'
+  
+  return doc?.slug ? `${url}/${currentLocale}/${doc.slug}` : url
 }
 
 export const plugins: Plugin[] = [
@@ -31,6 +76,7 @@ export const plugins: Plugin[] = [
   }),
   seoPlugin({
     generateTitle,
+    generateDescription,
     generateURL,
   }),
   // Removed formBuilderPlugin - replaced with custom forms
