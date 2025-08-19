@@ -5,11 +5,13 @@
 We're facing challenges integrating Tailwind CSS and shadcn/ui components with Payload CMS's admin panel without breaking the CMS's native styling system.
 
 ### Problem Statement
+
 - Adding `@tailwind base` to `src/app/(payload)/admin-tailwind.css` breaks Payload CMS admin interface styling
 - Need to use Tailwind utilities and shadcn/ui components in custom admin dashboard without conflicts
-- Current dashboard uses mixed approach: custom CSS (.hapa-* classes) + some shadcn components
+- Current dashboard uses mixed approach: custom CSS (.hapa-\* classes) + some shadcn components
 
 ### Current Architecture
+
 ```
 src/app/(payload)/admin-tailwind.css
 ├── /* @tailwind base; */ ← DISABLED (breaks Payload)
@@ -32,11 +34,13 @@ src/components/admin/MediaSubmissionsDashboard/
 ### 1. Payload CMS + Tailwind Integration Best Practices
 
 **Key Questions:**
+
 - How to properly scope Tailwind utilities within Payload admin without breaking native styles?
 - What's the recommended approach for CSS layers (`@layer`) with Payload CMS?
 - How do other projects handle this integration successfully?
 
 **Research Sources:**
+
 - [Official Payload Guide: Tailwind + shadcn/ui](https://payloadcms.com/posts/guides/how-to-setup-tailwindcss-and-shadcn-ui-in-payload)
 - [Payload CSS Customization Docs](https://payloadcms.com/docs/admin/customizing-css)
 - Community discussions and GitHub issues
@@ -44,6 +48,7 @@ src/components/admin/MediaSubmissionsDashboard/
 ### 2. CSS Scoping Strategies
 
 **Current Approach Analysis:**
+
 ```css
 .hapa-dashboard-container {
   /* Reset any inherited styles from Payload admin */
@@ -54,6 +59,7 @@ src/components/admin/MediaSubmissionsDashboard/
 ```
 
 **Questions:**
+
 - Is the `all: initial` approach optimal or could it cause issues?
 - What CSS scoping patterns work best with Payload's BEM naming conventions?
 - How to handle z-index conflicts (currently using manual z-index overrides)?
@@ -61,10 +67,12 @@ src/components/admin/MediaSubmissionsDashboard/
 ### 3. shadcn/ui Component Integration
 
 **Current Mixed Usage:**
+
 - Some components use shadcn/ui (StatCard uses `Card`, `CardHeader`, etc.)
 - Other components use custom CSS classes (.hapa-card, .hapa-badge)
 
 **Research Needed:**
+
 - Can shadcn/ui components work without `@tailwind base`?
 - What's the minimal setup for shadcn/ui components in admin context?
 - How to handle shadcn/ui theme compatibility with Payload's theme system?
@@ -72,6 +80,7 @@ src/components/admin/MediaSubmissionsDashboard/
 ### 4. Payload CSS Variables and Theme Integration
 
 **Current Theme Variables Used:**
+
 ```css
 --background: var(--background);
 --foreground: var(--foreground);
@@ -81,6 +90,7 @@ src/components/admin/MediaSubmissionsDashboard/
 ```
 
 **Questions:**
+
 - How do Payload's CSS variables relate to shadcn/ui's theme variables?
 - Can we create a unified theme system?
 - What's the proper way to inherit Payload's theme in custom components?
@@ -88,11 +98,13 @@ src/components/admin/MediaSubmissionsDashboard/
 ### 5. Performance and Maintainability
 
 **Current Issues:**
+
 - 900+ lines of custom CSS duplicating what Tailwind/shadcn provides
 - Mixed styling approaches reducing consistency
 - Manual responsive breakpoints instead of Tailwind's system
 
 **Research Focus:**
+
 - How to migrate from custom CSS to Tailwind utilities systematically?
 - Performance impact of different integration approaches
 - Bundle size considerations
@@ -100,13 +112,15 @@ src/components/admin/MediaSubmissionsDashboard/
 ## Technical Constraints
 
 ### Must-Haves
+
 - ✅ Payload admin interface must remain fully functional
 - ✅ Custom dashboard must be responsive and accessible
 - ✅ Theme switching (light/dark) must work consistently
 - ✅ No breaking changes to existing functionality
 
 ### Current Environment
-- **Payload CMS**: 3.44.0
+
+- **Payload CMS**: 3.52.0
 - **Next.js**: 15.3.3
 - **Tailwind CSS**: Latest
 - **shadcn/ui**: Latest components
@@ -127,6 +141,7 @@ src/components/admin/MediaSubmissionsDashboard/
 ## Expected Research Outcomes
 
 ### Deliverables Needed
+
 1. **Integration Strategy**: Step-by-step approach for clean integration
 2. **Migration Plan**: How to move from current custom CSS to Tailwind + shadcn
 3. **Component Architecture**: Recommended patterns for admin components
@@ -134,6 +149,7 @@ src/components/admin/MediaSubmissionsDashboard/
 5. **Performance Benchmarks**: Before/after performance metrics
 
 ### Success Criteria
+
 - Modern, responsive dashboard using Tailwind utilities
 - Full shadcn/ui component compatibility
 - No conflicts with Payload admin interface
@@ -143,11 +159,13 @@ src/components/admin/MediaSubmissionsDashboard/
 ## Files to Review
 
 ### Primary Files
+
 - `src/app/(payload)/admin-tailwind.css` - Current Tailwind setup
 - `src/components/admin/MediaSubmissionsDashboard/ModernDashboard.tsx` - Main component
 - `src/components/admin/MediaSubmissionsDashboard/dashboard.css` - Custom styles
 
 ### Configuration Files
+
 - `tailwind.config.ts` - Tailwind configuration
 - `src/payload.config.ts` - Payload CMS configuration
 - `components.json` - shadcn/ui configuration
@@ -155,11 +173,13 @@ src/components/admin/MediaSubmissionsDashboard/
 ## Community Resources to Check
 
 1. **Payload CMS Community**:
+
    - Discord discussions
    - GitHub issues and discussions
    - Official examples repository
 
 2. **Tailwind + CMS Integration**:
+
    - Tailwind CSS documentation
    - Community blog posts and tutorials
    - Stack Overflow discussions
