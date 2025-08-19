@@ -1,6 +1,6 @@
 # Integrating Tailwind CSS and shadcn/ui with Payload CMS admin panel
 
-The challenge of integrating Tailwind CSS and shadcn/ui components with Payload CMS 3.44.0 without breaking the native admin styling has multiple proven solutions. Based on extensive research of official documentation, community implementations, and production deployments, the **scoped preflight approach combined with CSS layers** provides the most robust solution for your government regulatory website.
+The challenge of integrating Tailwind CSS and shadcn/ui components with Payload CMS 3.52.0 without breaking the native admin styling has multiple proven solutions. Based on extensive research of official documentation, community implementations, and production deployments, the **scoped preflight approach combined with CSS layers** provides the most robust solution for your government regulatory website.
 
 ## Core technical solution confirmed by Payload CMS
 
@@ -82,20 +82,20 @@ The key is aligning theme switching mechanisms. Payload uses `data-theme="dark"`
 ```javascript
 // tailwind.config.js
 module.exports = {
-  darkMode: ['class', '[data-theme="dark"]'],
+  darkMode: ["class", '[data-theme="dark"]'],
   theme: {
     extend: {
       colors: {
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))'
-        }
-      }
-    }
-  }
-}
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+      },
+    },
+  },
+};
 ```
 
 CSS variables serve as the universal translation layer, with Payload's elevation system (`--theme-elevation-*`) mapping to shadcn's background/foreground pairs. This maintains visual consistency while respecting each framework's conventions.
@@ -136,8 +136,8 @@ Use the `.twp` (Tailwind Preflight) wrapper class approach for components that n
 ```scss
 @layer base {
   .twp {
-    @import 'tailwindcss/preflight.css';
-    
+    @import "tailwindcss/preflight.css";
+
     * {
       @apply border-border outline-ring/50;
     }
@@ -159,9 +159,9 @@ In `payload.config.ts`, point to your scoped admin styles:
 ```typescript
 export default buildConfig({
   admin: {
-    css: path.resolve(__dirname, 'src/styles/admin.css'),
-  }
-})
+    css: path.resolve(__dirname, "src/styles/admin.css"),
+  },
+});
 ```
 
 **Step 4: Create Component Architecture**
@@ -174,7 +174,7 @@ export const CustomDashboard = () => (
       {/* shadcn components with full Tailwind support */}
     </Card>
   </div>
-)
+);
 ```
 
 ## Advanced Tailwind CSS 4 configuration
@@ -210,6 +210,6 @@ This maintains compatibility with Payload's data-theme attribute while leveragin
 
 ## Conclusion
 
-The integration of Tailwind CSS and shadcn/ui with Payload CMS 3.44.0 is not only feasible but well-documented with production-proven patterns. The key insight is that **shadcn/ui components don't require Tailwind's base reset**, making them compatible with Payload's admin panel when properly scoped. By leveraging modern CSS features like layers and custom properties, you can maintain a robust, maintainable styling system that preserves Payload's native functionality while enabling modern component development.
+The integration of Tailwind CSS and shadcn/ui with Payload CMS 3.52.0 is not only feasible but well-documented with production-proven patterns. The key insight is that **shadcn/ui components don't require Tailwind's base reset**, making them compatible with Payload's admin panel when properly scoped. By leveraging modern CSS features like layers and custom properties, you can maintain a robust, maintainable styling system that preserves Payload's native functionality while enabling modern component development.
 
 The recommended approach—combining scoped preflight, CSS layers, and selective Tailwind imports—provides the stability required for a government regulatory website while reducing CSS complexity from 900+ lines to efficient utility classes. This solution is validated by multiple production deployments and officially supported by Payload CMS documentation.
