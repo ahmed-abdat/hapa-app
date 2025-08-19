@@ -6,32 +6,39 @@ import { seoPlugin } from '@payloadcms/plugin-seo'
 import { searchPlugin } from '@payloadcms/plugin-search'
 import { Plugin } from 'payload'
 // import { revalidateRedirects } from '@/hooks/revalidateRedirects' // Removed with redirects
-import { GenerateTitle, GenerateURL, GenerateDescription } from '@payloadcms/plugin-seo/types'
+import { GenerateTitle, GenerateURL, GenerateDescription, GenerateImage } from '@payloadcms/plugin-seo/types'
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
 
 import { Post } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
-import { generateSEOTitle, generateSEODescription } from '@/utilities/seo'
+import { generateSEOTitle, generateSEODescription, generateContentSummary } from '@/utilities/seo'
 
 const generateTitle: GenerateTitle<Post> = ({ doc, locale }) => {
   // Get the title based on locale
   let title = ''
+  const currentLocale = typeof locale === 'string' ? locale : (locale as any)?.code || 'fr'
   
   if (doc?.title) {
-    if (typeof doc.title === 'object' && locale) {
+    if (typeof doc.title === 'object') {
       // Handle localized title
-      const currentLocale = typeof locale === 'string' ? locale : (locale as any)?.code || 'fr'
       title = (doc.title as any)[currentLocale] || (doc.title as any).fr || ''
     } else if (typeof doc.title === 'string') {
       title = doc.title
     }
   }
   
-  return generateSEOTitle(title, 'HAPA')
+  // Use different site names based on locale
+  const siteName = currentLocale === 'ar' 
+    ? 'الهيئة العليا للصحافة والإعلام السمعي البصري'
+    : 'HAPA'
+  
+  return generateSEOTitle(title, siteName)
 }
 
 const generateDescription: GenerateDescription<Post> = ({ doc, locale }) => {
+  const currentLocale = typeof locale === 'string' ? locale : (locale as any)?.code || 'fr'
+  
   // Get the content based on locale
   let content = null
   let title = ''
@@ -40,17 +47,20 @@ const generateDescription: GenerateDescription<Post> = ({ doc, locale }) => {
     if (typeof doc.content === 'object' && 'root' in doc.content) {
       // Direct content object
       content = doc.content
-    } else if (locale && typeof doc.content === 'object') {
+    } else if (typeof doc.content === 'object') {
       // Localized content
-      const currentLocale = typeof locale === 'string' ? locale : (locale as any)?.code || 'fr'
       content = (doc.content as any)[currentLocale] || (doc.content as any).fr || null
     }
   }
   
+  // If we have content, use the smart summary function
+  if (content) {
+    return generateContentSummary(content)
+  }
+  
   // Get title as fallback
   if (doc?.title) {
-    if (typeof doc.title === 'object' && locale) {
-      const currentLocale = typeof locale === 'string' ? locale : (locale as any)?.code || 'fr'
+    if (typeof doc.title === 'object') {
       title = (doc.title as any)[currentLocale] || (doc.title as any).fr || ''
     } else if (typeof doc.title === 'string') {
       title = doc.title
@@ -61,11 +71,26 @@ const generateDescription: GenerateDescription<Post> = ({ doc, locale }) => {
   return generateSEODescription(content, title)
 }
 
+const generateImage: GenerateImage<Post> = ({ doc }): string | Promise<string> => {
+  // Priority: heroImage > first media block > default
+  if (doc?.heroImage && typeof doc.heroImage === 'object' && 'url' in doc.heroImage) {
+    return doc.heroImage.url as string
+  }
+  
+  // Return empty string to use default
+  return ''
+}
+
 const generateURL: GenerateURL<Post> = ({ doc, locale }) => {
   const url = getServerSideURL()
   const currentLocale = typeof locale === 'string' ? locale : (locale as any)?.code || 'fr'
   
-  return doc?.slug ? `${url}/${currentLocale}/${doc.slug}` : url
+  // Generate proper localized URLs
+  if (doc?.slug) {
+    return `${url}/${currentLocale}/posts/${doc.slug}`
+  }
+  
+  return `${url}/${currentLocale}`
 }
 
 export const plugins: Plugin[] = [
@@ -77,7 +102,12 @@ export const plugins: Plugin[] = [
   seoPlugin({
     generateTitle,
     generateDescription,
+    generateImage,
     generateURL,
+    collections: [], // Empty array - Posts collection already has SEO fields configured manually
+    uploadsCollection: 'media',
+    tabbedUI: false, // Keep disabled as Posts collection manages its own tabs
+    interfaceName: 'HAPASEO', // Custom TypeScript interface
   }),
   // Removed formBuilderPlugin - replaced with custom forms
   // formBuilderPlugin({...}),

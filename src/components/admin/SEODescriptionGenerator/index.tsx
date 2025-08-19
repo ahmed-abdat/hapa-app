@@ -5,7 +5,6 @@ import { extractPlainTextFromLexical, truncateText, SEO_LIMITS } from '@/utiliti
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 
 import './styles.scss'
-
 export const SEODescriptionGenerator: React.FC = () => {
   const locale = useLocale()
   const { getData } = useForm()
