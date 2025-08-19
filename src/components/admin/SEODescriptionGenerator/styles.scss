@@ -1,12 +1,10 @@
 // SEO Description Generator - HAPA Brand Compatible
-@import '@payloadcms/ui/scss';
-
 .seo-description-generator {
-  margin-bottom: var(--hapa-spacing-md);
-  padding: var(--hapa-spacing-md) var(--hapa-spacing-lg);
-  background-color: var(--theme-elevation-50);
-  border: 1px solid var(--theme-elevation-200);
-  border-radius: var(--theme-border-radius-s);
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
@@ -19,16 +17,8 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(180deg, 
-      hsl(var(--hapa-success)), 
-      hsl(var(--hapa-primary))
-    );
+    background: linear-gradient(180deg, #22c55e, #16a34a);
     border-radius: 0 2px 2px 0;
-  }
-  
-  // Use Payload's responsive mixins
-  @include mid-break {
-    padding: var(--hapa-spacing-sm) var(--hapa-spacing-md);
   }
   
   // RTL support for Arabic
@@ -43,43 +33,35 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--hapa-spacing-sm);
-  gap: var(--hapa-spacing-md);
+  margin-bottom: 8px;
+  gap: 12px;
 }
 
 .seo-description-generator__title {
   font-size: 14px;
   font-weight: 600;
-  color: var(--theme-text);
-  font-family: var(--hapa-font-body);
+  color: #334155;
   transition: color 0.2s ease;
 }
 
 .seo-description-generator__button {
-  padding: var(--hapa-spacing-sm) var(--hapa-spacing-md);
+  padding: 6px 12px;
   font-size: 13px;
   font-weight: 500;
   color: white;
-  background: linear-gradient(135deg, 
-    hsl(var(--hapa-success)), 
-    hsl(var(--hapa-primary))
-  );
+  background: linear-gradient(135deg, #22c55e, #16a34a);
   border: none;
-  border-radius: var(--theme-border-radius-s);
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
   flex-shrink: 0;
-  font-family: var(--hapa-font-body);
-  box-shadow: 0 2px 4px hsl(var(--hapa-primary) / 0.2);
+  box-shadow: 0 2px 4px rgba(22, 163, 74, 0.2);
 
   &:hover:not(&--disabled) {
-    background: linear-gradient(135deg, 
-      hsl(var(--hapa-success) / 0.9), 
-      hsl(var(--hapa-primary) / 0.9)
-    );
+    background: linear-gradient(135deg, #1eb854, #15803d);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px hsl(var(--hapa-primary) / 0.3);
+    box-shadow: 0 4px 8px rgba(22, 163, 74, 0.3);
   }
 
   &:active:not(&--disabled) {
@@ -87,7 +69,7 @@
   }
 
   &--disabled {
-    background: var(--theme-elevation-400);
+    background: #94a3b8;
     cursor: not-allowed;
     opacity: 0.7;
     box-shadow: none;
@@ -96,10 +78,9 @@
 
 .seo-description-generator__description {
   font-size: 12px;
-  color: var(--theme-text-secondary);
+  color: #64748b;
   line-height: 1.4;
   transition: color 0.2s ease;
-  font-family: var(--hapa-font-body);
   margin-left: 4px; // Account for accent strip
   
   [dir="rtl"] & {
@@ -117,12 +98,12 @@
   text-align: right;
 }
 
-// Responsive adjustments using HAPA spacing
+// Responsive adjustments
 @media (max-width: 768px) {
   .seo-description-generator__header {
     flex-direction: column;
     align-items: stretch;
-    gap: var(--hapa-spacing-sm);
+    gap: 8px;
   }
   
   .seo-description-generator__button {
@@ -133,7 +114,7 @@
 
 // WCAG 2.1 AA Accessibility support
 .seo-description-generator__button:focus-visible {
-  outline: 2px solid hsl(var(--hapa-primary));
+  outline: 2px solid #16a34a;
   outline-offset: 2px;
 }
 
