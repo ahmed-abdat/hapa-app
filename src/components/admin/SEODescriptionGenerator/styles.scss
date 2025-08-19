@@ -1,10 +1,10 @@
-// SEO Description Generator - HAPA Brand Compatible
+// SEO Description Generator - HAPA Brand Compatible with Dark Mode
 .seo-description-generator {
   margin-bottom: 16px;
   padding: 12px 16px;
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
@@ -17,7 +17,7 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(180deg, #22c55e, #16a34a);
+    background: linear-gradient(180deg, hsl(var(--primary)), hsl(var(--theme-success-600)));
     border-radius: 0 2px 2px 0;
   }
   
@@ -40,7 +40,7 @@
 .seo-description-generator__title {
   font-size: 14px;
   font-weight: 600;
-  color: #334155;
+  color: hsl(var(--foreground));
   transition: color 0.2s ease;
 }
 
@@ -48,20 +48,20 @@
   padding: 6px 12px;
   font-size: 13px;
   font-weight: 500;
-  color: white;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
   flex-shrink: 0;
-  box-shadow: 0 2px 4px rgba(22, 163, 74, 0.2);
+  box-shadow: 0 2px 4px hsl(var(--primary) / 0.2);
 
   &:hover:not(&--disabled) {
-    background: linear-gradient(135deg, #1eb854, #15803d);
+    background: hsl(var(--primary) / 0.9);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(22, 163, 74, 0.3);
+    box-shadow: 0 4px 8px hsl(var(--primary) / 0.3);
   }
 
   &:active:not(&--disabled) {
@@ -69,7 +69,8 @@
   }
 
   &--disabled {
-    background: #94a3b8;
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
     cursor: not-allowed;
     opacity: 0.7;
     box-shadow: none;
@@ -78,7 +79,7 @@
 
 .seo-description-generator__description {
   font-size: 12px;
-  color: #64748b;
+  color: hsl(var(--muted-foreground));
   line-height: 1.4;
   transition: color 0.2s ease;
   margin-left: 4px; // Account for accent strip
@@ -114,7 +115,7 @@
 
 // WCAG 2.1 AA Accessibility support
 .seo-description-generator__button:focus-visible {
-  outline: 2px solid #16a34a;
+  outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
 }
 
@@ -133,6 +134,29 @@
   }
 }
 
+// Dark mode specific enhancements
+[data-theme="dark"] {
+  .seo-description-generator {
+    // Enhance visibility in dark mode
+    box-shadow: 0 1px 3px hsl(var(--background) / 0.8);
+    
+    &::before {
+      // Slightly brighter accent strip in dark mode
+      background: linear-gradient(180deg, hsl(var(--primary) / 1.1), hsl(var(--theme-success-600)));
+      box-shadow: 0 0 8px hsl(var(--primary) / 0.3);
+    }
+  }
+  
+  .seo-description-generator__button {
+    // Enhanced button visibility in dark mode
+    box-shadow: 0 2px 4px hsl(var(--background) / 0.3);
+    
+    &:hover:not(&--disabled) {
+      box-shadow: 0 4px 8px hsl(var(--primary) / 0.4);
+    }
+  }
+}
+
 // Reduced motion support
 @media (prefers-reduced-motion: reduce) {
   .seo-description-generator,
@@ -144,5 +168,12 @@
   
   .seo-description-generator__button:hover:not(.seo-description-generator__button--disabled) {
     transform: none;
+  }
+  
+  // Remove dark mode shadows in reduced motion
+  [data-theme="dark"] {
+    .seo-description-generator::before {
+      box-shadow: none;
+    }
   }
 }
