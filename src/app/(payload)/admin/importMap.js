@@ -14,7 +14,7 @@ import { HeadingFeatureClient as HeadingFeatureClient_e70f5e05f09f93e00b997edb1e
 import { OverviewComponent as OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
-import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
+import { SEODescriptionGenerator as SEODescriptionGenerator_c95c38dadf9f75756faf5a1184529577 } from '@/components/admin/SEODescriptionGenerator/index.tsx'
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { SlugFieldWithNotice as SlugFieldWithNotice_e83c5ccf8f9b3dccc0f0e2a7ece0904e } from '@/fields/slug/SlugFieldWithNotice.tsx'
 import { ForceLocaleMessage as ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62 } from '@/components/ForceLocaleMessage/index.tsx'
@@ -49,7 +49,7 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#OverviewComponent": OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaTitleComponent": MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaImageComponent": MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860,
-  "@payloadcms/plugin-seo/client#MetaDescriptionComponent": MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860,
+  "@/components/admin/SEODescriptionGenerator/index.tsx#SEODescriptionGenerator": SEODescriptionGenerator_c95c38dadf9f75756faf5a1184529577,
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@/fields/slug/SlugFieldWithNotice.tsx#SlugFieldWithNotice": SlugFieldWithNotice_e83c5ccf8f9b3dccc0f0e2a7ece0904e,
   "@/components/ForceLocaleMessage/index.tsx#ForceLocaleMessage": ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62,
