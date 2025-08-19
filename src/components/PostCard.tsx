@@ -8,7 +8,7 @@ import { useLocale } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Calendar, ArrowRight, ArrowLeft, FileText } from 'lucide-react'
+import { Calendar, ArrowRight, FileText } from 'lucide-react'
 import { Media } from '@/components/Media'
 import type { Media as MediaType } from '@/payload-types'
 
@@ -34,7 +34,6 @@ export const PostCard: React.FC<PostCardProps> = ({
   className,
 }) => {
   const locale = useLocale()
-  const isRTL = locale === 'ar'
 
   return (
     <Link href={href} className="block h-full group">
@@ -115,21 +114,11 @@ export const PostCard: React.FC<PostCardProps> = ({
           {/* CTA Section - Always at Bottom */}
           <div className="pt-4 mt-auto border-t border-gray-100 group-hover:border-primary/20 transition-colors duration-300">
             <div className="flex items-center justify-between">
-              <span className={cn(
-                "text-primary font-semibold text-sm group-hover:text-accent transition-colors duration-300",
-                isRTL && "order-2"
-              )}>
+              <span className="text-primary font-semibold text-sm group-hover:text-accent transition-colors duration-300">
                 {locale === 'ar' ? 'اقرأ المزيد' : 'Lire la suite'}
               </span>
-              <div className={cn(
-                "w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-primary transition-all duration-300 group-hover:scale-110",
-                isRTL && "order-1"
-              )}>
-                {isRTL ? (
-                  <ArrowLeft className="h-4 w-4 text-primary group-hover:text-white transition-colors duration-300" />
-                ) : (
-                  <ArrowRight className="h-4 w-4 text-primary group-hover:text-white transition-colors duration-300" />
-                )}
+              <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-primary transition-all duration-300 group-hover:scale-110 rtl:rotate-180">
+                <ArrowRight className="h-4 w-4 text-primary group-hover:text-white transition-colors duration-300" />
               </div>
             </div>
           </div>

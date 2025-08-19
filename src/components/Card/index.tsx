@@ -4,7 +4,7 @@ import useClickableCard from '@/utilities/useClickableCard'
 import { Link } from '@/i18n/navigation'
 import React from 'react'
 import { motion, type Variants } from 'framer-motion'
-import { Calendar, ArrowRight, ArrowLeft, Eye } from 'lucide-react'
+import { Calendar, ArrowRight, Eye } from 'lucide-react'
 
 import type { Post } from '@/payload-types'
 
@@ -36,7 +36,6 @@ export const Card: React.FC<{
     const titleToUse = titleFromProps || title
     const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
     const href = `/${relationTo}/${slug}`
-    const isRtl = locale === 'ar'
     const publicationDate = publishedAt || createdAt
     
     // Calculate responsive title size based on title length
@@ -52,13 +51,12 @@ export const Card: React.FC<{
       titleToUse,
       sanitizedDescription,
       href,
-      isRtl,
       publicationDate,
       titleClass
     }
-  }, [categories, titleFromProps, title, description, locale, relationTo, slug, publishedAt, createdAt])
+  }, [categories, titleFromProps, title, description, relationTo, slug, publishedAt, createdAt])
 
-  const { hasCategories, titleToUse, sanitizedDescription, href, isRtl, publicationDate, titleClass } = computedValues
+  const { hasCategories, titleToUse, sanitizedDescription, href, publicationDate, titleClass } = computedValues
 
   // Optimized animation variants - use id-based delay for consistent performance
   const animationDelay = React.useMemo(() => {
@@ -214,8 +212,7 @@ export const Card: React.FC<{
           >
             <h3 className={cn(
               "font-bold leading-tight tracking-tight text-gray-900 group-hover:text-primary transition-colors duration-300 line-clamp-2",
-              titleClass,
-              isRtl && "text-right"
+              titleClass
             )}>
               <Link className="block hover:underline decoration-primary/30" href={href} ref={link.ref}>
                 {titleToUse}
@@ -232,10 +229,7 @@ export const Card: React.FC<{
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            <p className={cn(
-              "text-sm text-gray-600 leading-relaxed line-clamp-3",
-              isRtl && "text-right"
-            )}>
+            <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
               {sanitizedDescription}
             </p>
           </motion.div>
@@ -253,22 +247,18 @@ export const Card: React.FC<{
           </span>
           
           <motion.div 
-            className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 group-hover:bg-primary transition-all duration-300"
-            whileHover={{ scale: 1.1, rotate: isRtl ? -5 : 5 }}
+            className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 group-hover:bg-primary transition-all duration-300 rtl:rotate-180"
+            whileHover={{ scale: 1.1, rotate: 5 }}
             whileTap={{ scale: 0.95 }}
           >
-            {isRtl ? (
-              <ArrowLeft className="h-4 w-4 text-primary group-hover:text-white transition-colors duration-300" />
-            ) : (
-              <ArrowRight className="h-4 w-4 text-primary group-hover:text-white transition-colors duration-300" />
-            )}
+            <ArrowRight className="h-4 w-4 text-primary group-hover:text-white transition-colors duration-300" />
           </motion.div>
         </motion.div>
         
         {/* Categories fallback at bottom */}
         {!showCategories && hasCategories && (
           <motion.div 
-            className={cn("mt-3 pt-3 border-t border-gray-100", isRtl && "text-right")}
+            className="mt-3 pt-3 border-t border-gray-100"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
