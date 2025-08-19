@@ -34,7 +34,7 @@ export const SEOFieldsGroup: React.FC<SEOFieldsGroupProps> = ({ path }) => {
     const maxScore = 100
 
     // Title scoring (40 points)
-    if (metaTitle) {
+    if (metaTitle && typeof metaTitle === 'string') {
       const length = metaTitle.length
       if (length >= SEO_LIMITS.title.min && length <= SEO_LIMITS.title.max) {
         score += 40
@@ -44,7 +44,7 @@ export const SEOFieldsGroup: React.FC<SEOFieldsGroupProps> = ({ path }) => {
     }
 
     // Description scoring (40 points)
-    if (metaDescription) {
+    if (metaDescription && typeof metaDescription === 'string') {
       const length = metaDescription.length
       if (length >= SEO_LIMITS.description.min && length <= SEO_LIMITS.description.max) {
         score += 40
@@ -62,8 +62,8 @@ export const SEOFieldsGroup: React.FC<SEOFieldsGroupProps> = ({ path }) => {
   }, [metaTitle, metaDescription, metaImage])
 
   useEffect(() => {
-    setTitleLength(metaTitle?.length || 0)
-    setDescLength(metaDescription?.length || 0)
+    setTitleLength(typeof metaTitle === 'string' ? metaTitle.length : 0)
+    setDescLength(typeof metaDescription === 'string' ? metaDescription.length : 0)
     calculateSEOScore()
   }, [metaTitle, metaDescription, calculateSEOScore])
 
@@ -116,8 +116,8 @@ export const SEOFieldsGroup: React.FC<SEOFieldsGroupProps> = ({ path }) => {
   }
 
   // Get status badge color and icon
-  const getFieldStatus = (value: string | undefined, type: 'title' | 'description') => {
-    if (!value) return { color: 'secondary', icon: AlertCircle, text: 'Non défini' }
+  const getFieldStatus = (value: unknown, type: 'title' | 'description') => {
+    if (!value || typeof value !== 'string') return { color: 'secondary', icon: AlertCircle, text: 'Non défini' }
     
     const length = value.length
     const limits = SEO_LIMITS[type]
@@ -208,7 +208,7 @@ export const SEOFieldsGroup: React.FC<SEOFieldsGroupProps> = ({ path }) => {
           
           <input
             type="text"
-            value={metaTitle || ''}
+            value={typeof metaTitle === 'string' ? metaTitle : ''}
             onChange={(e) => setMetaTitle(e.target.value)}
             placeholder={locale.code === 'ar' 
               ? 'أدخل عنوان SEO...'
@@ -241,7 +241,7 @@ export const SEOFieldsGroup: React.FC<SEOFieldsGroupProps> = ({ path }) => {
           </div>
           
           <textarea
-            value={metaDescription || ''}
+            value={typeof metaDescription === 'string' ? metaDescription : ''}
             onChange={(e) => setMetaDescription(e.target.value)}
             placeholder={locale.code === 'ar'
               ? 'أدخل وصف SEO...'
@@ -263,13 +263,13 @@ export const SEOFieldsGroup: React.FC<SEOFieldsGroupProps> = ({ path }) => {
           <div className="p-4 bg-white border rounded-lg">
             <div className="space-y-1">
               <div className="text-blue-600 text-xl hover:underline cursor-pointer">
-                {metaTitle || 'Titre de la page'}
+                {(typeof metaTitle === 'string' ? metaTitle : '') || 'Titre de la page'}
               </div>
               <div className="text-green-700 text-sm">
                 hapa.mr › {locale.code} › actualites
               </div>
               <div className="text-gray-600 text-sm">
-                {metaDescription || 'Description de la page...'}
+                {(typeof metaDescription === 'string' ? metaDescription : '') || 'Description de la page...'}
               </div>
             </div>
           </div>

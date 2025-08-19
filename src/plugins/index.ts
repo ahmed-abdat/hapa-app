@@ -71,14 +71,14 @@ const generateDescription: GenerateDescription<Post> = ({ doc, locale }) => {
   return generateSEODescription(content, title)
 }
 
-const generateImage: GenerateImage<Post> = ({ doc }) => {
+const generateImage: GenerateImage<Post> = ({ doc }): string | Promise<string> => {
   // Priority: heroImage > first media block > default
   if (doc?.heroImage && typeof doc.heroImage === 'object' && 'url' in doc.heroImage) {
-    return doc.heroImage
+    return doc.heroImage.url as string
   }
   
-  // Return null to use default
-  return null
+  // Return empty string to use default
+  return ''
 }
 
 const generateURL: GenerateURL<Post> = ({ doc, locale }) => {
