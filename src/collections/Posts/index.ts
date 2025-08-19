@@ -178,19 +178,8 @@ export const Posts: CollectionConfig<'posts'> = {
               name: 'heroImage',
               type: 'upload',
               relationTo: 'media',
-              filterOptions: {
-                and: [
-                  {
-                    or: [
-                      { source: { exists: false } },
-                      { source: { equals: 'admin' } }
-                    ]
-                  },
-                  {
-                    filename: { not_like: 'hapa_form_%' }
-                  }
-                ]
-              },
+              // Note: filterOptions removed as Media collection access control handles filtering globally
+              // This prevents conflicts and ensures consistent behavior with other media fields
             },
             {
               name: 'content',
@@ -219,9 +208,6 @@ export const Posts: CollectionConfig<'posts'> = {
             {
               name: 'relatedPosts',
               type: 'relationship',
-              admin: {
-                position: 'sidebar',
-              },
               filterOptions: ({ id }) => {
                 return {
                   id: {
@@ -235,9 +221,6 @@ export const Posts: CollectionConfig<'posts'> = {
             {
               name: 'categories',
               type: 'relationship',
-              admin: {
-                position: 'sidebar',
-              },
               hasMany: true,
               relationTo: 'categories',
             },
@@ -261,8 +244,26 @@ export const Posts: CollectionConfig<'posts'> = {
               // Note: filterOptions not supported by MetaImageField
               // Media collection access control handles filtering
             }),
-
-            MetaDescriptionField({}),
+            {
+              type: 'ui',
+              name: 'seoDescriptionGenerator',
+              admin: {
+                components: {
+                  Field: '@/components/admin/SEODescriptionGenerator/index.tsx#SEODescriptionGenerator',
+                },
+              },
+            },
+            MetaDescriptionField({
+              hasGenerateFn: true,
+              overrides: {
+                // SEO best practice: 150-160 characters for meta descriptions
+                minLength: 120,
+                maxLength: 160,
+                admin: {
+                  description: 'Ceci devrait contenir entre 120 et 160 caractères. Pour obtenir de l\'aide pour rédiger des descriptions meta de qualité, consultez les bonnes pratiques.',
+                },
+              },
+            }),
             PreviewField({
               // if the `generateUrl` function is configured
               hasGenerateFn: true,
