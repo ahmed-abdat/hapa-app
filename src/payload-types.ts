@@ -164,6 +164,9 @@ export interface Post {
      * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
      */
     image?: (number | null) | Media;
+    /**
+     * Ceci devrait contenir entre 120 et 160 caractères. Pour obtenir de l'aide pour rédiger des descriptions meta de qualité, consultez les bonnes pratiques.
+     */
     description?: string | null;
   };
   publishedAt?: string | null;
