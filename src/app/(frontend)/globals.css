@@ -31,6 +31,27 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4;
   }
+
+  /* Hero Animations */
+  .animate-gradient-xy {
+    animation: gradient-xy 15s ease infinite;
+    background-size: 400% 400%;
+  }
+
+  @keyframes gradient-xy {
+    0%, 100% {
+      background-position: 0% 0%;
+    }
+    25% {
+      background-position: 100% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    75% {
+      background-position: 0% 100%;
+    }
+  }
 }
 
 @layer components {
@@ -111,8 +132,8 @@
     --primary: 142 80% 25%; /* #138B3A - HAPA Primary Green */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 60 95% 50%; /* #E6E619 - HAPA Bright Yellow */
-    --secondary-foreground: 142 80% 25%;
+    --secondary: 35 91% 50%; /* #F59E0B - HAPA Orange-Amber CTA */
+    --secondary-foreground: 0 0% 100%;
 
     --accent: 142 75% 20%; /* #0F7A2E - HAPA Dark Green */
     --accent-foreground: 0 0% 100%;
@@ -285,4 +306,15 @@ html[data-theme='light'] {
 
 .prose blockquote {
   color: hsl(var(--foreground));
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

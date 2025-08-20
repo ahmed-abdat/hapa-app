@@ -90,6 +90,11 @@ export default async function HomePage({ params: paramsPromise }: Args) {
     mediaOperators: t('mediaOperators'),
     complaintsResolved: t('complaintsResolved'),
     officialRegulatory: t('officialRegulatory'),
+    globalPerformance: t('globalPerformance'),
+    governmentAuthority: t('governmentAuthority'),
+    official: t('official'),
+    services: t('services'),
+    contactSupport: t('contactSupport'),
   }
 
   return (

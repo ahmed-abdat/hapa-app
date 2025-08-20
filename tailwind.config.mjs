@@ -156,9 +156,11 @@ const config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       spacing: {
-        // Legacy header spacing (maintain compatibility)
+        // Header spacing utilities
         'header-x': '1rem',        // 16px - consistent horizontal spacing
         'header-y': '1rem',        // 16px - consistent vertical spacing
+        'header-height': '5rem',   // 80px - mobile header height (32px padding + ~48px content)
+        'header-height-lg': '6.5rem', // 104px - desktop header height (40px padding + ~64px content)
         'nav-gap': '0.5rem',       // 8px - navigation items gap
         'section-gap': '1.5rem',   // 24px - section spacing
         'action-gap': '1rem',      // 16px - action items gap
