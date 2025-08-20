@@ -67,7 +67,7 @@ export const GradientHero: React.FC<HeroVariantProps> = ({ locale, translations 
 
       <div className="relative z-10 pt-header-height lg:pt-header-height-lg">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 xl:py-20">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 xl:gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-8 xl:gap-10 items-center">
             {/* Content - Always on left side, but with RTL text alignment */}
             <MotionDiv
               initial={{ opacity: 0, x: isRTL ? 50 : -50 }}
@@ -80,15 +80,15 @@ export const GradientHero: React.FC<HeroVariantProps> = ({ locale, translations 
                 <span className="text-xs font-medium text-gray-600">{t("officialRegulatory")}</span>
               </div>
 
-              {/* Title with better scale - Not too large on desktop */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] tracking-tight">
+              {/* Title with better scale - Reduced sizes for better proportion */}
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-5xl font-bold leading-[1.1] tracking-tight">
                 <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                   {t("heroTitle")}
                 </span>
               </h1>
 
-              {/* Subtitle - Better spacing and size */}
-              <p className="mt-6 sm:mt-8 text-lg sm:text-xl lg:text-2xl text-gray-700 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+              {/* Subtitle - Reduced size for better readability */}
+              <p className="mt-6 sm:mt-8 text-base sm:text-lg lg:text-xl text-gray-700 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                 {t("heroSubtitle")}
               </p>
 
@@ -101,7 +101,7 @@ export const GradientHero: React.FC<HeroVariantProps> = ({ locale, translations 
                     contactHapa: t("contactHapa")
                   }}
                   variant="gradient"
-                  size="lg"
+                  size="md"
                   alignment="left"
                 />
               </div>
@@ -114,9 +114,9 @@ export const GradientHero: React.FC<HeroVariantProps> = ({ locale, translations 
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
               className="relative mt-8 lg:mt-0"
             >
-              <div className="relative mx-auto max-w-xl sm:max-w-2xl lg:max-w-3xl">
+              <div className="relative mx-auto lg:mx-0 w-full">
                 {/* Main HAPA Card with Hero Image - Larger size, cleaner design */}
-                <AspectRatio ratio={16 / 9} className="relative">
+                <AspectRatio ratio={16 / 10} className="relative">
                   {/* Clean Image Container with Professional Shadow */}
                   <div className="group relative w-full h-full rounded-2xl shadow-xl overflow-hidden bg-gray-100 
                                   hover:shadow-2xl transition-all duration-300 ring-1 ring-black/5">
@@ -128,7 +128,7 @@ export const GradientHero: React.FC<HeroVariantProps> = ({ locale, translations 
                       priority
                       quality={95}
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 60vw, 900px"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 100vw"
                     />
                     
                     {/* Much Lighter Overlay for Better UX */}

@@ -132,8 +132,11 @@
     --primary: 142 80% 25%; /* #138B3A - HAPA Primary Green */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 35 91% 50%; /* #F59E0B - HAPA Orange-Amber CTA */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 60 95% 50%; /* #E6E619 - HAPA Bright Yellow (Original Brand) */
+    --secondary-foreground: 0 0% 0%;
+
+    --secondary-cta: 35 91% 50%; /* #F59E0B - HAPA Orange-Amber (CTA Only) */
+    --secondary-cta-foreground: 0 0% 100%;
 
     --accent: 142 75% 20%; /* #0F7A2E - HAPA Dark Green */
     --accent-foreground: 0 0% 100%;

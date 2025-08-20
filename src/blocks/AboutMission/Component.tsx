@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { motion, Variants } from "framer-motion";
 import { useTranslations, useLocale } from 'next-intl';
 import { 
@@ -9,7 +10,6 @@ import {
   Heart, 
   Target, 
   Users2, 
-  Scale, 
   BookOpen,
   CheckCircle
 } from "lucide-react";
@@ -185,9 +185,14 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
                   className="w-full h-[400px] sm:h-[500px] object-cover"
                 />
               ) : (
-                <div className="w-full h-[400px] sm:h-[500px] bg-gradient-to-br from-primary/20 to-accent/30 flex items-center justify-center">
-                  <Scale className="h-24 w-24 text-primary/40" />
-                </div>
+                <Image
+                  src="/hapa-director-press-conference.png"
+                  alt="HAPA Director addressing media at official press conference"
+                  width={1920}
+                  height={1080}
+                  className="w-full h-[400px] sm:h-[500px] object-cover"
+                  priority
+                />
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
             </div>

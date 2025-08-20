@@ -19,7 +19,7 @@ import { Menu, ArrowRight, ArrowLeft, Bell } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { LanguageSwitcherSuspense } from "@/components/LanguageSwitcher/LanguageSwitcherSuspense";
-import { useLocale, useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from "next-intl";
 import { type Locale } from "@/utilities/locale";
 import {
   navigationItems,
@@ -32,7 +32,7 @@ import { cn } from "@/lib/utils";
 
 export function ModernMobileNav() {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   // Get locale from next-intl context (proper way)
   const validLocale = useLocale() as Locale;
   const t = useTranslations();
@@ -75,7 +75,7 @@ export function ModernMobileNav() {
           <AccordionContent className="mt-2 pb-2">
             {item.items?.map((subItem) => {
               if (!hasHref(subItem)) return null; // Skip items without href
-              
+
               const subTitle = getNavigationItemText(
                 subItem,
                 validLocale,
@@ -98,7 +98,9 @@ export function ModernMobileNav() {
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div className="w-2 h-2 bg-primary/60 rounded-full flex-shrink-0" />
                     <div className="flex flex-col gap-1 flex-1 min-w-0">
-                      <div className="text-sm font-medium leading-tight truncate">{subTitle}</div>
+                      <div className="text-sm font-medium leading-tight truncate">
+                        {subTitle}
+                      </div>
                       {subDescription && (
                         <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
                           {subDescription}
@@ -107,8 +109,22 @@ export function ModernMobileNav() {
                     </div>
                   </div>
                   <div className="w-4 h-4 text-muted-foreground flex-shrink-0 ml-2">
-                    <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={validLocale === "ar" ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"} />
+                    <svg
+                      className="w-full h-full"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d={
+                          validLocale === "ar"
+                            ? "M15 19l-7-7 7-7"
+                            : "M9 5l7 7-7 7"
+                        }
+                      />
                     </svg>
                   </div>
                 </Link>
@@ -131,9 +147,7 @@ export function ModernMobileNav() {
           className="lg:hidden hover:bg-primary/10 hover:text-primary transition-colors"
         >
           <Menu className="w-5 h-5" />
-          <span className="sr-only">
-            {t('openMenu')}
-          </span>
+          <span className="sr-only">{t("openMenu")}</span>
         </Button>
       </SheetTrigger>
       <SheetContent
@@ -186,48 +200,25 @@ export function ModernMobileNav() {
 
           {/* Prominent Report Button - Mobile */}
           <div className="mb-6">
-            <Button 
-              className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold py-4 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-sm border-0 focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            <Button
+              className="w-full bg-secondary-cta hover:bg-secondary-cta/90 text-secondary-cta-foreground font-semibold py-4 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-sm border-0 focus:ring-2 focus:ring-ring focus:ring-offset-2"
               asChild
             >
               <Link href="/forms/media-content-report" onClick={closeSheet}>
                 <span className="flex items-center gap-2">
                   <Bell className="w-5 h-5" />
-                  <span>{t('reportMediaContent')}</span>
+                  <span>{t("reportMediaContent")}</span>
                 </span>
               </Link>
             </Button>
           </div>
 
-          {/* Services and Search */}
+          {/* Search */}
           <div className="space-y-4">
             <h3 className="text-sm font-medium text-primary px-2">
-              {t('services')}
+              {t("search")}
             </h3>
             <nav className="space-y-2">
-              <Link
-                href="/services"
-                className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl hover:bg-primary/5 hover:text-primary focus:bg-primary/10 focus:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-200 active:scale-95"
-                onClick={closeSheet}
-              >
-                <svg
-                  className="w-5 h-5 text-primary"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span className="font-medium">
-                  {t('services')}
-                </span>
-              </Link>
-
               <Link
                 href="/search"
                 className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl hover:bg-primary/5 hover:text-primary focus:bg-primary/10 focus:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-200 active:scale-95"
@@ -246,9 +237,7 @@ export function ModernMobileNav() {
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
-                <span className="font-medium">
-                  {t('search')}
-                </span>
+                <span className="font-medium">{t("search")}</span>
               </Link>
             </nav>
           </div>
@@ -259,7 +248,7 @@ export function ModernMobileNav() {
           {/* Language Switcher */}
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-primary">
-              {t('language')}
+              {t("language")}
             </span>
             <LanguageSwitcherSuspense />
           </div>

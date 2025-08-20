@@ -178,7 +178,7 @@ export function ModernHeader() {
 
         {/* Prominent Report Button */}
         <Button 
-          className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 text-sm border-0 focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          className="bg-secondary-cta hover:bg-secondary-cta/90 text-secondary-cta-foreground font-semibold px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 text-sm border-0 focus:ring-2 focus:ring-ring focus:ring-offset-2"
           asChild
         >
           <Link href="/forms/media-content-report">

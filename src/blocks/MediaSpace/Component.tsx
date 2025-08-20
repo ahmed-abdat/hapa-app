@@ -37,7 +37,7 @@ const mediaCategories = [
     icon: Tv,
     titleKey: "televisionChannels",
     descKey: "televisionChannelsDesc",
-    href: "/media/television", 
+    href: "/media/television",
     color: "from-blue-500 to-blue-600",
     bgColor: "bg-blue-50",
     hoverColor: "hover:bg-blue-100",
@@ -102,9 +102,7 @@ export const MediaSpaceBlock: React.FC<MediaSpaceProps> = ({
   const t = useTranslations();
 
   return (
-    <section
-      className="section-spacing-lg bg-gradient-to-br from-white via-gray-50/50 to-primary/5"
-    >
+    <section className="section-spacing-lg bg-gradient-to-br from-white via-gray-50/50 to-primary/5">
       <div className="hapa-container">
         {/* Section Header */}
         <motion.div
@@ -114,9 +112,9 @@ export const MediaSpaceBlock: React.FC<MediaSpaceProps> = ({
           viewport={{ once: true, margin: "-100px" }}
           className="header-spacing"
         >
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4">
-              {title || t("mediaSpace")}
-            </h2>
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4">
+            {title || t("mediaSpace")}
+          </h2>
           <p className="text-lg sm:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
             {description || t("mediaSpaceDesc")}
           </p>
@@ -195,27 +193,7 @@ export const MediaSpaceBlock: React.FC<MediaSpaceProps> = ({
           })}
         </motion.div>
 
-        {/* Optional CTA Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4, ease: [0.25, 1, 0.5, 1] }}
-          viewport={{ once: true }}
-          className="text-center mt-12 sm:mt-16"
-        >
-          <Link
-            href="/media"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-primary to-accent text-white rounded-2xl font-semibold text-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-out"
-          >
-            <Building className="h-5 w-5" />
-            {t("viewAllMedia")}
-            {isRtl ? (
-              <ArrowLeft className="h-5 w-5" />
-            ) : (
-              <ArrowRight className="h-5 w-5" />
-            )}
-          </Link>
-        </motion.div>
+        {/* CTA removed as per request (previously rendered 'viewAllMedia' link) */}
       </div>
     </section>
   );
