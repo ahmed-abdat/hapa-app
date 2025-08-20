@@ -146,15 +146,21 @@ export const InteractiveHero: React.FC<HeroVariantProps> = ({ locale, translatio
                         "w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110",
                         metric.bgColor
                       )}>
-                        <metric.icon className={cn("w-6 h-6", metric.color)} />
+                        <metric.icon className={cn("w-6 h-6", metric.color)} aria-hidden="true" />
                       </div>
                       <div className="text-right">
-                        <div className="text-3xl font-bold text-slate-900 tabular-nums">
+                        <div 
+                          className="text-3xl font-bold text-slate-900 tabular-nums"
+                          aria-live="polite"
+                          aria-label={`${metric.label}: ${metric.value}${metric.suffix}`}
+                        >
                           {metric.value}{metric.suffix}
                         </div>
                         <div className="flex items-center text-xs text-green-600 font-medium">
-                          <BarChart3 className="w-3 h-3 mr-1" />
-                          {metric.change} {metric.changeLabel}
+                          <BarChart3 className="w-3 h-3 mr-1" aria-hidden="true" />
+                          <span aria-label={`Increase of ${metric.change} ${metric.changeLabel}`}>
+                            {metric.change} {metric.changeLabel}
+                          </span>
                         </div>
                       </div>
                     </div>
