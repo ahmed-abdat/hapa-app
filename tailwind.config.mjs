@@ -212,6 +212,8 @@ const config = {
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
+          cta: 'hsl(var(--secondary-cta))',
+          'cta-foreground': 'hsl(var(--secondary-cta-foreground))',
         },
         success: 'hsl(var(--success))',
         error: 'hsl(var(--error))',

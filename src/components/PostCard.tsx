@@ -68,7 +68,7 @@ export const PostCard: React.FC<PostCardProps> = ({
             <div className="absolute top-4 left-4 z-10">
               <Badge 
                 variant="default" 
-                className="bg-primary/90 text-white backdrop-blur-md border-white/20 hover:bg-primary"
+                className="bg-secondary/90 text-secondary-foreground backdrop-blur-md border-white/20 hover:bg-secondary/95 shadow-sm hover:shadow-md transition-all duration-200 font-semibold text-xs px-3 py-1"
               >
                 {category}
               </Badge>

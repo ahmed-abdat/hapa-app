@@ -45,11 +45,11 @@ export const UnifiedHeroCTA: React.FC<UnifiedHeroCTAProps> = ({
   };
 
   // HAPA Brand-Consistent Configuration  
-  // Primary CTAs now use HAPA Orange-Amber (#F59E0B) for consistency, with white text for optimal accessibility
+  // Primary CTAs use HAPA Orange-Amber (#F59E0B) for "Alertez nous" functionality, with white text for optimal accessibility
   const getVariantStyles = () => {
     const baseStyles = {
       primary: {
-        base: "bg-secondary hover:bg-secondary/90 text-secondary-foreground",
+        base: "bg-secondary-cta hover:bg-secondary-cta/90 text-secondary-cta-foreground",
         effects: "shadow-md hover:shadow-lg transition-all duration-200"
       },
       secondary: {
@@ -65,7 +65,7 @@ export const UnifiedHeroCTA: React.FC<UnifiedHeroCTAProps> = ({
         return {
           ...baseStyles,
           primary: {
-            base: "bg-secondary/90 hover:bg-secondary backdrop-blur-sm text-secondary-foreground",
+            base: "bg-secondary-cta/90 hover:bg-secondary-cta backdrop-blur-sm text-secondary-cta-foreground",
             effects: "shadow-lg hover:shadow-xl transition-all duration-200"
           },
           secondary: {
@@ -79,7 +79,7 @@ export const UnifiedHeroCTA: React.FC<UnifiedHeroCTAProps> = ({
         return {
           ...baseStyles,
           primary: {
-            base: "bg-background hover:bg-secondary border-2 border-secondary hover:border-secondary/90 text-secondary hover:text-secondary-foreground",
+            base: "bg-background hover:bg-secondary-cta border-2 border-secondary-cta hover:border-secondary-cta/90 text-secondary-cta hover:text-secondary-cta-foreground",
             effects: "shadow-sm hover:shadow-md transition-all duration-200"
           }
         };

@@ -1,18 +1,17 @@
 {
   "author": "المؤلف",
   "datePublished": "تاريخ النشر",
-  "categories": "الفئات", 
+  "categories": "الفئات",
   "untitledCategory": "فئة بدون عنوان",
   "readMore": "اقرأ المزيد",
   "search": "البحث",
   "searchAriaLabel": "بحث",
-  "services": "الخدمات",
   "language": "اللغة",
   "openMenu": "فتح القائمة",
   "moreInfo": "المزيد",
   "searchPlaceholder": "ابحث في محتوياتنا...",
   "searchHint": "جرب 'أخبار', 'قرارات', أو 'تراخيص'",
-  "searchSuggestions": "اقتراحات البحث", 
+  "searchSuggestions": "اقتراحات البحث",
   "recentSearches": "البحثات الأخيرة",
   "popularSearches": "البحثات الشائعة",
   "quickResults": "نتائج سريعة",
@@ -53,12 +52,12 @@
   "informationServices": "خدمات المعلومات",
   "informationServicesDesc": "التوجيه التنظيمي والدعم للمحترفين",
   "learnMore": "اعرف المزيد",
-  
+
   "mediaContentReportTitle": "نموذج تبليغ بخصوص محتوى إعلامي",
   "mediaContentReportDesc": "يُخصص هذا النموذج للمؤسسات والهيئات أو المواطنين الراغبين في التبليغ عن أي محتوى إعلامي سمعي بصري أو رقمي يُعتبر مخالفاً للقوانين أو للأخلاقيات العامة.",
   "mediaContentComplaintTitle": "نموذج شكوى بخصوص محتوى إعلامي",
   "mediaContentComplaintDesc": "يُخصص هذا النموذج للمؤسسات والهيئات أو المواطنين الراغبين في الشكوى من أي محتوى إعلامي سمعي بصري أو رقمي يُعتبر مخالفاً للقوانين أو للأخلاقيات العامة.",
-  
+
   "contentInformation": "معلومات عن المحتوى المبلّغ عنه",
   "contentInformationComplaint": "معلومات عن المحتوى المشكي منه",
   "complainantInformation": "معلومات الشاكي",
@@ -67,9 +66,9 @@
   "contentDescription": "وصف المحتوى المعني",
   "attachments": "المرفقات (اختياري ولكن يُستحسن إرفاقها)",
   "declarationConsent": "الإقرار والموافقة",
-  
+
   "mediaType": "نوع الوسيلة الإعلامية",
-  
+
   "LocaleSwitcher": {
     "select-language": "اختر اللغة"
   },
@@ -83,7 +82,7 @@
   "programName": "اسم البرنامج أو المحتوى",
   "broadcastDateTime": "تاريخ ووقت البث أو النشر",
   "linkScreenshot": "الرابط أو صورة الشاشة (إن توفرت)",
-  
+
   "fullName": "الاسم الكامل",
   "gender": "الجنس",
   "male": "ذكر",
@@ -99,7 +98,7 @@
   "viewer": "مشاهد / مستخدم انترنت",
   "directlyConcerned": "معني مباشرة",
   "journalist": "صحفي",
-  
+
   "hateSpeech": "خطاب كراهية / تحريض على العنف",
   "misinformation": "تضليل إعلامي / أخبار كاذبة",
   "fakeNews": "تضليل إعلامي / أخبار كاذبة",
@@ -108,29 +107,29 @@
   "pluralismViolation": "عدم احترام التعددية السياسية",
   "falseAdvertising": "إشهار كاذب أو ممنوع",
   "otherReason": "أخرى",
-  
+
   "contentDescriptionPlaceholderReport": "يرجى تقديم وصف دقيق للمحتوى المبلّغ عنه وسياقه وسبب اعتباره غير مناسبًا",
   "contentDescriptionPlaceholderComplaint": "يرجى تقديم وصف دقيق للمحتوى المعني وسياقه وسبب اعتباره غير مناسبًا",
-  
+
   "screenshot": "صورة شاشة",
   "videoLink": "رابط فيديو / صفحة",
   "writtenStatement": "شهادة مكتوبة",
   "audioRecording": "تسجيل صوتي",
-  
+
   "declarationText": "أُقر بأن جميع المعلومات التي قدمتها في هذا النموذج صحيحة ودقيقة.",
   "consentText": "وأوافق على استخدام السلطة العليا المختصة لهذه البيانات في إطار معالجة الشكوى.",
   "iAccept": "أوافق",
-  
+
   "submitReport": "إرسال التبليغ",
   "submitComplaint": "إرسال الشكوى",
   "reset": "إعادة تعيين",
   "cancel": "إلغاء",
-  
+
   "fieldRequired": "هذا الحقل مطلوب",
   "invalidEmail": "عنوان بريد إلكتروني غير صحيح",
   "invalidPhone": "رقم هاتف غير صحيح",
   "selectAtLeastOne": "يرجى اختيار خيار واحد على الأقل",
-  
+
   "dragDropText": "اسحب ملفاتك هنا أو انقر للاختيار",
   "maxSizeText": "الحد الأقصى: {maxSize} ميجابايت",
   "chooseFile": "اختر ملف",
@@ -145,7 +144,7 @@
   "fileValidationError": "غير قادر على التحقق من أمان الملف",
   "filesValidatedSecurity": "يتم التحقق من أمان الملفات قبل الرفع",
   "validatingFile": "التحقق من أمان الملف",
-  
+
   "FileUpload": {
     "fileTooLarge": "حجم الملف كبير جداً. الحد الأقصى: {maxSize} ميجابايت",
     "unsupportedFileType": "نوع الملف غير مدعوم",
@@ -166,21 +165,21 @@
     "clickToSelect": "انقر للاختيار",
     "maxFiles": "الحد الأقصى {count} ملفات"
   },
-  
+
   "linkScreenshotPlaceholder": "الصق رابط المحتوى أو اوصف لقطات الشاشة التي أخذتها (مثال: لقطة شاشة من منشور فيسبوك، صورة من المقال، إلخ)",
   "screenshotFiles": "لقطات الشاشة أو الصور (اختياري)",
   "attachmentFiles": "ملفات الأدلة (اختياري ولكن مستحسن)",
   "attachmentOtherDescription": "وصف المرفقات",
   "attachmentOtherPlaceholder": "اوصف الوثائق أو الأدلة التي تريد تقديمها (مثال: تسجيل صوتي للبرنامج، نسخة من الجريدة، شهادة شاهد، إلخ)",
-  
+
   "submissionSuccess": "تم إرسال {type} بنجاح. سنتواصل معك قريباً.",
   "submissionError": "حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى.",
   "networkError": "خطأ في الاتصال. تحقق من اتصالك بالإنترنت.",
   "submissionLoading": "جاري الإرسال...",
-  
+
   "reportForm": "تبليغ",
   "complaintForm": "شكوى",
-  
+
   "needHelp": "تحتاج مساعدة في خدماتنا؟",
   "contactSupport": "اتصال بالدعم",
   "aboutHapa": "حول السلطة العليا",
@@ -236,7 +235,6 @@
   "digitalPlatforms": "منصات رقمية",
   "printPublications": "منشورات مطبوعة",
   "viewDirectory": "عرض الدليل",
-  "viewAllMedia": "عرض جميع وسائل الإعلام",
   "showing": "عرض",
   "of": "من",
   "posts": "مقالات",
@@ -282,7 +280,7 @@
   "minLength": "يجب أن يحتوي هذا الحقل على {min} أحرف على الأقل",
   "maxLength": "لا يمكن أن يتجاوز هذا الحقل {max} حرف",
   "formSubmitted": "تم إرسال النموذج بنجاح",
-  
+
   "footerAboutHapa": "مؤسسة عمومية مستقلة أنشئت بموجب القانون 2006/015 لتنظيم القطاع السمعي البصري في الجمهورية الإسلامية الموريتانية.",
   "quickLinks": "روابط سريعة",
   "services": "الخدمات",
@@ -328,12 +326,12 @@
   "processQuestionsTitle": "أسئلة حول العملية؟",
   "guidanceText": "نحن هنا لإرشادك في إجراءات الشكوى الرسمية",
   "simpleReportText": "تبليغ بسيط",
-  
+
   "organizationName": "السلطة العليا للصحافة والسمعيات البصرية",
   "searchButton": "البحث",
   "siteDescription": "الموقع الرسمي للهيئة العليا للصحافة والإعلام في موريتانيا. تنظيم وإشراف على وسائل الإعلام الموريتانية.",
   "siteKeywords": "هابا، موريتانيا، صحافة، إعلام، وسائل الإعلام، تنظيم",
-  
+
   "pageNotFound": "الصفحة غير موجودة",
   "pageNotFoundDesc": "عذراً، الصفحة التي تبحث عنها غير موجودة.",
   "goBackHome": "العودة إلى الرئيسية",
@@ -366,7 +364,7 @@
   "contentReporting": "تبليغ عن المحتوى",
   "officialComplaintService": "شكوى رسمية",
   "decisionsAndCommuniques": "قرارات وبيانات",
-  
+
   "mediaReportingCTATitle": "خدمات الإبلاغ والشكاوى",
   "mediaReportingCTASubtitle": "احم نزاهة المشهد الإعلامي الموريتاني من خلال الإبلاغ عن المحتوى غير المطابق",
   "reportContentCardTitle": "أبلغوا",
@@ -454,7 +452,7 @@
   "uploadFailures": "فشل",
   "submissionSuccessfullyRecorded": "تم تسجيل طلبكم بنجاح.",
   "filesSuccessful": "ملفات ناجحة",
-  
+
   "fileUpload": {
     "dropFilesHere": "إسقاط الملفات هنا...",
     "uploadFiles": "رفع الملفات",
@@ -504,7 +502,7 @@
   "compressionOptimizing": "تحسين الجودة...",
   "compressionBestQuality": "تم الحصول على أفضل جودة",
   "fileSizeReduced": "تم تقليل حجم الملف بنسبة {percent}%",
-  
+
   "retry": "إعادة المحاولة",
   "retrying": "جاري إعادة المحاولة",
   "retryAttempt": "إعادة المحاولة {current}/{max}",
@@ -525,7 +523,7 @@
     "title": "لوحة تحكم الطلبات الإعلامية",
     "subtitle": "إدارة مركزية للتبليغات والشكاوى"
   },
-  
+
   "filters": {
     "type": "النوع",
     "all": "الكل",
@@ -533,19 +531,19 @@
     "status": "الحالة",
     "priority": "الأولوية"
   },
-  
+
   "forms": {
     "report": "تبليغ",
     "complaint": "شكوى"
   },
-  
+
   "actions": {
     "refresh": "تحديث",
     "bulkActions": "إجراءات مجمعة",
     "view": "عرض",
     "edit": "تعديل"
   },
-  
+
   "stats": {
     "total": "المجموع",
     "thisWeek": "هذا الأسبوع",
@@ -554,21 +552,21 @@
     "resolved": "محلول",
     "urgent": "عاجل"
   },
-  
+
   "status": {
     "pending": "معلق",
     "reviewing": "قيد المراجعة",
     "resolved": "محلول",
     "dismissed": "مرفوض"
   },
-  
+
   "priority": {
     "urgent": "عاجل",
     "high": "عالي",
     "medium": "متوسط",
     "low": "منخفض"
   },
-  
+
   "common": {
     "requiresImmediateAction": "يتطلب إجراء فوري",
     "averageResponseTime": "متوسط وقت الاستجابة",
@@ -587,7 +585,7 @@
     "customReports": "تقارير مخصصة",
     "teamManagement": "إدارة الفريق"
   },
-  
+
   "tabs": {
     "overview": "نظرة عامة",
     "submissions": "الطلبات",
@@ -595,7 +593,7 @@
     "reports": "التقارير",
     "team": "الفريق"
   },
-  
+
   "table": {
     "title": "العنوان",
     "type": "النوع",

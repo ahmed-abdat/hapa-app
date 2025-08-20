@@ -26,7 +26,7 @@ export const MediaReportingCTA: React.FC = () => {
           {/* Report Content Card */}
           <div className="group relative bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
             {/* Card Header */}
-            <div className="bg-secondary p-6 text-secondary-foreground">
+            <div className="bg-secondary-cta p-6 text-secondary-cta-foreground">
               <div className={`flex items-center gap-4`}>
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                   <Bell className="w-6 h-6" />
@@ -63,7 +63,7 @@ export const MediaReportingCTA: React.FC = () => {
               {/* CTA Button */}
               <Link 
                 href="/forms/media-content-report" 
-                className="block w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold py-4 px-6 rounded-xl transition-all duration-300 text-center group-hover:shadow-lg"
+                className="block w-full bg-secondary-cta hover:bg-secondary-cta/90 text-secondary-cta-foreground font-semibold py-4 px-6 rounded-xl transition-all duration-300 text-center group-hover:shadow-lg"
               >
                 <span className={`flex items-center justify-center gap-2`}>
                   <span>{t("startReport")}</span>
