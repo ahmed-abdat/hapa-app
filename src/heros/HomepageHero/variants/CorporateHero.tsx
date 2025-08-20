@@ -50,7 +50,7 @@ export const CorporateHero: React.FC<HeroVariantProps> = ({ locale, translations
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src="/image-hero.png"
+          src="/hero-image.png"
           alt="HAPA Officials and Building"
           fill
           className="object-cover"
