@@ -187,7 +187,7 @@ export function ModernMobileNav() {
           {/* Prominent Report Button - Mobile */}
           <div className="mb-6">
             <Button 
-              className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-4 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-sm border-0 focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
+              className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold py-4 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-sm border-0 focus:ring-2 focus:ring-ring focus:ring-offset-2"
               asChild
             >
               <Link href="/forms/media-content-report" onClick={closeSheet}>
