@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import React, { cache } from "react";
 import RichText from "@/components/RichText";
 import { logger } from "@/utilities/logger";
+import { getTranslations } from 'next-intl/server';
 
 import type { Post } from "@/payload-types";
 import type { Locale } from "@/utilities/locale";
@@ -16,6 +17,17 @@ import { PostHero } from "@/heros/PostHero";
 import { generateMeta } from "@/utilities/generateMeta";
 import PageClient from "./page.client";
 import { LivePreviewListener } from "@/components/LivePreviewListener";
+import { Link } from "@/i18n/navigation";
+import { ShareButton } from "@/components/ShareButton";
+import { 
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Home, FileText } from "lucide-react";
 
 // Use ISR for better performance with automatic revalidation
 export const revalidate = 300 // 5 minutes - good balance for news content
@@ -77,6 +89,9 @@ export default async function Post({ params: paramsPromise }: Args) {
     return notFound();
   }
 
+  // Get translations
+  const t = await getTranslations({ locale });
+
   return (
     <article className="py-8">
       <PageClient />
@@ -85,14 +100,68 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       <PostHero post={post} locale={locale} />
 
-      {/* Article Content */}
-      <div className="flex flex-col items-center gap-4 pt-8">
-        <div className="container">
-          <RichText
-            className="max-w-[48rem] mx-auto"
-            data={post.content}
-            enableGutter={false}
-          />
+      {/* Main content container with consistent max-width */}
+      <div className="container px-4 lg:px-8">
+        <div className="max-w-[48rem] mx-auto">
+          {/* Enhanced Breadcrumb Navigation */}
+          <div className="mt-8 mb-6">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link href="/" className="flex items-center gap-1.5 hover:text-primary transition-colors">
+                      <Home className="h-3.5 w-3.5" />
+                      <span>{t('home')}</span>
+                    </Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link href="/posts" className="flex items-center gap-1.5 hover:text-primary transition-colors">
+                      <FileText className="h-3.5 w-3.5" />
+                      <span>{t('posts')}</span>
+                    </Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="max-w-[300px] truncate font-medium">
+                    {post.title}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+
+          {/* Share Button Section */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between gap-4 pb-4 border-b border-gray-200">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                {post.publishedAt && (
+                  <>
+                    <span>{t('common.publishedOn')}</span>
+                    <time dateTime={post.publishedAt} className="font-medium">
+                      {new Date(post.publishedAt).toLocaleDateString(
+                        locale === 'ar' ? 'ar-SA' : 'fr-FR',
+                        { year: 'numeric', month: 'long', day: 'numeric' }
+                      )}
+                    </time>
+                  </>
+                )}
+              </div>
+              <ShareButton url={url} title={post.title} />
+            </div>
+          </div>
+
+          {/* Article Content */}
+          <div className="prose prose-lg max-w-none">
+            <RichText
+              data={post.content}
+              enableGutter={false}
+              locale={locale}
+            />
+          </div>
         </div>
       </div>
 

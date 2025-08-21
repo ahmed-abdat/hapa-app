@@ -583,7 +583,12 @@
     "openInAdmin": "Ouvrir dans Admin",
     "detailedAnalytics": "Analyses Détaillées",
     "customReports": "Rapports Personnalisés",
-    "teamManagement": "Gestion d'Équipe"
+    "teamManagement": "Gestion d'Équipe",
+    "share": "Partager",
+    "publishedOn": "Publié le",
+    "noData": "Pas de données",
+    "unknownUser": "Utilisateur anonyme",
+    "noMessage": "Aucun message"
   },
 
   "tabs": {
@@ -626,5 +631,76 @@
   "uploadAttachmentFiles": "Télécharger des fichiers joints (vidéo, audio, images ou documents)",
   "events": "Événements",
   "eventsDesc": "Événements et conférences organisés par HAPA",
-  "decisionsDesc": "Décisions réglementaires et administratives officielles"
+  "decisionsDesc": "Décisions réglementaires et administratives officielles",
+  
+  "validation": {
+    "required": "Ce champ est requis",
+    "email": "Veuillez saisir une adresse email valide",
+    "minLength": "Minimum {min} caractères requis",
+    "maxLength": "Maximum {max} caractères autorisés",
+    "phone": "Veuillez saisir un numéro de téléphone valide",
+    "dateTime": "Veuillez saisir une date et heure valides",
+    "fileType": "Type de fichier non autorisé"
+  },
+  
+  "formProgress": {
+    "preparing": "Préparation en cours...",
+    "uploading": "Téléchargement des fichiers...",
+    "validating": "Validation des données...",
+    "saving": "Sauvegarde en cours...",
+    "complete": "Soumission terminée avec succès",
+    "error": "Erreur lors de la soumission"
+  },
+  
+  "complaintTypes": {
+    "service": "Problème de service",
+    "staff": "Comportement du personnel",
+    "procedure": "Procédure administrative",
+    "other": "Autre"
+  },
+  
+  "submissionStatus": {
+    "new": "Nouveau",
+    "reviewed": "Consulté",
+    "inProgress": "En cours",
+    "responded": "Répondu",
+    "closed": "Fermé"
+  },
+  
+  "admin": {
+    "addingImages": "Ajout en cours... ({count} images)",
+    "addMultipleImages": "📁 Ajouter plusieurs images",
+    "dragDropImages": "Glissez-déposez des images ici ou cliquez pour sélectionner",
+    "noMediaAvailable": "Aucun média disponible",
+    "mediaItem": "Média {index}",
+    "clickToEnlarge": "Cliquer pour agrandir",
+    "imageError": "Image (erreur)",
+    "video": "Vidéo",
+    "audio": "Audio",
+    "document": "Document",
+    "file": "Fichier",
+    "open": "Ouvrir",
+    "mediaFiles": "Fichiers multimédias ({count})",
+    "enlargedImage": "Image agrandie",
+    "redirectionFailed": "Redirection automatique échouée",
+    "clickLinkToDashboard": "Cliquez sur le lien ci-dessous pour accéder au tableau de bord",
+    "redirectingToDashboard": "Redirection vers le tableau de bord...",
+    "redirectAttempt": "Tentative {attempt}/3 • Redirection optimisée en cours...",
+    "httpError": "Erreur HTTP: {status}",
+    "noSelectionSelected": "Aucune soumission sélectionnée",
+    "markedAsResolved": "marquées comme résolues",
+    "markedInReview": "marquées en révision",
+    "submissionsDeleted": "{count} soumission(s) supprimée(s)",
+    "submissionsActioned": "{count} soumission(s) {actionName}",
+    "bulkActionError": "Erreur lors de l'action groupée",
+    "itemsSelected": "{count} sélectionnée(s)",
+    "selectAll": "Tout sélectionner",
+    "deleteSelection": "Supprimer sélection",
+    "generateFromContent": "Générer du contenu",
+    "generating": "Génération...",
+    "seoDescriptionGenerator": "Générateur de description SEO",
+    "selectedImages": "Selected {count} images. Please add them manually...",
+    "selectMultipleImages": "📁 Sélection multiple d'images",
+    "supportedFormats": "Supports: PNG, JPG, JPEG, WEBP, GIF"
+  }
 }

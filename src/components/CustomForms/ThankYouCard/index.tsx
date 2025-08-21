@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { cn } from '@/utilities/ui'
+import { cn } from '@/lib/utils'
 import { motion, type Variants } from 'framer-motion'
 
 interface ThankYouCardProps {

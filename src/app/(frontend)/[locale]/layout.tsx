@@ -5,7 +5,7 @@ import { generateLocalizedMetadata } from "@/utilities/generateMetadata";
 import type { Metadata } from "next";
 import { setRequestLocale, getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
-import { cn } from "@/utilities/ui";
+import { cn } from "@/lib/utils";
 import { AdminBar } from "@/components/AdminBar";
 import { Footer } from "@/Footer/Component";
 import { Header } from "@/Header/Component";

@@ -1,5 +1,5 @@
 'use client'
-import { cn } from '@/utilities/ui'
+import { cn } from '@/lib/utils'
 import { useRouter } from '@/i18n/navigation'
 import { useSearchParams } from 'next/navigation'
 import { useLocale } from 'next-intl'

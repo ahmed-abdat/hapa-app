@@ -9,11 +9,13 @@ import { ComplaintFormBlock } from '@/blocks/ComplaintFormBlock/Component'
 import { ContactFormBlock } from '@/blocks/ContactFormBlock/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { CoreServicesBlock } from '@/blocks/CoreServices/Component'
+import { Gallery } from '@/blocks/Gallery/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { MediaSpaceBlock } from '@/blocks/MediaSpace/Component'
 import { NewsAnnouncementsBlock } from '@/blocks/NewsAnnouncements/Component'
 import { NewsAnnouncementsRichBlock } from '@/blocks/NewsAnnouncements/ComponentRich'
 import { PartnersSectionBlock } from '@/blocks/PartnersSection/Component'
+import { YouTubeVideoBlock } from '@/blocks/YouTubeVideo/Component'
 import { MediaReportingCTA } from '@/components/MediaReportingCTA'
 
 // Define available block types
@@ -27,11 +29,13 @@ type BlockType =
   | { blockType: 'content'; [key: string]: unknown }
   | { blockType: 'coreServices'; [key: string]: unknown }
   | { blockType: 'cta'; [key: string]: unknown }
+  | { blockType: 'gallery'; [key: string]: unknown }
   | { blockType: 'mediaBlock'; [key: string]: unknown }
   | { blockType: 'mediaReportingCTA'; [key: string]: unknown }
   | { blockType: 'mediaSpace'; [key: string]: unknown }
   | { blockType: 'newsAnnouncements'; layoutVariant?: string; [key: string]: unknown }
   | { blockType: 'partnersSection'; [key: string]: unknown }
+  | { blockType: 'youtubeVideo'; [key: string]: unknown }
 
 const blockComponents = {
   aboutMission: AboutMissionBlock,
@@ -43,11 +47,13 @@ const blockComponents = {
   content: ContentBlock,
   coreServices: CoreServicesBlock,
   cta: CallToActionBlock,
+  gallery: Gallery,
   mediaBlock: MediaBlock,
   mediaReportingCTA: MediaReportingCTA,
   mediaSpace: MediaSpaceBlock,
   newsAnnouncements: NewsAnnouncementsBlock,
   partnersSection: PartnersSectionBlock,
+  youtubeVideo: YouTubeVideoBlock,
 } as const
 
 export const RenderBlocks: React.FC<{
