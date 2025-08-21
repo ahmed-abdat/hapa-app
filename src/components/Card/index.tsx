@@ -1,5 +1,5 @@
 'use client'
-import { cn } from '@/utilities/ui'
+import { cn } from '@/lib/utils'
 import useClickableCard from '@/utilities/useClickableCard'
 import { Link } from '@/i18n/navigation'
 import React from 'react'

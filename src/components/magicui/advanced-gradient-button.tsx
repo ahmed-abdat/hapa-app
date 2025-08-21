@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { cn } from "@/utilities/ui"
+import { cn } from "@/lib/utils"
 
 export interface AdvancedGradientButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string

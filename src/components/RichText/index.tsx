@@ -23,7 +23,7 @@ import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { Gallery } from '@/blocks/Gallery/Component'
 import { YouTubeVideoBlock } from '@/blocks/YouTubeVideo/Component'
-import { cn } from '@/utilities/ui'
+import { cn } from '@/lib/utils'
 
 type NodeTypes =
   | DefaultNodeTypes

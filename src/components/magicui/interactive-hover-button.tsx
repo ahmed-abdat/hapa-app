@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { cn } from "@/utilities/ui"
+import { cn } from "@/lib/utils"
 
 export interface InteractiveHoverButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   text?: string

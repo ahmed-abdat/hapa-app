@@ -1,7 +1,7 @@
 'use client'
 import { Badge } from '@/components/ui/badge'
 import { useRouter } from '@/i18n/navigation'
-import { cn } from '@/utilities/ui'
+import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import { Search } from 'lucide-react'
 

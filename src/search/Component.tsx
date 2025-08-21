@@ -15,7 +15,7 @@ import { useRouter, usePathname } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { type Locale } from "@/utilities/locale";
-import { cn } from "@/utilities/ui";
+import { cn } from "@/lib/utils";
 import { quickSearch, type QuickSearchResult } from "@/app/actions/search";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

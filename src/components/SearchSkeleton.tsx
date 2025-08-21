@@ -1,7 +1,7 @@
 'use client'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Card, CardContent } from '@/components/ui/card'
-import { cn } from '@/utilities/ui'
+import { cn } from '@/lib/utils'
 
 interface SearchSkeletonProps {
   variant?: 'grid' | 'list'
