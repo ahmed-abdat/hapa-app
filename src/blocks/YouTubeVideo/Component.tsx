@@ -1,5 +1,5 @@
 import React from 'react'
-import { cn } from '@/utilities/ui'
+import { cn } from '@/lib/utils'
 import { extractYouTubeVideoId, generateYouTubeEmbedUrl } from '@/utilities/youtube'
 import { Play, Youtube } from 'lucide-react'
 import { Card } from '@/components/ui/card'
