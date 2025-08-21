@@ -70,6 +70,8 @@ const securityHeaders = [
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
+      "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com",
+      "child-src 'self' https://www.youtube.com https://www.youtube-nocookie.com",
       `frame-ancestors ${getFrameAncestors()}`,
       "upgrade-insecure-requests",
       "block-all-mixed-content"

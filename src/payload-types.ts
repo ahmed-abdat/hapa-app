@@ -1086,6 +1086,48 @@ export interface CodeBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GalleryBlock".
+ */
+export interface GalleryBlock {
+  /**
+   * Titre optionnel pour la galerie
+   */
+  title?: string | null;
+  /**
+   * Description optionnelle pour la galerie
+   */
+  description?: string | null;
+  /**
+   * Style de présentation de la galerie
+   */
+  layout?: ('grid' | 'masonry' | 'carousel') | null;
+  /**
+   * Nombre de colonnes pour la grille
+   */
+  gridColumns?: ('2' | '3' | '4') | null;
+  /**
+   * Ajoutez plusieurs images pour créer une galerie
+   */
+  images?:
+    | {
+        /**
+         * Sélectionner une image pour la galerie
+         */
+        media: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Permettre l'agrandissement des images en cliquant
+   */
+  enableLightbox?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gallery';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
@@ -1093,6 +1135,23 @@ export interface MediaBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "YouTubeVideoBlock".
+ */
+export interface YouTubeVideoBlock {
+  /**
+   * Collez l'URL de votre vidéo YouTube ici
+   */
+  videoUrl: string;
+  /**
+   * Laissez vide pour utiliser le titre original de la vidéo
+   */
+  title?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'youtubeVideo';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
