@@ -37,57 +37,6 @@ export const Gallery: Block = {
       }
     },
     {
-      name: 'layout',
-      type: 'select',
-      defaultValue: 'grid',
-      options: [
-        {
-          label: {
-            fr: 'Grille',
-            ar: 'شبكة'
-          },
-          value: 'grid'
-        },
-        {
-          label: {
-            fr: 'Mosaïque',
-            ar: 'فسيفساء'
-          },
-          value: 'masonry'
-        },
-        {
-          label: {
-            fr: 'Carrousel',
-            ar: 'دوار'
-          },
-          value: 'carousel'
-        }
-      ],
-      admin: {
-        description: {
-          fr: 'Style de présentation de la galerie',
-          ar: 'نمط عرض المعرض'
-        }
-      }
-    },
-    {
-      name: 'gridColumns',
-      type: 'select',
-      defaultValue: '3',
-      options: [
-        { label: '2', value: '2' },
-        { label: '3', value: '3' },
-        { label: '4', value: '4' }
-      ],
-      admin: {
-        condition: (data) => data.layout === 'grid',
-        description: {
-          fr: 'Nombre de colonnes pour la grille',
-          ar: 'عدد الأعمدة للشبكة'
-        }
-      }
-    },
-    {
       type: 'array',
       name: 'images',
       labels: {
@@ -104,12 +53,13 @@ export const Gallery: Block = {
       maxRows: 20,
       admin: {
         initCollapsed: false,
+        isSortable: true,
         components: {
           RowLabel: '@/components/admin/GalleryImageRowLabel/index.tsx#GalleryImageRowLabel',
         },
         description: {
-          fr: 'Ajoutez plusieurs images pour créer une galerie',
-          ar: 'أضف عدة صور لإنشاء معرض'
+          fr: 'Ajoutez plusieurs images pour créer une galerie (glissez-déposez pour réorganiser)',
+          ar: 'أضف عدة صور لإنشاء معرض (اسحب وأفلت لإعادة الترتيب)'
         }
       },
       fields: [

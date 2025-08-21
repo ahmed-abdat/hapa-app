@@ -83,7 +83,7 @@ export function generateYouTubeEmbedUrl(
 /**
  * Validates YouTube URL for Payload field validation
  */
-export function validateYouTubeUrl(value: string): string | true {
+export function validateYouTubeUrl(value: string | null | undefined): string | true {
   if (!value) return 'URL YouTube requis'
   
   if (!isValidYouTubeUrl(value)) {

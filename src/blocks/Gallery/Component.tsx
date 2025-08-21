@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Media } from '@/components/Media'
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -18,10 +18,8 @@ export const Gallery: React.FC<Props> = (props) => {
   const {
     title,
     description,
-    layout = 'grid',
-    gridColumns = '3',
     images = [],
-    enableLightbox = true,
+    enableLightbox,
     className,
     locale = 'fr',
   } = props
@@ -34,7 +32,7 @@ export const Gallery: React.FC<Props> = (props) => {
   }
 
   const openLightbox = (index: number) => {
-    if (enableLightbox) {
+    if (enableLightbox ?? true) {
       setLightboxIndex(index)
       setIsLightboxOpen(true)
     }
@@ -57,172 +55,107 @@ export const Gallery: React.FC<Props> = (props) => {
     }
   }
 
-  const getGridClass = () => {
-    switch (gridColumns) {
-      case '2':
-        return 'grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'
-      case '4':
-        return 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4'
-      default: // '3'
-        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6'
-    }
-  }
-
-  const getMasonryClass = () => {
-    switch (gridColumns) {
-      case '2':
-        return 'columns-1 md:columns-2 gap-4 md:gap-6'
-      case '4':
-        return 'columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-3 md:gap-4'
-      default: // '3'
-        return 'columns-1 md:columns-2 lg:columns-3 gap-4 md:gap-6'
-    }
-  }
-
-  const getCarouselClass = () => {
-    return 'flex gap-4 md:gap-6 overflow-x-auto pb-4 scrollbar-hide scroll-smooth'
-  }
-
-  const renderGalleryContent = () => {
-    switch (layout) {
-      case 'masonry':
-        return (
-          <div className={getMasonryClass()}>
-            {images.map((item, index) => {
-              if (!item.media || typeof item.media !== 'object') return null
-              
-              return (
-                <div key={index} className="break-inside-avoid mb-4 md:mb-6">
-                  <GalleryItem
-                    media={item.media}
-                    caption={item.caption}
-                    index={index}
-                    enableLightbox={enableLightbox}
-                    onImageClick={openLightbox}
-                    locale={locale}
-                    layout="masonry"
-                  />
-                </div>
-              )
-            })}
-          </div>
-        )
-
-      case 'carousel':
-        return (
-          <div className={getCarouselClass()}>
-            {images.map((item, index) => {
-              if (!item.media || typeof item.media !== 'object') return null
-              
-              return (
-                <div key={index} className="flex-shrink-0 w-72 md:w-80">
-                  <GalleryItem
-                    media={item.media}
-                    caption={item.caption}
-                    index={index}
-                    enableLightbox={enableLightbox}
-                    onImageClick={openLightbox}
-                    locale={locale}
-                    layout="carousel"
-                  />
-                </div>
-              )
-            })}
-          </div>
-        )
-
-      default: // 'grid'
-        return (
-          <div className={cn('grid', getGridClass())}>
-            {images.map((item, index) => {
-              if (!item.media || typeof item.media !== 'object') return null
-              
-              return (
-                <GalleryItem
-                  key={index}
-                  media={item.media}
-                  caption={item.caption}
-                  index={index}
-                  enableLightbox={enableLightbox}
-                  onImageClick={openLightbox}
-                  locale={locale}
-                  layout="grid"
-                />
-              )
-            })}
-          </div>
-        )
-    }
-  }
-
   const currentImage = lightboxIndex !== null ? images[lightboxIndex] : null
 
   return (
-    <div className={cn('container mx-auto px-4', className)}>
+    <div className={cn('w-full pb-6 md:pb-10', className)}>
       {/* Gallery Header */}
       {(title || description) && (
-        <div className={cn('mb-8 text-center', locale === 'ar' && 'text-right')}>
+        <div className={cn('mb-6 md:mb-10 text-center max-w-4xl mx-auto px-4', locale === 'ar' && 'text-right')}>
           {title && (
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              {typeof title === 'object' ? title[locale] || title.fr : title}
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-foreground">
+{typeof title === 'object' ? (title as any)?.[locale] || (title as any)?.fr || title : title}
             </h2>
           )}
           {description && (
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              {typeof description === 'object' ? description[locale] || description.fr : description}
+            <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+{typeof description === 'object' ? (description as any)?.[locale] || (description as any)?.fr || description : description}
             </p>
           )}
         </div>
       )}
 
-      {/* Gallery Content */}
-      {renderGalleryContent()}
+      {/* Enhanced Gallery with Much Larger Images */}
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className={cn(
+          'grid gap-6 md:gap-8 lg:gap-10',
+          images.length === 1 && 'grid-cols-1 max-w-5xl mx-auto',
+          images.length === 2 && 'grid-cols-1 md:grid-cols-2 max-w-7xl mx-auto',
+          images.length === 3 && 'grid-cols-1 md:grid-cols-3 max-w-full',
+          images.length === 4 && 'grid-cols-1 sm:grid-cols-2 max-w-7xl mx-auto',
+          images.length > 4 && 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-full'
+        )}>
+          {images.map((item, index) => {
+            if (!item.media || typeof item.media !== 'object') return null
+            
+            return (
+              <GalleryItem
+                key={index}
+                media={item.media}
+                caption={item.caption}
+                index={index}
+                enableLightbox={enableLightbox ?? true}
+                onImageClick={openLightbox}
+                locale={locale}
+                totalImages={images.length}
+              />
+            )
+          })}
+        </div>
+      </div>
 
-      {/* Lightbox Modal */}
-      {enableLightbox && currentImage && (
+      {/* Simplified Lightbox */}
+      {(enableLightbox ?? true) && currentImage && (
         <Dialog open={isLightboxOpen} onOpenChange={setIsLightboxOpen}>
-          <DialogContent className="max-w-4xl w-full p-0 bg-black/95 border-none">
-            <div className="relative w-full h-[80vh] flex items-center justify-center">
+          <DialogContent className="max-w-7xl w-full h-screen p-0 bg-black/95 border-none">
+            <div className="relative w-full h-full flex items-center justify-center">
               {/* Close Button */}
               <Button
                 variant="ghost"
-                size="sm"
-                className="absolute top-4 right-4 z-10 text-white hover:bg-white/20"
+                size="icon"
+                className="absolute top-4 right-4 z-10 text-white hover:bg-white/20 rounded-full"
                 onClick={closeLightbox}
+                aria-label="Close"
               >
                 <X className="h-6 w-6" />
               </Button>
 
               {/* Navigation Buttons */}
-              {lightboxIndex > 0 && (
+              {lightboxIndex !== null && lightboxIndex > 0 && (
                 <Button
                   variant="ghost"
-                  size="sm"
+                  size="icon"
                   className={cn(
-                    'absolute top-1/2 -translate-y-1/2 z-10 text-white hover:bg-white/20',
+                    'absolute top-1/2 -translate-y-1/2 z-10',
+                    'bg-white/10 backdrop-blur-sm text-white hover:bg-white/20',
+                    'rounded-full w-12 h-12',
                     locale === 'ar' ? 'right-4' : 'left-4'
                   )}
                   onClick={goToPrevious}
+                  aria-label="Previous image"
                 >
-                  <ChevronLeft className="h-8 w-8" />
+                  <ChevronLeft className="h-6 w-6" />
                 </Button>
               )}
 
-              {lightboxIndex < images.length - 1 && (
+              {lightboxIndex !== null && lightboxIndex < images.length - 1 && (
                 <Button
                   variant="ghost"
-                  size="sm"
+                  size="icon"
                   className={cn(
-                    'absolute top-1/2 -translate-y-1/2 z-10 text-white hover:bg-white/20',
+                    'absolute top-1/2 -translate-y-1/2 z-10',
+                    'bg-white/10 backdrop-blur-sm text-white hover:bg-white/20',
+                    'rounded-full w-12 h-12',
                     locale === 'ar' ? 'left-4' : 'right-4'
                   )}
                   onClick={goToNext}
+                  aria-label="Next image"
                 >
-                  <ChevronRight className="h-8 w-8" />
+                  <ChevronRight className="h-6 w-6" />
                 </Button>
               )}
 
-              {/* Lightbox Image */}
+              {/* Main Image */}
               <div className="relative w-full h-full flex items-center justify-center p-8">
                 {currentImage.media && typeof currentImage.media === 'object' && (
                   <Media
@@ -234,20 +167,24 @@ export const Gallery: React.FC<Props> = (props) => {
 
               {/* Caption */}
               {currentImage.caption && (
-                <div className="absolute bottom-4 left-4 right-4 text-center">
-                  <p className="text-white bg-black/50 px-4 py-2 rounded">
-                    {typeof currentImage.caption === 'object' 
-                      ? currentImage.caption[locale] || currentImage.caption.fr 
-                      : currentImage.caption
-                    }
-                  </p>
+                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/70 to-transparent">
+                  <div className="max-w-4xl mx-auto text-center">
+                    <p className="text-white text-lg leading-relaxed">
+                      {typeof currentImage.caption === 'object' 
+? (currentImage.caption as any)?.[locale] || (currentImage.caption as any)?.fr || currentImage.caption 
+                        : currentImage.caption
+                      }
+                    </p>
+                  </div>
                 </div>
               )}
 
               {/* Image Counter */}
-              <div className="absolute top-4 left-4 text-white bg-black/50 px-3 py-1 rounded text-sm">
-                {lightboxIndex + 1} / {images.length}
-              </div>
+              {lightboxIndex !== null && (
+                <div className="absolute top-4 left-4 text-white bg-black/50 px-4 py-2 rounded-full text-sm font-medium">
+                  {lightboxIndex + 1} / {images.length}
+                </div>
+              )}
             </div>
           </DialogContent>
         </Dialog>
@@ -256,7 +193,7 @@ export const Gallery: React.FC<Props> = (props) => {
   )
 }
 
-// Gallery Item Component
+// Enhanced Gallery Item Component
 interface GalleryItemProps {
   media: any
   caption: any
@@ -264,7 +201,7 @@ interface GalleryItemProps {
   enableLightbox: boolean
   onImageClick: (index: number) => void
   locale: 'fr' | 'ar'
-  layout?: 'grid' | 'masonry' | 'carousel'
+  totalImages?: number
 }
 
 const GalleryItem: React.FC<GalleryItemProps> = ({
@@ -274,7 +211,7 @@ const GalleryItem: React.FC<GalleryItemProps> = ({
   enableLightbox,
   onImageClick,
   locale,
-  layout = 'grid',
+  totalImages = 1,
 }) => {
   const handleClick = () => {
     if (enableLightbox) {
@@ -282,37 +219,19 @@ const GalleryItem: React.FC<GalleryItemProps> = ({
     }
   }
 
-  // Get layout-specific classes
-  const getImageContainerClass = () => {
-    switch (layout) {
-      case 'grid':
-        return 'aspect-square overflow-hidden' // Square aspect ratio for grid
-      case 'carousel':
-        return 'aspect-[4/3] overflow-hidden' // 4:3 aspect ratio for carousel
-      case 'masonry':
-      default:
-        return 'overflow-hidden' // Natural height for masonry
-    }
-  }
-
-  const getImageClass = () => {
-    switch (layout) {
-      case 'grid':
-      case 'carousel':
-        return 'w-full h-full object-cover transition-transform duration-300'
-      case 'masonry':
-      default:
-        return 'w-full h-auto transition-transform duration-300'
-    }
+  // Larger image containers without cropping
+  const getImageContainerStyle = () => {
+    if (totalImages === 1) return 'min-h-[500px] md:min-h-[600px] lg:min-h-[700px]'
+    if (totalImages === 2) return 'min-h-[400px] md:min-h-[500px] lg:min-h-[550px]'
+    if (totalImages <= 4) return 'min-h-[350px] md:min-h-[450px] lg:min-h-[500px]'
+    return 'min-h-[300px] md:min-h-[400px] lg:min-h-[450px]'
   }
 
   return (
     <div
       className={cn(
-        'group relative overflow-hidden rounded-xl bg-white shadow-sm border border-gray-100',
-        'hover:shadow-lg transition-all duration-300',
-        enableLightbox && 'cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50',
-        'transform hover:-translate-y-1'
+        'group relative w-full',
+        enableLightbox && 'cursor-pointer'
       )}
       onClick={handleClick}
       onKeyDown={(e) => {
@@ -325,26 +244,27 @@ const GalleryItem: React.FC<GalleryItemProps> = ({
       role={enableLightbox ? 'button' : undefined}
       aria-label={enableLightbox ? `View image ${index + 1}` : undefined}
     >
-      <div className={cn('relative', getImageContainerClass())}>
+      {/* Larger Image Container - No Cropping */}
+      <div className={cn(
+        'relative w-full flex items-center justify-center',
+        getImageContainerStyle()
+      )}>
         <Media
           resource={media}
           imgClassName={cn(
-            getImageClass(),
+            'w-full h-auto object-contain transition-all duration-300 ease-out',
             enableLightbox && 'group-hover:scale-105'
           )}
+          priority={index < 3} // Load first 3 images with priority
         />
         
-        {/* Hover Overlay */}
+        {/* Enhanced Hover Overlay for Better Interaction */}
         {enableLightbox && (
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-xl" />
-        )}
-        
-        {/* Hover Icon */}
-        {enableLightbox && (
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <div className="bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg">
-              <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+            <div className="transform scale-0 group-hover:scale-100 transition-transform duration-300">
+              <svg className="w-16 h-16 text-white drop-shadow-2xl" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
               </svg>
             </div>
           </div>
@@ -353,12 +273,9 @@ const GalleryItem: React.FC<GalleryItemProps> = ({
 
       {/* Caption */}
       {caption && (
-        <div className={cn(
-          'p-3 bg-white', 
-          locale === 'ar' && 'text-right'
-        )}>
-          <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
-            {typeof caption === 'object' ? caption[locale] || caption.fr : caption}
+        <div className={cn('pt-3 pb-1', locale === 'ar' && 'text-right')}>
+          <p className="text-foreground/70 text-sm leading-relaxed line-clamp-3">
+{typeof caption === 'object' ? (caption as any)?.[locale] || (caption as any)?.fr || caption : caption}
           </p>
         </div>
       )}

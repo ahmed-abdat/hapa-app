@@ -1098,15 +1098,7 @@ export interface GalleryBlock {
    */
   description?: string | null;
   /**
-   * Style de présentation de la galerie
-   */
-  layout?: ('grid' | 'masonry' | 'carousel') | null;
-  /**
-   * Nombre de colonnes pour la grille
-   */
-  gridColumns?: ('2' | '3' | '4') | null;
-  /**
-   * Ajoutez plusieurs images pour créer une galerie
+   * Ajoutez plusieurs images pour créer une galerie (glissez-déposez pour réorganiser)
    */
   images?:
     | {

@@ -32,6 +32,16 @@
     -webkit-line-clamp: 4;
   }
 
+  /* Scrollbar utilities */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;     /* Firefox */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;            /* Safari and Chrome */
+  }
+
   /* Hero Animations */
   .animate-gradient-xy {
     animation: gradient-xy 15s ease infinite;

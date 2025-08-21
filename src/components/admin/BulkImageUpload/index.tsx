@@ -40,23 +40,10 @@ const BulkImageUploadField: ArrayFieldClientComponent = (props) => {
     setBulkState(prev => ({ ...prev, isDragOver: false }))
   }, [])
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setBulkState(prev => ({ ...prev, isDragOver: false }))
-    
-    const files = Array.from(e.dataTransfer.files).filter(file => 
-      file.type.startsWith('image/')
-    )
-    
-    if (files.length > 0) {
-      handleBulkAdd(files)
-    }
-  }, [])
-
   // Handle bulk file addition
   const handleBulkAdd = useCallback(async (files: File[]) => {
-    if (!Array.isArray(props.value)) return
+    // Assume empty array as current index base for new items
+    let currentIndex = 0
     
     setBulkState(prev => ({ 
       ...prev, 
@@ -68,7 +55,7 @@ const BulkImageUploadField: ArrayFieldClientComponent = (props) => {
       // Add rows to the array field for each file
       for (let i = 0; i < files.length; i++) {
         const file = files[i]
-        const currentIndex = props.value.length + i
+        const rowIndex = currentIndex + i
         
         // Update progress
         setBulkState(prev => ({
@@ -82,7 +69,8 @@ const BulkImageUploadField: ArrayFieldClientComponent = (props) => {
         // Add new row to the array
         await addFieldRow({
           path: props.path,
-          rowIndex: currentIndex,
+          schemaPath: props.path,
+          rowIndex: rowIndex,
           subFieldState: {
             media: {
               initialValue: null,
@@ -110,7 +98,21 @@ const BulkImageUploadField: ArrayFieldClientComponent = (props) => {
         uploadQueue: []
       })
     }
-  }, [props.value, props.path, addFieldRow])
+  }, [props.path, addFieldRow])
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setBulkState(prev => ({ ...prev, isDragOver: false }))
+    
+    const files = Array.from(e.dataTransfer.files).filter(file => 
+      file.type.startsWith('image/')
+    )
+    
+    if (files.length > 0) {
+      handleBulkAdd(files)
+    }
+  }, [handleBulkAdd])
 
   // Handle file input change
   const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
