@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import { useParams } from "next/navigation";
+import { getMediaTypeLabel, getMediaChannelLabel } from "@/lib/media-mappings";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -85,6 +87,7 @@ export function SubmissionsDataTable({
   onUpdateSubmission,
   onViewDetails,
 }: SubmissionsDataTableProps) {
+  const { locale } = useParams();
   const { dt, i18n } = useAdminTranslation();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -182,9 +185,18 @@ export function SubmissionsDataTable({
         header: dt('modernDashboard.dataTable.mediaHeader'),
         cell: ({ row }) => {
           const submission = row.original;
-          const mediaType = submission.contentInfo?.mediaType;
+          const rawMediaType = submission.contentInfo?.mediaType;
           const programName = submission.contentInfo?.programName;
-          const channel = submission.contentInfo?.specificChannel;
+          const rawChannel = submission.contentInfo?.specificChannel;
+          
+          // Get localized labels
+          const mediaTypeLabel = rawMediaType 
+            ? getMediaTypeLabel(rawMediaType, locale as 'fr' | 'ar')
+            : dt('modernDashboard.dataTable.notSpecified');
+          
+          const channelLabel = rawChannel 
+            ? getMediaChannelLabel(rawChannel, rawMediaType as 'radio' | 'television', locale as 'fr' | 'ar')
+            : null;
           
           const getMediaIcon = (type: string) => {
             switch (type?.toLowerCase()) {
@@ -195,9 +207,11 @@ export function SubmissionsDataTable({
                 return <Radio className="h-4 w-4 text-green-600" />;
               case 'presse écrite':
               case 'journal':
+              case 'print':
                 return <Newspaper className="h-4 w-4 text-purple-600" />;
               case 'internet':
               case 'web':
+              case 'online':
                 return <Globe className="h-4 w-4 text-orange-600" />;
               default:
                 return <AlertCircle className="h-4 w-4 text-gray-500" />;
@@ -207,22 +221,22 @@ export function SubmissionsDataTable({
           return (
             <div className="flex items-start gap-2">
               <div className="p-1.5 rounded-full bg-gray-100 dark:bg-gray-800 flex-shrink-0">
-                {getMediaIcon(mediaType || '')}
+                {getMediaIcon(rawMediaType || '')}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">
-                  {mediaType || dt('modernDashboard.dataTable.notSpecified')}
+                  {mediaTypeLabel}
                 </p>
-                {(programName || channel) && (
+                {(programName || channelLabel) && (
                   <div className="space-y-0.5">
                     {programName && (
                       <p className="text-xs text-muted-foreground truncate">
                         📺 {programName}
                       </p>
                     )}
-                    {channel && (
+                    {channelLabel && (
                       <p className="text-xs text-muted-foreground truncate">
-                        📡 {channel}
+                        📡 {channelLabel}
                       </p>
                     )}
                   </div>
@@ -470,7 +484,7 @@ export function SubmissionsDataTable({
         },
       },
     ],
-    [onUpdateSubmission, onViewDetails, dt]
+    [onUpdateSubmission, onViewDetails, dt, locale]
   );
 
   const table = useReactTable({

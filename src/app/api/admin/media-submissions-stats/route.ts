@@ -78,13 +78,21 @@ export async function GET(req: NextRequest) {
     // Get Payload instance
     const payload = await getPayload({ config: configPromise })
     
-    // Check if user is authenticated
+    // Check if user is authenticated and has appropriate role
     const { user } = await payload.auth({ headers: req.headers })
     
     if (!user) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
+      )
+    }
+
+    // Check if user has permission to access submissions
+    if (!['admin', 'moderator', 'editor'].includes(user.role)) {
+      return NextResponse.json(
+        { success: false, error: 'Insufficient permissions' },
+        { status: 403 }
       )
     }
 
@@ -97,9 +105,17 @@ export async function GET(req: NextRequest) {
       })
     }
 
-    // Fetch submissions with performance optimization
+    // Build where clause based on user role
+    let whereClause: any = {}
+    
+    // All authorized roles (admin, moderator, editor) can see all submissions
+    // Moderator has full access for management, admin oversight via audit trail
+    // Editor has read-only access for statistical purposes
+
+    // Fetch submissions with performance optimization and role-based filtering
     const allSubmissions = await payload.find({
       collection: 'media-content-submissions',
+      where: whereClause,
       limit: 1000, // Reasonable limit for performance
       select: {
         title: true,
@@ -110,6 +126,9 @@ export async function GET(req: NextRequest) {
         locale: true,
         contentInfo: true,
         complainantInfo: true,
+        reviewedBy: true,
+        reviewedAt: true,
+        moderatorNotes: true,
       },
       sort: '-submittedAt',
     })

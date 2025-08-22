@@ -3,7 +3,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useField, useForm, useLocale } from '@payloadcms/ui'
 import { SEO_LIMITS } from '@/utilities/seo'
-// import './styles.scss' // TODO: Add styles if needed
 
 interface SEOFieldsEnhancerProps {
   path?: string

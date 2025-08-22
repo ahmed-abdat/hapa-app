@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useAdminTranslation } from "@/utilities/admin-translations"
+import { getMediaTypeLabel, getMediaChannelLabel } from "@/lib/media-mappings"
 import { useParams } from "next/navigation";
 import { logger } from "@/utilities/logger";
 import { useTheme } from "@/providers/Theme";
@@ -314,8 +315,12 @@ export function ModernDashboard() {
         (s) => s.formType === "complaint" && s.submissionStatus === "pending"
       )
       .reduce((acc, s) => {
-        const mediaType = s.contentInfo?.mediaType || "Inconnu";
-        const channel = s.contentInfo?.specificChannel || "Non spécifié";
+        const rawMediaType = s.contentInfo?.mediaType || "unknown";
+        const rawChannel = s.contentInfo?.specificChannel || "unspecified";
+        const mediaType = getMediaTypeLabel(rawMediaType, locale as 'fr' | 'ar');
+        const channel = rawChannel === "unspecified" 
+          ? (locale === 'ar' ? "غير محدد" : "Non spécifié")
+          : getMediaChannelLabel(rawChannel, rawMediaType as 'radio' | 'television', locale as 'fr' | 'ar');
         const key = `${mediaType}: ${channel}`;
         acc[key] = (acc[key] || 0) + 1;
         return acc;
@@ -669,7 +674,7 @@ export function ModernDashboard() {
       evidenceQuality,
       formTypeInsights: formBreakdown,
     };
-  }, [submissions, stats, dt]);
+  }, [submissions, stats, dt, locale]);
 
   if (loading) {
     return (

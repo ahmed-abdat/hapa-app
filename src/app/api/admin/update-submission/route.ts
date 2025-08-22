@@ -27,12 +27,20 @@ export async function PATCH(req: NextRequest) {
   try {
     const payload = await getPayload({ config: configPromise })
     
-    // Check authentication
+    // Check authentication and permissions
     const { user } = await payload.auth({ headers: req.headers })
     if (!user) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
+      )
+    }
+
+    // Check if user has permission to update submissions
+    if (!['admin', 'moderator'].includes(user.role)) {
+      return NextResponse.json(
+        { success: false, error: 'Insufficient permissions to update submissions' },
+        { status: 403 }
       )
     }
 
@@ -45,6 +53,9 @@ export async function PATCH(req: NextRequest) {
         { status: 400 }
       )
     }
+
+    // Moderators have full permission to update status and priority
+    // Admin oversight is maintained through audit trail (reviewedBy/reviewedAt)
 
     // Update the submission
     const updatedSubmission = await payload.update({
@@ -88,12 +99,20 @@ export async function POST(req: NextRequest) {
   try {
     const payload = await getPayload({ config: configPromise })
     
-    // Check authentication
+    // Check authentication and permissions
     const { user } = await payload.auth({ headers: req.headers })
     if (!user) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
         { status: 401 }
+      )
+    }
+
+    // Check if user has permission to update submissions
+    if (!['admin', 'moderator'].includes(user.role)) {
+      return NextResponse.json(
+        { success: false, error: 'Insufficient permissions to update submissions' },
+        { status: 403 }
       )
     }
 
@@ -106,6 +125,9 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       )
     }
+
+    // Moderators have full permission to update status and priority
+    // Admin oversight is maintained through audit trail (reviewedBy/reviewedAt)
 
     // Perform bulk update
     const updatePromises = submissionIds.map(async (id) => {

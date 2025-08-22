@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { useField, useFormFields } from '@payloadcms/ui'
+import { useParams } from 'next/navigation'
 import type { ArrayFieldClientComponent } from 'payload'
 import { 
   Play, 
@@ -21,6 +22,7 @@ import {
   Maximize2
 } from 'lucide-react'
 import { isValidUrl } from '@/lib/security'
+import { useAdminTranslation } from '@/utilities/admin-translations'
 import NextImage from 'next/image'
 import './index.scss'
 
@@ -44,6 +46,7 @@ interface PDFViewerProps {
   url: string
   filename: string
   onError: () => void
+  dt: (key: string) => string
 }
 
 interface ImageViewerProps {
@@ -345,7 +348,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ url, filename, onError }) => 
 }
 
 // PDF Preview Button Component - SECURE VERSION (FIXED: XSS Prevention)
-const PDFPreviewButton: React.FC<PDFViewerProps> = ({ url, filename, onError }) => {
+const PDFPreviewButton: React.FC<PDFViewerProps> = ({ url, filename, onError, dt }) => {
   const [error, setError] = useState<string | null>(null)
   
   const openPreview = () => {
@@ -418,18 +421,14 @@ const PDFPreviewButton: React.FC<PDFViewerProps> = ({ url, filename, onError }) 
       <div className="pdf-preview-area">
         <div className="pdf-placeholder">
           <FileText size={48} className="pdf-placeholder-icon" />
-          <p className="pdf-placeholder-text">Cliquez sur Prévisualiser pour ouvrir le PDF</p>
+          <p className="pdf-placeholder-text">{dt('mediaGallery.clickToPreviewPDF')}</p>
         </div>
       </div>
       
       <div className="pdf-actions-bar">
         <button onClick={openPreview} className="pdf-preview-btn">
           <Eye size={18} />
-          <span>Prévisualiser</span>
-        </button>
-        <button onClick={downloadFile} className="pdf-download-btn">
-          <Download size={18} />
-          <span>Télécharger</span>
+          <span>{dt('mediaGallery.previewFile')}</span>
         </button>
       </div>
     </div>
@@ -507,6 +506,9 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ url, filename, onError }) => 
  * Supports video, audio, PDF, and image files with full-featured players
  */
 const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
+  const { locale } = useParams()
+  const { dt } = useAdminTranslation()
+  
   const fieldState = useField({ 
     path, 
     hasRows: true
@@ -712,6 +714,7 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
               url={mediaUrl}
               filename={fileName}
               onError={() => handleMediaError(mediaUrl)}
+              dt={dt}
             />
           </div>
         )}
@@ -811,7 +814,7 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
     <div className="enhanced-media-gallery">
       <div className="media-header">
         <h4 className="media-title">
-          Fichiers médias ({actualData.length})
+{dt('mediaGallery.mediaFiles')} ({actualData.length})
         </h4>
       </div>
       
