@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { Gutter, Button } from '@payloadcms/ui'
-import { Link } from '@/i18n/navigation'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { BarChart3, ListChecks, TriangleAlert, Languages, Clock, Inbox } from 'lucide-react'
 import { useAdminTranslation } from '@/utilities/admin-translations'
