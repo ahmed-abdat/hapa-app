@@ -32,6 +32,7 @@ export const MediaSubmissionsDashboard: CollectionConfig = {
       fr: "Accéder au tableau de bord des soumissions médiatiques avec statistiques et gestion avancée",
       ar: "الوصول إلى لوحة تحكم إرسالات الوسائط مع الإحصائيات والإدارة المتقدمة",
     },
+    hidden: ({ user }) => user?.role === 'editor',
     useAsTitle: "id",
     // Override the default list view with the full dashboard component
     components: {

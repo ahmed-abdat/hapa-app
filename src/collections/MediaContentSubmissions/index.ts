@@ -1,5 +1,8 @@
 import type { CollectionConfig } from "payload";
 import { logger } from "@/utilities/logger";
+import { isAdmin } from '../../access/isAdmin'
+import { isAdminOrModerator } from '../../access/isAdminOrModerator'
+import { canManageSubmissions } from '../../access/canManageSubmissions'
 // Cleanup hook removed - using unified media collection
 
 export const MediaContentSubmissions: CollectionConfig = {
@@ -35,6 +38,7 @@ export const MediaContentSubmissions: CollectionConfig = {
       "complainantInfo.emailAddress",
       "contentInfo.specificChannel",
     ],
+    hidden: ({ user }) => user?.role === 'editor',
     group: {
       fr: "Formulaires et Soumissions",
       ar: "النماذج والإرسالات",
@@ -48,10 +52,10 @@ export const MediaContentSubmissions: CollectionConfig = {
     // Admin display handled by useAsTitle field with auto-generated clean titles
   },
   access: {
-    read: ({ req: { user } }) => Boolean(user),
-    create: () => true, // Allow API submissions
-    update: ({ req: { user } }) => Boolean(user),
-    delete: ({ req: { user } }) => Boolean(user),
+    read: canManageSubmissions, // Admin sees all, moderator sees based on priority
+    create: () => true, // Allow API submissions from public forms
+    update: isAdminOrModerator, // Admin and moderator can update
+    delete: isAdmin, // Only admin can delete
   },
   fields: [
     // Auto-generated title for admin display
@@ -174,6 +178,9 @@ export const MediaContentSubmissions: CollectionConfig = {
         position: "sidebar",
         date: {
           pickerAppearance: "dayAndTime",
+        },
+        components: {
+          Field: "@/components/admin/LocalizedDateField/index",
         },
       },
       label: {
@@ -436,6 +443,9 @@ export const MediaContentSubmissions: CollectionConfig = {
       admin: {
         readOnly: true,
         position: "sidebar",
+        components: {
+          Field: "@/components/admin/MediaTypeField/index",
+        },
         description: {
           fr: "Le type de média où le contenu a été trouvé (TV, Radio, Site web, etc.)",
           ar: "نوع الوسائط حيث تم العثور على المحتوى (تلفزيون، راديو، موقع ويب، إلخ)",
@@ -503,6 +513,9 @@ export const MediaContentSubmissions: CollectionConfig = {
           },
           admin: {
             readOnly: true,
+            components: {
+              Field: "@/components/admin/MediaTypeField/index",
+            },
             description: {
               en: "Type of media (TV, Radio, Website, etc.)",
               fr: "Type de média (TV, Radio, Site web, etc.)",
@@ -677,10 +690,18 @@ export const MediaContentSubmissions: CollectionConfig = {
         {
           name: "type",
           type: "text",
+          admin: {
+            components: {
+              Field: "@/components/admin/AttachmentTypeField/index",
+            },
+          },
         },
       ],
       admin: {
         readOnly: true,
+        components: {
+          RowLabel: "@/components/admin/AttachmentTypeRowLabel/index",
+        },
       },
     },
 
@@ -723,20 +744,96 @@ export const MediaContentSubmissions: CollectionConfig = {
       },
     },
 
-    // Admin notes and actions
+    // Moderator notes (visible to both moderator and admin)
+    {
+      name: "moderatorNotes",
+      type: "textarea",
+      label: {
+        fr: "Notes du Modérateur",
+        ar: "ملاحظات المشرف",
+      },
+      admin: {
+        description: {
+          fr: "Notes du modérateur pour examen par l'administrateur",
+          ar: "ملاحظات من المشرف لمراجعة المسؤول",
+        },
+        rows: 4,
+        condition: ({ user }) => Boolean(user && ['admin', 'moderator'].includes(user?.role)),
+      },
+    },
+
+    // Admin-only internal notes
+    {
+      name: "internalNotes",
+      type: "textarea",
+      label: {
+        fr: "Notes Internes Admin",
+        ar: "ملاحظات الإدارة الداخلية",
+      },
+      admin: {
+        description: {
+          fr: "Notes internes réservées aux administrateurs (non visibles par les modérateurs)",
+          ar: "ملاحظات داخلية للمسؤول فقط (غير مرئية للمشرفين)",
+        },
+        rows: 4,
+      },
+      access: {
+        read: ({ req: { user } }) => Boolean(user && user.role === 'admin'),
+        update: ({ req: { user } }) => Boolean(user && user.role === 'admin'),
+      },
+    },
+
+    // Audit trail - who reviewed this submission
+    {
+      name: "reviewedBy",
+      type: "relationship",
+      relationTo: "users",
+      label: {
+        fr: "Examiné par",
+        ar: "تمت المراجعة بواسطة",
+      },
+      admin: {
+        readOnly: true,
+        position: "sidebar",
+      },
+      access: {
+        read: ({ req: { user } }) => Boolean(user && ['admin', 'moderator'].includes(user?.role)),
+        update: () => false, // Set automatically via hooks
+      },
+    },
+
+    {
+      name: "reviewedAt",
+      type: "date",
+      label: {
+        fr: "Examiné le",
+        ar: "تاريخ المراجعة",
+      },
+      admin: {
+        readOnly: true,
+        position: "sidebar",
+        date: {
+          pickerAppearance: "dayAndTime",
+        },
+      },
+      access: {
+        read: ({ req: { user } }) => Boolean(user && ['admin', 'moderator'].includes(user?.role)),
+        update: () => false, // Set automatically via hooks
+      },
+    },
+
+    // Admin notes (kept for backward compatibility but renamed label)
     {
       name: "adminNotes",
       type: "textarea",
       label: {
-        en: "Admin Notes",
-        fr: "Notes Admin",
-        ar: "ملاحظات الإدارة",
+        fr: "Notes Générales",
+        ar: "ملاحظات عامة",
       },
       admin: {
         description: {
-          en: "Internal notes for tracking and follow-up",
-          fr: "Notes internes pour le suivi et le follow-up",
-          ar: "ملاحظات داخلية للمتابعة والتطوير",
+          fr: "Notes générales visibles par tous les utilisateurs autorisés",
+          ar: "ملاحظات عامة مرئية لجميع المستخدمين المصرح لهم",
         },
         rows: 4,
       },
@@ -808,7 +905,7 @@ export const MediaContentSubmissions: CollectionConfig = {
   ],
   hooks: {
     beforeChange: [
-      ({ data, operation }) => {
+      ({ data, operation, req, originalDoc }) => {
         if (operation === "create") {
           // Set submission timestamp
           if (!data.submittedAt) {
@@ -828,12 +925,35 @@ export const MediaContentSubmissions: CollectionConfig = {
           }
         }
 
+        // Audit trail: Track who reviewed the submission
+        if (operation === "update" && req.user) {
+          // Check if status changed
+          if (originalDoc && data.submissionStatus !== originalDoc.submissionStatus) {
+            data.reviewedBy = req.user.id;
+            data.reviewedAt = new Date().toISOString();
+            
+            // Log status change
+            logger.info('Submission status changed', {
+              component: 'MediaContentSubmissions',
+              action: 'status_change',
+              metadata: {
+                submissionId: originalDoc.id,
+                oldStatus: originalDoc.submissionStatus,
+                newStatus: data.submissionStatus,
+                reviewedBy: req.user.email,
+                userRole: req.user.role
+              }
+            });
+          }
+        }
+
         // Update resolution timestamp when status changes to resolved/dismissed
         if (["resolved", "dismissed"].includes(data.submissionStatus)) {
           if (!data.resolution?.resolvedAt) {
             data.resolution = {
               ...data.resolution,
               resolvedAt: new Date().toISOString(),
+              resolvedBy: req.user?.email || 'System',
             };
           }
         }
