@@ -10,6 +10,16 @@ import {
 export const Archive: Block = {
   slug: 'archive',
   interfaceName: 'ArchiveBlock',
+  labels: {
+    singular: {
+      fr: 'Archive',
+      ar: 'الأرشيف'
+    },
+    plural: {
+      fr: 'Archives',
+      ar: 'الأرشيفات'
+    }
+  },
   fields: [
     {
       name: 'introContent',
@@ -24,19 +34,32 @@ export const Archive: Block = {
           ]
         },
       }),
-      label: 'Intro Content',
+      label: {
+        fr: 'Contenu d\'introduction',
+        ar: 'محتوى المقدمة'
+      },
     },
     {
       name: 'populateBy',
       type: 'select',
       defaultValue: 'collection',
+      label: {
+        fr: 'Remplir par',
+        ar: 'ملء بواسطة'
+      },
       options: [
         {
-          label: 'Collection',
+          label: {
+            fr: 'Collection',
+            ar: 'المجموعة'
+          },
           value: 'collection',
         },
         {
-          label: 'Individual Selection',
+          label: {
+            fr: 'Sélection individuelle',
+            ar: 'اختيار فردي'
+          },
           value: 'selection',
         },
       ],
@@ -48,10 +71,16 @@ export const Archive: Block = {
         condition: (_, siblingData) => siblingData.populateBy === 'collection',
       },
       defaultValue: 'posts',
-      label: 'Collections To Show',
+      label: {
+        fr: 'Collections à afficher',
+        ar: 'المجموعات للعرض'
+      },
       options: [
         {
-          label: 'Posts',
+          label: {
+            fr: 'Articles',
+            ar: 'المقالات'
+          },
           value: 'posts',
         },
       ],
@@ -63,7 +92,10 @@ export const Archive: Block = {
         condition: (_, siblingData) => siblingData.populateBy === 'collection',
       },
       hasMany: true,
-      label: 'Categories To Show',
+      label: {
+        fr: 'Catégories à afficher',
+        ar: 'الفئات للعرض'
+      },
       relationTo: 'categories',
     },
     {
@@ -74,7 +106,10 @@ export const Archive: Block = {
         step: 1,
       },
       defaultValue: 10,
-      label: 'Limit',
+      label: {
+        fr: 'Limite',
+        ar: 'الحد'
+      },
     },
     {
       name: 'selectedDocs',
@@ -83,12 +118,11 @@ export const Archive: Block = {
         condition: (_, siblingData) => siblingData.populateBy === 'selection',
       },
       hasMany: true,
-      label: 'Selection',
+      label: {
+        fr: 'Sélection',
+        ar: 'الاختيار'
+      },
       relationTo: ['posts'],
     },
   ],
-  labels: {
-    plural: 'Archives',
-    singular: 'Archive',
-  },
 }

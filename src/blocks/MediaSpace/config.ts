@@ -4,21 +4,33 @@ export const MediaSpace: Block = {
   slug: 'mediaSpace',
   interfaceName: 'MediaSpaceBlock',
   labels: {
-    singular: 'Media Space',
-    plural: 'Media Space',
+    singular: {
+      fr: 'Espace média',
+      ar: 'مساحة الوسائط'
+    },
+    plural: {
+      fr: 'Espaces média',
+      ar: 'مساحات الوسائط'
+    }
   },
   fields: [
     {
       name: 'title',
       type: 'text',
-      label: 'Section Title',
+      label: {
+        fr: 'Titre de la section',
+        ar: 'عنوان القسم'
+      },
       localized: true,
       required: false,
     },
     {
       name: 'description',
       type: 'textarea',
-      label: 'Section Description',
+      label: {
+        fr: 'Description de la section',
+        ar: 'وصف القسم'
+      },
       localized: true,
       required: false,
     },
