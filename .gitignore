@@ -26,3 +26,11 @@ debuging/
 # Development tools
 .serena/
 tsconfig.tsbuildinfo
+
+
+
+# Playwright testing
+.playwright-mcp/
+playwright/.auth/
+test-results/
+playwright-report/
