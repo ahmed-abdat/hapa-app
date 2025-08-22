@@ -18,10 +18,11 @@ export const useAdminTranslation = () => {
   /**
    * Type-safe translation function with admin translation keys
    * @param key - Translation key in format 'namespace:key'
+   * @param values - Values for interpolation
    * @returns Translated string
    */
-  const dt = (key: AdminTranslationsKeys | string): string => {
-    return t(key as AdminTranslationsKeys)
+  const dt = (key: AdminTranslationsKeys | string, values?: Record<string, any>): string => {
+    return t(key as AdminTranslationsKeys, values)
   }
   
   return { 

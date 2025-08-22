@@ -17,8 +17,14 @@ import {
 
 export interface MotifConfig {
   key: string
-  label: string
-  description: string
+  label: {
+    fr: string
+    ar: string
+  }
+  description: {
+    fr: string
+    ar: string
+  }
   icon: LucideIcon
   severity: 'critical' | 'high' | 'medium' | 'low'
   color: string
@@ -32,8 +38,14 @@ export interface MotifConfig {
 export const MOTIF_CONFIGS: Record<string, MotifConfig> = {
   hateSpeech: {
     key: 'hateSpeech',
-    label: 'Discours de haine / Incitation à la violence',
-    description: 'Contenu encourageant la haine ou la violence contre des groupes ou individus',
+    label: {
+      fr: 'Discours de haine / Incitation à la violence',
+      ar: 'خطاب الكراهية / التحريض على العنف'
+    },
+    description: {
+      fr: 'Contenu encourageant la haine ou la violence contre des groupes ou individus',
+      ar: 'محتوى يشجع على الكراهية أو العنف ضد مجموعات أو أفراد'
+    },
     icon: AlertTriangle,
     severity: 'critical',
     color: '#dc2626', // red-600
@@ -41,8 +53,14 @@ export const MOTIF_CONFIGS: Record<string, MotifConfig> = {
   },
   fakeNews: {
     key: 'fakeNews',
-    label: 'Désinformation / Informations mensongères',
-    description: 'Contenu contenant de fausses informations ou de la désinformation',
+    label: {
+      fr: 'Désinformation / Informations mensongères',
+      ar: 'معلومات مضللة / أخبار كاذبة'
+    },
+    description: {
+      fr: 'Contenu contenant de fausses informations ou de la désinformation',
+      ar: 'محتوى يحتوي على معلومات خاطئة أو معلومات مضللة'
+    },
     icon: MessageSquareWarning,
     severity: 'critical',
     color: '#ea580c', // orange-600
@@ -50,8 +68,14 @@ export const MOTIF_CONFIGS: Record<string, MotifConfig> = {
   },
   misinformation: {
     key: 'misinformation',
-    label: 'Désinformation / Informations mensongères',
-    description: 'Contenu contenant de fausses informations ou de la désinformation',
+    label: {
+      fr: 'Désinformation / Informations mensongères',
+      ar: 'معلومات مضللة / أخبار كاذبة'
+    },
+    description: {
+      fr: 'Contenu contenant de fausses informations ou de la désinformation',
+      ar: 'محتوى يحتوي على معلومات خاطئة أو معلومات مضللة'
+    },
     icon: MessageSquareWarning,
     severity: 'critical',
     color: '#ea580c', // orange-600
@@ -59,8 +83,14 @@ export const MOTIF_CONFIGS: Record<string, MotifConfig> = {
   },
   privacyViolation: {
     key: 'privacyViolation',
-    label: 'Atteinte à la vie privée / Diffamation',
-    description: 'Contenu violant la vie privée ou diffamatoire',
+    label: {
+      fr: 'Atteinte à la vie privée / Diffamation',
+      ar: 'انتهاك الخصوصية / التشهير'
+    },
+    description: {
+      fr: 'Contenu violant la vie privée ou diffamatoire',
+      ar: 'محتوى ينتهك الخصوصية أو يحتوي على تشهير'
+    },
     icon: Shield,
     severity: 'high',
     color: '#7c3aed', // violet-600
@@ -68,8 +98,14 @@ export const MOTIF_CONFIGS: Record<string, MotifConfig> = {
   },
   shockingContent: {
     key: 'shockingContent',
-    label: 'Contenu choquant / Violent / Inapproprié',
-    description: 'Contenu graphique, violent ou inapproprié pour le public',
+    label: {
+      fr: 'Contenu choquant / Violent / Inapproprié',
+      ar: 'محتوى صادم / عنيف / غير مناسب'
+    },
+    description: {
+      fr: 'Contenu graphique, violent ou inapproprié pour le public',
+      ar: 'محتوى مصور أو عنيف أو غير مناسب للجمهور'
+    },
     icon: Zap,
     severity: 'high',
     color: '#dc2626', // red-600
@@ -77,8 +113,14 @@ export const MOTIF_CONFIGS: Record<string, MotifConfig> = {
   },
   pluralismViolation: {
     key: 'pluralismViolation',
-    label: 'Non-respect du pluralisme politique',
-    description: 'Contenu ne respectant pas le pluralisme politique et médiatique',
+    label: {
+      fr: 'Non-respect du pluralisme politique',
+      ar: 'عدم احترام التعددية السياسية'
+    },
+    description: {
+      fr: 'Contenu ne respectant pas le pluralisme politique et médiatique',
+      ar: 'محتوى لا يحترم التعددية السياسية والإعلامية'
+    },
     icon: Users,
     severity: 'medium',
     color: '#0369a1', // sky-700
@@ -86,8 +128,14 @@ export const MOTIF_CONFIGS: Record<string, MotifConfig> = {
   },
   falseAdvertising: {
     key: 'falseAdvertising',
-    label: 'Publicité mensongère ou interdite',
-    description: 'Publicité contenant des informations trompeuses ou interdites',
+    label: {
+      fr: 'Publicité mensongère ou interdite',
+      ar: 'إعلان كاذب أو محظور'
+    },
+    description: {
+      fr: 'Publicité contenant des informations trompeuses ou interdites',
+      ar: 'إعلان يحتوي على معلومات مضللة أو محظورة'
+    },
     icon: Ban,
     severity: 'medium',
     color: '#059669', // emerald-600
@@ -95,8 +143,14 @@ export const MOTIF_CONFIGS: Record<string, MotifConfig> = {
   },
   other: {
     key: 'other',
-    label: 'Autre motif',
-    description: 'Autre motif non listé ci-dessus',
+    label: {
+      fr: 'Autre motif',
+      ar: 'سبب آخر'
+    },
+    description: {
+      fr: 'Autre motif non listé ci-dessus',
+      ar: 'سبب آخر غير مدرج أعلاه'
+    },
     icon: HelpCircle,
     severity: 'low',
     color: '#6b7280', // gray-500
@@ -111,8 +165,14 @@ export const MOTIF_CONFIGS: Record<string, MotifConfig> = {
 export function getMotifConfig(key: string): MotifConfig {
   return MOTIF_CONFIGS[key] || {
     key,
-    label: key,
-    description: 'Motif personnalisé',
+    label: {
+      fr: key,
+      ar: key
+    },
+    description: {
+      fr: 'Motif personnalisé',
+      ar: 'سبب مخصص'
+    },
     icon: HelpCircle,
     severity: 'low',
     color: '#6b7280',
@@ -121,12 +181,21 @@ export function getMotifConfig(key: string): MotifConfig {
 }
 
 /**
- * Get French label for a motif key
+ * Get localized label for a motif key
+ * Supports both French and Arabic
  * Fallback to the key itself if no translation found
  */
-export function getMotifLabel(key: string): string {
+export function getMotifLabel(key: string, locale: 'fr' | 'ar' = 'fr'): string {
   const config = getMotifConfig(key)
-  return config.label
+  return config.label[locale] || config.label.fr || key
+}
+
+/**
+ * Get localized description for a motif key
+ */
+export function getMotifDescription(key: string, locale: 'fr' | 'ar' = 'fr'): string {
+  const config = getMotifConfig(key)
+  return config.description[locale] || config.description.fr || ''
 }
 
 /**

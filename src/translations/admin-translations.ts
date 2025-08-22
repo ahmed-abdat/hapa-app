@@ -190,6 +190,15 @@ export const adminTranslations = {
       notProvided: "Non fourni",
     },
     
+    // Admin time/date translations
+    admin: {
+      lastUpdated: "Dernière mise à jour",
+      never: "Jamais",
+      justNow: "À l'instant",
+      minutesAgo: "Il y a {minutes} minute{minutes, plural, =1 {} other {s}}",
+      hoursAgo: "Il y a {hours} heure{hours, plural, =1 {} other {s}}",
+    },
+    
     // Search
     search: {
       placeholder: "Rechercher...",
@@ -715,6 +724,18 @@ export const adminTranslations = {
     'beforeDashboard.manageCollections': "Gérer les Collections",
     'beforeDashboard.mediaSubmissionsAria': "Ouvrir les soumissions médiatiques",
     'beforeDashboard.manageCollectionsAria': "Gérer les collections",
+    
+    // Media Gallery component translations
+    'mediaGallery.mediaFiles': "Fichiers médias",
+    'mediaGallery.clickToPreviewPDF': "Cliquez sur Prévisualiser pour ouvrir le PDF",
+    'mediaGallery.previewFile': "Prévisualiser",
+    
+    // File Display component translations
+    'fileDisplay.fileWithoutURL': "Fichier sans URL",
+    'fileDisplay.downloadedFile': "Fichier téléchargé",
+    'fileDisplay.fileNumber': "Fichier {number}",
+    'fileDisplay.openFileInNewTab': "Ouvrir {filename} dans un nouvel onglet",
+    'fileDisplay.downloadFileTitle': "Télécharger le fichier",
   },
   ar: {
     // Plugin-generated collections
@@ -727,13 +748,13 @@ export const adminTranslations = {
     
     // ConsolidatedDashboard translations
     dashboard: {
-      title: "مركز التحكم في إرسالات الوسائط",
-      subtitle: "إدارة شاملة للتبليغات والشكاوى",
+      title: "مركز إدارة المحتوى الإعلامي",
+      subtitle: "الإدارة الشاملة للتقارير والشكاوى الإعلامية",
       refresh: "تحديث",
       selected: "محدد",
       actions: "الإجراءات",
-      bulkUpdateStatus: "تغيير الحالة",
-      bulkUpdatePriority: "تغيير الأولوية",
+      bulkUpdateStatus: "تحديث الحالة",
+      bulkUpdatePriority: "تحديث الأولوية",
       delete: "حذف",
     },
     
@@ -780,21 +801,21 @@ export const adminTranslations = {
     
     // Form types
     forms: {
-      report: "تبليغ",
-      complaint: "شكوى",
+      report: "تقرير إعلامي",
+      complaint: "شكوى إعلامية",
     },
     
     // Statistics
     stats: {
-      total: "إجمالي الإرسالات",
-      reports: "البلاغات",
-      complaints: "الشكاوى",
-      pending: "في الانتظار",
-      resolved: "محلول",
+      total: "إجمالي المحتويات المقدمة",
+      reports: "التبليغات",
+      complaints: "الشكاوى المقدمة",
+      pending: "قيد المراجعة",
+      resolved: "تم الحل",
       resolutionRate: "معدل الحل",
       urgent: "حالات عاجلة",
       thisWeek: "هذا الأسبوع",
-      responseTime: "وقت الاستجابة",
+      responseTime: "زمن الاستجابة",
     },
     
     // Filters
@@ -810,7 +831,7 @@ export const adminTranslations = {
     // Tabs
     tabs: {
       overview: "نظرة عامة",
-      submissions: "الإرسالات",
+      submissions: "المحتويات المقدمة",
       analytics: "التحليلات",
       reports: "التقارير",
       team: "الفريق",
@@ -846,11 +867,11 @@ export const adminTranslations = {
     
     // Details section
     details: {
-      title: "تفاصيل المحتوى المقدم",
-      contentInfo: "معلومات المحتوى",
-      complainantInfo: "معلومات المشتكي",
-      programName: "البرنامج",
-      mediaType: "نوع الوسائط",
+      title: "تفاصيل المحتوى الإعلامي المقدم",
+      contentInfo: "معلومات المحتوى الإعلامي",
+      complainantInfo: "معلومات مقدم البلاغ",
+      programName: "اسم البرنامج",
+      mediaType: "نوع الوسائل الإعلامية",
       language: "اللغة",
       fullName: "الاسم الكامل",
       email: "البريد الإلكتروني",
@@ -861,21 +882,21 @@ export const adminTranslations = {
     
     // Recent submissions
     recent: {
-      title: "المحتوى المقدم مؤخراً",
-      viewAll: "عرض الكل",
-      subtitle: "آخر المحتويات المقدمة",
+      title: "المحتوى الإعلامي المقدم مؤخراً",
+      viewAll: "عرض جميع المحتويات",
+      subtitle: "آخر المحتويات الإعلامية المقدمة",
     },
     
     // Empty state
     empty: {
-      title: "لا يوجد محتوى مقدم",
-      description: "لا توجد أي محتويات مقدمة حتى الآن.",
+      title: "لا يوجد محتوى إعلامي مقدم",
+      description: "لا توجد أي محتويات إعلامية مقدمة حتى الآن.",
     },
     
     // Additional labels
     common: {
       loading: "جاري تحميل البيانات...",
-      viewAllSubmissions: "عرض جميع المحتويات المقدمة",
+      viewAllSubmissions: "عرض جميع المحتويات الإعلامية",
       requiresReview: "تتطلب مراجعة",
       today: "اليوم",
       anonymous: "مجهول",
@@ -884,9 +905,9 @@ export const adminTranslations = {
       import: "استيراد",
       statusDistribution: "توزيع الحالات",
       priorityLevels: "مستويات الأولوية",
-      recentSubmissions: "المحتويات المقدمة مؤخراً",
+      recentSubmissions: "المحتويات الإعلامية المقدمة مؤخراً",
       viewAll: "عرض الكل",
-      submissionManagement: "إدارة المحتويات المقدمة",
+      submissionManagement: "إدارة المحتويات الإعلامية",
       openInAdmin: "فتح في الإدارة",
       averageResponseTime: "متوسط وقت الاستجابة",
       lastThirtyDays: "خلال الثلاثين يوماً الماضية",
@@ -901,6 +922,15 @@ export const adminTranslations = {
       resolved: "محلول",
       requiresAction: "يتطلب إجراء",
       notProvided: "غير مقدم",
+    },
+    
+    // Admin time/date translations
+    admin: {
+      lastUpdated: "آخر تحديث",
+      never: "أبداً",
+      justNow: "للتو",
+      minutesAgo: "منذ {minutes} دقيقة",
+      hoursAgo: "منذ {hours} ساعة",
     },
     
     // Search
@@ -1023,8 +1053,8 @@ export const adminTranslations = {
     // ModernDashboard specific translations
     modernDashboard: {
       // Headers
-      controlCenterTitle: "مركز التحكم هابا",
-      mediaSubmissionsManagement: "إدارة الإرسالات الإعلامية",
+      controlCenterTitle: "مركز إدارة هابا",
+      mediaSubmissionsManagement: "إدارة المحتوى الإعلامي المقدم",
       
       // Time ranges
       last7Days: "آخر 7 أيام",
@@ -1039,14 +1069,14 @@ export const adminTranslations = {
       export: "تصدير",
       exportToExcel: "تصدير البيانات بتنسيق Excel",
       retry: "إعادة المحاولة",
-      viewSubmissionsDirectly: "عرض الإرسالات مباشرة",
+      viewSubmissionsDirectly: "عرض المحتويات مباشرة",
       viewDetails: "عرض التفاصيل",
       
       // Statistics
-      totalSubmissions: "إجمالي الإرسالات",
+      totalSubmissions: "إجمالي المحتويات المقدمة",
       last30DaysLabel: "آخر 30 يومًا",
       urgentActionRequired: "إجراء عاجل مطلوب",
-      criticalComplaints: "شكاوى حرجة",
+      criticalComplaints: "شكاوى عاجلة",
       submissionsToProcess: "إرسالات للمعالجة",
       responseTime: "وقت الاستجابة",
       average: "المتوسط",
@@ -1060,8 +1090,8 @@ export const adminTranslations = {
       attention: "انتباه",
       resolutionRate: "معدل الحل",
       complaints: "شكاوى",
-      reports: "تقارير",
-      dateRange: "من 1 ديسمبر - 31 ديسمبر 2024",
+      reports: "تبليغات",
+      dateRange: "جميع البيانات",
       completionPercentage: "35% اكتمال",
       
       // Risk Analysis
@@ -1233,8 +1263,8 @@ export const adminTranslations = {
     },
     
     // ModernDashboard flattened keys - Essential for dashboard functionality - Arabic
-    'modernDashboard.controlCenterTitle': "مركز التحكم هابا",
-    'modernDashboard.mediaSubmissionsManagement': "إدارة الإرسالات الإعلامية",
+    'modernDashboard.controlCenterTitle': "مركز إدارة هابا",
+    'modernDashboard.mediaSubmissionsManagement': "إدارة المحتوى الإعلامي المقدم",
     'modernDashboard.last7Days': "آخر 7 أيام",
     'modernDashboard.last30Days': "آخر 30 يومًا",
     'modernDashboard.allData': "جميع البيانات",
@@ -1244,13 +1274,13 @@ export const adminTranslations = {
     'modernDashboard.dataAnalysisPeriod': "فترة تحليل البيانات",
     'modernDashboard.export': "تصدير",
     'modernDashboard.exportToExcel': "تصدير البيانات بتنسيق Excel",
-    'modernDashboard.totalSubmissions': "إجمالي الإرسالات",
+    'modernDashboard.totalSubmissions': "إجمالي المحتويات المقدمة",
     'modernDashboard.last30DaysLabel': "آخر 30 يومًا",
     'modernDashboard.urgentActionRequired': "إجراء عاجل مطلوب",
-    'modernDashboard.criticalComplaints': "شكاوى حرجة",
-    'modernDashboard.pending': "في الانتظار",
-    'modernDashboard.submissionsToProcess': "إرسالات للمعالجة",
-    'modernDashboard.responseTime': "وقت الاستجابة",
+    'modernDashboard.criticalComplaints': "شكاوى عاجلة",
+    'modernDashboard.pending': "قيد المراجعة",
+    'modernDashboard.submissionsToProcess': "محتويات للمعالجة",
+    'modernDashboard.responseTime': "زمن الاستجابة",
     'modernDashboard.average': "المتوسط",
     'modernDashboard.overdueFiles': "ملفات متأخرة",
     'modernDashboard.moreThan7Days': "أكثر من 7 أيام",
@@ -1262,8 +1292,8 @@ export const adminTranslations = {
     'modernDashboard.attention': "انتباه",
     'modernDashboard.resolutionRate': "معدل الحل",
     'modernDashboard.complaints': "شكاوى",
-    'modernDashboard.reports': "تقارير",
-    'modernDashboard.dateRange': "من 1 ديسمبر - 31 ديسمبر 2024",
+    'modernDashboard.reports': "تبليغات",
+    'modernDashboard.dateRange': "جميع البيانات",
     'modernDashboard.completionPercentage': "35% اكتمال",
     'modernDashboard.resolved': "محلول",
     'modernDashboard.urgent': "عاجل",
@@ -1454,6 +1484,18 @@ export const adminTranslations = {
     'beforeDashboard.manageCollections': "إدارة المجموعات",
     'beforeDashboard.mediaSubmissionsAria': "فتح إرسالات الوسائط",
     'beforeDashboard.manageCollectionsAria': "إدارة المجموعات",
+    
+    // Media Gallery component translations
+    'mediaGallery.mediaFiles': "الملفات الإعلامية",
+    'mediaGallery.clickToPreviewPDF': "انقر على معاينة لفتح ملف PDF",
+    'mediaGallery.previewFile': "معاينة",
+    
+    // File Display component translations
+    'fileDisplay.fileWithoutURL': "ملف بدون رابط",
+    'fileDisplay.downloadedFile': "ملف محمل",
+    'fileDisplay.fileNumber': "ملف {number}",
+    'fileDisplay.openFileInNewTab': "فتح {filename} في تبويب جديد",
+    'fileDisplay.downloadFileTitle': "تحميل الملف",
   }
 }
 
