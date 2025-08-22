@@ -100,7 +100,7 @@ export interface Config {
   };
   globals: {};
   globalsSelect: {};
-  locale: 'fr' | 'ar';
+  locale: 'ar' | 'fr';
   user: User & {
     collection: 'users';
   };

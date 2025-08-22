@@ -12,38 +12,72 @@ const getPagesSitemap = unstable_cache(
 
     const dateFallback = new Date().toISOString()
 
-    // Static routes for HAPA website (no pages collection)
+    // Static routes for HAPA website with locale prefixes (no pages collection)
     const sitemap = [
+      // French routes
       {
-        loc: `${SITE_URL}/`,
+        loc: `${SITE_URL}/fr`,
         lastmod: dateFallback,
       },
       {
-        loc: `${SITE_URL}/search`,
+        loc: `${SITE_URL}/fr/search`,
         lastmod: dateFallback,
       },
       {
-        loc: `${SITE_URL}/posts`,
+        loc: `${SITE_URL}/fr/posts`,
         lastmod: dateFallback,
       },
       {
-        loc: `${SITE_URL}/actualites`,
+        loc: `${SITE_URL}/fr/actualites`,
         lastmod: dateFallback,
       },
       {
-        loc: `${SITE_URL}/about/mission`,
+        loc: `${SITE_URL}/fr/about/mission`,
         lastmod: dateFallback,
       },
       {
-        loc: `${SITE_URL}/about/organization`,
+        loc: `${SITE_URL}/fr/about/organization`,
         lastmod: dateFallback,
       },
       {
-        loc: `${SITE_URL}/about/president`,
+        loc: `${SITE_URL}/fr/about/president`,
         lastmod: dateFallback,
       },
       {
-        loc: `${SITE_URL}/about/bylaws`,
+        loc: `${SITE_URL}/fr/about/bylaws`,
+        lastmod: dateFallback,
+      },
+      // Arabic routes
+      {
+        loc: `${SITE_URL}/ar`,
+        lastmod: dateFallback,
+      },
+      {
+        loc: `${SITE_URL}/ar/search`,
+        lastmod: dateFallback,
+      },
+      {
+        loc: `${SITE_URL}/ar/posts`,
+        lastmod: dateFallback,
+      },
+      {
+        loc: `${SITE_URL}/ar/actualites`,
+        lastmod: dateFallback,
+      },
+      {
+        loc: `${SITE_URL}/ar/about/mission`,
+        lastmod: dateFallback,
+      },
+      {
+        loc: `${SITE_URL}/ar/about/organization`,
+        lastmod: dateFallback,
+      },
+      {
+        loc: `${SITE_URL}/ar/about/president`,
+        lastmod: dateFallback,
+      },
+      {
+        loc: `${SITE_URL}/ar/about/bylaws`,
         lastmod: dateFallback,
       },
     ]
