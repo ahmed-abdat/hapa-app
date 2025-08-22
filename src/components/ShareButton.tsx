@@ -4,14 +4,17 @@ import React from 'react'
 import { Share2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import type { Locale } from '@/utilities/locale'
 
 interface ShareButtonProps {
   url: string
   title: string
   className?: string
+  locale?: Locale
+  shareText?: string
 }
 
-export const ShareButton: React.FC<ShareButtonProps> = ({ url, title, className }) => {
+export const ShareButton: React.FC<ShareButtonProps> = ({ url, title, className, locale, shareText = 'Partager' }) => {
   const handleShare = async () => {
     if (navigator.share) {
       try {
@@ -44,7 +47,7 @@ export const ShareButton: React.FC<ShareButtonProps> = ({ url, title, className 
       )}
     >
       <Share2 className="h-4 w-4" />
-      <span>Partager</span>
+      <span>{shareText}</span>
     </Button>
   )
 }

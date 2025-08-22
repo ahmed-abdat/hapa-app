@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { anyone } from '../access/anyone'
-import { authenticated } from '../access/authenticated'
+import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { slugField } from '@/fields/slug'
 
 export const Categories: CollectionConfig = {
@@ -17,15 +17,16 @@ export const Categories: CollectionConfig = {
     }
   },
   access: {
-    create: authenticated,
-    delete: authenticated,
+    create: isAdminOrEditor,
+    delete: isAdminOrEditor,
     read: anyone,
-    update: authenticated,
+    update: isAdminOrEditor,
   },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
     listSearchableFields: ['title'],
+    hidden: ({ user }) => user?.role === 'moderator',
     preview: (data, { req, locale }) => {
       const slug = typeof data.slug === 'string' ? data.slug : ''
       if (!slug) return ''

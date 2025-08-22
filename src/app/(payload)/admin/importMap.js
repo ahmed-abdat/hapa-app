@@ -20,9 +20,13 @@ import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 }
 import { SlugFieldWithNotice as SlugFieldWithNotice_e83c5ccf8f9b3dccc0f0e2a7ece0904e } from '@/fields/slug/SlugFieldWithNotice.tsx'
 import { ForceLocaleMessage as ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62 } from '@/components/ForceLocaleMessage/index.tsx'
 import { default as default_4422a77cfdc4eb7c4845f13c5e26d5ab } from '@/components/admin/MediaSubmissionsDashboard/index.tsx'
+import { default as default_f029fb13fc5082e6c7ba564df85c4540 } from '@/components/admin/LocalizedDateField/index'
+import { default as default_8926d9b46ab7ff1b1765c6d2df708c04 } from '@/components/admin/MediaTypeField/index'
 import { default as default_a1ca0f2c1b69618ecc25f9973ffeb812 } from '@/components/admin/EnhancedMediaGallery/index'
 import { default as default_7b4e55aec7514a0efa3c42a12b233003 } from '@/components/admin/ReasonField/index'
 import { default as default_102cce8ca03aca4d934be301b628260e } from '@/components/admin/ReasonRowLabel/index'
+import { default as default_6d0d1dd7908c5465d0ca6746f78dc80d } from '@/components/admin/AttachmentTypeField/index'
+import { default as default_c11db170372f58f3bbac4d2c7cb2dd26 } from '@/components/admin/AttachmentTypeRowLabel/index'
 import { default as default_79ff4bc2716489b754d7eb82d02f9c9a } from '@/components/admin/MediaCleanupDashboard/index.tsx'
 import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
@@ -56,9 +60,13 @@ export const importMap = {
   "@/fields/slug/SlugFieldWithNotice.tsx#SlugFieldWithNotice": SlugFieldWithNotice_e83c5ccf8f9b3dccc0f0e2a7ece0904e,
   "@/components/ForceLocaleMessage/index.tsx#ForceLocaleMessage": ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62,
   "@/components/admin/MediaSubmissionsDashboard/index.tsx#default": default_4422a77cfdc4eb7c4845f13c5e26d5ab,
+  "@/components/admin/LocalizedDateField/index#default": default_f029fb13fc5082e6c7ba564df85c4540,
+  "@/components/admin/MediaTypeField/index#default": default_8926d9b46ab7ff1b1765c6d2df708c04,
   "@/components/admin/EnhancedMediaGallery/index#default": default_a1ca0f2c1b69618ecc25f9973ffeb812,
   "@/components/admin/ReasonField/index#default": default_7b4e55aec7514a0efa3c42a12b233003,
   "@/components/admin/ReasonRowLabel/index#default": default_102cce8ca03aca4d934be301b628260e,
+  "@/components/admin/AttachmentTypeField/index#default": default_6d0d1dd7908c5465d0ca6746f78dc80d,
+  "@/components/admin/AttachmentTypeRowLabel/index#default": default_c11db170372f58f3bbac4d2c7cb2dd26,
   "@/components/admin/MediaCleanupDashboard/index.tsx#default": default_79ff4bc2716489b754d7eb82d02f9c9a,
   "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
   "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,

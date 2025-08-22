@@ -126,6 +126,7 @@ export const plugins: Plugin[] = [
         }
       },
       admin: {
+        hidden: ({ user }) => user?.role === 'moderator' || user?.role === 'editor',
         description: {
           fr: 'Collection automatique pour l\'indexation des contenus. Mise à jour lors de la création/modification d\'articles. Utilisée par le moteur de recherche du site.',
           ar: 'مجموعة تلقائية لفهرسة المحتويات. يتم تحديثها عند إنشاء/تعديل المقالات. تستخدم من قبل محرك البحث في الموقع.'

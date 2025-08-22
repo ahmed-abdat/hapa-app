@@ -254,7 +254,10 @@ export interface User {
    * Image de profil qui sera affichée dans l'en-tête d'administration
    */
   avatar?: (number | null) | Media;
-  role: 'admin' | 'editor' | 'user';
+  /**
+   * Rôle de l'utilisateur dans le système
+   */
+  role: 'admin' | 'editor' | 'moderator';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -371,7 +374,17 @@ export interface MediaContentSubmission {
       }[]
     | null;
   /**
-   * Internal notes for tracking and follow-up
+   * Notes du modérateur pour examen par l'administrateur
+   */
+  moderatorNotes?: string | null;
+  /**
+   * Notes internes réservées aux administrateurs (non visibles par les modérateurs)
+   */
+  internalNotes?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  /**
+   * Notes générales visibles par tous les utilisateurs autorisés
    */
   adminNotes?: string | null;
   resolution?: {
@@ -848,6 +861,10 @@ export interface MediaContentSubmissionsSelect<T extends boolean = true> {
         url?: T;
         id?: T;
       };
+  moderatorNotes?: T;
+  internalNotes?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
   adminNotes?: T;
   resolution?:
     | T

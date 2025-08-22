@@ -4,7 +4,6 @@ import React from 'react'
 import type { Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
-import { formatAuthors } from '@/utilities/formatAuthors'
 import { useTranslations } from 'next-intl'
 import { type Locale } from '@/utilities/locale'
 
@@ -12,11 +11,8 @@ export const PostHero: React.FC<{
   post: Post
   locale: Locale
 }> = ({ post, locale }) => {
-  const { categories, heroImage, populatedAuthors, publishedAt, title } = post
+  const { categories, heroImage, publishedAt, title } = post
   const t = useTranslations()
-
-  const hasAuthors =
-    populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
 
   // Calculate responsive title size based on title length
   const getTitleClass = (titleLength: number) => {
@@ -76,19 +72,6 @@ export const PostHero: React.FC<{
                   <span className="text-white/60">{t('datePublished')}:</span>
                   {formatDateTime(publishedAt)}
                 </time>
-              </>
-            )}
-
-            {/* Author information - inline */}
-            {hasAuthors && (
-              <>
-                <div className="w-1 h-1 bg-white/40 rounded-full hidden md:block" />
-                <div className="flex items-center gap-1 text-sm">
-                  <span className="text-white/60">{t('author')}:</span>
-                  <span className="text-white/90 font-medium">
-                    {formatAuthors(populatedAuthors)}
-                  </span>
-                </div>
               </>
             )}
           </div>
