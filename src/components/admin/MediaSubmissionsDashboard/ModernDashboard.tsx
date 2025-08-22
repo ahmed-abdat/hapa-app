@@ -128,8 +128,8 @@ export function ModernDashboard() {
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => {
-      controller.abort(new Error("Request timeout after 15 seconds"));
-    }, 15000); // 15s timeout
+      controller.abort(new Error("Request timeout after 30 seconds"));
+    }, 30000); // 30s timeout - aligned with backend capacity
 
     try {
       const response = await fetch("/api/admin/media-submissions-stats", {

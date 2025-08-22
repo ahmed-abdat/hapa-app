@@ -504,6 +504,16 @@ export const adminTranslations = {
     'modernDashboard.months.nov': "Nov",
     'modernDashboard.months.dec': "Déc",
     
+    // Error handling and connection messages
+    'modernDashboard.loadingDataError': "Erreur lors du chargement des données",
+    'modernDashboard.connectionError': "Erreur de connexion",
+    'modernDashboard.unableToLoadDashboard': "Impossible de charger le tableau de bord",
+    'modernDashboard.retry': "Réessayer",
+    'modernDashboard.viewSubmissionsDirectly': "Voir les soumissions directement",
+    'modernDashboard.requestTimeout': "La requête a expiré. Veuillez réessayer.",
+    'modernDashboard.unknownError': "Une erreur inconnue s'est produite",
+    'modernDashboard.dataUpdated': "Données mises à jour avec succès",
+    
     // Quick Actions
     quickActions: {
       title: "Actions rapides",
@@ -1375,6 +1385,16 @@ export const adminTranslations = {
     'modernDashboard.months.oct': "أكتوبر",
     'modernDashboard.months.nov': "نوفمبر",
     'modernDashboard.months.dec': "ديسمبر",
+    
+    // Error handling and connection messages
+    'modernDashboard.loadingDataError': "خطأ في تحميل البيانات",
+    'modernDashboard.connectionError': "خطأ في الاتصال",
+    'modernDashboard.unableToLoadDashboard': "غير قادر على تحميل لوحة التحكم",
+    'modernDashboard.retry': "إعادة المحاولة",
+    'modernDashboard.viewSubmissionsDirectly': "عرض التقديمات مباشرة",
+    'modernDashboard.requestTimeout': "انتهت مهلة الطلب. يرجى المحاولة مرة أخرى.",
+    'modernDashboard.unknownError': "حدث خطأ غير معروف",
+    'modernDashboard.dataUpdated': "تم تحديث البيانات بنجاح",
     
     // Bulk actions menu items (renamed to avoid conflict with top-level bulkActions)
     bulkActionsMenu: {
