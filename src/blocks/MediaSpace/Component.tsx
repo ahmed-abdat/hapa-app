@@ -26,7 +26,7 @@ const mediaCategories = [
     icon: Radio,
     titleKey: "radioStations",
     descKey: "radioStationsDesc",
-    href: "/media/radio",
+    href: "/espace-mediatique/radio",
     color: "from-emerald-500 to-emerald-600",
     bgColor: "bg-emerald-50",
     hoverColor: "hover:bg-emerald-100",
@@ -37,7 +37,7 @@ const mediaCategories = [
     icon: Tv,
     titleKey: "televisionChannels",
     descKey: "televisionChannelsDesc",
-    href: "/media/television",
+    href: "/espace-mediatique/television",
     color: "from-blue-500 to-blue-600",
     bgColor: "bg-blue-50",
     hoverColor: "hover:bg-blue-100",
@@ -48,7 +48,7 @@ const mediaCategories = [
     icon: Globe,
     titleKey: "newsWebsites",
     descKey: "newsWebsitesDesc",
-    href: "/media/digital",
+    href: "/espace-mediatique/digital",
     color: "from-purple-500 to-purple-600",
     bgColor: "bg-purple-50",
     hoverColor: "hover:bg-purple-100",
@@ -59,7 +59,7 @@ const mediaCategories = [
     icon: Newspaper,
     titleKey: "pressMagazines",
     descKey: "pressMagazinesDesc",
-    href: "/media/print",
+    href: "/espace-mediatique/print",
     color: "from-orange-500 to-orange-600",
     bgColor: "bg-orange-50",
     hoverColor: "hover:bg-orange-100",
@@ -139,7 +139,7 @@ export const MediaSpaceBlock: React.FC<MediaSpaceProps> = ({
               >
                 <Link href={category.href} className="block h-full">
                   <div
-                    className={`${category.bgColor} ${category.hoverColor} rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out border border-white/70 hover:border-primary/30 hover:-translate-y-2 hover:scale-[1.02] h-full flex flex-col backdrop-blur-sm relative overflow-hidden`}
+                    className={`${category.bgColor} ${category.hoverColor} rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-500 ease-out border border-white/70 hover:border-primary/30 hover:-translate-y-2 hover:scale-[1.02] h-full flex flex-col backdrop-blur-sm relative overflow-hidden`}
                   >
                     {/* Background Decoration */}
                     <div className="absolute top-0 right-0 w-32 h-32 opacity-5 -translate-y-4 translate-x-4">
