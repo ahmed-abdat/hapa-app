@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import { FormSelect } from './FormSelect'
 import { type FormSelectProps } from '../types'

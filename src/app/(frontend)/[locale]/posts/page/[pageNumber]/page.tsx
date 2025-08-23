@@ -5,7 +5,6 @@ import { PageRange } from "@/components/PageRange";
 import { PaginationSuspense } from "@/components/Pagination/PaginationSuspense";
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
-import React from "react";
 import PageClient from "./page.client";
 import { notFound } from "next/navigation";
 import { isValidLocale } from "@/utilities/locale";

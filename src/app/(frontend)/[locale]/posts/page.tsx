@@ -6,7 +6,6 @@ import { PaginationSuspense } from "@/components/Pagination/PaginationSuspense";
 import { CategoryFilterSuspense } from "@/components/CategoryFilter/CategoryFilterSuspense";
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
-import React from "react";
 import PageClient from "./page.client";
 import { isValidLocale, type Locale } from "@/utilities/locale";
 import { notFound } from "next/navigation";

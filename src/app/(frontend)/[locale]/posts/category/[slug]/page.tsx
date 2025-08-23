@@ -4,7 +4,6 @@ import { PageRange } from "@/components/PageRange";
 import { PaginationSuspense } from "@/components/Pagination/PaginationSuspense";
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
-import React from "react";
 import { isValidLocale } from "@/utilities/locale";
 import { notFound } from "next/navigation";
 
