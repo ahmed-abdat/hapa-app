@@ -2,7 +2,6 @@
 
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
-import React from 'react'
 import { PhoneIcon, MailIcon, MapPinIcon } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 
@@ -142,10 +141,10 @@ export function Footer({ footerData }: FooterProps = {}) {
       {/* Bottom Footer */}
       <div className="border-t border-white/20 bg-accent/20">
         <div className="hapa-container py-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4">
             <div className="flex items-center gap-4">
               <p className="text-white/80 text-sm">
-                © 2024 HAPA - {t('allRightsReserved')}
+                © {new Date().getFullYear()} HAPA - {t('allRightsReserved')}
               </p>
               <div className="flex items-center gap-x-2">
                 <div className="w-2 h-2 bg-secondary rounded-full"></div>
@@ -153,26 +152,6 @@ export function Footer({ footerData }: FooterProps = {}) {
                   {t('officialWebsite')}
                 </span>
               </div>
-            </div>
-            <div className="flex items-center gap-4 text-sm text-white/80">
-              <Link 
-                href={`/legal`}
-                className="hover:text-secondary transition-colors duration-200"
-              >
-                {t('legalNotices')}
-              </Link>
-              <Link 
-                href={`/privacy`}
-                className="hover:text-secondary transition-colors duration-200"
-              >
-                {t('privacyPolicy')}
-              </Link>
-              <Link 
-                href={`/accessibility`}
-                className="hover:text-secondary transition-colors duration-200"
-              >
-                {t('accessibility')}
-              </Link>
             </div>
           </div>
         </div>

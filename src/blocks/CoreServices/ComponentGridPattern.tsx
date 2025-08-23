@@ -187,9 +187,9 @@ export const CoreServicesGridPatternBlock: React.FC<CoreServicesGridPatternProps
                       </span>
                       <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:scale-[1.02] transition-all duration-300 ease-out">
                         {isRtl ? (
-                          <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 text-primary group-hover:text-white group-hover:-translate-x-0.5 transition-all duration-300 ease-out" />
+                          <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 text-primary group-hover:text-white transition-colors duration-300 ease-out" />
                         ) : (
-                          <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-primary group-hover:text-white group-hover:translate-x-0.5 transition-all duration-300 ease-out" />
+                          <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-primary group-hover:text-white transition-colors duration-300 ease-out" />
                         )}
                       </div>
                     </div>
