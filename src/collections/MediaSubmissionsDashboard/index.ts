@@ -15,22 +15,22 @@ export const MediaSubmissionsDashboard: CollectionConfig = {
   labels: {
     singular: {
       fr: "Tableau de bord des Soumissions",
-      ar: "لوحة تحكم الإرسالات",
+      ar: "لوحة إدارة الشكاوى والتبليغات"
     },
     plural: {
       fr: "Tableau de bord des Soumissions",
-      ar: "لوحة تحكم الإرسالات",
+      ar: "لوحة إدارة الشكاوى والتبليغات"
     },
   },
   admin: {
     // Group with other form-related collections
     group: {
       fr: "Formulaires et Soumissions",
-      ar: "النماذج والإرسالات",
+      ar: "النماذج والطلبات",
     },
     description: {
       fr: "Accéder au tableau de bord des soumissions médiatiques avec statistiques et gestion avancée",
-      ar: "الوصول إلى لوحة تحكم إرسالات الوسائط مع الإحصائيات والإدارة المتقدمة",
+      ar: "الوصول إلى لوحة إدارة الشكاوى والتبليغات مع الإحصائيات والإدارة المتقدمة"
     },
     hidden: ({ user }) => user?.role === 'editor',
     useAsTitle: "id",

@@ -94,6 +94,28 @@ const config = withPayload(
       // transpilePackages: ['@tanstack/react-table'], // TODO: Test and re-enable if needed
       // Keep source maps disabled in production for better performance
       productionBrowserSourceMaps: false,
+      
+      // Image optimization configuration for Cloudflare R2
+      images: {
+        remotePatterns: [
+          {
+            protocol: 'https',
+            hostname: process.env.R2_PUBLIC_URL ? new URL(process.env.R2_PUBLIC_URL).hostname : 'pub-*.r2.dev',
+            pathname: '/**',
+          },
+          {
+            protocol: 'https',
+            hostname: '*.public.blob.vercel-storage.com',
+            pathname: '/**',
+          },
+        ],
+        formats: ['image/avif', 'image/webp'],
+        deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+        imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+        minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year
+        // In production, images should be served from R2/CDN, not API routes
+        // Development 400 errors for /api/media routes are acceptable
+      },
       experimental: {
         // Package import optimization for better performance (Next.js 15 best practice)
         optimizePackageImports: [

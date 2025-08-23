@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
+import { AdminErrorBoundary } from "@/components/admin/ErrorBoundary";
 
 // Dynamic import for heavy dashboard component with loading fallback
 const ModernDashboard = dynamic(() => import("./ModernDashboard").then(mod => ({ default: mod.ModernDashboard })), {

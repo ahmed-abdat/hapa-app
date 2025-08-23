@@ -10,19 +10,29 @@ export interface MediaOption {
   category?: string
 }
 
-// Radio station mappings extracted from RadioStationCombobox
+// Radio station mappings - MUST match the exact values used in RadioStationCombobox.tsx
 export const radioStations: MediaOption[] = [
-  // State radio stations
-  { value: 'radio_mauritanie', label: 'Radio Mauritanie', labelAr: 'إذاعة موريتانيا', category: 'state' },
+  // State radio stations (official Radio Mauritanie network)
+  { value: 'radio_mauritanie', label: 'Radio Mauritanie', labelAr: 'إذاعة موريتانيا الأم', category: 'state' },
+  { value: 'radio_coran', label: 'Radio Coran', labelAr: 'إذاعة القرآن الكريم', category: 'state' },
+  { value: 'radio_scolaire', label: 'Radio scolaire', labelAr: 'الاذاعة المدرسية', category: 'state' },
   { value: 'radio_jeunesse', label: 'Radio Jeunesse', labelAr: 'إذاعة الشباب', category: 'state' },
-  { value: 'radio_femmes', label: 'Radio Femmes', labelAr: 'إذاعة النساء', category: 'state' },
-  { value: 'radio_culture', label: 'Radio Culture', labelAr: 'إذاعة الثقافة', category: 'state' },
-  { value: 'radio_coran', label: 'Radio Coran', labelAr: 'إذاعة القرآن', category: 'state' },
-  { value: 'radio_regions', label: 'Radio Régions', labelAr: 'إذاعة الأقاليم', category: 'state' },
+  { value: 'radio_culture', label: 'Radio culture', labelAr: 'الإذاعة الثقافية', category: 'state' },
+  { value: 'radio_sante', label: 'Radio Éducation à la santé', labelAr: 'إذاعة التثقيف الصحي', category: 'state' },
+  { value: 'radio_rurale', label: 'Radio rurale', labelAr: 'الإذاعة الريفية', category: 'state' },
   
   // Private radio stations
+  { value: 'radio_mauritanides', label: 'Radio Mauritanides', labelAr: 'إذاعة موريتانيد', category: 'private' },
+  { value: 'radio_koubeni', label: 'Radio Koubeni', labelAr: 'إذاعة كوبني', category: 'private' },
+  { value: 'radio_tenwir', label: 'Radio Tenwir', labelAr: 'إذاعة التنوير', category: 'private' },
+  
+  // Other option
+  { value: 'other', label: 'Autre station', labelAr: 'محطة أخرى', category: 'other' },
+
+  // Legacy mappings for backward compatibility with existing data
+  { value: 'radio_femmes', label: 'Radio Femmes', labelAr: 'إذاعة النساء', category: 'state' },
+  { value: 'radio_regions', label: 'Radio Régions', labelAr: 'إذاعة الأقاليم', category: 'state' },
   { value: 'fm_sahel', label: 'FM Sahel', labelAr: 'إف إم ساحل', category: 'private' },
-  { value: 'radio_tenwir', label: 'Radio Tenwir', labelAr: 'إذاعة تنوير', category: 'private' },
   { value: 'radio_andalous', label: 'Radio Andalous', labelAr: 'إذاعة الأندلس', category: 'private' },
   { value: 'radio_hawwa', label: 'Radio Hawwa', labelAr: 'إذاعة حواء', category: 'private' },
   { value: 'radio_nouakchott', label: 'Radio Nouakchott', labelAr: 'إذاعة نواكشوط', category: 'private' },
@@ -40,15 +50,35 @@ export const radioStations: MediaOption[] = [
   { value: 'radio_sawa', label: 'Radio Sawa', labelAr: 'راديو سوا', category: 'international' },
 ]
 
-// TV channel mappings extracted from TVChannelCombobox
+// TV channel mappings - MUST match the exact values used in TVChannelCombobox.tsx
 export const tvChannels: MediaOption[] = [
-  // State TV channels
+  // State TV channels (El Mouritaniya channels - official state channels)
+  { value: 'mouritaniya', label: 'El Mouritaniya', labelAr: 'الموريتانية', category: 'state' },
+  { value: 'mouritaniya2', label: 'El Mouritaniya 2', labelAr: 'الموريتانية 2', category: 'state' },
+  { value: 'thakafiya', label: 'Thakafiya', labelAr: 'الثقافية', category: 'state' },
+  { value: 'riyadiya', label: 'Riyadiya', labelAr: 'الرياضية', category: 'state' },
+  { value: 'parlement', label: 'Parlement TV', labelAr: 'البرلمانية', category: 'state' },
+  
+  // Private TV channels
+  { value: 'mahdhara', label: 'Al Mahdhara TV', labelAr: 'قناة المحظرة', category: 'private' },
+  { value: 'ousra', label: 'Al Ousra TV', labelAr: 'قناة الأسرة', category: 'private' },
+  { value: 'mourabitoune', label: 'El Mourabitoune', labelAr: 'المرابطون', category: 'private' },
+  { value: 'wataniya', label: 'El Wataniya', labelAr: 'الوطنية', category: 'private' },
+  { value: 'chinguitt', label: 'Chinguitt', labelAr: 'شنقيط', category: 'private' },
+  { value: 'sahel', label: 'Sahel TV', labelAr: 'قناة الساحل', category: 'private' },
+  { value: 'dava', label: 'DAVA TV', labelAr: 'قناة دافا', category: 'private' },
+  { value: 'medina', label: 'Elmedina TV', labelAr: 'قناة المدينة', category: 'private' },
+  { value: 'sahra24', label: 'Sahra24 TV', labelAr: 'قناة صحراء 24', category: 'private' },
+  { value: 'ghimem', label: 'Ghimem TV', labelAr: 'قناة قمم', category: 'private' },
+  
+  // Other option
+  { value: 'other', label: 'Autre chaîne', labelAr: 'قناة أخرى', category: 'other' },
+
+  // Legacy mappings for backward compatibility with existing data
   { value: 'tv_mauritanie', label: 'TV Mauritanie', labelAr: 'تلفزيون موريتانيا', category: 'state' },
   { value: 'al_mourabitoun', label: 'Al Mourabitoun', labelAr: 'المرابطون', category: 'state' },
   { value: 'tv_el_mouritaniya', label: 'TV El Mouritaniya', labelAr: 'تلفزيون الموريتانية', category: 'state' },
   { value: 'sahara_tv', label: 'Sahara TV', labelAr: 'تلفزيون الصحراء', category: 'state' },
-  
-  // Private TV channels
   { value: 'el_wataniya', label: 'El Wataniya', labelAr: 'الوطنية', category: 'private' },
   { value: 'chinguetti_tv', label: 'Chinguetti TV', labelAr: 'تلفزيون شنقيط', category: 'private' },
   { value: 'mauritanie_24', label: 'Mauritanie 24', labelAr: 'موريتانيا 24', category: 'private' },
@@ -74,8 +104,23 @@ export const tvChannels: MediaOption[] = [
  * @returns Localized label or fallback to raw value
  */
 export function getRadioStationLabel(value: string, locale: 'fr' | 'ar' = 'fr'): string {
-  const station = radioStations.find(s => s.value === value)
-  if (!station) return value // Fallback to raw value
+  // Clean the value by removing any technical keys in parentheses
+  const cleanValue = value.replace(/\([^)]*\)$/, '').trim();
+  
+  // First try to find by value key
+  let station = radioStations.find(s => s.value === value || s.value === cleanValue)
+  
+  // If not found, try to find by French label (for legacy data)
+  if (!station) {
+    station = radioStations.find(s => s.label === value || s.label === cleanValue)
+  }
+  
+  // If still not found, try to find by Arabic label
+  if (!station) {
+    station = radioStations.find(s => s.labelAr === value || s.labelAr === cleanValue)
+  }
+  
+  if (!station) return cleanValue || value // Fallback to cleaned value or raw value
   
   return locale === 'ar' ? station.labelAr : station.label
 }
@@ -87,8 +132,23 @@ export function getRadioStationLabel(value: string, locale: 'fr' | 'ar' = 'fr'):
  * @returns Localized label or fallback to raw value
  */
 export function getTVChannelLabel(value: string, locale: 'fr' | 'ar' = 'fr'): string {
-  const channel = tvChannels.find(c => c.value === value)
-  if (!channel) return value // Fallback to raw value
+  // Clean the value by removing any technical keys in parentheses
+  const cleanValue = value.replace(/\([^)]*\)$/, '').trim();
+  
+  // First try to find by value key
+  let channel = tvChannels.find(c => c.value === value || c.value === cleanValue)
+  
+  // If not found, try to find by French label (for legacy data)
+  if (!channel) {
+    channel = tvChannels.find(c => c.label === value || c.label === cleanValue)
+  }
+  
+  // If still not found, try to find by Arabic label
+  if (!channel) {
+    channel = tvChannels.find(c => c.labelAr === value || c.labelAr === cleanValue)
+  }
+  
+  if (!channel) return cleanValue || value // Fallback to cleaned value or raw value
   
   return locale === 'ar' ? channel.labelAr : channel.label
 }

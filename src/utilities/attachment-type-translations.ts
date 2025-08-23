@@ -9,6 +9,11 @@ export interface AttachmentTypeTranslation {
   }
 }
 
+export interface AttachmentTypeConfig {
+  icon: string
+  color?: string
+}
+
 export const attachmentTypeTranslations: Record<string, AttachmentTypeTranslation> = {
   screenshot: {
     label: {
@@ -96,4 +101,18 @@ export function getAttachmentTypeDescription(type: string, locale: 'fr' | 'ar' =
     return ''
   }
   return translation.description[locale] || translation.description.fr
+}
+
+export function getAttachmentTypeConfig(type: string): AttachmentTypeConfig {
+  const configs: Record<string, AttachmentTypeConfig> = {
+    screenshot: { icon: '📸', color: '#3b82f6' },
+    videoLink: { icon: '🔗', color: '#8b5cf6' },
+    writtenStatement: { icon: '📝', color: '#06b6d4' },
+    audioRecording: { icon: '🎙️', color: '#f59e0b' },
+    document: { icon: '📄', color: '#10b981' },
+    image: { icon: '🖼️', color: '#ec4899' },
+    video: { icon: '🎥', color: '#ef4444' }
+  }
+  
+  return configs[type] || { icon: '📎', color: '#6b7280' }
 }

@@ -322,6 +322,9 @@ export interface MediaContentSubmission {
    * Specific TV channel or radio station
    */
   specificChannel?: string | null;
+  /**
+   * Name of the program or content
+   */
   programName?: string | null;
   /**
    * Complete details about the media content that was reported or complained about
@@ -336,7 +339,13 @@ export interface MediaContentSubmission {
      * Specific channel or station name
      */
     specificChannel?: string | null;
+    /**
+     * Name of the specific program or content
+     */
     programName?: string | null;
+    /**
+     * Date and time when the content was broadcast
+     */
     broadcastDateTime?: string | null;
     linkScreenshot?: string | null;
     /**

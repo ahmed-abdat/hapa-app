@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { useAdmin, useAdminActions } from '@/hooks/useAdminTranslations';
+import { useAdminTranslation } from '@/utilities/admin-translations';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Clock, RefreshCw } from 'lucide-react';
@@ -18,26 +18,25 @@ export function StatusIndicator({
   lastUpdate,
   onManualRefresh,
 }: StatusIndicatorProps) {
-  const t = useAdmin();
-  const tActions = useAdminActions();
+  const { dt } = useAdminTranslation();
 
   const formatLastUpdate = (date: Date | null) => {
-    if (!date) return t('never');
+    if (!date) return dt('admin.never');
     
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const minutes = Math.floor(diff / (1000 * 60));
     
-    if (minutes < 1) return t('justNow');
-    if (minutes < 60) return t('minutesAgo', { minutes });
+    if (minutes < 1) return dt('admin.justNow');
+    if (minutes < 60) return dt('admin.minutesAgo', { minutes });
     
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return t('hoursAgo', { hours });
+    if (hours < 24) return dt('admin.hoursAgo', { hours });
     
     // Use locale-specific date formatting
-    // Determine locale from URL or default to French
-    const isArabic = typeof window !== 'undefined' && window.location.pathname.includes('/ar');
-    const localeCode = isArabic ? 'ar-MA' : 'fr-FR';
+    // Determine locale from URL or default to Arabic (matching payload.config.ts)
+    const isFrench = typeof window !== 'undefined' && window.location.pathname.includes('/fr');
+    const localeCode = isFrench ? 'fr-FR' : 'ar-MA';
     return date.toLocaleDateString(localeCode, {
       day: '2-digit',
       month: '2-digit',
@@ -55,7 +54,7 @@ export function StatusIndicator({
       >
         <Clock className="h-3 w-3" />
         <span className="text-xs">
-          {t('lastUpdated')}: {formatLastUpdate(lastUpdate)}
+          {dt('admin.lastUpdated')}: {formatLastUpdate(lastUpdate)}
         </span>
         {isRefreshing && (
           <RefreshCw className="h-3 w-3 animate-spin" />
@@ -74,7 +73,7 @@ export function StatusIndicator({
           "h-4 w-4 mr-2",
           isRefreshing && "animate-spin"
         )} />
-        {tActions('refresh')}
+        {dt('actions.refresh')}
       </Button>
     </div>
   );

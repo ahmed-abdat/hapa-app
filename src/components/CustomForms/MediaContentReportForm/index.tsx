@@ -25,6 +25,7 @@ import {
   type MediaContentReportFormData,
   type MediaContentReportSubmission 
 } from '@/lib/validations/media-forms'
+import { REPORT_REASON_OPTIONS, ATTACHMENT_TYPE_OPTIONS, MEDIA_TYPE_OPTIONS, createFormOptions } from '@/lib/form-options'
 import { type Locale } from '@/utilities/locale'
 import { convertToFormData, validateFormDataSize, formatFileSize } from '@/lib/file-upload'
 import { FormFileUploadService, type FileUploadField } from '@/lib/FormFileUploadService'
@@ -81,34 +82,10 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
   const selectedReasons = watch('reasons')
   const selectedAttachments = watch('attachmentTypes')
 
-  // Form options
-  const mediaTypeOptions = [
-    { value: 'television', label: t('television') },
-    { value: 'radio', label: t('radio') },
-    { value: 'website', label: t('website') },
-    { value: 'youtube', label: t('youtube') },
-    { value: 'facebook', label: t('facebook') },
-    { value: 'other', label: t('other') },
-  ]
-
-
-  const reportReasonOptions = [
-    { value: 'hateSpeech', label: t('hateSpeech') },
-    { value: 'misinformation', label: t('misinformation') },
-    { value: 'privacyViolation', label: t('privacyViolation') },
-    { value: 'shockingContent', label: t('shockingContent') },
-    { value: 'pluralismViolation', label: t('pluralismViolation') },
-    { value: 'falseAdvertising', label: t('falseAdvertising') },
-    { value: 'other', label: t('otherReason') },
-  ]
-
-  const attachmentOptions = [
-    { value: 'screenshot', label: t('screenshot') },
-    { value: 'videoLink', label: t('videoLink') },
-    { value: 'writtenStatement', label: t('writtenStatement') },
-    { value: 'audioRecording', label: t('audioRecording') },
-    { value: 'other', label: t('other') },
-  ]
+  // Form options using centralized constants for consistency
+  const mediaTypeOptions = createFormOptions(MEDIA_TYPE_OPTIONS, t)
+  const reportReasonOptions = createFormOptions(REPORT_REASON_OPTIONS, t, { other: 'otherReason' })
+  const attachmentOptions = createFormOptions(ATTACHMENT_TYPE_OPTIONS, t)
 
   const translations = {
     fr: {

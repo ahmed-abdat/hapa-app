@@ -5,14 +5,14 @@
 .hapa-dashboard-container {
   /* Simplified container using Tailwind preflight base */
   /* No more 'all: initial' - rely on scoped .dashboard-tailwind preflight */
-  
+
   /* Allow Payload admin dropdowns to appear above dashboard */
   position: relative;
   z-index: 5;
-  
+
   /* Create isolated stacking context */
   isolation: isolate;
-  
+
   /* Basic spacing - most styling now handled by Tailwind utilities */
   padding: 1.5rem;
 }
@@ -31,11 +31,13 @@
 }
 
 .dashboard-tailwind .shadow-lg {
-  box-shadow: 0 10px 20px -3px rgb(0 0 0 / 0.15), 0 4px 8px -4px rgb(0 0 0 / 0.1) !important;
+  box-shadow: 0 10px 20px -3px rgb(0 0 0 / 0.15),
+    0 4px 8px -4px rgb(0 0 0 / 0.1) !important;
 }
 
 .dashboard-tailwind .shadow-xl {
-  box-shadow: 0 20px 30px -5px rgb(0 0 0 / 0.15), 0 8px 12px -6px rgb(0 0 0 / 0.1) !important;
+  box-shadow: 0 20px 30px -5px rgb(0 0 0 / 0.15),
+    0 8px 12px -6px rgb(0 0 0 / 0.1) !important;
 }
 
 .dashboard-tailwind .shadow-2xl {
@@ -48,7 +50,8 @@
 
 /* Subtle micro hover effect for cards */
 .dashboard-tailwind .hover\:shadow-lg:hover {
-  box-shadow: 0 6px 12px -2px rgb(0 0 0 / 0.12), 0 3px 6px -3px rgb(0 0 0 / 0.08) !important;
+  box-shadow: 0 6px 12px -2px rgb(0 0 0 / 0.12),
+    0 3px 6px -3px rgb(0 0 0 / 0.08) !important;
   transform: translateY(-1px);
   transition: all 0.15s ease;
 }
@@ -67,8 +70,7 @@
   background: hsl(var(--card));
   padding: 1.25rem 1.5rem;
   border-radius: 12px;
-  box-shadow: 
-    0 1px 3px hsl(var(--foreground) / 0.1),
+  box-shadow: 0 1px 3px hsl(var(--foreground) / 0.1),
     0 1px 2px hsl(var(--foreground) / 0.06);
   margin-bottom: 2rem;
   transition: all 0.2s ease;
@@ -94,8 +96,7 @@
 }
 
 .hapa-card:hover {
-  box-shadow: 
-    0 4px 6px -1px hsl(var(--foreground) / 0.1),
+  box-shadow: 0 4px 6px -1px hsl(var(--foreground) / 0.1),
     0 2px 4px -2px hsl(var(--foreground) / 0.1);
 }
 
@@ -135,7 +136,12 @@
   line-height: 1.1;
   color: hsl(var(--foreground));
   letter-spacing: -0.025em;
-  background: linear-gradient(135deg, currentColor, currentColor 60%, hsl(var(--primary) / 0.8));
+  background: linear-gradient(
+    135deg,
+    currentColor,
+    currentColor 60%,
+    hsl(var(--primary) / 0.8)
+  );
   background-clip: text;
   -webkit-background-clip: text;
   transition: all 0.3s ease;
@@ -222,7 +228,12 @@
 /* Section Separators - Clean Visual Hierarchy */
 .hapa-section-separator {
   height: 1px;
-  background: linear-gradient(90deg, transparent, hsl(var(--border)), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--border)),
+    transparent
+  );
   margin: 2rem 0;
 }
 
@@ -287,20 +298,24 @@
 }
 
 .hapa-button::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--primary) / 0.1),
+    transparent
+  );
   transition: left 0.6s ease;
 }
 
 .hapa-button:hover {
   transform: translateY(-2px);
-  box-shadow: 
-    0 10px 25px hsl(var(--foreground) / 0.1),
+  box-shadow: 0 10px 25px hsl(var(--foreground) / 0.1),
     0 4px 10px hsl(var(--foreground) / 0.05);
 }
 
@@ -346,8 +361,9 @@
   padding: 1.25rem;
   border-radius: 12px;
   border: 1px solid hsl(var(--border));
-  background: linear-gradient(135deg, 
-    hsl(var(--card)), 
+  background: linear-gradient(
+    135deg,
+    hsl(var(--card)),
     hsl(var(--muted) / 0.02)
   );
   color: hsl(var(--card-foreground));
@@ -376,8 +392,9 @@
 .hapa-progress {
   width: 100%;
   height: 0.625rem;
-  background: linear-gradient(to right, 
-    hsl(var(--muted)), 
+  background: linear-gradient(
+    to right,
+    hsl(var(--muted)),
     hsl(var(--muted) / 0.6)
   );
   border-radius: 6px;
@@ -387,8 +404,9 @@
 
 .hapa-progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, 
-    hsl(var(--primary)), 
+  background: linear-gradient(
+    90deg,
+    hsl(var(--primary)),
     hsl(var(--primary) / 0.8)
   );
   border-radius: 6px;
@@ -397,14 +415,15 @@
 }
 
 .hapa-progress-bar::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 50%;
-  background: linear-gradient(to bottom, 
-    hsl(var(--primary) / 0.3), 
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--primary) / 0.3),
     transparent
   );
   border-radius: 6px 6px 0 0;
@@ -476,8 +495,9 @@
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 10px;
-  background: linear-gradient(135deg, 
-    hsl(var(--primary) / 0.1), 
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.1),
     hsl(var(--primary) / 0.05)
   );
   border: 1px solid hsl(var(--primary) / 0.15);
@@ -486,7 +506,7 @@
 }
 
 .hapa-icon-container::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: 10px;
@@ -534,7 +554,7 @@
     background: hsl(var(--background));
     font-size: 14px;
   }
-  
+
   .hapa-header {
     flex-direction: column;
     align-items: flex-start;
@@ -542,56 +562,56 @@
     padding: 1rem;
     margin-bottom: 1.5rem;
   }
-  
+
   .hapa-header h1 {
     font-size: 1.5rem !important;
   }
-  
+
   .hapa-card-value {
     font-size: 1.875rem;
     letter-spacing: -0.02em;
   }
-  
+
   .hapa-card-header {
     padding: 1rem;
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
+
   .hapa-card-content {
     padding: 1rem;
   }
-  
+
   .hapa-card-title {
     font-size: 0.875rem;
   }
-  
+
   .hapa-grid-5,
   .hapa-grid-3,
   .hapa-grid-2 {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .hapa-section {
     margin-bottom: 2rem;
   }
-  
+
   .hapa-section-separator {
     margin: 1.5rem 0;
   }
-  
+
   .hapa-icon-container {
     width: 2rem;
     height: 2rem;
   }
-  
+
   /* Mobile table improvements */
   .hapa-card table {
     font-size: 0.875rem;
   }
-  
+
   /* Mobile badge adjustments */
   .hapa-badge {
     padding: 0.25rem 0.5rem;
@@ -604,20 +624,20 @@
   .hapa-dashboard-container {
     padding: 1.5rem;
   }
-  
+
   .hapa-grid-5 {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
-  
+
   .hapa-header {
     padding: 1.25rem 1.5rem;
   }
-  
+
   .hapa-card-value {
     font-size: 2rem;
   }
-  
+
   .hapa-section {
     margin-bottom: 2.5rem;
   }
@@ -630,15 +650,15 @@
     max-width: 1400px;
     margin: 0 auto;
   }
-  
+
   .hapa-grid-5 {
     gap: 1.5rem;
   }
-  
+
   .hapa-card-value {
     font-size: 2.5rem;
   }
-  
+
   .hapa-header {
     padding: 0 2.5rem;
   }
@@ -651,7 +671,7 @@
     color: black !important;
     padding: 1rem;
   }
-  
+
   .hapa-card {
     border: 1px solid #ccc !important;
     background: white !important;
@@ -659,14 +679,14 @@
     break-inside: avoid;
     margin-bottom: 1rem;
   }
-  
+
   .hapa-header {
     position: static !important;
     background: white !important;
     border: none !important;
     box-shadow: none !important;
   }
-  
+
   /* Hide interactive elements */
   .hapa-button,
   button,
@@ -816,9 +836,10 @@
 }
 
 .hapa-skeleton {
-  background: linear-gradient(90deg, 
-    hsl(var(--muted)) 25%, 
-    hsl(var(--muted) / 0.5) 50%, 
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 25%,
+    hsl(var(--muted) / 0.5) 50%,
     hsl(var(--muted)) 75%
   );
   background-size: 200px 100%;

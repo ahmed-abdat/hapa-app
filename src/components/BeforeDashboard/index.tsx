@@ -34,7 +34,8 @@ const BeforeDashboard: React.FC = () => {
               alt="HAPA Logo"
               width={96}
               height={17}
-              style={{ maxWidth: "100px", height: "auto" }}
+              style={{ maxWidth: "100px", height: "auto", width: "auto" }}
+              priority
             />
             <div>
               <h4 style={{ margin: 0, color: "#138B3A" }}>

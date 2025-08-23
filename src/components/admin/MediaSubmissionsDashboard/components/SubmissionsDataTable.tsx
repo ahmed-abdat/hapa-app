@@ -188,14 +188,15 @@ export function SubmissionsDataTable({
           const rawMediaType = submission.contentInfo?.mediaType;
           const programName = submission.contentInfo?.programName;
           const rawChannel = submission.contentInfo?.specificChannel;
+          const submissionLocale = (submission.locale || 'fr') as 'fr' | 'ar';
           
-          // Get localized labels
+          // Get localized labels based on submission language, not admin language
           const mediaTypeLabel = rawMediaType 
-            ? getMediaTypeLabel(rawMediaType, locale as 'fr' | 'ar')
+            ? getMediaTypeLabel(rawMediaType, submissionLocale)
             : dt('modernDashboard.dataTable.notSpecified');
           
           const channelLabel = rawChannel 
-            ? getMediaChannelLabel(rawChannel, rawMediaType as 'radio' | 'television', locale as 'fr' | 'ar')
+            ? getMediaChannelLabel(rawChannel, rawMediaType as 'radio' | 'television', submissionLocale)
             : null;
           
           const getMediaIcon = (type: string) => {

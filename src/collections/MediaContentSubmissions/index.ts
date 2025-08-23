@@ -11,12 +11,12 @@ export const MediaContentSubmissions: CollectionConfig = {
     singular: {
       en: "Media Content Submission",
       fr: "Soumission de Contenu Médiatique",
-      ar: "إرسال محتوى إعلامي",
+      ar: "شكوى/تبليغ إعلامي",
     },
     plural: {
       en: "Media Content Submissions",
       fr: "Soumissions de Contenu Médiatique",
-      ar: "إرسالات المحتوى الإعلامي",
+      ar: "الشكاوى والتبليغات الإعلامية",
     },
   },
   admin: {
@@ -41,11 +41,11 @@ export const MediaContentSubmissions: CollectionConfig = {
     hidden: ({ user }) => user?.role === 'editor',
     group: {
       fr: "Formulaires et Soumissions",
-      ar: "النماذج والإرسالات",
+      ar: "النماذج والطلبات"
     },
     description: {
       fr: "Gérer les signalements et plaintes de contenu médiatique soumis via les formulaires du site. Visualiser les fichiers médias, suivre le statut et gérer les soumissions.",
-      ar: "إدارة التبليغات والشكاوى الخاصة بالمحتوى الإعلامي المرسلة عبر نماذج الموقع. عرض الملفات الإعلامية وتتبع الحالة وإدارة الطلبات.",
+      ar: "إدارة الشكاوى والتبليغات الخاصة بالمحتوى الإعلامي المقدمة عبر نماذج الموقع. عرض الملفات الإعلامية وتتبع حالة الطلب وإدارة الشكاوى والتبليغات."
     },
     // Dashboard now accessible via sidebar navigation
     // Note: preview function removed to fix URL encoding issues with emojis
@@ -186,7 +186,7 @@ export const MediaContentSubmissions: CollectionConfig = {
       label: {
         en: "Submitted At",
         fr: "Soumis le",
-        ar: "تاريخ الإرسال",
+        ar: "تاريخ التقديم"
       },
     },
 
@@ -464,6 +464,9 @@ export const MediaContentSubmissions: CollectionConfig = {
       admin: {
         readOnly: true,
         position: "sidebar",
+        components: {
+          Field: "@/components/admin/LocalizedChannelField/index",
+        },
         description: {
           en: "Specific TV channel or radio station",
           fr: "Chaîne TV ou station radio spécifique",
@@ -483,6 +486,14 @@ export const MediaContentSubmissions: CollectionConfig = {
       admin: {
         readOnly: true,
         position: "sidebar",
+        components: {
+          Field: "@/components/admin/StyledTextField/index",
+        },
+        description: {
+          en: "Name of the program or content",
+          fr: "Nom du programme ou contenu",
+          ar: "اسم البرنامج أو المحتوى",
+        },
       },
     },
 
@@ -546,6 +557,9 @@ export const MediaContentSubmissions: CollectionConfig = {
           },
           admin: {
             readOnly: true,
+            components: {
+              Field: "@/components/admin/LocalizedChannelField/index",
+            },
             description: {
               en: "Specific channel or station name",
               fr: "Nom spécifique de la chaîne ou station",
@@ -563,6 +577,14 @@ export const MediaContentSubmissions: CollectionConfig = {
           },
           admin: {
             readOnly: true,
+            components: {
+              Field: "@/components/admin/StyledTextField/index",
+            },
+            description: {
+              en: "Name of the specific program or content",
+              fr: "Nom du programme ou contenu spécifique",
+              ar: "اسم البرنامج أو المحتوى المحدد",
+            },
           },
         },
         {
@@ -575,6 +597,14 @@ export const MediaContentSubmissions: CollectionConfig = {
           },
           admin: {
             readOnly: true,
+            components: {
+              Field: "@/components/admin/StyledTextField/index",
+            },
+            description: {
+              en: "Date and time when the content was broadcast",
+              fr: "Date et heure de diffusion du contenu",
+              ar: "تاريخ ووقت بث المحتوى",
+            },
           },
         },
         {
@@ -617,7 +647,7 @@ export const MediaContentSubmissions: CollectionConfig = {
       ],
     },
 
-    // Reasons for report/complaint
+    // Reasons for report/complaint - displayed as simple list
     {
       name: "reasons",
       type: "array",
@@ -633,18 +663,12 @@ export const MediaContentSubmissions: CollectionConfig = {
             fr: "Motif",
             ar: "السبب",
           },
-          admin: {
-            readOnly: true,
-            components: {
-              Field: "@/components/admin/ReasonField/index",
-            },
-          },
         },
       ],
       admin: {
         readOnly: true,
         components: {
-          RowLabel: "@/components/admin/ReasonRowLabel/index",
+          Field: "@/components/admin/SimpleReasonsField/index",
         },
       },
     },
@@ -677,7 +701,7 @@ export const MediaContentSubmissions: CollectionConfig = {
       },
     },
 
-    // Attachments
+    // Attachments - displayed as simple list
     {
       name: "attachmentTypes",
       type: "array",
@@ -690,17 +714,12 @@ export const MediaContentSubmissions: CollectionConfig = {
         {
           name: "type",
           type: "text",
-          admin: {
-            components: {
-              Field: "@/components/admin/AttachmentTypeField/index",
-            },
-          },
         },
       ],
       admin: {
         readOnly: true,
         components: {
-          RowLabel: "@/components/admin/AttachmentTypeRowLabel/index",
+          Field: "@/components/admin/SimpleAttachmentsField/index",
         },
       },
     },

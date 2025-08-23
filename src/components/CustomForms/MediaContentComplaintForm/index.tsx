@@ -28,6 +28,7 @@ import {
   type MediaContentComplaintFormData,
   type MediaContentComplaintSubmission 
 } from '@/lib/validations/media-forms'
+import { REPORT_REASON_OPTIONS, ATTACHMENT_TYPE_OPTIONS, MEDIA_TYPE_OPTIONS, RELATIONSHIP_OPTIONS, GENDER_OPTIONS, createFormOptions } from '@/lib/form-options'
 import { type Locale } from '@/utilities/locale'
 import { convertToFormData, validateFormDataSize, formatFileSize } from '@/lib/file-upload'
 import { FormFileUploadService, type FileUploadField } from '@/lib/FormFileUploadService'
@@ -99,46 +100,12 @@ export function MediaContentComplaintForm({ className }: MediaContentComplaintFo
   const selectedAttachments = watch('attachmentTypes')
   const selectedRelationship = watch('relationshipToContent')
 
-  // Form options
-  const mediaTypeOptions = [
-    { value: 'television', label: t('television') },
-    { value: 'radio', label: t('radio') },
-    { value: 'website', label: t('website') },
-    { value: 'youtube', label: t('youtube') },
-    { value: 'facebook', label: t('facebook') },
-    { value: 'other', label: t('other') },
-  ]
-
-  const relationshipOptions = [
-    { value: 'viewer', label: t('viewer') },
-    { value: 'directlyConcerned', label: t('directlyConcerned') },
-    { value: 'journalist', label: t('journalist') },
-    { value: 'other', label: t('other') },
-  ]
-
-  const genderOptions = [
-    { value: 'male', label: t('male') },
-    { value: 'female', label: t('female') },
-  ]
-
-
-  const complaintReasonOptions = [
-    { value: 'hateSpeech', label: t('hateSpeech') },
-    { value: 'fakeNews', label: t('fakeNews') },
-    { value: 'privacyViolation', label: t('privacyViolation') },
-    { value: 'shockingContent', label: t('shockingContent') },
-    { value: 'pluralismViolation', label: t('pluralismViolation') },
-    { value: 'falseAdvertising', label: t('falseAdvertising') },
-    { value: 'other', label: t('otherReason') },
-  ]
-
-  const attachmentOptions = [
-    { value: 'screenshot', label: t('screenshot') },
-    { value: 'videoLink', label: t('videoLink') },
-    { value: 'writtenStatement', label: t('writtenStatement') },
-    { value: 'audioRecording', label: t('audioRecording') },
-    { value: 'other', label: t('other') },
-  ]
+  // Form options using centralized constants for consistency
+  const mediaTypeOptions = createFormOptions(MEDIA_TYPE_OPTIONS, t)
+  const relationshipOptions = createFormOptions(RELATIONSHIP_OPTIONS, t)
+  const genderOptions = createFormOptions(GENDER_OPTIONS, t)
+  const complaintReasonOptions = createFormOptions(REPORT_REASON_OPTIONS, t, { other: 'otherReason' })
+  const attachmentOptions = createFormOptions(ATTACHMENT_TYPE_OPTIONS, t)
 
   const translations = {
     fr: {

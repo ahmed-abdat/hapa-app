@@ -138,7 +138,7 @@ test.describe('HAPA Admin Design Review', () => {
       // Check for overlapping elements
       const overlaps = await page.evaluate(() => {
         const elements = Array.from(document.querySelectorAll('*'));
-        const overlapping = [];
+        const overlapping: any[] = [];
         
         elements.forEach((el1, i) => {
           elements.slice(i + 1).forEach((el2, _j) => {
@@ -178,9 +178,9 @@ test.describe('HAPA Admin Design Review', () => {
       const paragraphs = document.querySelectorAll('p');
       const buttons = document.querySelectorAll('button, .btn');
       
-      const analyzeElements = (elements, type) => {
-        const styles = [];
-        elements.forEach((el) => {
+      const analyzeElements = (elements: any, type: any) => {
+        const styles: any[] = [];
+        elements.forEach((el: any) => {
           const computed = window.getComputedStyle(el);
           styles.push({
             fontSize: computed.fontSize,
@@ -261,7 +261,7 @@ test.describe('HAPA Admin Design Review', () => {
     // Check for French/Arabic language elements
     const i18nElements = await page.evaluate(() => {
       const elements = document.querySelectorAll('[lang], [dir], .rtl, .ltr');
-      const langAttributes = [];
+      const langAttributes: any[] = [];
       
       elements.forEach((el) => {
         langAttributes.push({
@@ -274,8 +274,8 @@ test.describe('HAPA Admin Design Review', () => {
       
       // Check for text that might indicate language switching
       const textContent = document.body.textContent;
-      const hasFrench = /français|french|fr/i.test(textContent);
-      const hasArabic = /عربي|arabic|ar/i.test(textContent);
+      const hasFrench = /français|french|fr/i.test(textContent || '');
+      const hasArabic = /عربي|arabic|ar/i.test(textContent || '');
       
       return {
         langElements: langAttributes,

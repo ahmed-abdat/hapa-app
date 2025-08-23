@@ -22,7 +22,7 @@ test.describe('HAPA Admin Routes', () => {
     });
     
     // Check for console errors
-    const logs = [];
+    const logs: any[] = [];
     page.on('console', msg => {
       if (msg.type() === 'error') {
         logs.push(msg.text());
@@ -155,7 +155,7 @@ test.describe('HAPA Admin Routes', () => {
           });
           
         } catch (error) {
-          console.log(`Navigation to ${href} failed: ${error.message}`);
+          console.log(`Navigation to ${href} failed: ${(error as Error).message}`);
         }
       }
     }
@@ -213,7 +213,7 @@ test.describe('HAPA Admin Routes', () => {
     console.log('Performance metrics:', JSON.stringify(metrics, null, 2));
     
     // Assert reasonable load times (adjust thresholds as needed)
-    if (typeof metrics === 'object' && 'loadTime' in metrics) {
+    if (typeof metrics === 'object' && metrics && 'loadTime' in metrics) {
       expect(metrics.loadTime).toBeLessThan(5000); // 5 seconds max
     }
   });

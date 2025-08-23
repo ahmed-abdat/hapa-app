@@ -1,16 +1,17 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect, useRef } from 'react'
-import { useField, useFormFields } from '@payloadcms/ui'
-import { useParams } from 'next/navigation'
-import type { ArrayFieldClientComponent } from 'payload'
-import { 
-  Play, 
-  Pause, 
-  Volume2, 
-  VolumeX, 
-  Download, 
-  ExternalLink, 
+import React, { useState, useEffect, useRef } from "react";
+import { useField, useFormFields } from "@payloadcms/ui";
+import { useParams } from "next/navigation";
+import type { ArrayFieldClientComponent } from "payload";
+import Image from "next/image";
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Download,
+  ExternalLink,
   ZoomIn,
   FileText,
   File,
@@ -19,133 +20,133 @@ import {
   Music,
   Eye,
   X,
-  Maximize2
-} from 'lucide-react'
-import { isValidUrl } from '@/lib/security'
-import { useAdminTranslation } from '@/utilities/admin-translations'
-import NextImage from 'next/image'
-import './index.scss'
+  Maximize2,
+} from "lucide-react";
+import { isValidUrl } from "@/lib/security";
+import { useAdminTranslation } from "@/utilities/admin-translations";
+import NextImage from "next/image";
+import "./index.scss";
 
 interface MediaItem {
-  url: string
-  id?: string
+  url: string;
+  id?: string;
 }
 
 interface VideoPlayerProps {
-  url: string
-  onError: () => void
+  url: string;
+  onError: () => void;
 }
 
 interface AudioPlayerProps {
-  url: string
-  filename: string
-  onError: () => void
+  url: string;
+  filename: string;
+  onError: () => void;
 }
 
 interface PDFViewerProps {
-  url: string
-  filename: string
-  onError: () => void
-  dt: (key: string) => string
+  url: string;
+  filename: string;
+  onError: () => void;
+  dt: (key: string) => string;
 }
 
 interface ImageViewerProps {
-  url: string
-  filename: string
-  onError: () => void
+  url: string;
+  filename: string;
+  onError: () => void;
 }
 
 // Video Player Component
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onError }) => {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isMuted, setIsMuted] = useState(true)
-  const [duration, setDuration] = useState<number>(0)
-  const [currentTime, setCurrentTime] = useState<number>(0)
-  const [volume, setVolume] = useState(1)
-  const [isFullscreen, setIsFullscreen] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const [duration, setDuration] = useState<number>(0);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [volume, setVolume] = useState(1);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const togglePlay = () => {
     if (videoRef.current) {
       if (isPlaying) {
-        videoRef.current.pause()
+        videoRef.current.pause();
       } else {
-        videoRef.current.play()
+        videoRef.current.play();
       }
     }
-  }
+  };
 
   const toggleMute = () => {
     if (videoRef.current) {
-      videoRef.current.muted = !isMuted
-      setIsMuted(!isMuted)
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
     }
-  }
+  };
 
   // Set volume through ref
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.volume = volume
+      videoRef.current.volume = volume;
     }
-  }, [volume])
+  }, [volume]);
 
   const handleTimeUpdate = () => {
     if (videoRef.current) {
-      setCurrentTime(videoRef.current.currentTime)
+      setCurrentTime(videoRef.current.currentTime);
     }
-  }
+  };
 
   const handleLoadedMetadata = () => {
     if (videoRef.current) {
-      setDuration(videoRef.current.duration)
+      setDuration(videoRef.current.duration);
     }
-  }
+  };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (videoRef.current) {
-      const newTime = (parseFloat(e.target.value) / 100) * duration
-      videoRef.current.currentTime = newTime
-      setCurrentTime(newTime)
+      const newTime = (parseFloat(e.target.value) / 100) * duration;
+      videoRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
     }
-  }
+  };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value) / 100
-    setVolume(newVolume)
+    const newVolume = parseFloat(e.target.value) / 100;
+    setVolume(newVolume);
     if (videoRef.current) {
-      videoRef.current.volume = newVolume
+      videoRef.current.volume = newVolume;
     }
-  }
+  };
 
   const toggleFullscreen = () => {
     if (containerRef.current) {
       if (!document.fullscreenElement) {
-        containerRef.current.requestFullscreen()
-        setIsFullscreen(true)
+        containerRef.current.requestFullscreen();
+        setIsFullscreen(true);
       } else {
-        document.exitFullscreen()
-        setIsFullscreen(false)
+        document.exitFullscreen();
+        setIsFullscreen(false);
       }
     }
-  }
+  };
 
   const formatTime = (time: number): string => {
-    const minutes = Math.floor(time / 60)
-    const seconds = Math.floor(time % 60)
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`
-  }
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
 
   useEffect(() => {
     const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement)
-    }
+      setIsFullscreen(!!document.fullscreenElement);
+    };
 
-    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
     return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange)
-    }
-  }, [])
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
 
   return (
     <div ref={containerRef} className="enhanced-video-player">
@@ -161,14 +162,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onError }) => {
           onError={onError}
           muted={isMuted}
         />
-        
+
         {/* Video Controls Overlay */}
         <div className="video-controls-overlay">
           {/* Play/Pause Button */}
           <button
             onClick={togglePlay}
             className="play-pause-btn"
-            aria-label={isPlaying ? 'Pause' : 'Play'}
+            aria-label={isPlaying ? "Pause" : "Play"}
           >
             {isPlaying ? <Pause size={24} /> : <Play size={24} />}
           </button>
@@ -180,11 +181,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onError }) => {
             <button onClick={togglePlay} className="control-btn">
               {isPlaying ? <Pause size={16} /> : <Play size={16} />}
             </button>
-            
+
             <button onClick={toggleMute} className="control-btn">
               {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
             </button>
-            
+
             <input
               type="range"
               min="0"
@@ -193,7 +194,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onError }) => {
               onChange={handleVolumeChange}
               className="volume-slider"
             />
-            
+
             <span className="time-display">
               {formatTime(currentTime)} / {formatTime(duration)}
             </span>
@@ -218,75 +219,79 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onError }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 // Audio Player Component
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ url, filename, onError }) => {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isMuted, setIsMuted] = useState(false)
-  const [duration, setDuration] = useState<number>(0)
-  const [currentTime, setCurrentTime] = useState<number>(0)
-  const [volume, setVolume] = useState(1)
-  const audioRef = useRef<HTMLAudioElement>(null)
+const AudioPlayer: React.FC<AudioPlayerProps> = ({
+  url,
+  filename,
+  onError,
+}) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [duration, setDuration] = useState<number>(0);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [volume, setVolume] = useState(1);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const togglePlay = () => {
     if (audioRef.current) {
       if (isPlaying) {
-        audioRef.current.pause()
+        audioRef.current.pause();
       } else {
-        audioRef.current.play()
+        audioRef.current.play();
       }
     }
-  }
+  };
 
   const toggleMute = () => {
     if (audioRef.current) {
-      audioRef.current.muted = !isMuted
-      setIsMuted(!isMuted)
+      audioRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
     }
-  }
+  };
 
-  // Set volume through ref  
+  // Set volume through ref
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = volume
+      audioRef.current.volume = volume;
     }
-  }, [volume])
+  }, [volume]);
 
   const handleTimeUpdate = () => {
     if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime)
+      setCurrentTime(audioRef.current.currentTime);
     }
-  }
+  };
 
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
-      setDuration(audioRef.current.duration)
+      setDuration(audioRef.current.duration);
     }
-  }
+  };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (audioRef.current) {
-      const newTime = (parseFloat(e.target.value) / 100) * duration
-      audioRef.current.currentTime = newTime
-      setCurrentTime(newTime)
+      const newTime = (parseFloat(e.target.value) / 100) * duration;
+      audioRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
     }
-  }
+  };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value) / 100
-    setVolume(newVolume)
+    const newVolume = parseFloat(e.target.value) / 100;
+    setVolume(newVolume);
     if (audioRef.current) {
-      audioRef.current.volume = newVolume
+      audioRef.current.volume = newVolume;
     }
-  }
+  };
 
   const formatTime = (time: number): string => {
-    const minutes = Math.floor(time / 60)
-    const seconds = Math.floor(time % 60)
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`
-  }
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
 
   return (
     <div className="enhanced-audio-player">
@@ -300,7 +305,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ url, filename, onError }) => 
         onError={onError}
         muted={isMuted}
       />
-      
+
       <div className="audio-controls">
         <div className="audio-info">
           <Music size={20} className="audio-icon" />
@@ -314,7 +319,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ url, filename, onError }) => 
           <button onClick={togglePlay} className="control-btn primary">
             {isPlaying ? <Pause size={20} /> : <Play size={20} />}
           </button>
-          
+
           <div className="progress-container">
             <span className="time-current">{formatTime(currentTime)}</span>
             <input
@@ -327,7 +332,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ url, filename, onError }) => 
             />
             <span className="time-total">{formatTime(duration)}</span>
           </div>
-          
+
           <div className="volume-controls">
             <button onClick={toggleMute} className="control-btn">
               {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
@@ -344,44 +349,49 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ url, filename, onError }) => 
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 // PDF Preview Button Component - SECURE VERSION (FIXED: XSS Prevention)
-const PDFPreviewButton: React.FC<PDFViewerProps> = ({ url, filename, onError, dt }) => {
-  const [error, setError] = useState<string | null>(null)
-  
+const PDFPreviewButton: React.FC<PDFViewerProps> = ({
+  url,
+  filename,
+  onError,
+  dt,
+}) => {
+  const [error, setError] = useState<string | null>(null);
+
   const openPreview = () => {
     try {
       if (isValidUrl(url)) {
         // Direct URL access (validated) - prevents XSS
-        window.open(url, '_blank', 'noopener,noreferrer')
+        window.open(url, "_blank", "noopener,noreferrer");
       } else {
-        setError('Cannot open preview - invalid media reference')
+        setError("Cannot open preview - invalid media reference");
       }
     } catch (err) {
-      setError('Failed to open preview')
+      setError("Failed to open preview");
     }
-  }
+  };
 
   const downloadFile = () => {
     try {
       if (!isValidUrl(url)) {
-        setError('Invalid download URL')
-        return
+        setError("Invalid download URL");
+        return;
       }
-      
-      const link = document.createElement('a')
-      link.href = url
-      link.download = filename || 'document.pdf'
-      link.rel = 'noopener noreferrer'
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename || "document.pdf";
+      link.rel = "noopener noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (err) {
-      setError('Download failed')
+      setError("Download failed");
     }
-  }
+  };
 
   // Simple error handling - just disable buttons if there's an error
   if (error) {
@@ -403,7 +413,7 @@ const PDFPreviewButton: React.FC<PDFViewerProps> = ({ url, filename, onError, dt
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -417,46 +427,52 @@ const PDFPreviewButton: React.FC<PDFViewerProps> = ({ url, filename, onError, dt
           <div className="pdf-badge">PDF Document</div>
         </div>
       </div>
-      
+
       <div className="pdf-preview-area">
         <div className="pdf-placeholder">
           <FileText size={48} className="pdf-placeholder-icon" />
-          <p className="pdf-placeholder-text">{dt('mediaGallery.clickToPreviewPDF')}</p>
+          <p className="pdf-placeholder-text">
+            {dt("mediaGallery.clickToPreviewPDF")}
+          </p>
         </div>
       </div>
-      
+
       <div className="pdf-actions-bar">
         <button onClick={openPreview} className="pdf-preview-btn">
           <Eye size={18} />
-          <span>{dt('mediaGallery.previewFile')}</span>
+          <span>{dt("mediaGallery.previewFile")}</span>
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
 // Image Viewer Component
-const ImageViewer: React.FC<ImageViewerProps> = ({ url, filename, onError }) => {
-  const [isFullscreen, setIsFullscreen] = useState(false)
-  const [imageError, setImageError] = useState(false)
+const ImageViewer: React.FC<ImageViewerProps> = ({
+  url,
+  filename,
+  onError,
+}) => {
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const toggleFullscreen = () => {
-    setIsFullscreen(!isFullscreen)
-  }
+    setIsFullscreen(!isFullscreen);
+  };
 
   const downloadImage = () => {
-    const link = document.createElement('a')
-    link.href = url
-    link.download = filename
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const handleImageError = () => {
-    setImageError(true)
-    onError()
-  }
+    setImageError(true);
+    onError();
+  };
 
   if (imageError) {
     return (
@@ -464,7 +480,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ url, filename, onError }) => 
         <ImageIcon size={48} className="error-icon" aria-hidden="true" />
         <p>Unable to load image: {filename}</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -474,147 +490,192 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ url, filename, onError }) => 
           <ImageIcon size={20} className="image-icon" aria-hidden="true" />
           <span className="image-title">{filename}</span>
         </div>
-        
+
         <div className="image-actions">
-          <button onClick={toggleFullscreen} className="control-btn" title="Toggle fullscreen">
+          <button
+            onClick={toggleFullscreen}
+            className="control-btn"
+            title="Toggle fullscreen"
+          >
             {isFullscreen ? <X size={16} /> : <Eye size={16} />}
           </button>
-          <button onClick={downloadImage} className="control-btn" title="Download">
+          <button
+            onClick={downloadImage}
+            className="control-btn"
+            title="Download"
+          >
             <Download size={16} />
           </button>
         </div>
       </div>
-      
-      <div className={`image-container ${isFullscreen ? 'fullscreen' : ''}`}>
-        <NextImage
-          src={url}
-          alt={`Preview of ${filename}`}
-          width={800}
-          height={600}
-          style={{ objectFit: 'contain', width: '100%', height: 'auto' }}
-          className="preview-image"
-          onError={handleImageError}
-          loading="lazy"
-        />
+
+      <div className={`image-container ${isFullscreen ? "fullscreen" : ""}`}>
+        <div className="relative w-full max-w-[800px] h-[600px]">
+          <Image
+            src={url}
+            alt={`Preview of ${filename}`}
+            fill
+            className="object-contain preview-image"
+            onError={handleImageError}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
+            priority={false}
+            quality={90}
+            placeholder="empty"
+          />
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 /**
  * Enhanced Media Gallery - Advanced media preview component for Payload CMS
  * Supports video, audio, PDF, and image files with full-featured players
  */
 const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
-  const { locale } = useParams()
-  const { dt } = useAdminTranslation()
-  
-  const fieldState = useField({ 
-    path, 
-    hasRows: true
-  })
-  
-  const formFields = useFormFields(([fields]) => fields)
-  const [activeMedia, setActiveMedia] = useState<string | null>(null)
-  const [mediaErrors, setMediaErrors] = useState<Set<string>>(new Set())
+  const { locale } = useParams();
+  const { dt } = useAdminTranslation();
+
+  const fieldState = useField({
+    path,
+    hasRows: true,
+  });
+
+  const formFields = useFormFields(([fields]) => fields);
+  const [activeMedia, setActiveMedia] = useState<string | null>(null);
+  const [mediaErrors, setMediaErrors] = useState<Set<string>>(new Set());
 
   // Get the actual array data from form fields
-  const formFieldValue = formFields[path]?.value
-  
-  let actualData: MediaItem[] | null = null
-  
+  const formFieldValue = formFields[path]?.value;
+
+  let actualData: MediaItem[] | null = null;
+
   // Try multiple data extraction methods
-  
+
   // Method 1: Direct array from formFieldValue
   if (Array.isArray(formFieldValue)) {
     actualData = formFieldValue
       .map((item: any) => {
         // Handle both string URLs and object with url property
-        if (typeof item === 'string' && item.length > 0) {
-          return { url: item }
-        } else if (item && typeof item === 'object' && typeof item.url === 'string' && item.url.length > 0) {
-          return { url: item.url }
+        if (typeof item === "string" && item.length > 0) {
+          return { url: item };
+        } else if (
+          item &&
+          typeof item === "object" &&
+          typeof item.url === "string" &&
+          item.url.length > 0
+        ) {
+          return { url: item.url };
         }
-        return null
+        return null;
       })
-      .filter((item): item is MediaItem => item !== null && typeof item.url === 'string' && item.url.length > 0)
+      .filter(
+        (item): item is MediaItem =>
+          item !== null && typeof item.url === "string" && item.url.length > 0
+      );
   }
-  
+
   // Method 2: From fieldState.value (primary Payload CMS source)
   else if (fieldState.value && Array.isArray(fieldState.value)) {
     actualData = fieldState.value
       .map((item: any) => {
         // Handle both string URLs and object with url property
-        if (typeof item === 'string' && item.length > 0) {
-          return { url: item }
-        } else if (item && typeof item === 'object' && typeof item.url === 'string' && item.url.length > 0) {
-          return { url: item.url }
+        if (typeof item === "string" && item.length > 0) {
+          return { url: item };
+        } else if (
+          item &&
+          typeof item === "object" &&
+          typeof item.url === "string" &&
+          item.url.length > 0
+        ) {
+          return { url: item.url };
         }
-        return null
+        return null;
       })
-      .filter((item): item is MediaItem => item !== null && typeof item.url === 'string' && item.url.length > 0)
+      .filter(
+        (item): item is MediaItem =>
+          item !== null && typeof item.url === "string" && item.url.length > 0
+      );
   }
-  
+
   // Method 3: From fieldState.rows
   else if (fieldState.rows && Array.isArray(fieldState.rows)) {
     const rowData: MediaItem[] = fieldState.rows
       .map((row: any, index: number) => {
-        const rowPath = `${path}.${index}`
-        
+        const rowPath = `${path}.${index}`;
+
         // Try different ways to get the URL
-        let url: string | null = null
-        
+        let url: string | null = null;
+
         // Method 3a: Direct from row.url
-        if (typeof row?.url === 'string') {
-          url = row.url
+        if (typeof row?.url === "string") {
+          url = row.url;
         }
         // Method 3b: From row itself if it's a string
-        else if (typeof row === 'string') {
-          url = row
+        else if (typeof row === "string") {
+          url = row;
         }
         // Method 3c: From form fields at rowPath
         else if (formFields[rowPath]?.value) {
-          const rowValue = formFields[rowPath].value
-          if (typeof rowValue === 'string') {
-            url = rowValue
-          } else if (rowValue && typeof rowValue === 'object' && 'url' in rowValue && typeof (rowValue as any).url === 'string') {
-            url = (rowValue as any).url
+          const rowValue = formFields[rowPath].value;
+          if (typeof rowValue === "string") {
+            url = rowValue;
+          } else if (
+            rowValue &&
+            typeof rowValue === "object" &&
+            "url" in rowValue &&
+            typeof (rowValue as any).url === "string"
+          ) {
+            url = (rowValue as any).url;
           }
         }
         // Method 3d: From form fields at rowPath.url
         else if (formFields[`${rowPath}.url`]?.value) {
-          url = formFields[`${rowPath}.url`].value as string
+          url = formFields[`${rowPath}.url`].value as string;
         }
-        
-        return url ? { url } : null
+
+        return url ? { url } : null;
       })
-      .filter((item): item is MediaItem => item !== null && typeof item.url === 'string')
-    
+      .filter(
+        (item): item is MediaItem =>
+          item !== null && typeof item.url === "string"
+      );
+
     if (rowData.length > 0) {
-      actualData = rowData
+      actualData = rowData;
     }
   }
-  
+
   // Method 4: Fallback - look for numbered field entries
   else {
-    const numberedFields: MediaItem[] = []
-    let index = 0
-    
-    while (formFields[`${path}.${index}`] || formFields[`${path}.${index}.url`]) {
-      const rowValue = formFields[`${path}.${index}`]?.value || formFields[`${path}.${index}.url`]?.value
-      
-      if (typeof rowValue === 'string') {
-        numberedFields.push({ url: rowValue })
-      } else if (rowValue && typeof rowValue === 'object' && 'url' in rowValue && typeof (rowValue as any).url === 'string') {
-        numberedFields.push({ url: (rowValue as any).url })
+    const numberedFields: MediaItem[] = [];
+    let index = 0;
+
+    while (
+      formFields[`${path}.${index}`] ||
+      formFields[`${path}.${index}.url`]
+    ) {
+      const rowValue =
+        formFields[`${path}.${index}`]?.value ||
+        formFields[`${path}.${index}.url`]?.value;
+
+      if (typeof rowValue === "string") {
+        numberedFields.push({ url: rowValue });
+      } else if (
+        rowValue &&
+        typeof rowValue === "object" &&
+        "url" in rowValue &&
+        typeof (rowValue as any).url === "string"
+      ) {
+        numberedFields.push({ url: (rowValue as any).url });
       }
-      
-      index++
-      if (index > 50) break // Safety limit
+
+      index++;
+      if (index > 50) break; // Safety limit
     }
-    
+
     if (numberedFields.length > 0) {
-      actualData = numberedFields
+      actualData = numberedFields;
     }
   }
 
@@ -622,9 +683,10 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
   if (!actualData || !Array.isArray(actualData) || actualData.length === 0) {
     // Check if this is legacy data (old submissions before the V3 fix)
     // Legacy data has typeof number, new empty submissions have empty arrays or undefined
-    const isActualLegacyData = (typeof formFieldValue === 'number' && formFieldValue !== 0) || 
-                               (typeof fieldState.value === 'number' && fieldState.value !== 0)
-    
+    const isActualLegacyData =
+      (typeof formFieldValue === "number" && formFieldValue !== 0) ||
+      (typeof fieldState.value === "number" && fieldState.value !== 0);
+
     return (
       <div className="enhanced-media-gallery">
         <div className="empty-state">
@@ -632,48 +694,59 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
           <span className="empty-text">Aucun média disponible</span>
         </div>
       </div>
-    )
+    );
   }
 
   const getFileType = (url: string): string => {
-    const extension = url.toLowerCase().split('.').pop() || ''
-    if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'].includes(extension)) return 'image'
-    if (['mp4', 'avi', 'mov', 'wmv', 'webm', 'mkv'].includes(extension)) return 'video'
-    if (['mp3', 'wav', 'ogg', 'aac', 'flac', 'm4a'].includes(extension)) return 'audio'
-    if (['pdf'].includes(extension)) return 'pdf'
-    if (['doc', 'docx', 'txt'].includes(extension)) return 'document'
-    return 'file'
-  }
+    const extension = url.toLowerCase().split(".").pop() || "";
+    if (["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg"].includes(extension))
+      return "image";
+    if (["mp4", "avi", "mov", "wmv", "webm", "mkv"].includes(extension))
+      return "video";
+    if (["mp3", "wav", "ogg", "aac", "flac", "m4a"].includes(extension))
+      return "audio";
+    if (["pdf"].includes(extension)) return "pdf";
+    if (["doc", "docx", "txt"].includes(extension)) return "document";
+    return "file";
+  };
 
   const getFileIcon = (fileType: string): React.ReactElement => {
     switch (fileType) {
-      case 'image': return <ImageIcon size={24} aria-hidden="true" />
-      case 'video': return <VideoIcon size={24} aria-hidden="true" />
-      case 'audio': return <Music size={24} aria-hidden="true" />
-      case 'pdf': return <FileText size={24} aria-hidden="true" />
-      case 'document': return <FileText size={24} aria-hidden="true" />
-      default: return <File size={24} aria-hidden="true" />
+      case "image":
+        return <ImageIcon size={24} aria-hidden="true" />;
+      case "video":
+        return <VideoIcon size={24} aria-hidden="true" />;
+      case "audio":
+        return <Music size={24} aria-hidden="true" />;
+      case "pdf":
+        return <FileText size={24} aria-hidden="true" />;
+      case "document":
+        return <FileText size={24} aria-hidden="true" />;
+      default:
+        return <File size={24} aria-hidden="true" />;
     }
-  }
+  };
 
   const getFileName = (url: string): string => {
-    return url.split('/').pop()?.split('?')[0] || 'Unknown file'
-  }
+    return url.split("/").pop()?.split("?")[0] || "Unknown file";
+  };
 
   const handleMediaError = (url: string) => {
-    setMediaErrors(prev => new Set([...prev, url]))
-  }
+    setMediaErrors((prev) => new Set([...prev, url]));
+  };
 
   const renderMediaPreview = (item: MediaItem, index: number) => {
     // Ensure URL is properly formatted
-    const mediaUrl = item.url.startsWith('http') ? item.url : 
-                     item.url.startsWith('/') ? item.url : 
-                     `/${item.url}`
-    
-    const fileType = getFileType(mediaUrl)
-    const fileName = getFileName(mediaUrl)
-    const hasError = mediaErrors.has(mediaUrl)
-    const isActive = activeMedia === mediaUrl
+    const mediaUrl = item.url.startsWith("http")
+      ? item.url
+      : item.url.startsWith("/")
+      ? item.url
+      : `/${item.url}`;
+
+    const fileType = getFileType(mediaUrl);
+    const fileName = getFileName(mediaUrl);
+    const hasError = mediaErrors.has(mediaUrl);
+    const isActive = activeMedia === mediaUrl;
 
     if (hasError) {
       return (
@@ -682,33 +755,38 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
             <File size={48} className="error-icon" />
             <p className="error-text">Erreur de chargement</p>
             <p className="error-filename">{fileName}</p>
-            <small className="error-url" style={{ fontSize: '10px', color: '#999' }}>{mediaUrl}</small>
+            <small
+              className="error-url"
+              style={{ fontSize: "10px", color: "#999" }}
+            >
+              {mediaUrl}
+            </small>
           </div>
         </div>
-      )
+      );
     }
 
     return (
       <div key={`media-${index}`} className="media-item auto-preview">
         {/* Automatic thumbnail preview for images */}
-        {fileType === 'image' && (
-          <div className="media-thumbnail">
-            <NextImage
+        {fileType === "image" && (
+          <div className="media-thumbnail" style={{ position: "relative", width: "150px", height: "150px" }}>
+            <Image
               src={mediaUrl}
               alt={`Thumbnail preview of ${fileName}`}
               width={150}
               height={150}
-              style={{ objectFit: 'cover' }}
+              style={{ objectFit: "cover", cursor: "pointer" }}
               className="thumbnail-image"
               onError={() => handleMediaError(mediaUrl)}
-              loading="lazy"
               onClick={() => setActiveMedia(isActive ? null : mediaUrl)}
+              sizes="150px"
             />
           </div>
         )}
-        
+
         {/* PDF preview with simple button */}
-        {fileType === 'pdf' && (
+        {fileType === "pdf" && (
           <div className="media-pdf-preview">
             <PDFPreviewButton
               url={mediaUrl}
@@ -718,9 +796,9 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
             />
           </div>
         )}
-        
+
         {/* For video - show thumbnail with play overlay */}
-        {fileType === 'video' && (
+        {fileType === "video" && (
           <div className="media-video-preview">
             <video
               src={mediaUrl}
@@ -730,17 +808,17 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
               muted
               preload="metadata"
             />
-            <div 
-              className="video-play-overlay" 
+            <div
+              className="video-play-overlay"
               onClick={() => setActiveMedia(isActive ? null : mediaUrl)}
             >
               <Play size={32} className="play-icon" />
             </div>
           </div>
         )}
-        
+
         {/* Audio files - show compact player */}
-        {fileType === 'audio' && (
+        {fileType === "audio" && (
           <div className="media-audio-preview">
             <div className="audio-info-compact">
               <Music size={20} className="audio-icon" />
@@ -755,13 +833,11 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
             />
           </div>
         )}
-        
+
         {/* For other file types, show enhanced icon preview */}
-        {!['image', 'pdf', 'video', 'audio'].includes(fileType) && (
+        {!["image", "pdf", "video", "audio"].includes(fileType) && (
           <div className="media-file-preview">
-            <div className="file-icon-large">
-              {getFileIcon(fileType)}
-            </div>
+            <div className="file-icon-large">{getFileIcon(fileType)}</div>
             <span className="file-info">{fileName}</span>
           </div>
         )}
@@ -774,13 +850,13 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
               <span className="media-type">{fileType.toUpperCase()}</span>
             </div>
           </div>
-          
+
           {/* Keep the expand button for full-featured players */}
-          {['video', 'image'].includes(fileType) && (
+          {["video", "image"].includes(fileType) && (
             <button
               onClick={() => setActiveMedia(isActive ? null : mediaUrl)}
               className="preview-toggle"
-              title={isActive ? 'Fermer la vue élargie' : 'Agrandir'}
+              title={isActive ? "Fermer la vue élargie" : "Agrandir"}
             >
               {isActive ? <X size={16} /> : <Maximize2 size={16} />}
             </button>
@@ -790,14 +866,14 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
         {/* Expanded view with full-featured players */}
         {isActive && (
           <div className="media-preview-expanded">
-            {fileType === 'video' && (
+            {fileType === "video" && (
               <VideoPlayer
                 url={mediaUrl}
                 onError={() => handleMediaError(mediaUrl)}
               />
             )}
-            
-            {fileType === 'image' && (
+
+            {fileType === "image" && (
               <ImageViewer
                 url={mediaUrl}
                 filename={fileName}
@@ -807,22 +883,22 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
           </div>
         )}
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div className="enhanced-media-gallery">
       <div className="media-header">
         <h4 className="media-title">
-{dt('mediaGallery.mediaFiles')} ({actualData.length})
+          {dt("mediaGallery.mediaFiles")} ({actualData.length})
         </h4>
       </div>
-      
+
       <div className="media-list">
         {actualData.map((item, index) => renderMediaPreview(item, index))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default EnhancedMediaGallery
+export default EnhancedMediaGallery;
