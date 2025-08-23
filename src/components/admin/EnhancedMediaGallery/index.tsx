@@ -35,6 +35,7 @@ interface MediaItem {
 interface VideoPlayerProps {
   url: string;
   onError: () => void;
+  dt: (key: string) => string;
 }
 
 interface AudioPlayerProps {
@@ -54,10 +55,11 @@ interface ImageViewerProps {
   url: string;
   filename: string;
   onError: () => void;
+  dt: (key: string) => string;
 }
 
 // Video Player Component
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onError }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onError, dt }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [duration, setDuration] = useState<number>(0);
@@ -169,7 +171,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, onError }) => {
           <button
             onClick={togglePlay}
             className="play-pause-btn"
-            aria-label={isPlaying ? "Pause" : "Play"}
+            aria-label={isPlaying ? dt("mediaGallery.pause") : dt("mediaGallery.play")}
           >
             {isPlaying ? <Pause size={24} /> : <Play size={24} />}
           </button>
@@ -370,14 +372,14 @@ const PDFPreviewButton: React.FC<PDFViewerProps> = ({
         setError("Cannot open preview - invalid media reference");
       }
     } catch (err) {
-      setError("Failed to open preview");
+      setError(dt("mediaGallery.failedToOpenPreview"));
     }
   };
 
   const downloadFile = () => {
     try {
       if (!isValidUrl(url)) {
-        setError("Invalid download URL");
+        setError(dt("mediaGallery.invalidDownloadUrl"));
         return;
       }
 
@@ -389,7 +391,7 @@ const PDFPreviewButton: React.FC<PDFViewerProps> = ({
       link.click();
       document.body.removeChild(link);
     } catch (err) {
-      setError("Download failed");
+      setError(dt("mediaGallery.downloadFailed"));
     }
   };
 
@@ -452,6 +454,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
   url,
   filename,
   onError,
+  dt,
 }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -478,7 +481,7 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
     return (
       <div className="image-error">
         <ImageIcon size={48} className="error-icon" aria-hidden="true" />
-        <p>Unable to load image: {filename}</p>
+        <p>{dt("mediaGallery.unableToLoadImage")}: {filename}</p>
       </div>
     );
   }
@@ -495,14 +498,14 @@ const ImageViewer: React.FC<ImageViewerProps> = ({
           <button
             onClick={toggleFullscreen}
             className="control-btn"
-            title="Toggle fullscreen"
+            title={dt("mediaGallery.toggleFullscreen")}
           >
             {isFullscreen ? <X size={16} /> : <Eye size={16} />}
           </button>
           <button
             onClick={downloadImage}
             className="control-btn"
-            title="Download"
+            title={dt("mediaGallery.download")}
           >
             <Download size={16} />
           </button>
@@ -691,7 +694,7 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
       <div className="enhanced-media-gallery">
         <div className="empty-state">
           <File size={48} className="empty-icon" />
-          <span className="empty-text">Aucun média disponible</span>
+          <span className="empty-text">{dt("mediaGallery.noMediaAvailable")}</span>
         </div>
       </div>
     );
@@ -728,7 +731,7 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
   };
 
   const getFileName = (url: string): string => {
-    return url.split("/").pop()?.split("?")[0] || "Unknown file";
+    return url.split("/").pop()?.split("?")[0] || dt("mediaGallery.unknownFile");
   };
 
   const handleMediaError = (url: string) => {
@@ -753,7 +756,7 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
         <div key={`error-${index}`} className="media-item error">
           <div className="media-error">
             <File size={48} className="error-icon" />
-            <p className="error-text">Erreur de chargement</p>
+            <p className="error-text">{dt("mediaGallery.loadingError")}</p>
             <p className="error-filename">{fileName}</p>
             <small
               className="error-url"
@@ -768,20 +771,27 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
 
     return (
       <div key={`media-${index}`} className="media-item auto-preview">
-        {/* Automatic thumbnail preview for images */}
+        {/* Enhanced image thumbnail with card design */}
         {fileType === "image" && (
-          <div className="media-thumbnail" style={{ position: "relative", width: "150px", height: "150px" }}>
-            <Image
-              src={mediaUrl}
-              alt={`Thumbnail preview of ${fileName}`}
-              width={150}
-              height={150}
-              style={{ objectFit: "cover", cursor: "pointer" }}
-              className="thumbnail-image"
-              onError={() => handleMediaError(mediaUrl)}
+          <div className="relative w-full h-48 bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-green-300 hover:shadow-md transition-all duration-200">
+            <div 
+              className="relative w-full h-full cursor-pointer group"
               onClick={() => setActiveMedia(isActive ? null : mediaUrl)}
-              sizes="150px"
-            />
+            >
+              <Image
+                src={mediaUrl}
+                alt={`Thumbnail preview of ${fileName}`}
+                fill
+                className="object-cover transition-transform duration-200 group-hover:scale-105"
+                onError={() => handleMediaError(mediaUrl)}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100">
+                <span className="text-white text-sm font-medium text-center px-3">
+                  {dt("mediaGallery.clickToEnlarge")}
+                </span>
+              </div>
+            </div>
           </div>
         )}
 
@@ -856,7 +866,7 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
             <button
               onClick={() => setActiveMedia(isActive ? null : mediaUrl)}
               className="preview-toggle"
-              title={isActive ? "Fermer la vue élargie" : "Agrandir"}
+              title={isActive ? dt("mediaGallery.closeExpandedView") : dt("mediaGallery.expandView")}
             >
               {isActive ? <X size={16} /> : <Maximize2 size={16} />}
             </button>
@@ -870,6 +880,7 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
               <VideoPlayer
                 url={mediaUrl}
                 onError={() => handleMediaError(mediaUrl)}
+                dt={dt}
               />
             )}
 
@@ -878,6 +889,7 @@ const EnhancedMediaGallery: ArrayFieldClientComponent = ({ path }) => {
                 url={mediaUrl}
                 filename={fileName}
                 onError={() => handleMediaError(mediaUrl)}
+                dt={dt}
               />
             )}
           </div>

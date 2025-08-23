@@ -485,7 +485,7 @@ export function SubmissionsDataTable({
         },
       },
     ],
-    [onUpdateSubmission, onViewDetails, dt, locale]
+    [onUpdateSubmission, onViewDetails, dt]
   );
 
   const table = useReactTable({
