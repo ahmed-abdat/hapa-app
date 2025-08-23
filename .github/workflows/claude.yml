@@ -100,7 +100,7 @@ jobs:
             Bash(git log *),
             Bash(git show *)
           
-          # HAPA Government Website - Custom Instructions
+          # HAPA Government Website - Custom Instructions (Updated)
           custom_instructions: |
             You are reviewing code for the HAPA Government Website (Haute Autorité de la Presse et de l'Audiovisuel - Mauritania).
             
