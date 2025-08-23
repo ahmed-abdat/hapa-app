@@ -340,7 +340,7 @@ export const adminTranslations = {
 
         // Locale display
         french: "🇫🇷 Français",
-        arabic: "🇦🇷 العربية",
+        arabic: "🇲🇷 العربية",
 
         // Media type
         notSpecified: "Non spécifié",
@@ -468,7 +468,7 @@ export const adminTranslations = {
     "modernDashboard.dataTable.reports": "Signalements",
     "modernDashboard.dataTable.anonymous": "Anonyme",
     "modernDashboard.dataTable.french": "🇫🇷 Français",
-    "modernDashboard.dataTable.arabic": "🇦🇷 العربية",
+    "modernDashboard.dataTable.arabic": "🇲🇷 العربية",
     "modernDashboard.dataTable.pendingStatus": "En attente",
     "modernDashboard.dataTable.reviewingStatus": "En révision",
     "modernDashboard.dataTable.resolvedStatus": "Résolu",

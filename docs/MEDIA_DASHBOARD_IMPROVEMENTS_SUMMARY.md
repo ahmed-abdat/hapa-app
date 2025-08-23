@@ -31,7 +31,7 @@ Comprehensive enhancements to the HAPA Media Submissions Dashboard with improved
 - **Rich visual indicators** for form types, priorities, and statuses
 - **Media type icons** (TV, Radio, Newspaper, Internet) for better scanning
 - **User status indicators** showing contact information availability
-- **Language indicators** with flag emojis (🇫🇷 Français, 🇦🇷 العربية)
+- **Language indicators** with flag emojis (🇫🇷 Français, 🇲🇷 العربية)
 - **Time-based status badges** showing submission recency
 - **Urgency indicators** with animated alerts for high-priority items
 
