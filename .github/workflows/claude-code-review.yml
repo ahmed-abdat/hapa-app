@@ -65,9 +65,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # Use GitHub PAT instead of OAuth token
-          # Create a PAT with: repo, workflow, write:discussion permissions
-          github_token: ${{ secrets.CLAUDE_PAT }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 
           # Use Claude Sonnet 4 for government website reviews
           model: "claude-sonnet-4-20250514"

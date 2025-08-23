@@ -67,9 +67,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # Use GitHub PAT instead of OAuth token
-          # Create a PAT with: repo, workflow, write:discussion permissions
-          github_token: ${{ secrets.CLAUDE_PAT }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 
           # This is an optional setting that allows Claude to read CI results on PRs
           additional_permissions: |
@@ -102,7 +100,7 @@ jobs:
             Bash(git log *),
             Bash(git show *)
           
-          # HAPA Government Website - Custom Instructions (Updated)
+          # HAPA Government Website - Custom Instructions
           custom_instructions: |
             You are reviewing code for the HAPA Government Website (Haute Autorité de la Presse et de l'Audiovisuel - Mauritania).
             
