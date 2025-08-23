@@ -766,5 +766,21 @@
     "channelCount": "{count, plural, =0 {لا توجد قنوات} =1 {قناة واحدة} =2 {قناتان} few {{count} قنوات} many {{count} قناة} other {{count} قناة}}",
     "tryAnotherFilter": "جرب تصفية أخرى أو ارجع إلى جميع المحطات",
     "viewDetails": "عرض التفاصيل"
-  }
+  },
+  
+  "stateOwned": "عمومية",
+  "privateOwned": "خاصة",
+  "backToDirectory": "العودة إلى الدليل",
+  "technicalInfo": "المعلومات التقنية",
+  "stationType": "نوع المحطة",
+  "contactInfo": "معلومات الاتصال",
+  "relatedChannels": "قنوات مشابهة",
+  "relatedStations": "محطات مشابهة",
+  "allStations": "جميع المحطات",
+  "allChannels": "جميع القنوات",
+  "viewDetails": "عرض التفاصيل",
+  "stationCount": "{count, plural, =0 {لا توجد محطات} =1 {محطة واحدة} =2 {محطتان} few {{count} محطات} many {{count} محطة} other {{count} محطة}}",
+  "channelCount": "{count, plural, =0 {لا توجد قنوات} =1 {قناة واحدة} =2 {قناتان} few {{count} قنوات} many {{count} قناة} other {{count} قناة}}",
+  "comingSoon": "متوفر قريباً",
+  "stayTuned": "ترقبوا"
 }

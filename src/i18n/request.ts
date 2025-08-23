@@ -99,16 +99,7 @@ export default getRequestConfig(async ({requestLocale}) => {
       // Enhanced fallback strategy based on next-intl best practices
       if (error?.code === IntlErrorCode.MISSING_MESSAGE) {
         // Provide meaningful fallbacks for critical UI elements
-        const fallbackMap: Record<string, string> = {
-          'comingSoon': locale === 'ar' ? 'متوفر قريباً' : 'Bientôt disponible',
-          'stayTuned': locale === 'ar' ? 'ترقبوا' : 'Restez à l\'écoute',
-          'backToDirectory': locale === 'ar' ? 'العودة إلى الدليل' : 'Retour au répertoire',
-          'loading': locale === 'ar' ? 'جاري التحميل...' : 'Chargement...',
-          'allStations': locale === 'ar' ? 'جميع المحطات' : 'Toutes les stations',
-          'allChannels': locale === 'ar' ? 'جميع القنوات' : 'Toutes les chaînes',
-          'stateOwned': locale === 'ar' ? 'عمومية' : 'Publique',
-          'privateOwned': locale === 'ar' ? 'خاصة' : 'Privée',
-        };
+        const fallbackMap: Record<string, string> = {};
         
         // Return fallback if available, empty string to hide placeholder during SSG
         return fallbackMap[key] || fallbackMap[path] || '';

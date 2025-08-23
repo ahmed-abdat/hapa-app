@@ -771,5 +771,21 @@
     "daily": "Quotidien",
     "nationalCoverage": "Couverture nationale",
     "printPress": "Presse Écrite"
-  }
+  },
+  
+  "stateOwned": "Publique",
+  "privateOwned": "Privée",
+  "backToDirectory": "Retour à l'annuaire",
+  "technicalInfo": "Informations techniques",
+  "stationType": "Type de station",
+  "contactInfo": "Informations de contact",
+  "relatedChannels": "Chaînes similaires",
+  "relatedStations": "Stations similaires",
+  "allStations": "Toutes les stations",
+  "allChannels": "Toutes les chaînes",
+  "viewDetails": "Voir détails",
+  "stationCount": "{count, plural, =0 {Aucune station} =1 {1 station} other {{count} stations}}",
+  "channelCount": "{count, plural, =0 {Aucune chaîne} =1 {1 chaîne} other {{count} chaînes}}",
+  "comingSoon": "Bientôt disponible",
+  "stayTuned": "Restez à l'écoute"
 }
