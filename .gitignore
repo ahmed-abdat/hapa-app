@@ -27,10 +27,10 @@ debuging/
 .serena/
 tsconfig.tsbuildinfo
 
-
-
-# Playwright testing
+# Playwright testing and results
 .playwright-mcp/
 playwright/.auth/
+.test-results/*
 test-results/
 playwright-report/
+screenshots/
