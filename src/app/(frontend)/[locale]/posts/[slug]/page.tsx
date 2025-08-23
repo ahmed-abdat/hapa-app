@@ -27,7 +27,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Home, FileText } from "lucide-react";
+import { Home, FileText, ChevronRight, ChevronLeft } from "lucide-react";
 
 // Use ISR for better performance with automatic revalidation
 export const revalidate = 300 // 5 minutes - good balance for news content
@@ -115,7 +115,9 @@ export default async function Post({ params: paramsPromise }: Args) {
                     </Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator />
+                <BreadcrumbSeparator>
+                  {locale === 'ar' ? <ChevronLeft className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                </BreadcrumbSeparator>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
                     <Link href="/posts" className="flex items-center gap-1.5 hover:text-primary transition-colors">
@@ -124,7 +126,9 @@ export default async function Post({ params: paramsPromise }: Args) {
                     </Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
-                <BreadcrumbSeparator />
+                <BreadcrumbSeparator>
+                  {locale === 'ar' ? <ChevronLeft className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+                </BreadcrumbSeparator>
                 <BreadcrumbItem>
                   <BreadcrumbPage className="max-w-[300px] truncate font-medium">
                     {post.title}
@@ -136,21 +140,8 @@ export default async function Post({ params: paramsPromise }: Args) {
 
           {/* Share Button Section */}
           <div className="mb-6">
-            <div className="flex items-center justify-between gap-4 pb-4 border-b border-gray-200">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                {post.publishedAt && (
-                  <>
-                    <span>{t('common.publishedOn')}</span>
-                    <time dateTime={post.publishedAt} className="font-medium">
-                      {new Date(post.publishedAt).toLocaleDateString(
-                        locale === 'ar' ? 'ar-SA' : 'fr-FR',
-                        { year: 'numeric', month: 'long', day: 'numeric' }
-                      )}
-                    </time>
-                  </>
-                )}
-              </div>
-              <ShareButton url={url} title={post.title} />
+            <div className="flex items-center justify-end gap-4 pb-4 border-b border-gray-200">
+              <ShareButton url={url} title={post.title} locale={locale} shareText={t('share')} />
             </div>
           </div>
 

@@ -9,6 +9,7 @@ import {
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
+import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { getR2Client } from '../utilities/r2-client'
 import { logger } from '../utilities/logger'
 
@@ -35,14 +36,15 @@ export const Media: CollectionConfig = {
     useAsTitle: 'filename',
     defaultColumns: ['filename', 'alt', 'width', 'height', 'filesize', 'updatedAt'],
     listSearchableFields: ['filename', 'alt'],
+    hidden: ({ user }) => user?.role === 'moderator',
     description: {
       fr: 'Fichiers média pour les contenus éditoriaux. Les pièces jointes des formulaires sont automatiquement filtrées de cette vue.',
       ar: 'ملفات الوسائط للمحتوى التحريري. يتم تصفية مرفقات النماذج تلقائياً من هذا العرض.'
     },
   },
   access: {
-    create: authenticated,
-    delete: authenticated,
+    create: isAdminOrEditor,
+    delete: isAdminOrEditor,
     read: ({ req }) => {
       // Always filter out form submission media for authenticated users
       // This is the most reliable way to hide form media from the admin UI
@@ -68,7 +70,7 @@ export const Media: CollectionConfig = {
       // For frontend and public API requests (no auth), show all files
       return true
     },
-    update: authenticated,
+    update: isAdminOrEditor,
   },
   hooks: {
     beforeChange: [

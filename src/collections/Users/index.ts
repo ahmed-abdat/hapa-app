@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
+import { isAdmin } from '../../access/isAdmin'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -16,15 +17,21 @@ export const Users: CollectionConfig = {
   },
   access: {
     admin: authenticated,
-    create: authenticated,
-    delete: authenticated,
-    read: authenticated,
-    update: authenticated,
+    create: isAdmin, // Only admins can create new users
+    delete: isAdmin, // Only admins can delete users
+    read: authenticated, // All authenticated users can see user list
+    update: ({ req: { user }, id }) => {
+      // Users can update their own profile
+      if (user?.id === id) return true
+      // Only admins can update other users
+      return user?.role === 'admin'
+    },
   },
   admin: {
     defaultColumns: ['name', 'email'],
     listSearchableFields: ['name', 'email'],
     useAsTitle: 'name',
+    hidden: ({ user }) => user?.role === 'editor' || user?.role === 'moderator',
   },
   auth: true,
   fields: [
@@ -50,22 +57,44 @@ export const Users: CollectionConfig = {
     {
       name: 'role',
       type: 'select',
+      label: {
+        fr: 'Rôle',
+        ar: 'الدور'
+      },
       options: [
         {
-          label: 'Admin',
+          label: {
+            fr: 'Administrateur',
+            ar: 'مدير'
+          },
           value: 'admin',
         },
         {
-          label: 'Editor',
+          label: {
+            fr: 'Éditeur',
+            ar: 'محرر'
+          },
           value: 'editor',
         },
         {
-          label: 'User',
-          value: 'user',
+          label: {
+            fr: 'Modérateur',
+            ar: 'مشرف'
+          },
+          value: 'moderator',
         },
       ],
-      defaultValue: 'user',
+      defaultValue: 'editor',
       required: true,
+      access: {
+        update: ({ req: { user } }) => Boolean(user && user.role === 'admin'), // Only admins can change roles
+      },
+      admin: {
+        description: {
+          fr: 'Rôle de l\'utilisateur dans le système',
+          ar: 'دور المستخدم في النظام'
+        }
+      }
     },
   ],
   timestamps: true,

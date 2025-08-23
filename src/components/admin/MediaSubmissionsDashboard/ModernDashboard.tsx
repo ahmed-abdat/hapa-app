@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState, useMemo, useCallback } from "react";
-import { useAdminTranslation } from "@/utilities/admin-translations"
+import { useAdminTranslation } from "@/utilities/admin-translations";
+import { getMediaTypeLabel, getMediaChannelLabel } from "@/lib/media-mappings";
 import { useParams } from "next/navigation";
 import { logger } from "@/utilities/logger";
 import { useTheme } from "@/providers/Theme";
@@ -116,78 +117,86 @@ export function ModernDashboard() {
   const [timeRange, setTimeRange] = useState("7d");
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
-  
 
   // Enhanced fetch submissions with error handling and optimizations
-  const fetchSubmissions = useCallback(async (isRefresh = false) => {
-    if (isRefresh) setRefreshing(true);
-    else setLoading(true);
+  const fetchSubmissions = useCallback(
+    async (isRefresh = false) => {
+      if (isRefresh) setRefreshing(true);
+      else setLoading(true);
 
-    setError(null);
+      setError(null);
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => {
-      controller.abort(new Error("Request timeout after 15 seconds"));
-    }, 15000); // 15s timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        controller.abort(new Error("Request timeout after 30 seconds"));
+      }, 30000); // 30s timeout - aligned with backend capacity
 
-    try {
-      const response = await fetch("/api/admin/media-submissions-stats", {
-        signal: controller.signal,
-        headers: {
-          "Cache-Control": "no-cache",
-          Pragma: "no-cache",
-        },
-      });
+      try {
+        const response = await fetch("/api/admin/media-submissions-stats", {
+          signal: controller.signal,
+          headers: {
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+          },
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setSubmissions(data.submissions || []);
-          setStats(data.stats || null);
-          setLastUpdate(new Date());
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            setSubmissions(data.submissions || []);
+            setStats(data.stats || null);
+            setLastUpdate(new Date());
 
-          if (isRefresh) {
-            toast.success(dt('modernDashboard.dataUpdated'), { duration: 2000 });
+            if (isRefresh) {
+              toast.success(dt("modernDashboard.dataUpdated"), {
+                duration: 2000,
+              });
+            }
+          } else {
+            throw new Error(data.error || dt("modernDashboard.unknownError"));
           }
         } else {
-          throw new Error(data.error || dt('modernDashboard.unknownError'));
+          throw new Error(`Erreur HTTP: ${response.status}`);
         }
-      } else {
-        throw new Error(`Erreur HTTP: ${response.status}`);
-      }
-    } catch (error) {
-      // Handle abort errors specifically
-      if (error instanceof Error && error.name === 'AbortError') {
-        const errorMessage = dt('modernDashboard.requestTimeout');
-        logger.warn("Request aborted due to timeout", {
-          component: 'ModernDashboard',
-          action: 'fetch_timeout',
-          metadata: { isRefresh }
-        });
-        setError(errorMessage);
-        if (!isRefresh) {
-          toast.error(errorMessage);
-        }
-      } else {
-        const errorMessage =
-          error instanceof Error ? error.message : dt('modernDashboard.unknownError');
-        logger.error("Error fetching submissions", error, {
-          component: 'ModernDashboard',
-          action: 'fetch_error',
-          metadata: { isRefresh }
-        });
-        setError(errorMessage);
+      } catch (error) {
+        // Handle abort errors specifically
+        if (error instanceof Error && error.name === "AbortError") {
+          const errorMessage = dt("modernDashboard.requestTimeout");
+          logger.warn("Request aborted due to timeout", {
+            component: "ModernDashboard",
+            action: "fetch_timeout",
+            metadata: { isRefresh },
+          });
+          setError(errorMessage);
+          if (!isRefresh) {
+            toast.error(errorMessage);
+          }
+        } else {
+          const errorMessage =
+            error instanceof Error
+              ? error.message
+              : dt("modernDashboard.unknownError");
+          logger.error("Error fetching submissions", error, {
+            component: "ModernDashboard",
+            action: "fetch_error",
+            metadata: { isRefresh },
+          });
+          setError(errorMessage);
 
-        if (!isRefresh) {
-          toast.error(dt('modernDashboard.loadingDataError') + ": " + errorMessage);
+          if (!isRefresh) {
+            toast.error(
+              dt("modernDashboard.loadingDataError") + ": " + errorMessage
+            );
+          }
         }
+      } finally {
+        clearTimeout(timeoutId);
+        setLoading(false);
+        setRefreshing(false);
       }
-    } finally {
-      clearTimeout(timeoutId);
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [dt]);
+    },
+    [dt]
+  );
 
   // Enhanced update submission with optimistic updates and immediate dashboard refresh
   const handleUpdateSubmission = useCallback(
@@ -199,7 +208,9 @@ export function ModernDashboard() {
       }>
     ) => {
       // Show loading state
-      const loadingToast = toast.loading(dt('modernDashboard.updatingInProgress'));
+      const loadingToast = toast.loading(
+        dt("modernDashboard.updatingInProgress")
+      );
 
       // Optimistic update for immediate UI feedback
       const previousSubmissions = [...submissions];
@@ -229,17 +240,17 @@ export function ModernDashboard() {
             // Get status text for notification
             const statusText =
               updates.submissionStatus === "resolved"
-                ? dt('modernDashboard.resolved')
+                ? dt("modernDashboard.resolved")
                 : updates.submissionStatus === "reviewing"
-                ? dt('modernDashboard.inReview')
+                ? dt("modernDashboard.inReview")
                 : updates.submissionStatus === "dismissed"
-                ? dt('modernDashboard.dismissed')
-                : dt('modernDashboard.pending');
+                ? dt("modernDashboard.dismissed")
+                : dt("modernDashboard.pending");
 
-            toast.success(`${dt('modernDashboard.markedAs')} ${statusText}`, {
+            toast.success(`${dt("modernDashboard.markedAs")} ${statusText}`, {
               duration: 4000,
               action: {
-                label: dt('modernDashboard.viewDetails'),
+                label: dt("modernDashboard.viewDetails"),
                 onClick: () =>
                   (window.location.href = `/admin/collections/media-content-submissions/${id}`),
               },
@@ -248,7 +259,7 @@ export function ModernDashboard() {
             // Immediate refresh to ensure accurate stats and counts
             await fetchSubmissions(true);
           } else {
-            throw new Error(result.error || dt('modernDashboard.updateError'));
+            throw new Error(result.error || dt("modernDashboard.updateError"));
           }
         } else {
           throw new Error(`Erreur HTTP: ${response.status}`);
@@ -259,13 +270,16 @@ export function ModernDashboard() {
         setSubmissions(previousSubmissions);
 
         logger.error("Error updating submission", error, {
-          component: 'ModernDashboard',
-          action: 'update_error',
-          metadata: { submissionId: id, status: updates.submissionStatus }
+          component: "ModernDashboard",
+          action: "update_error",
+          metadata: { submissionId: id, status: updates.submissionStatus },
         });
         toast.error(
-          dt('modernDashboard.updateError') + ": " +
-            (error instanceof Error ? error.message : dt('modernDashboard.unknownError')),
+          dt("modernDashboard.updateError") +
+            ": " +
+            (error instanceof Error
+              ? error.message
+              : dt("modernDashboard.unknownError")),
           {
             duration: 5000,
           }
@@ -276,9 +290,12 @@ export function ModernDashboard() {
   );
 
   // Navigate to Payload admin route for submission details
-  const handleViewDetails = useCallback((submission: MediaContentSubmission) => {
-    window.location.href = `/admin/collections/media-content-submissions/${submission.id}`;
-  }, []);
+  const handleViewDetails = useCallback(
+    (submission: MediaContentSubmission) => {
+      window.location.href = `/admin/collections/media-content-submissions/${submission.id}`;
+    },
+    []
+  );
 
   useEffect(() => {
     // Initial load
@@ -314,8 +331,23 @@ export function ModernDashboard() {
         (s) => s.formType === "complaint" && s.submissionStatus === "pending"
       )
       .reduce((acc, s) => {
-        const mediaType = s.contentInfo?.mediaType || "Inconnu";
-        const channel = s.contentInfo?.specificChannel || "Non spécifié";
+        const rawMediaType = s.contentInfo?.mediaType || "unknown";
+        const rawChannel = s.contentInfo?.specificChannel || "unspecified";
+        const submissionLocale = (s.locale || "fr") as "fr" | "ar";
+        const mediaType = getMediaTypeLabel(
+          rawMediaType,
+          submissionLocale
+        );
+        const channel =
+          rawChannel === "unspecified"
+            ? submissionLocale === "ar"
+              ? "غير محدد"
+              : "Non spécifié"
+            : getMediaChannelLabel(
+                rawChannel,
+                rawMediaType as "radio" | "television",
+                submissionLocale
+              );
         const key = `${mediaType}: ${channel}`;
         acc[key] = (acc[key] || 0) + 1;
         return acc;
@@ -462,13 +494,13 @@ export function ModernDashboard() {
     // Weekly trend data (real data from last 7 days)
     const weeklyData = (() => {
       const days = [
-        dt('modernDashboard.days.sun'),
-        dt('modernDashboard.days.mon'),
-        dt('modernDashboard.days.tue'),
-        dt('modernDashboard.days.wed'),
-        dt('modernDashboard.days.thu'),
-        dt('modernDashboard.days.fri'),
-        dt('modernDashboard.days.sat')
+        dt("modernDashboard.days.sun"),
+        dt("modernDashboard.days.mon"),
+        dt("modernDashboard.days.tue"),
+        dt("modernDashboard.days.wed"),
+        dt("modernDashboard.days.thu"),
+        dt("modernDashboard.days.fri"),
+        dt("modernDashboard.days.sat"),
       ];
       const data = [];
       const now = new Date();
@@ -499,25 +531,25 @@ export function ModernDashboard() {
     // Status distribution for pie chart (filter out zero values)
     const statusDistribution = [
       {
-        name: dt('status.pending'),
+        name: dt("status.pending"),
         value: pending,
         color: chartColors.pending,
         percentage: 0,
       },
       {
-        name: dt('status.resolved'),
+        name: dt("status.resolved"),
         value: resolved,
         color: chartColors.resolved,
         percentage: 0,
       },
       {
-        name: dt('status.dismissed'),
+        name: dt("status.dismissed"),
         value: rejected,
         color: chartColors.rejected,
         percentage: 0,
       },
       {
-        name: dt('status.reviewing'),
+        name: dt("status.reviewing"),
         value: inReview,
         color: chartColors.inReview,
         percentage: 0,
@@ -532,18 +564,18 @@ export function ModernDashboard() {
     // Monthly trend data (real data from last 6 months)
     const monthlyTrend = (() => {
       const months = [
-        dt('modernDashboard.months.jan'),
-        dt('modernDashboard.months.feb'),
-        dt('modernDashboard.months.mar'),
-        dt('modernDashboard.months.apr'),
-        dt('modernDashboard.months.may'),
-        dt('modernDashboard.months.jun'),
-        dt('modernDashboard.months.jul'),
-        dt('modernDashboard.months.aug'),
-        dt('modernDashboard.months.sep'),
-        dt('modernDashboard.months.oct'),
-        dt('modernDashboard.months.nov'),
-        dt('modernDashboard.months.dec')
+        dt("modernDashboard.months.jan"),
+        dt("modernDashboard.months.feb"),
+        dt("modernDashboard.months.mar"),
+        dt("modernDashboard.months.apr"),
+        dt("modernDashboard.months.may"),
+        dt("modernDashboard.months.jun"),
+        dt("modernDashboard.months.jul"),
+        dt("modernDashboard.months.aug"),
+        dt("modernDashboard.months.sep"),
+        dt("modernDashboard.months.oct"),
+        dt("modernDashboard.months.nov"),
+        dt("modernDashboard.months.dec"),
       ];
       const data = [];
       const now = new Date();
@@ -589,13 +621,13 @@ export function ModernDashboard() {
     // Priority distribution for urgent action
     const priorityDistribution = [
       {
-        name: dt('priority.urgent'),
+        name: dt("priority.urgent"),
         value: urgentComplaintsByStatus.pending || 0,
         color: "#ef4444",
         category: "urgent",
       },
       {
-        name: dt('priority.high'),
+        name: dt("priority.high"),
         value: submissions.filter(
           (s) => s.priority === "high" && s.submissionStatus === "pending"
         ).length,
@@ -603,7 +635,7 @@ export function ModernDashboard() {
         category: "high",
       },
       {
-        name: dt('priority.medium'),
+        name: dt("priority.medium"),
         value: submissions.filter(
           (s) => s.priority === "medium" && s.submissionStatus === "pending"
         ).length,
@@ -611,7 +643,7 @@ export function ModernDashboard() {
         category: "medium",
       },
       {
-        name: dt('priority.low'),
+        name: dt("priority.low"),
         value: submissions.filter(
           (s) => s.priority === "low" && s.submissionStatus === "pending"
         ).length,
@@ -627,18 +659,18 @@ export function ModernDashboard() {
       .map(([type, count]) => ({
         type:
           type === "hateSpeech"
-            ? dt('modernDashboard.hateSpeech')
+            ? dt("modernDashboard.hateSpeech")
             : type === "misinformation"
-            ? dt('modernDashboard.misinformation')
+            ? dt("modernDashboard.misinformation")
             : type === "privacy"
-            ? dt('modernDashboard.privacy')
+            ? dt("modernDashboard.privacy")
             : type === "inappropriate"
-            ? dt('modernDashboard.shockingContent')
+            ? dt("modernDashboard.shockingContent")
             : type === "pluralism"
-            ? dt('modernDashboard.pluralism')
+            ? dt("modernDashboard.pluralism")
             : type === "advertising"
-            ? dt('modernDashboard.falseAdvertising')
-            : dt('modernDashboard.others'),
+            ? dt("modernDashboard.falseAdvertising")
+            : dt("modernDashboard.others"),
         count,
         severity:
           type === "hateSpeech" || type === "misinformation"
@@ -669,7 +701,7 @@ export function ModernDashboard() {
       evidenceQuality,
       formTypeInsights: formBreakdown,
     };
-  }, [submissions, stats, dt]);
+  }, [submissions, stats, dt, locale]);
 
   if (loading) {
     return (
@@ -742,12 +774,14 @@ export function ModernDashboard() {
           <CardHeader className="text-center">
             <CardTitle className="flex items-center justify-center gap-2">
               <AlertCircle className="h-5 w-5 text-destructive" />
-              {error ? dt('modernDashboard.connectionError') : dt('modernDashboard.noData')}
+              {error
+                ? dt("modernDashboard.connectionError")
+                : dt("modernDashboard.noData")}
             </CardTitle>
             <CardDescription>
               {error
-                ? dt('modernDashboard.unableToLoadDashboard')
-                : dt('modernDashboard.noDataAvailable')}
+                ? dt("modernDashboard.unableToLoadDashboard")
+                : dt("modernDashboard.noDataAvailable")}
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center space-y-4">
@@ -765,7 +799,7 @@ export function ModernDashboard() {
                 <RefreshCw
                   className={cn("h-4 w-4 mr-2", loading && "animate-spin")}
                 />
-                {dt('modernDashboard.retry')}
+                {dt("modernDashboard.retry")}
               </Button>
               <Button
                 variant="outline"
@@ -775,7 +809,7 @@ export function ModernDashboard() {
                 }}
                 className="w-full"
               >
-                {dt('modernDashboard.viewSubmissionsDirectly')}
+                {dt("modernDashboard.viewSubmissionsDirectly")}
               </Button>
             </div>
           </CardContent>
@@ -798,10 +832,10 @@ export function ModernDashboard() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-foreground tracking-tight">
-                  {dt('modernDashboard.controlCenterTitle')}
+                  {dt("modernDashboard.controlCenterTitle")}
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                  {dt('modernDashboard.mediaSubmissionsManagement')}
+                  {dt("modernDashboard.mediaSubmissionsManagement")}
                 </p>
               </div>
             </div>
@@ -822,30 +856,30 @@ export function ModernDashboard() {
                     <Button variant="outline" size="sm" className="h-9">
                       <Calendar className="h-4 w-4 mr-2" />
                       {timeRange === "7d"
-                        ? dt('modernDashboard.timeRange7d')
+                        ? dt("modernDashboard.timeRange7d")
                         : timeRange === "30d"
-                        ? dt('modernDashboard.timeRange30d')
-                        : dt('modernDashboard.timeRangeAll')}
+                        ? dt("modernDashboard.timeRange30d")
+                        : dt("modernDashboard.timeRangeAll")}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={() => setTimeRange("7d")}>
                       <Clock className="h-4 w-4 mr-2" />
-                      {dt('modernDashboard.last7Days')}
+                      {dt("modernDashboard.last7Days")}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setTimeRange("30d")}>
                       <Calendar className="h-4 w-4 mr-2" />
-                      {dt('modernDashboard.last30Days')}
+                      {dt("modernDashboard.last30Days")}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setTimeRange("all")}>
                       <Activity className="h-4 w-4 mr-2" />
-                      {dt('modernDashboard.allData')}
+                      {dt("modernDashboard.allData")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{dt('modernDashboard.dataAnalysisPeriod')}</p>
+                <p>{dt("modernDashboard.dataAnalysisPeriod")}</p>
               </TooltipContent>
             </ShadcnTooltip>
             <ShadcnTooltip>
@@ -855,11 +889,11 @@ export function ModernDashboard() {
                   className="h-9 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  {dt('modernDashboard.export')}
+                  {dt("modernDashboard.export")}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{dt('modernDashboard.exportToExcel')}</p>
+                <p>{dt("modernDashboard.exportToExcel")}</p>
               </TooltipContent>
             </ShadcnTooltip>
           </div>
@@ -871,96 +905,148 @@ export function ModernDashboard() {
         <div className="hapa-section">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
             <StatCard
-              title={dt('modernDashboard.totalSubmissions')}
-              subtitle={dt('modernDashboard.last30DaysLabel')}
+              title={dt("modernDashboard.totalSubmissions")}
+              subtitle={dt("modernDashboard.last30DaysLabel")}
               value={dynamicStats.total}
               icon={FileText}
               iconColor="text-blue-500"
               valueColor="text-blue-600"
               trend={{
                 value: dynamicStats.total > 100 ? 12.3 : 0,
-                label: dt('modernDashboard.vsPreviousMonth'),
+                label: dt("modernDashboard.vsPreviousMonth"),
                 isPositive: true,
-                color: "text-green-600"
+                color: "text-green-600",
               }}
               badge={{
-                text: `${dynamicStats.formTypeInsights.complaints.total} ${dt('modernDashboard.complaints')}, ${dynamicStats.formTypeInsights.reports.total} ${dt('modernDashboard.reports')}`,
-                variant: "secondary"
+                text: `${dynamicStats.formTypeInsights.complaints.total} ${dt(
+                  "modernDashboard.complaints"
+                )}, ${dynamicStats.formTypeInsights.reports.total} ${dt(
+                  "modernDashboard.reports"
+                )}`,
+                variant: "secondary",
               }}
-              dateRange={dt('modernDashboard.dateRange')}
+              dateRange={(() => {
+                const now = new Date();
+                const month = now.getMonth(); // 0-based month index
+                const year = now.getFullYear();
+
+                if (locale === "ar") {
+                  // Use Arabic month names from translations
+                  const arabicMonths = [
+                    dt("modernDashboard.months.jan"),
+                    dt("modernDashboard.months.feb"),
+                    dt("modernDashboard.months.mar"),
+                    dt("modernDashboard.months.apr"),
+                    dt("modernDashboard.months.may"),
+                    dt("modernDashboard.months.jun"),
+                    dt("modernDashboard.months.jul"),
+                    dt("modernDashboard.months.aug"),
+                    dt("modernDashboard.months.sep"),
+                    dt("modernDashboard.months.oct"),
+                    dt("modernDashboard.months.nov"),
+                    dt("modernDashboard.months.dec"),
+                  ];
+                  return `جميع بيانات ${arabicMonths[month]} ${year}`;
+                } else {
+                  // Use French month names from translations or native
+                  const frenchMonths = [
+                    "janvier",
+                    "février",
+                    "mars",
+                    "avril",
+                    "mai",
+                    "juin",
+                    "juillet",
+                    "août",
+                    "septembre",
+                    "octobre",
+                    "novembre",
+                    "décembre",
+                  ];
+                  return `Toutes les données ${frenchMonths[month]} ${year}`;
+                }
+              })()}
             />
 
             <StatCard
-              title={dt('modernDashboard.urgentActionRequired')}
-              subtitle={dt('modernDashboard.criticalComplaints')}
+              title={dt("modernDashboard.urgentActionRequired")}
+              subtitle={dt("modernDashboard.criticalComplaints")}
               value={dynamicStats.complexCases}
               icon={AlertCircle}
               iconColor="text-red-500"
               valueColor="text-red-600"
               urgent={dynamicStats.complexCases > 0}
               badge={{
-                text: dynamicStats.complexCases > 0 ? dt('priority.urgent').toUpperCase() : "OK",
-                variant: dynamicStats.complexCases > 0 ? "destructive" : "secondary",
-                icon: dynamicStats.complexCases > 0 ? AlertCircle : undefined
+                text:
+                  dynamicStats.complexCases > 0
+                    ? dt("priority.urgent").toUpperCase()
+                    : "OK",
+                variant:
+                  dynamicStats.complexCases > 0 ? "destructive" : "secondary",
+                icon: dynamicStats.complexCases > 0 ? AlertCircle : undefined,
               }}
-              description={dt('modernDashboard.immediateAttentionRequired')}
+              description={dt("modernDashboard.immediateAttentionRequired")}
             />
 
             <StatCard
-              title={dt('modernDashboard.pending')}
-              subtitle={dt('modernDashboard.submissionsToProcess')}
+              title={dt("modernDashboard.pending")}
+              subtitle={dt("modernDashboard.submissionsToProcess")}
               value={dynamicStats.pending}
               icon={Clock}
               iconColor="text-orange-500"
               valueColor="text-orange-600"
               trend={{
                 value: -5.2,
-                label: dt('modernDashboard.vsLastWeek'),
+                label: dt("modernDashboard.vsLastWeek"),
                 isPositive: false,
-                color: "text-red-600"
+                color: "text-red-600",
               }}
-              description={`FR: ${dynamicStats.languageWorkload.fr || 0} • AR: ${dynamicStats.languageWorkload.ar || 0}`}
+              description={`FR: ${
+                dynamicStats.languageWorkload.fr || 0
+              } • AR: ${dynamicStats.languageWorkload.ar || 0}`}
               progressBar={{
                 value: 35,
-                label: dt('modernDashboard.completionPercentage'),
-                color: "bg-yellow-500"
+                label: dt("modernDashboard.completionPercentage"),
+                color: "bg-yellow-500",
               }}
             />
 
             <StatCard
-              title={dt('modernDashboard.responseTime')}
-              subtitle={dt('modernDashboard.average')}
+              title={dt("modernDashboard.responseTime")}
+              subtitle={dt("modernDashboard.average")}
               value={`${dynamicStats.avgResponseTime}h`}
               icon={Zap}
               iconColor="text-green-500"
               valueColor="text-green-600"
               badge={{
-                text: dt('modernDashboard.excellent'),
+                text: dt("modernDashboard.excellent"),
                 variant: "secondary",
                 icon: Zap,
-                iconColor: "text-green-500"
+                iconColor: "text-green-500",
               }}
-              description={`${dt('modernDashboard.resolutionRate')}: ${dynamicStats.resolutionRate}%`}
+              description={`${dt("modernDashboard.resolutionRate")}: ${
+                dynamicStats.resolutionRate
+              }%`}
             />
 
             <StatCard
-              title={dt('modernDashboard.overdueFiles')}
-              subtitle={dt('modernDashboard.moreThan7Days')}
+              title={dt("modernDashboard.overdueFiles")}
+              subtitle={dt("modernDashboard.moreThan7Days")}
               value={dynamicStats.overduePendingCount}
               icon={AlertTriangle}
               iconColor="text-orange-500"
               valueColor="text-orange-600"
               trend={{
                 value: -8.1,
-                label: dt('modernDashboard.vsLastMonth'),
+                label: dt("modernDashboard.vsLastMonth"),
                 isPositive: false,
-                color: "text-red-600"
+                color: "text-red-600",
               }}
               badge={{
-                text: dt('modernDashboard.attention'),
+                text: dt("modernDashboard.attention"),
                 variant: "destructive",
                 icon: AlertTriangle,
-                iconColor: "text-orange-500"
+                iconColor: "text-orange-500",
               }}
             />
           </div>
@@ -977,11 +1063,11 @@ export function ModernDashboard() {
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-red-600" />
                   <h3 className="hapa-card-title font-semibold">
-                    {dt('modernDashboard.mediaRiskAnalysis')}
+                    {dt("modernDashboard.mediaRiskAnalysis")}
                   </h3>
                 </div>
                 <p className="text-sm hapa-text-muted mt-1">
-                  {dt('modernDashboard.channelsWithMostComplaints')}
+                  {dt("modernDashboard.channelsWithMostComplaints")}
                 </p>
               </div>
               <div className="hapa-card-content">
@@ -1006,7 +1092,7 @@ export function ModernDashboard() {
                         </span>
                       </div>
                       <span className="hapa-badge hapa-badge-outline">
-                        {channel.complaints} {dt('modernDashboard.complaints')}
+                        {channel.complaints} {dt("modernDashboard.complaints")}
                       </span>
                     </div>
                   ))}
@@ -1022,11 +1108,11 @@ export function ModernDashboard() {
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="h-5 w-5 text-red-600" />
                   <h3 className="hapa-card-title font-semibold">
-                    {dt('modernDashboard.criticalViolationsAnalysis')}
+                    {dt("modernDashboard.criticalViolationsAnalysis")}
                   </h3>
                 </div>
                 <p className="text-sm hapa-text-muted mt-1">
-                  {dt('modernDashboard.mostFrequentViolations')}
+                  {dt("modernDashboard.mostFrequentViolations")}
                 </p>
               </div>
               <div className="hapa-card-content">
@@ -1046,10 +1132,11 @@ export function ModernDashboard() {
                             <div className="rounded-lg border bg-background p-3 shadow-sm">
                               <p className="font-medium">{label}</p>
                               <p className="text-sm text-muted-foreground">
-                                {payload[0].value} {dt('modernDashboard.cases')} • {dt('modernDashboard.severity')}:{" "}
+                                {payload[0].value} {dt("modernDashboard.cases")}{" "}
+                                • {dt("modernDashboard.severity")}:{" "}
                                 {data.severity === "high"
-                                  ? dt('modernDashboard.high')
-                                  : dt('modernDashboard.moderate')}
+                                  ? dt("modernDashboard.high")
+                                  : dt("modernDashboard.moderate")}
                               </p>
                             </div>
                           );
@@ -1084,13 +1171,17 @@ export function ModernDashboard() {
                     <div className="text-lg font-bold text-green-600 dark:text-green-400">
                       {dynamicStats.evidenceQuality.withEvidence}
                     </div>
-                    <div className="text-xs text-muted-foreground">{dt('modernDashboard.withEvidence')}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {dt("modernDashboard.withEvidence")}
+                    </div>
                   </div>
                   <div className="p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors text-center">
                     <div className="text-lg font-bold text-orange-600 dark:text-orange-400">
                       {dynamicStats.evidenceQuality.withoutEvidence}
                     </div>
-                    <div className="text-xs text-muted-foreground">{dt('modernDashboard.withoutEvidence')}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {dt("modernDashboard.withoutEvidence")}
+                    </div>
                   </div>
                   <div className="p-3 bg-card/50 hover:bg-card/80 rounded-lg border border-border/50 transition-colors text-center">
                     <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
@@ -1104,7 +1195,7 @@ export function ModernDashboard() {
                       %
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      {dt('modernDashboard.evidenceQuality')}
+                      {dt("modernDashboard.evidenceQuality")}
                     </div>
                   </div>
                 </div>
@@ -1123,11 +1214,11 @@ export function ModernDashboard() {
               <div className="flex items-center gap-2">
                 <BarChart3 className="h-5 w-5" style={{ color: "#2563eb" }} />
                 <h3 className="hapa-card-title font-semibold">
-                  {dt('modernDashboard.formTypesAnalysis')}
+                  {dt("modernDashboard.formTypesAnalysis")}
                 </h3>
               </div>
               <p className="text-sm hapa-text-muted mt-1">
-                {dt('modernDashboard.distributionAndPriorities')}
+                {dt("modernDashboard.distributionAndPriorities")}
               </p>
             </div>
             <div className="hapa-card-content">
@@ -1136,23 +1227,30 @@ export function ModernDashboard() {
                 <div className="space-y-3">
                   <h4 className="font-semibold text-sm flex items-center gap-2">
                     <AlertCircle className="h-4 w-4 text-orange-500" />
-                    {dt('modernDashboard.complaintsLabel')} ({dynamicStats.formTypeInsights.complaints.total})
+                    {dt("modernDashboard.complaintsLabel")} (
+                    {dynamicStats.formTypeInsights.complaints.total})
                   </h4>
                   <div className="space-y-2 pl-6">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">{dt('modernDashboard.pending')}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {dt("modernDashboard.pending")}
+                      </span>
                       <Badge variant="secondary" className="font-bold">
                         {dynamicStats.formTypeInsights.complaints.pending}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">{dt('modernDashboard.urgent')}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {dt("modernDashboard.urgent")}
+                      </span>
                       <Badge variant="destructive" className="font-bold">
                         {dynamicStats.formTypeInsights.complaints.urgent}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">{dt('modernDashboard.withContact')}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {dt("modernDashboard.withContact")}
+                      </span>
                       <Badge variant="outline" className="font-bold">
                         {
                           dynamicStats.formTypeInsights.complaints
@@ -1167,23 +1265,30 @@ export function ModernDashboard() {
                 <div className="space-y-3">
                   <h4 className="font-semibold text-sm flex items-center gap-2">
                     <FileText className="h-4 w-4 text-blue-500" />
-                    {dt('modernDashboard.reportsLabel')} ({dynamicStats.formTypeInsights.reports.total})
+                    {dt("modernDashboard.reportsLabel")} (
+                    {dynamicStats.formTypeInsights.reports.total})
                   </h4>
                   <div className="space-y-2 pl-6">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">{dt('modernDashboard.pending')}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {dt("modernDashboard.pending")}
+                      </span>
                       <Badge variant="secondary" className="font-bold">
                         {dynamicStats.formTypeInsights.reports.pending}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">{dt('modernDashboard.urgent')}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {dt("modernDashboard.urgent")}
+                      </span>
                       <Badge variant="destructive" className="font-bold">
                         {dynamicStats.formTypeInsights.reports.urgent}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">{dt('modernDashboard.anonymous')}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {dt("modernDashboard.anonymous")}
+                      </span>
                       <Badge variant="outline" className="font-bold">
                         {dynamicStats.formTypeInsights.reports.anonymous}
                       </Badge>
@@ -1205,10 +1310,10 @@ export function ModernDashboard() {
             <div className="hapa-card col-span-2">
               <div className="hapa-card-header">
                 <h3 className="hapa-card-title font-semibold">
-                  {dt('modernDashboard.weeklyTrend')}
+                  {dt("modernDashboard.weeklyTrend")}
                 </h3>
                 <p className="text-sm hapa-text-muted mt-1">
-                  {dt('modernDashboard.submissionsAndResolutions7Days')}
+                  {dt("modernDashboard.submissionsAndResolutions7Days")}
                 </p>
               </div>
               <div className="hapa-card-content">
@@ -1262,7 +1367,7 @@ export function ModernDashboard() {
                       stroke={chartColors.primary}
                       fillOpacity={1}
                       fill="url(#colorSubmissions)"
-                      name={dt('modernDashboard.submissions')}
+                      name={dt("modernDashboard.submissions")}
                     />
                     <Area
                       type="monotone"
@@ -1270,7 +1375,7 @@ export function ModernDashboard() {
                       stroke={chartColors.accent}
                       fillOpacity={1}
                       fill="url(#colorResolved)"
-                      name={dt('modernDashboard.resolved')}
+                      name={dt("modernDashboard.resolved")}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -1280,9 +1385,11 @@ export function ModernDashboard() {
             {/* Status Distribution Pie Chart - Improved */}
             <Card>
               <CardHeader>
-                <CardTitle>{dt('modernDashboard.statusDistribution')}</CardTitle>
+                <CardTitle>
+                  {dt("modernDashboard.statusDistribution")}
+                </CardTitle>
                 <CardDescription>
-                  {dt('modernDashboard.currentDistribution')}
+                  {dt("modernDashboard.currentDistribution")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -1352,9 +1459,9 @@ export function ModernDashboard() {
         <div className="hapa-section">
           <Card>
             <CardHeader>
-              <CardTitle>{dt('modernDashboard.monthlyAnalysis')}</CardTitle>
+              <CardTitle>{dt("modernDashboard.monthlyAnalysis")}</CardTitle>
               <CardDescription>
-                {dt('modernDashboard.realEvolution6Months')}
+                {dt("modernDashboard.realEvolution6Months")}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -1388,17 +1495,17 @@ export function ModernDashboard() {
                   <Bar
                     dataKey="total"
                     fill={chartColors.primary}
-                    name={dt('modernDashboard.total')}
+                    name={dt("modernDashboard.total")}
                   />
                   <Bar
                     dataKey="resolved"
                     fill={chartColors.accent}
-                    name={dt('modernDashboard.resolved')}
+                    name={dt("modernDashboard.resolved")}
                   />
                   <Bar
                     dataKey="pending"
                     fill={chartColors.pending}
-                    name={dt('modernDashboard.pending')}
+                    name={dt("modernDashboard.pending")}
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -1413,9 +1520,9 @@ export function ModernDashboard() {
         <div className="hapa-section">
           <Card>
             <CardHeader>
-              <CardTitle>{dt('modernDashboard.recentSubmissions')}</CardTitle>
+              <CardTitle>{dt("modernDashboard.recentSubmissions")}</CardTitle>
               <CardDescription>
-                {dt('modernDashboard.allSubmissionsWithPagination')}
+                {dt("modernDashboard.allSubmissionsWithPagination")}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -1428,7 +1535,6 @@ export function ModernDashboard() {
           </Card>
         </div>
       </main>
-
     </div>
   );
 }

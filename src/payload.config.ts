@@ -106,16 +106,16 @@ export default buildConfig({
   localization: {
     locales: [
       {
-        label: "Français",
-        code: "fr",
-      },
-      {
         label: "العربية",
         code: "ar",
         rtl: true,
       },
+      {
+        label: "Français",
+        code: "fr",
+      },
     ],
-    defaultLocale: "fr",
+    defaultLocale: "ar", // Arabic as default locale for admin interface
     fallback: true,
   },
   // This config helps us configure global or default features that the other editors can inherit

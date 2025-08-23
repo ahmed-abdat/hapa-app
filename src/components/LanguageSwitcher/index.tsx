@@ -16,8 +16,8 @@ import {
 } from '@/components/ui/select'
 
 const languages = [
-  { code: "fr", name: "Français", flag: "/locales-flages/fr.svg" },
-  { code: "ar", name: "العربية", flag: "/locales-flages/ar.svg" },
+  { code: "fr", name: "Français", flag: "/locales-flags/fr.svg" },
+  { code: "ar", name: "العربية", flag: "/locales-flags/ar.svg" },
 ] as const
 
 type Props = {

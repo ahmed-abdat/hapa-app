@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { useRowLabel } from '@payloadcms/ui'
+import { useAdminTranslation } from '@/utilities/admin-translations'
 
 /**
  * Custom RowLabel component for file arrays in admin interface
@@ -9,8 +10,10 @@ import { useRowLabel } from '@payloadcms/ui'
  */
 const FileDisplayRowLabel: React.FC = () => {
   const { data, rowNumber } = useRowLabel<{ url?: string }>()
+  const { dt } = useAdminTranslation()
+  
   if (!data?.url) {
-    return <span style={{ color: '#888', fontStyle: 'italic' }}>Fichier sans URL</span>
+    return <span style={{ color: '#888', fontStyle: 'italic' }}>{dt('fileDisplay.fileWithoutURL')}</span>
   }
 
   // Extract filename from URL
@@ -18,7 +21,7 @@ const FileDisplayRowLabel: React.FC = () => {
     try {
       const urlObj = new URL(url)
       const pathname = urlObj.pathname
-      const filename = pathname.split('/').pop() || 'Fichier téléchargé'
+      const filename = pathname.split('/').pop() || dt('fileDisplay.downloadedFile')
       
       // Decode URI component to handle special characters
       return decodeURIComponent(filename)
@@ -35,7 +38,7 @@ const FileDisplayRowLabel: React.FC = () => {
   }
 
   const filename = getFilenameFromUrl(data.url)
-  const displayText = `Fichier ${String(rowNumber).padStart(2, '0')}: ${filename}`
+  const displayText = `${dt('fileDisplay.fileNumber', { number: String(rowNumber).padStart(2, '0') })}: ${filename}`
 
   return (
     <div style={{ 
@@ -76,7 +79,7 @@ const FileDisplayRowLabel: React.FC = () => {
         onMouseOut={(e) => {
           e.currentTarget.style.textDecoration = 'none'
         }}
-        title={`Ouvrir ${filename} dans un nouvel onglet`}
+        title={dt('fileDisplay.openFileInNewTab', { filename })}
       >
         {displayText}
       </a>
@@ -114,7 +117,7 @@ const FileDisplayRowLabel: React.FC = () => {
           e.currentTarget.style.backgroundColor = 'transparent'
           e.currentTarget.style.borderColor = '#ddd'
         }}
-        title="Télécharger le fichier"
+        title={dt('fileDisplay.downloadFileTitle')}
       >
         ⬇
       </button>

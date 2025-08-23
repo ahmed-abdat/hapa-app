@@ -9,8 +9,8 @@ import {
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
-import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
+import { isAdminOrEditor } from '../../access/isAdminOrEditor'
 import { Banner } from '../../blocks/Banner/config'
 import { Code } from '../../blocks/Code/config'
 import { Gallery } from '../../blocks/Gallery/config'
@@ -43,10 +43,10 @@ export const Posts: CollectionConfig<'posts'> = {
     }
   },
   access: {
-    create: authenticated,
-    delete: authenticated,
+    create: isAdminOrEditor,
+    delete: isAdminOrEditor,
     read: authenticatedOrPublished,
-    update: authenticated,
+    update: isAdminOrEditor,
   },
   // This config controls what's populated by default when a post is referenced
   // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
@@ -62,6 +62,7 @@ export const Posts: CollectionConfig<'posts'> = {
   },
   admin: {
     defaultColumns: ['title', 'slug', 'updatedAt'],
+    hidden: ({ user }) => user?.role === 'moderator',
     components: {
       edit: {
         beforeDocumentControls: [
@@ -167,6 +168,10 @@ export const Posts: CollectionConfig<'posts'> = {
     {
       name: 'title',
       type: 'text',
+      label: {
+        fr: 'Titre',
+        ar: 'العنوان'
+      },
       required: true,
       localized: true,
       index: true, // Add database index for search queries
@@ -179,6 +184,10 @@ export const Posts: CollectionConfig<'posts'> = {
             {
               name: 'heroImage',
               type: 'upload',
+              label: {
+                fr: 'Image principale',
+                ar: 'الصورة الرئيسية'
+              },
               relationTo: 'media',
               // Note: filterOptions removed as Media collection access control handles filtering globally
               // This prevents conflicts and ensures consistent behavior with other media fields
@@ -186,6 +195,10 @@ export const Posts: CollectionConfig<'posts'> = {
             {
               name: 'content',
               type: 'richText',
+              label: {
+                fr: 'Contenu de l\'article',
+                ar: 'محتوى المقال'
+              },
               editor: lexicalEditor({
                 features: ({ rootFeatures }) => {
                   return [
@@ -198,18 +211,24 @@ export const Posts: CollectionConfig<'posts'> = {
                   ]
                 },
               }),
-              label: false,
               required: true,
               localized: true,
             },
           ],
-          label: 'Content',
+          label: {
+            fr: 'Contenu',
+            ar: 'المحتوى'
+          },
         },
         {
           fields: [
             {
               name: 'relatedPosts',
               type: 'relationship',
+              label: {
+                fr: 'Articles liés',
+                ar: 'المقالات ذات الصلة'
+              },
               filterOptions: ({ id }) => {
                 return {
                   id: {
@@ -223,15 +242,25 @@ export const Posts: CollectionConfig<'posts'> = {
             {
               name: 'categories',
               type: 'relationship',
+              label: {
+                fr: 'Catégories',
+                ar: 'الفئات'
+              },
               hasMany: true,
               relationTo: 'categories',
             },
           ],
-          label: 'Meta',
+          label: {
+            fr: 'Métadonnées',
+            ar: 'البيانات الوصفية'
+          },
         },
         {
           name: 'meta',
-          label: 'SEO',
+          label: {
+            fr: 'SEO',
+            ar: 'تحسين محركات البحث'
+          },
           fields: [
             OverviewField({
               titlePath: 'meta.title',
@@ -240,9 +269,21 @@ export const Posts: CollectionConfig<'posts'> = {
             }),
             MetaTitleField({
               hasGenerateFn: true,
+              overrides: {
+                label: {
+                  fr: 'Titre SEO',
+                  ar: 'عنوان السيو'
+                }
+              }
             }),
             MetaImageField({
               relationTo: 'media',
+              overrides: {
+                label: {
+                  fr: 'Image SEO',
+                  ar: 'صورة السيو'
+                }
+              }
               // Note: filterOptions not supported by MetaImageField
               // Media collection access control handles filtering
             }),
@@ -258,11 +299,18 @@ export const Posts: CollectionConfig<'posts'> = {
             MetaDescriptionField({
               hasGenerateFn: true,
               overrides: {
+                label: {
+                  fr: 'Description SEO',
+                  ar: 'وصف السيو'
+                },
                 // SEO best practice: 150-160 characters for meta descriptions
                 minLength: 120,
                 maxLength: 160,
                 admin: {
-                  description: 'Ceci devrait contenir entre 120 et 160 caractères. Pour obtenir de l\'aide pour rédiger des descriptions meta de qualité, consultez les bonnes pratiques.',
+                  description: {
+                    fr: 'Ceci devrait contenir entre 120 et 160 caractères. Pour obtenir de l\'aide pour rédiger des descriptions meta de qualité, consultez les bonnes pratiques.',
+                    ar: 'يجب أن تحتوي على 120-160 حرفاً. للحصول على مساعدة في كتابة أوصاف سيو عالية الجودة، راجع أفضل الممارسات.'
+                  }
                 },
               },
             }),
@@ -281,6 +329,10 @@ export const Posts: CollectionConfig<'posts'> = {
     {
       name: 'publishedAt',
       type: 'date',
+      label: {
+        fr: 'Date de publication',
+        ar: 'تاريخ النشر'
+      },
       index: true, // Add database index for faster date-based queries
       admin: {
         date: {
@@ -302,6 +354,10 @@ export const Posts: CollectionConfig<'posts'> = {
     {
       name: 'authors',
       type: 'relationship',
+      label: {
+        fr: 'Auteurs',
+        ar: 'المؤلفون'
+      },
       admin: {
         position: 'sidebar',
       },

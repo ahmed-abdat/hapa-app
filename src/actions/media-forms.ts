@@ -10,6 +10,7 @@ import {
 } from '@/lib/validations/media-forms'
 import type { FormSubmissionResponse } from '@/types/media-forms'
 import { sanitizeFilename } from '@/lib/file-upload'
+import { getMediaChannelLabel } from '@/lib/media-mappings'
 import { 
   validateMultipleFilesProduction, 
   createProductionValidationSummary,
@@ -585,23 +586,25 @@ function buildSubmissionData(
   screenshotUrls: string[], 
   attachmentUrls: string[]
 ): Record<string, any> {
+  const locale = ['fr', 'ar'].includes(fields.locale) ? fields.locale as 'fr' | 'ar' : 'fr'
+  
   return {
     formType: fields.formType as 'report' | 'complaint',
     submittedAt: new Date().toISOString(),
-    locale: ['fr', 'ar'].includes(fields.locale) ? fields.locale as 'fr' | 'ar' : 'fr',
+    locale,
     submissionStatus: 'pending' as const,
     priority: 'medium' as const,
     
     // Top-level fields for admin visibility
     mediaType: fields.mediaType,
-    specificChannel: getSpecificChannel(fields),
+    specificChannel: getSpecificChannel(fields, locale),
     programName: fields.programName?.trim() || 'Programme sans nom',
     
     // Content information
     contentInfo: {
       mediaType: fields.mediaType,
       mediaTypeOther: fields.mediaTypeOther?.trim() || '',
-      specificChannel: getSpecificChannel(fields),
+      specificChannel: getSpecificChannel(fields, locale),
       programName: fields.programName?.trim() || 'Programme sans nom',
       broadcastDateTime: fields.broadcastDateTime,
       linkScreenshot: fields.linkScreenshot?.trim() || '',
@@ -637,14 +640,18 @@ function buildSubmissionData(
 }
 
 /**
- * Get specific channel information
+ * Get specific channel information with localized labels
  */
-function getSpecificChannel(fields: Record<string, any>): string {
+function getSpecificChannel(fields: Record<string, any>, locale: 'fr' | 'ar' = 'fr'): string {
   if (fields.mediaType === 'television' && fields.tvChannel) {
-    return fields.tvChannelOther || fields.tvChannel
+    const channel = fields.tvChannelOther || fields.tvChannel
+    // If it's a custom "other" value, return as-is, otherwise get localized label
+    return fields.tvChannelOther ? channel : getMediaChannelLabel(channel, 'television', locale)
   }
   if (fields.mediaType === 'radio' && fields.radioStation) {
-    return fields.radioStationOther || fields.radioStation
+    const station = fields.radioStationOther || fields.radioStation
+    // If it's a custom "other" value, return as-is, otherwise get localized label
+    return fields.radioStationOther ? station : getMediaChannelLabel(station, 'radio', locale)
   }
   return ''
 }

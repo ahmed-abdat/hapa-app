@@ -27,6 +27,7 @@ export const MediaCleanupJobs: CollectionConfig = {
     },
     defaultColumns: ['jobType', 'status', 'filesProcessed', 'filesDeleted', 'executedAt'],
     listSearchableFields: ['jobType', 'status'],
+    hidden: ({ user }) => user?.role === 'editor' || user?.role === 'moderator',
     description: {
       fr: "Suivre et gérer les opérations de nettoyage des fichiers média orphelins",
       ar: "تتبع وإدارة عمليات تنظيف ملفات الوسائط اليتيمة",

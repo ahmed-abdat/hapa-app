@@ -100,7 +100,7 @@ export interface Config {
   };
   globals: {};
   globalsSelect: {};
-  locale: 'fr' | 'ar';
+  locale: 'ar' | 'fr';
   user: User & {
     collection: 'users';
   };
@@ -254,7 +254,10 @@ export interface User {
    * Image de profil qui sera affichée dans l'en-tête d'administration
    */
   avatar?: (number | null) | Media;
-  role: 'admin' | 'editor' | 'user';
+  /**
+   * Rôle de l'utilisateur dans le système
+   */
+  role: 'admin' | 'editor' | 'moderator';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -319,6 +322,9 @@ export interface MediaContentSubmission {
    * Specific TV channel or radio station
    */
   specificChannel?: string | null;
+  /**
+   * Name of the program or content
+   */
   programName?: string | null;
   /**
    * Complete details about the media content that was reported or complained about
@@ -333,7 +339,13 @@ export interface MediaContentSubmission {
      * Specific channel or station name
      */
     specificChannel?: string | null;
+    /**
+     * Name of the specific program or content
+     */
     programName?: string | null;
+    /**
+     * Date and time when the content was broadcast
+     */
     broadcastDateTime?: string | null;
     linkScreenshot?: string | null;
     /**
@@ -371,7 +383,17 @@ export interface MediaContentSubmission {
       }[]
     | null;
   /**
-   * Internal notes for tracking and follow-up
+   * Notes du modérateur pour examen par l'administrateur
+   */
+  moderatorNotes?: string | null;
+  /**
+   * Notes internes réservées aux administrateurs (non visibles par les modérateurs)
+   */
+  internalNotes?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  /**
+   * Notes générales visibles par tous les utilisateurs autorisés
    */
   adminNotes?: string | null;
   resolution?: {
@@ -848,6 +870,10 @@ export interface MediaContentSubmissionsSelect<T extends boolean = true> {
         url?: T;
         id?: T;
       };
+  moderatorNotes?: T;
+  internalNotes?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
   adminNotes?: T;
   resolution?:
     | T

@@ -48,6 +48,16 @@ pnpm lint:fix                    # Auto-fix linting issues
 pnpm analyze                     # Bundle analysis (sets ANALYZE=true)
 ```
 
+### Testing & Browser Automation
+
+```bash
+# Playwright testing (MCP integration available)
+npx playwright test              # Run Playwright tests
+npx playwright test --ui         # Run tests with UI mode
+npx playwright test --debug      # Debug mode with browser
+npx playwright codegen           # Generate test code
+```
+
 ## Architecture Overview
 
 ### Route Structure
@@ -158,6 +168,30 @@ EMAIL_FROM=noreply@hapa.mr
 - **CSP Headers**: Configured in `next.config.mjs` for Payload live preview
 - **Image Optimization**: Sharp configured for production builds
 - **Security Headers**: XSS protection, content sniffing prevention
+
+### Testing & Browser Automation
+
+- **Playwright MCP Integration**: Multiple configurations available via `.mcp.json`
+  - `playwright`: Headless mode for CI/CD
+  - `playwright-headed`: Visual debugging with browser
+  - `playwright-mobile`: Mobile device testing (iPhone 15)
+- **Screenshot Management**: Screenshots stored in `.playwright-mcp/` (excluded from git)
+- **Test Automation**: Visual regression testing, E2E scenarios, accessibility audits
+- **Development Workflow**: Use MCP tools for browser automation, screenshot capture, and UI testing
+
+### Claude Code CLI Agents
+
+- **HAPA Admin Tester**: Specialized agent for comprehensive admin interface testing
+  - **Location**: `.claude/agents/hapa-admin-tester.md`
+  - **Invocation**: `@hapa-admin-tester`
+  - **Purpose**: Test Payload CMS admin functionality, validate responsive design, capture screenshots
+  - **Authentication**: Uses admin@hapa.mr credentials for testing
+  - **Testing Scope**: All admin routes, forms, mobile responsiveness, performance
+  - **Usage Examples**:
+    - `@hapa-admin-tester test the admin dashboard and take screenshots`
+    - `@hapa-admin-tester check mobile responsiveness of admin interface`
+    - `@hapa-admin-tester validate all admin forms and report issues`
+    - `@hapa-admin-tester run comprehensive admin audit with performance metrics`
 
 ### Production Considerations
 

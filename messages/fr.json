@@ -701,6 +701,20 @@
     "seoDescriptionGenerator": "Générateur de description SEO",
     "selectedImages": "Selected {count} images. Please add them manually...",
     "selectMultipleImages": "📁 Sélection multiple d'images",
-    "supportedFormats": "Supports: PNG, JPG, JPEG, WEBP, GIF"
+    "supportedFormats": "Supports: PNG, JPG, JPEG, WEBP, GIF",
+    "mediaFiles": "Fichiers médias",
+    "clickToPreviewPDF": "Cliquez sur Prévisualiser pour ouvrir le PDF",
+    "previewFile": "Prévisualiser",
+    "downloadFile": "Télécharger",
+    "downloadFileTitle": "Télécharger le fichier",
+    "fileWithoutURL": "Fichier sans URL",
+    "downloadedFile": "Fichier téléchargé",
+    "fileNumber": "Fichier {number}",
+    "openFileInNewTab": "Ouvrir {filename} dans un nouvel onglet",
+    "lastUpdated": "Dernière mise à jour",
+    "justNow": "À l'instant",
+    "never": "Jamais",
+    "minutesAgo": "Il y a {minutes}min",
+    "hoursAgo": "Il y a {hours}h"
   }
 }

@@ -711,6 +711,20 @@
     "seoDescriptionGenerator": "مولد وصف SEO",
     "selectedImages": "تم اختيار {count} صورة. يرجى إضافتها يدوياً...",
     "selectMultipleImages": "📁 اختيار صور متعددة",
-    "supportedFormats": "الصيغ المدعومة: PNG, JPG, JPEG, WEBP, GIF"
+    "supportedFormats": "الصيغ المدعومة: PNG, JPG, JPEG, WEBP, GIF",
+    "mediaFiles": "الملفات الإعلامية",
+    "clickToPreviewPDF": "انقر على معاينة لفتح ملف PDF",
+    "previewFile": "معاينة",
+    "downloadFile": "تحميل",
+    "downloadFileTitle": "تحميل الملف",
+    "fileWithoutURL": "ملف بدون رابط",
+    "downloadedFile": "ملف محمل",
+    "fileNumber": "ملف {number}",
+    "openFileInNewTab": "فتح {filename} في تبويب جديد",
+    "lastUpdated": "آخر تحديث",
+    "justNow": "الآن",
+    "never": "مطلقاً",
+    "minutesAgo": "منذ {minutes} دقيقة",
+    "hoursAgo": "منذ {hours} ساعة"
   }
 }

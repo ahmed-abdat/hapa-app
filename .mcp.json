@@ -36,6 +36,33 @@
       "env": {
         "REGISTRY_URL": "https://tweakcn.com/r/themes/registry.json"
       }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest",
+        "--headless"
+      ],
+      "env": {}
+    },
+    "playwright-headed": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ],
+      "env": {}
+    },
+    "playwright-mobile": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest",
+        "--device",
+        "iPhone 15"
+      ],
+      "env": {}
     }
   }
 }

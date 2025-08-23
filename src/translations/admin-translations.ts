@@ -1,17 +1,17 @@
 // src/translations/admin-translations.ts
-import { enTranslations } from '@payloadcms/translations/languages/en'
-import type { NestedKeysStripped } from '@payloadcms/translations'
+import { enTranslations } from "@payloadcms/translations/languages/en";
+import type { NestedKeysStripped } from "@payloadcms/translations";
 
 export const adminTranslations = {
   fr: {
     // Plugin-generated collections
     general: {
-      search: "Résultats de recherche", 
+      search: "Résultats de recherche",
       dashboard: "Tableau de bord HAPA",
       adminPanel: "Interface d'administration HAPA",
       welcome: "Bienvenue dans l'interface d'administration HAPA",
     },
-    
+
     // ConsolidatedDashboard translations
     dashboard: {
       title: "Centre de contrôle des soumissions médias",
@@ -23,7 +23,7 @@ export const adminTranslations = {
       bulkUpdatePriority: "Modifier la priorité",
       delete: "Supprimer",
     },
-    
+
     // Actions
     actions: {
       refresh: "Actualiser",
@@ -52,25 +52,25 @@ export const adminTranslations = {
       close: "Fermer",
       saveSettings: "Enregistrer les paramètres",
     },
-    
+
     // Status labels - FLATTENED for Payload CMS
-    'status.pending': "En attente",
-    'status.reviewing': "En révision",
-    'status.resolved': "Résolu",
-    'status.dismissed': "Rejeté",
-    
+    "status.pending": "En attente",
+    "status.reviewing": "En révision",
+    "status.resolved": "Résolu",
+    "status.dismissed": "Rejeté",
+
     // Priority labels - FLATTENED for Payload CMS
-    'priority.urgent': "Urgent",
-    'priority.high': "Élevé",
-    'priority.medium': "Moyen",
-    'priority.low': "Faible",
-    
+    "priority.urgent": "Urgent",
+    "priority.high": "Élevé",
+    "priority.medium": "Moyen",
+    "priority.low": "Faible",
+
     // Form types
     forms: {
       report: "Signalement",
       complaint: "Plainte",
     },
-    
+
     // Statistics
     stats: {
       total: "Total des soumissions",
@@ -83,7 +83,7 @@ export const adminTranslations = {
       thisWeek: "Cette semaine",
       responseTime: "Temps de réponse",
     },
-    
+
     // Filters
     filters: {
       all: "Tout",
@@ -93,7 +93,7 @@ export const adminTranslations = {
       search: "Rechercher...",
       last30Days: "30 derniers jours",
     },
-    
+
     // Tabs
     tabs: {
       overview: "Vue d'ensemble",
@@ -102,7 +102,7 @@ export const adminTranslations = {
       reports: "Rapports",
       team: "Équipe",
     },
-    
+
     // Table headers
     table: {
       title: "Titre",
@@ -130,7 +130,7 @@ export const adminTranslations = {
       complainant: "Plaignant",
       date: "Date",
     },
-    
+
     // Details section
     details: {
       title: "Détails de la soumission",
@@ -145,20 +145,20 @@ export const adminTranslations = {
       french: "Français",
       arabic: "Arabe",
     },
-    
+
     // Recent submissions
     recent: {
       title: "Soumissions récentes",
       viewAll: "Voir tout",
       subtitle: "Soumissions les plus récentes",
     },
-    
+
     // Empty state
     empty: {
       title: "Aucune soumission",
       description: "Il n'y a pas encore de soumissions média.",
     },
-    
+
     // Additional labels
     common: {
       loading: "Chargement des données...",
@@ -189,18 +189,27 @@ export const adminTranslations = {
       requiresAction: "Nécessite une action",
       notProvided: "Non fourni",
     },
-    
+
+    // Admin time/date translations
+    admin: {
+      lastUpdated: "Dernière mise à jour",
+      never: "Jamais",
+      justNow: "À l'instant",
+      minutesAgo: "Il y a {minutes} minute{minutes, plural, =1 {} other {s}}",
+      hoursAgo: "Il y a {hours} heure{hours, plural, =1 {} other {s}}",
+    },
+
     // Search
     search: {
       placeholder: "Rechercher...",
     },
-    
+
     // ModernDashboard specific translations
     modernDashboard: {
       // Headers
       controlCenterTitle: "Centre de contrôle HAPA",
       mediaSubmissionsManagement: "Gestion des soumissions médiatiques",
-      
+
       // Time ranges
       last7Days: "Derniers 7 jours",
       last30Days: "Derniers 30 jours",
@@ -209,14 +218,14 @@ export const adminTranslations = {
       timeRange30d: "30j",
       timeRangeAll: "Tout",
       dataAnalysisPeriod: "Période d'analyse des données",
-      
+
       // Actions
       export: "Exporter",
       exportToExcel: "Exporter les données au format Excel",
       retry: "Réessayer",
       viewSubmissionsDirectly: "Voir les soumissions directement",
       viewDetails: "Voir détails",
-      
+
       // Statistics
       totalSubmissions: "Total des soumissions",
       last30DaysLabel: "Dernières 30 jours",
@@ -238,14 +247,16 @@ export const adminTranslations = {
       reports: "rapports",
       dateRange: "Du 1er Déc - 31 Déc, 2024",
       completionPercentage: "35% completion",
-      
+
       // Risk Analysis
       mediaRiskAnalysis: "Analyse des risques médiatiques",
-      channelsWithMostComplaints: "Chaînes/programmes avec le plus de plaintes en attente",
-      
+      channelsWithMostComplaints:
+        "Chaînes/programmes avec le plus de plaintes en attente",
+
       // Violations
       criticalViolationsAnalysis: "Analyse des violations critiques",
-      mostFrequentViolations: "Types de violations les plus fréquents nécessitant une action réglementaire",
+      mostFrequentViolations:
+        "Types de violations les plus fréquents nécessitant une action réglementaire",
       hateSpeech: "Discours de haine",
       misinformation: "Désinformation",
       privacy: "Vie privée",
@@ -260,34 +271,38 @@ export const adminTranslations = {
       withEvidence: "Avec preuves",
       withoutEvidence: "Sans preuves",
       evidenceQuality: "Qualité preuves",
-      
+
       // Form Analysis
       formTypesAnalysis: "Analyse des types de formulaires",
-      distributionAndPriorities: "Répartition et priorités par type de soumission",
+      distributionAndPriorities:
+        "Répartition et priorités par type de soumission",
       complaintsLabel: "Plaintes",
       reportsLabel: "Signalements",
       pending: "En attente",
       urgent: "Urgentes",
       withContact: "Avec contact",
       anonymous: "Anonymes",
-      
+
       // Charts
       weeklyTrend: "Tendance hebdomadaire",
-      submissionsAndResolutions7Days: "Soumissions et résolutions sur les 7 derniers jours",
+      submissionsAndResolutions7Days:
+        "Soumissions et résolutions sur les 7 derniers jours",
       submissions: "Soumissions",
       statusDistribution: "Répartition des statuts",
       currentDistribution: "Distribution actuelle des soumissions",
       monthlyAnalysis: "Analyse mensuelle",
-      realEvolution6Months: "Évolution réelle des soumissions sur les 6 derniers mois",
+      realEvolution6Months:
+        "Évolution réelle des soumissions sur les 6 derniers mois",
       total: "Total",
       recentSubmissions: "Soumissions récentes",
-      allSubmissionsWithPagination: "Toutes les soumissions avec pagination, tri et filtrage avancé",
-      
+      allSubmissionsWithPagination:
+        "Toutes les soumissions avec pagination, tri et filtrage avancé",
+
       // Status updates
       markedAs: "Soumission marquée comme",
       inReview: "en révision",
       dismissed: "rejeté",
-      
+
       // Messages
       dataUpdated: "Données mises à jour",
       unknownError: "Erreur inconnue",
@@ -295,14 +310,14 @@ export const adminTranslations = {
       loadingDataError: "Erreur lors du chargement des données",
       updatingInProgress: "Mise à jour en cours...",
       updateError: "Erreur lors de la mise à jour",
-      
+
       // Errors
       connectionError: "Erreur de connexion",
       noData: "Aucune donnée",
-      unableToLoadDashboard: "Impossible de charger les données du tableau de bord",
+      unableToLoadDashboard:
+        "Impossible de charger les données du tableau de bord",
       noDataAvailable: "Aucune donnée disponible pour le moment",
-      
-      
+
       // DataTable translations
       dataTable: {
         // Table headers
@@ -313,222 +328,318 @@ export const adminTranslations = {
         statusHeader: "Statut",
         priorityHeader: "Priorité",
         actionsHeader: "Actions",
-        
+
         // Form type display
         complaint: "Plainte",
-        report: "Signalement", 
+        report: "Signalement",
         complaints: "Plaintes",
         reports: "Signalements",
-        
+
         // User display
         anonymous: "Anonyme",
-        
+
         // Locale display
         french: "🇫🇷 Français",
-        arabic: "🇦🇷 العربية",
-        
+        arabic: "🇲🇷 العربية",
+
         // Media type
         notSpecified: "Non spécifié",
-        
+
         // Time status
         recent: "Récent",
         old: "Ancien",
         hoursAgo: "{hours}h",
         daysAgo: "{days}j",
-        
+
         // Priority values (consistent with component)
         urgentPriority: "Urgent",
-        highPriority: "Haute", 
+        highPriority: "Haute",
         mediumPriority: "Moyenne",
         lowPriority: "Basse",
-        
+
         // Status values (consistent with component)
         pendingStatus: "En attente",
         resolvedStatus: "Résolu",
         dismissedStatus: "Rejeté",
         reviewingStatus: "En révision",
-        
+
         // Action menu items
         viewDetails: "Voir détails",
         markInReview: "Marquer en révision",
         markResolved: "Marquer comme résolu",
         reject: "Rejeter",
-        
+
         // Search and filters
         searchPlaceholder: "Rechercher (nom, email, programme, média)...",
         statusFilter: "Statut",
-        priorityFilter: "Priorité", 
+        priorityFilter: "Priorité",
         typeFilter: "Type",
         resetFilters: "Réinitialiser les filtres",
-        
+
         // Filter options
         allStatuses: "Tous les statuts",
-        allTypes: "Tous types", 
+        allTypes: "Tous types",
         allPriorities: "Toutes priorités",
-        
+
         // Pagination
         rowsPerPage: "Lignes par page:",
-        pageOf: "Page",  // Will be used with current/total values separately
+        pageOf: "Page", // Will be used with current/total values separately
         resultSingle: "résultat",
         resultPlural: "résultats",
-        
+
         // Empty state
         noDataFound: "Aucune soumission trouvée",
         noDataMessage: "Essayez de modifier vos filtres ou votre recherche",
-        
+
         // External link
-        viewInPayload: "Voir dans Payload CMS"
-      }
+        viewInPayload: "Voir dans Payload CMS",
+      },
     },
-    
+
     // ModernDashboard flattened keys - Essential for dashboard functionality
-    'modernDashboard.controlCenterTitle': "Centre de contrôle HAPA",
-    'modernDashboard.mediaSubmissionsManagement': "Gestion des soumissions médiatiques",
-    'modernDashboard.last7Days': "Derniers 7 jours",
-    'modernDashboard.last30Days': "Derniers 30 jours",
-    'modernDashboard.allData': "Toutes les données",
-    'modernDashboard.timeRange7d': "7j",
-    'modernDashboard.timeRange30d': "30j",
-    'modernDashboard.timeRangeAll': "Tout",
-    'modernDashboard.dataAnalysisPeriod': "Période d'analyse des données",
-    'modernDashboard.export': "Exporter",
-    'modernDashboard.exportToExcel': "Exporter les données au format Excel",
-    'modernDashboard.totalSubmissions': "Total des soumissions",
-    'modernDashboard.last30DaysLabel': "Dernières 30 jours",
-    'modernDashboard.urgentActionRequired': "Action urgente requise",
-    'modernDashboard.criticalComplaints': "Plaintes critiques",
-    'modernDashboard.pending': "En attente",
-    'modernDashboard.submissionsToProcess': "Soumissions à traiter",
-    'modernDashboard.responseTime': "Temps de réponse",
-    'modernDashboard.average': "Moyenne",
-    'modernDashboard.overdueFiles': "Dossiers en retard",
-    'modernDashboard.moreThan7Days': "Plus de 7 jours",
-    'modernDashboard.vsLastMonth': "vs mois dernier",
-    'modernDashboard.vsPreviousMonth': "vs mois précédent",
-    'modernDashboard.vsLastWeek': "vs semaine dernière",
-    'modernDashboard.immediateAttentionRequired': "Attention immédiate requise",
-    'modernDashboard.excellent': "Excellent",
-    'modernDashboard.attention': "Attention",
-    'modernDashboard.resolutionRate': "Taux résolution",
-    'modernDashboard.complaints': "plaintes",
-    'modernDashboard.reports': "rapports",
-    'modernDashboard.dateRange': "Du 1er Déc - 31 Déc, 2024",
-    'modernDashboard.completionPercentage': "35% completion",
-    'modernDashboard.resolved': "Résolu",
-    'modernDashboard.urgent': "Urgent",
-    'modernDashboard.complaintsLabel': "Plaintes",
-    'modernDashboard.reportsLabel': "Signalements",
-    'modernDashboard.withContact': "Avec contact",
-    'modernDashboard.anonymous': "Anonyme",
-    'modernDashboard.formTypesAnalysis': "Analyse des types de formulaires",
-    'modernDashboard.distributionAndPriorities': "Répartition et priorités par type de soumission",
-    'modernDashboard.weeklyTrend': "Tendance hebdomadaire",
-    'modernDashboard.submissionsAndResolutions7Days': "Soumissions et résolutions sur les 7 derniers jours",
-    'modernDashboard.submissions': "Soumissions",
-    'modernDashboard.statusDistribution': "Répartition des statuts",
-    'modernDashboard.currentDistribution': "Distribution actuelle des soumissions",
-    'modernDashboard.monthlyAnalysis': "Analyse mensuelle",
-    'modernDashboard.realEvolution6Months': "Évolution réelle des soumissions sur les 6 derniers mois",
-    'modernDashboard.total': "Total",
-    'modernDashboard.recentSubmissions': "Soumissions récentes",
-    'modernDashboard.allSubmissionsWithPagination': "Toutes les soumissions avec pagination, tri et filtrage avancé",
-    
+    "modernDashboard.controlCenterTitle": "Centre de contrôle HAPA",
+    "modernDashboard.mediaSubmissionsManagement":
+      "Gestion des soumissions médiatiques",
+    "modernDashboard.last7Days": "Derniers 7 jours",
+    "modernDashboard.last30Days": "Derniers 30 jours",
+    "modernDashboard.allData": "Toutes les données",
+    "modernDashboard.timeRange7d": "7j",
+    "modernDashboard.timeRange30d": "30j",
+    "modernDashboard.timeRangeAll": "Tout",
+    "modernDashboard.dataAnalysisPeriod": "Période d'analyse des données",
+    "modernDashboard.export": "Exporter",
+    "modernDashboard.exportToExcel": "Exporter les données au format Excel",
+    "modernDashboard.totalSubmissions": "Total des soumissions",
+    "modernDashboard.last30DaysLabel": "Dernières 30 jours",
+    "modernDashboard.urgentActionRequired": "Action urgente requise",
+    "modernDashboard.criticalComplaints": "Plaintes critiques",
+    "modernDashboard.pending": "En attente",
+    "modernDashboard.submissionsToProcess": "Soumissions à traiter",
+    "modernDashboard.responseTime": "Temps de réponse",
+    "modernDashboard.average": "Moyenne",
+    "modernDashboard.overdueFiles": "Dossiers en retard",
+    "modernDashboard.moreThan7Days": "Plus de 7 jours",
+    "modernDashboard.vsLastMonth": "vs mois dernier",
+    "modernDashboard.vsPreviousMonth": "vs mois précédent",
+    "modernDashboard.vsLastWeek": "vs semaine dernière",
+    "modernDashboard.immediateAttentionRequired": "Attention immédiate requise",
+    "modernDashboard.excellent": "Excellent",
+    "modernDashboard.attention": "Attention",
+    "modernDashboard.resolutionRate": "Taux résolution",
+    "modernDashboard.complaints": "plaintes",
+    "modernDashboard.reports": "rapports",
+    "modernDashboard.dateRange": "Du 1er Déc - 31 Déc, 2024",
+    "modernDashboard.completionPercentage": "35% completion",
+    "modernDashboard.resolved": "Résolu",
+    "modernDashboard.urgent": "Urgent",
+    "modernDashboard.complaintsLabel": "Plaintes",
+    "modernDashboard.reportsLabel": "Signalements",
+    "modernDashboard.withContact": "Avec contact",
+    "modernDashboard.anonymous": "Anonyme",
+    "modernDashboard.formTypesAnalysis": "Analyse des types de formulaires",
+    "modernDashboard.distributionAndPriorities":
+      "Répartition et priorités par type de soumission",
+    "modernDashboard.weeklyTrend": "Tendance hebdomadaire",
+    "modernDashboard.submissionsAndResolutions7Days":
+      "Soumissions et résolutions sur les 7 derniers jours",
+    "modernDashboard.submissions": "Soumissions",
+    "modernDashboard.statusDistribution": "Répartition des statuts",
+    "modernDashboard.currentDistribution":
+      "Distribution actuelle des soumissions",
+    "modernDashboard.monthlyAnalysis": "Analyse mensuelle",
+    "modernDashboard.realEvolution6Months":
+      "Évolution réelle des soumissions sur les 6 derniers mois",
+    "modernDashboard.total": "Total",
+    "modernDashboard.recentSubmissions": "Soumissions récentes",
+    "modernDashboard.allSubmissionsWithPagination":
+      "Toutes les soumissions avec pagination, tri et filtrage avancé",
+
     // ModernDashboard dataTable translations
-    'modernDashboard.dataTable.typeHeader': "Type",
-    'modernDashboard.dataTable.submitterHeader': "Soumetteur",
-    'modernDashboard.dataTable.mediaHeader': "Média/Programme",
-    'modernDashboard.dataTable.dateHeader': "Date",
-    'modernDashboard.dataTable.statusHeader': "Statut",
-    'modernDashboard.dataTable.priorityHeader': "Priorité",
-    'modernDashboard.dataTable.actionsHeader': "Actions",
-    'modernDashboard.dataTable.complaint': "Plainte",
-    'modernDashboard.dataTable.report': "Signalement",
-    'modernDashboard.dataTable.complaints': "Plaintes",
-    'modernDashboard.dataTable.reports': "Signalements",
-    'modernDashboard.dataTable.anonymous': "Anonyme",
-    'modernDashboard.dataTable.french': "🇫🇷 Français",
-    'modernDashboard.dataTable.arabic': "🇦🇷 العربية",
-    'modernDashboard.dataTable.pendingStatus': "En attente",
-    'modernDashboard.dataTable.reviewingStatus': "En révision",
-    'modernDashboard.dataTable.resolvedStatus': "Résolu",
-    'modernDashboard.dataTable.dismissedStatus': "Rejeté",
-    'modernDashboard.dataTable.urgentPriority': "Urgent",
-    'modernDashboard.dataTable.highPriority': "Haute",
-    'modernDashboard.dataTable.mediumPriority': "Moyenne",
-    'modernDashboard.dataTable.lowPriority': "Basse",
-    'modernDashboard.dataTable.viewDetails': "Voir détails",
-    'modernDashboard.dataTable.markInReview': "Marquer en révision",
-    'modernDashboard.dataTable.markResolved': "Marquer comme résolu",
-    'modernDashboard.dataTable.reject': "Rejeter",
-    'modernDashboard.dataTable.searchPlaceholder': "Rechercher...",
-    'modernDashboard.dataTable.statusFilter': "Filtrer par statut",
-    'modernDashboard.dataTable.allStatuses': "Tous les statuts",
-    'modernDashboard.dataTable.priorityFilter': "Filtrer par priorité",
-    'modernDashboard.dataTable.allPriorities': "Toutes les priorités",
-    'modernDashboard.dataTable.typeFilter': "Filtrer par type",
-    'modernDashboard.dataTable.allTypes': "Tous les types",
-    'modernDashboard.dataTable.resetFilters': "Réinitialiser les filtres",
-    'modernDashboard.dataTable.rowsPerPage': "Lignes par page",
-    'modernDashboard.dataTable.pageOf': "Page {page} de {pages}",
-    'modernDashboard.dataTable.resultPlural': "résultats",
-    'modernDashboard.dataTable.viewInPayload': "Voir dans Payload CMS",
-    
+    "modernDashboard.dataTable.typeHeader": "Type",
+    "modernDashboard.dataTable.submitterHeader": "Soumetteur",
+    "modernDashboard.dataTable.mediaHeader": "Média/Programme",
+    "modernDashboard.dataTable.dateHeader": "Date",
+    "modernDashboard.dataTable.statusHeader": "Statut",
+    "modernDashboard.dataTable.priorityHeader": "Priorité",
+    "modernDashboard.dataTable.actionsHeader": "Actions",
+    "modernDashboard.dataTable.complaint": "Plainte",
+    "modernDashboard.dataTable.report": "Signalement",
+    "modernDashboard.dataTable.complaints": "Plaintes",
+    "modernDashboard.dataTable.reports": "Signalements",
+    "modernDashboard.dataTable.anonymous": "Anonyme",
+    "modernDashboard.dataTable.french": "🇫🇷 Français",
+    "modernDashboard.dataTable.arabic": "🇲🇷 العربية",
+    "modernDashboard.dataTable.pendingStatus": "En attente",
+    "modernDashboard.dataTable.reviewingStatus": "En révision",
+    "modernDashboard.dataTable.resolvedStatus": "Résolu",
+    "modernDashboard.dataTable.dismissedStatus": "Rejeté",
+    "modernDashboard.dataTable.urgentPriority": "Urgent",
+    "modernDashboard.dataTable.highPriority": "Haute",
+    "modernDashboard.dataTable.mediumPriority": "Moyenne",
+    "modernDashboard.dataTable.lowPriority": "Basse",
+    "modernDashboard.dataTable.viewDetails": "Voir détails",
+    "modernDashboard.dataTable.markInReview": "Marquer en révision",
+    "modernDashboard.dataTable.markResolved": "Marquer comme résolu",
+    "modernDashboard.dataTable.reject": "Rejeter",
+    "modernDashboard.dataTable.searchPlaceholder": "Rechercher...",
+    "modernDashboard.dataTable.statusFilter": "Filtrer par statut",
+    "modernDashboard.dataTable.allStatuses": "Tous les statuts",
+    "modernDashboard.dataTable.priorityFilter": "Filtrer par priorité",
+    "modernDashboard.dataTable.allPriorities": "Toutes les priorités",
+    "modernDashboard.dataTable.typeFilter": "Filtrer par type",
+    "modernDashboard.dataTable.allTypes": "Tous les types",
+    "modernDashboard.dataTable.resetFilters": "Réinitialiser les filtres",
+    "modernDashboard.dataTable.rowsPerPage": "Lignes par page",
+    "modernDashboard.dataTable.pageOf": "Page {page} de {pages}",
+    "modernDashboard.dataTable.resultPlural": "résultats",
+    "modernDashboard.dataTable.viewInPayload": "Voir dans Payload CMS",
+
     // ModernDashboard flattened keys for days and months
-    'modernDashboard.days.sun': "Dim",
-    'modernDashboard.days.mon': "Lun",
-    'modernDashboard.days.tue': "Mar",
-    'modernDashboard.days.wed': "Mer",
-    'modernDashboard.days.thu': "Jeu",
-    'modernDashboard.days.fri': "Ven",
-    'modernDashboard.days.sat': "Sam",
-    
-    'modernDashboard.months.jan': "Jan",
-    'modernDashboard.months.feb': "Fév",
-    'modernDashboard.months.mar': "Mar",
-    'modernDashboard.months.apr': "Avr",
-    'modernDashboard.months.may': "Mai",
-    'modernDashboard.months.jun': "Jun",
-    'modernDashboard.months.jul': "Jul",
-    'modernDashboard.months.aug': "Aoû",
-    'modernDashboard.months.sep': "Sep",
-    'modernDashboard.months.oct': "Oct",
-    'modernDashboard.months.nov': "Nov",
-    'modernDashboard.months.dec': "Déc",
-    
+    "modernDashboard.days.sun": "Dim",
+    "modernDashboard.days.mon": "Lun",
+    "modernDashboard.days.tue": "Mar",
+    "modernDashboard.days.wed": "Mer",
+    "modernDashboard.days.thu": "Jeu",
+    "modernDashboard.days.fri": "Ven",
+    "modernDashboard.days.sat": "Sam",
+
+    "modernDashboard.months.jan": "Jan",
+    "modernDashboard.months.feb": "Fév",
+    "modernDashboard.months.mar": "Mar",
+    "modernDashboard.months.apr": "Avr",
+    "modernDashboard.months.may": "Mai",
+    "modernDashboard.months.jun": "Jun",
+    "modernDashboard.months.jul": "Jul",
+    "modernDashboard.months.aug": "Aoû",
+    "modernDashboard.months.sep": "Sep",
+    "modernDashboard.months.oct": "Oct",
+    "modernDashboard.months.nov": "Nov",
+    "modernDashboard.months.dec": "Déc",
+
+    // Error handling and connection messages
+    "modernDashboard.loadingDataError": "Erreur lors du chargement des données",
+    "modernDashboard.connectionError": "Erreur de connexion",
+    "modernDashboard.unableToLoadDashboard":
+      "Impossible de charger le tableau de bord",
+    "modernDashboard.retry": "Réessayer",
+    "modernDashboard.viewSubmissionsDirectly":
+      "Voir les soumissions directement",
+    "modernDashboard.requestTimeout":
+      "La requête a expiré. Veuillez réessayer.",
+    "modernDashboard.unknownError": "Une erreur inconnue s'est produite",
+    "modernDashboard.dataUpdated": "Données mises à jour avec succès",
+
+    // Data table translations
+    "modernDashboard.dataTable.noDataFound": "Aucune donnée trouvée",
+    "modernDashboard.dataTable.noDataMessage":
+      "Aucune soumission ne correspond aux critères sélectionnés",
+    "modernDashboard.dataTable.resultSingle": "résultat",
+    "modernDashboard.dataTable.resultMultiple": "résultats",
+    "modernDashboard.dataTable.notSpecified": "Non spécifié",
+    "modernDashboard.dataTable.old": "Ancien",
+    "modernDashboard.dataTable.recent": "Récent",
+
+    // Missing modernDashboard keys
+    "modernDashboard.bulkActions": "Actions en lot",
+    "modernDashboard.cases": "cas",
+    "modernDashboard.channelsWithMostComplaints":
+      "Chaînes avec le plus de plaintes",
+    "modernDashboard.criticalViolationsAnalysis":
+      "Analyse des violations critiques",
+    "modernDashboard.dismissed": "Rejeté",
+    "modernDashboard.evidenceQuality": "Qualité des preuves",
+    "modernDashboard.falseAdvertising": "Publicité mensongère",
+    "modernDashboard.hateSpeech": "Discours de haine",
+    "modernDashboard.high": "Élevé",
+    "modernDashboard.inReview": "En cours d'examen",
+    "modernDashboard.markedAs": "Marqué comme",
+    "modernDashboard.mediaRiskAnalysis": "Analyse des risques médiatiques",
+    "modernDashboard.misinformation": "Désinformation",
+    "modernDashboard.moderate": "Modéré",
+    "modernDashboard.mostFrequentViolations": "Violations les plus fréquentes",
+    "modernDashboard.noData": "Aucune donnée",
+    "modernDashboard.noDataAvailable": "Aucune donnée disponible",
+    "modernDashboard.others": "Autres",
+    "modernDashboard.pluralism": "Pluralisme",
+    "modernDashboard.privacy": "Confidentialité",
+    "modernDashboard.severity": "Gravité",
+    "modernDashboard.shockingContent": "Contenu choquant",
+    "modernDashboard.updateError": "Erreur de mise à jour",
+    "modernDashboard.updatingInProgress": "Mise à jour en cours",
+    "modernDashboard.viewDetails": "Voir les détails",
+    "modernDashboard.withEvidence": "Avec preuves",
+    "modernDashboard.withoutEvidence": "Sans preuves",
+
+    // Common admin translations
+    "actions.copyId": "Copier l'ID",
+    "actions.delete": "Supprimer",
+    "actions.details": "Détails",
+    "actions.openMenu": "Ouvrir le menu",
+    "actions.selectAll": "Sélectionner tout",
+    "actions.selectRow": "Sélectionner la ligne",
+    "actions.refresh": "Actualiser",
+    "admin.lastUpdated": "Dernière mise à jour",
+    "admin.never": "Jamais",
+    "admin.justNow": "À l'instant",
+    "admin.minutesAgo":
+      "Il y a {minutes} minute{minutes, plural, =1 {} other {s}}",
+    "admin.hoursAgo": "Il y a {hours} heure{hours, plural, =1 {} other {s}}",
+    "common.loading": "Chargement...",
+    "common.openInAdmin": "Ouvrir dans l'admin",
+    "common.untitled": "Sans titre",
+    "common.viewAllSubmissions": "Voir toutes les soumissions",
+    "dashboard.subtitle": "Tableau de bord de gestion",
+    "dashboard.title": "Tableau de bord HAPA",
+    "errors.fetchFailed": "Échec de récupération des données",
+    "forms.complaint": "Plainte",
+    "forms.report": "Rapport",
+    "recent.subtitle": "Aucune soumission récente trouvée",
+    "recent.title": "Soumissions récentes",
+    "recent.viewAll": "Voir tout",
+    "stats.thisWeek": "Cette semaine",
+    "stats.total": "Total",
+    "table.actions": "Actions",
+    "table.language": "Langue",
+    "table.priority": "Priorité",
+    "table.status": "Statut",
+    "table.submittedOn": "Soumis le",
+    "table.title": "Titre",
+    "table.type": "Type",
+
     // Quick Actions
     quickActions: {
       title: "Actions rapides",
     },
-    
+
     // Distribution
     distribution: {
       title: "Distribution",
     },
-    
+
     // View options
     viewAll: "Voir tout",
-    
+
     // Submissions
     submissions: {
       allTitle: "Toutes les soumissions",
       description: "Gérer et examiner toutes les soumissions",
       fullTablePlaceholder: "Tableau complet des soumissions",
     },
-    
+
     // Analytics
     analytics: {
       title: "Analyses",
       description: "Visualiser les tendances et métriques",
       placeholder: "Graphiques et analyses détaillées à venir...",
     },
-    
+
     // Reports
     reports: {
       title: "Rapports",
       description: "Générer et exporter des rapports",
       placeholder: "Génération de rapports personnalisés à venir...",
     },
-    
+
     // Modal
     modal: {
       submittedOn: "Soumis le",
@@ -536,7 +647,7 @@ export const adminTranslations = {
       contentInfo: "Informations du contenu",
       actions: "Actions",
     },
-    
+
     // Fields
     fields: {
       fullName: "Nom complet",
@@ -551,12 +662,12 @@ export const adminTranslations = {
       priority: "Priorité",
       notes: "Notes",
     },
-    
+
     // Placeholders
     placeholders: {
       addNotes: "Ajouter des notes...",
     },
-    
+
     // Settings
     settings: {
       title: "Paramètres",
@@ -569,14 +680,14 @@ export const adminTranslations = {
       defaultView: "Vue par défaut",
       itemsPerPage: "Éléments par page",
     },
-    
+
     // Views
     views: {
       grid: "Grille",
       list: "Liste",
       kanban: "Kanban",
     },
-    
+
     // Add top-level keys that are accessed without namespace
     bulkActions: "Actions groupées",
     thisWeek: "Cette semaine",
@@ -587,134 +698,162 @@ export const adminTranslations = {
     notProvided: "Non fourni",
     selected: "sélectionné(s)",
     itemsSelected: "éléments sélectionnés",
-    
+
     // Error messages
     errors: {
       fetchFailed: "Échec du chargement des données",
       updateFailed: "Échec de la mise à jour",
       bulkActionFailed: "Échec de l'action groupée",
     },
-    
+
     // Success messages
     success: {
       updated: "Mis à jour avec succès",
       bulkAction: "Action appliquée à {count} éléments",
       saved: "Enregistré avec succès",
     },
-    
+
     // Warning messages
     warnings: {
       noSelection: "Aucun élément sélectionné",
     },
-    
+
     // Bulk actions menu items (renamed to avoid conflict with top-level bulkActions)
     bulkActionsMenu: {
       resolve: "Résoudre la sélection",
       dismiss: "Rejeter la sélection",
       export: "Exporter la sélection",
     },
-    
+
     // MediaCleanupJobs collection translations - FLATTENED
-    'mediaCleanupJobs.singular': "Tâche de Nettoyage Média",
-    'mediaCleanupJobs.plural': "Tâches de Nettoyage Média",
-    'mediaCleanupJobs.group': "Système",
-    'mediaCleanupJobs.description': "Suivre et gérer les opérations de nettoyage des fichiers média orphelins",
-    'mediaCleanupJobs.titleSuffix': " – Tâches de Nettoyage Média",
-    'mediaCleanupJobs.metaDescription': "Gérer le nettoyage automatisé des fichiers média orphelins",
-    
+    "mediaCleanupJobs.singular": "Tâche de Nettoyage Média",
+    "mediaCleanupJobs.plural": "Tâches de Nettoyage Média",
+    "mediaCleanupJobs.group": "Système",
+    "mediaCleanupJobs.description":
+      "Suivre et gérer les opérations de nettoyage des fichiers média orphelins",
+    "mediaCleanupJobs.titleSuffix": " – Tâches de Nettoyage Média",
+    "mediaCleanupJobs.metaDescription":
+      "Gérer le nettoyage automatisé des fichiers média orphelins",
+
     // Dashboard UI
-    'mediaCleanupJobs.dashboardTitle': "Tableau de Bord de Nettoyage Média",
-    'mediaCleanupJobs.dashboardSubtitle': "Gérer les fichiers média orphelins et les opérations de nettoyage",
-    'mediaCleanupJobs.settings': "Paramètres",
-    'mediaCleanupJobs.scanning': "Scan en cours...",
-    'mediaCleanupJobs.scanForOrphaned': "Rechercher les Fichiers Orphelins",
-    'mediaCleanupJobs.scanSettings': "Paramètres de Scan",
-    'mediaCleanupJobs.directoriesToScan': "Répertoires à Scanner",
-    'mediaCleanupJobs.directoriesToScanDesc': "Liste des répertoires R2 séparés par des virgules",
-    'mediaCleanupJobs.maxFilesToProcess': "Nombre Max de Fichiers à Traiter",
-    'mediaCleanupJobs.retentionPeriod': "Période de Rétention (jours)",
-    'mediaCleanupJobs.retentionPeriodDesc': "Scanner uniquement les fichiers plus anciens que ce nombre de jours",
-    'mediaCleanupJobs.dryRunMode': "Mode Test (aperçu uniquement, pas de suppression réelle)",
-    'mediaCleanupJobs.totalScanned': "Total Scanné",
-    'mediaCleanupJobs.filesChecked': "Fichiers vérifiés dans tous les scans",
-    'mediaCleanupJobs.orphanedFound': "Orphelins Trouvés",
-    'mediaCleanupJobs.orphanedIdentified': "Fichiers orphelins identifiés",
-    'mediaCleanupJobs.filesDeleted': "Fichiers Supprimés",
-    'mediaCleanupJobs.successfullyDeleted': "Supprimés avec succès",
-    'mediaCleanupJobs.storageReclaimed': "Stockage Récupéré",
-    'mediaCleanupJobs.totalSpaceReclaimed': "Espace total récupéré",
-    'mediaCleanupJobs.jobHistory': "Historique des Tâches",
-    'mediaCleanupJobs.noJobsFound': "Aucune tâche de nettoyage trouvée",
-    'mediaCleanupJobs.runFirstScan': "Lancez un scan pour détecter les fichiers orphelins",
-    'mediaCleanupJobs.scanResults': "Résultats du Scan",
-    'mediaCleanupJobs.foundOrphaned': "fichiers orphelins trouvés",
-    'mediaCleanupJobs.selectAll': "Sélectionner tout",
-    'mediaCleanupJobs.cleanupSelected': "Nettoyer les fichiers sélectionnés",
-    'mediaCleanupJobs.noFilesFound': "Aucun fichier orphelin trouvé",
-    'mediaCleanupJobs.allFilesLinked': "Tous les fichiers dans R2 sont correctement liés",
-    'mediaCleanupJobs.lastModified': "Dernière modification",
-    'mediaCleanupJobs.size': "Taille",
-    'mediaCleanupJobs.startCleanup': "Lancer le Nettoyage",
-    'mediaCleanupJobs.cleaningInProgress': "Nettoyage en cours...",
-    'mediaCleanupJobs.actions': "Actions",
-    'mediaCleanupJobs.viewDetails': "Voir les détails",
-    'mediaCleanupJobs.executedAt': "Exécuté le",
-    'mediaCleanupJobs.completedAt': "Terminé le",
-    'mediaCleanupJobs.duration': "Durée",
-    'mediaCleanupJobs.filesScanned': "Fichiers scannés",
-    'mediaCleanupJobs.filesProcessed': "Fichiers traités",
-    'mediaCleanupJobs.deletionErrors': "Erreurs de suppression",
-    'mediaCleanupJobs.jobDetails': "Détails de la Tâche",
-    'mediaCleanupJobs.executionLog': "Journal d'Exécution",
-    'mediaCleanupJobs.errorLog': "Journal d'Erreurs",
-    'mediaCleanupJobs.close': "Fermer",
-    
+    "mediaCleanupJobs.dashboardTitle": "Tableau de Bord de Nettoyage Média",
+    "mediaCleanupJobs.dashboardSubtitle":
+      "Gérer les fichiers média orphelins et les opérations de nettoyage",
+    "mediaCleanupJobs.settings": "Paramètres",
+    "mediaCleanupJobs.scanning": "Scan en cours...",
+    "mediaCleanupJobs.scanForOrphaned": "Rechercher les Fichiers Orphelins",
+    "mediaCleanupJobs.scanSettings": "Paramètres de Scan",
+    "mediaCleanupJobs.directoriesToScan": "Répertoires à Scanner",
+    "mediaCleanupJobs.directoriesToScanDesc":
+      "Liste des répertoires R2 séparés par des virgules",
+    "mediaCleanupJobs.maxFilesToProcess": "Nombre Max de Fichiers à Traiter",
+    "mediaCleanupJobs.retentionPeriod": "Période de Rétention (jours)",
+    "mediaCleanupJobs.retentionPeriodDesc":
+      "Scanner uniquement les fichiers plus anciens que ce nombre de jours",
+    "mediaCleanupJobs.dryRunMode":
+      "Mode Test (aperçu uniquement, pas de suppression réelle)",
+    "mediaCleanupJobs.totalScanned": "Total Scanné",
+    "mediaCleanupJobs.filesChecked": "Fichiers vérifiés dans tous les scans",
+    "mediaCleanupJobs.orphanedFound": "Orphelins Trouvés",
+    "mediaCleanupJobs.orphanedIdentified": "Fichiers orphelins identifiés",
+    "mediaCleanupJobs.filesDeleted": "Fichiers Supprimés",
+    "mediaCleanupJobs.successfullyDeleted": "Supprimés avec succès",
+    "mediaCleanupJobs.storageReclaimed": "Stockage Récupéré",
+    "mediaCleanupJobs.totalSpaceReclaimed": "Espace total récupéré",
+    "mediaCleanupJobs.jobHistory": "Historique des Tâches",
+    "mediaCleanupJobs.noJobsFound": "Aucune tâche de nettoyage trouvée",
+    "mediaCleanupJobs.runFirstScan":
+      "Lancez un scan pour détecter les fichiers orphelins",
+    "mediaCleanupJobs.scanResults": "Résultats du Scan",
+    "mediaCleanupJobs.foundOrphaned": "fichiers orphelins trouvés",
+    "mediaCleanupJobs.selectAll": "Sélectionner tout",
+    "mediaCleanupJobs.cleanupSelected": "Nettoyer les fichiers sélectionnés",
+    "mediaCleanupJobs.noFilesFound": "Aucun fichier orphelin trouvé",
+    "mediaCleanupJobs.allFilesLinked":
+      "Tous les fichiers dans R2 sont correctement liés",
+    "mediaCleanupJobs.lastModified": "Dernière modification",
+    "mediaCleanupJobs.size": "Taille",
+    "mediaCleanupJobs.startCleanup": "Lancer le Nettoyage",
+    "mediaCleanupJobs.cleaningInProgress": "Nettoyage en cours...",
+    "mediaCleanupJobs.actions": "Actions",
+    "mediaCleanupJobs.viewDetails": "Voir les détails",
+    "mediaCleanupJobs.executedAt": "Exécuté le",
+    "mediaCleanupJobs.completedAt": "Terminé le",
+    "mediaCleanupJobs.duration": "Durée",
+    "mediaCleanupJobs.filesScanned": "Fichiers scannés",
+    "mediaCleanupJobs.filesProcessed": "Fichiers traités",
+    "mediaCleanupJobs.deletionErrors": "Erreurs de suppression",
+    "mediaCleanupJobs.jobDetails": "Détails de la Tâche",
+    "mediaCleanupJobs.executionLog": "Journal d'Exécution",
+    "mediaCleanupJobs.errorLog": "Journal d'Erreurs",
+    "mediaCleanupJobs.close": "Fermer",
+
     // Job types
-    'mediaCleanupJobs.jobTypesVerification': "Scan de Vérification",
-    'mediaCleanupJobs.jobTypesCleanup': "Nettoyage des Fichiers Orphelins",
-    'mediaCleanupJobs.jobTypesAudit': "Audit Complet",
-    
+    "mediaCleanupJobs.jobTypesVerification": "Scan de Vérification",
+    "mediaCleanupJobs.jobTypesCleanup": "Nettoyage des Fichiers Orphelins",
+    "mediaCleanupJobs.jobTypesAudit": "Audit Complet",
+
     // Status options
-    'mediaCleanupJobs.statusPending': "En Attente",
-    'mediaCleanupJobs.statusRunning': "En Cours",
-    'mediaCleanupJobs.statusCompleted': "Terminé",
-    'mediaCleanupJobs.statusFailed': "Échoué",
-    'mediaCleanupJobs.statusPartial': "Partiellement Terminé",
-    
+    "mediaCleanupJobs.statusPending": "En Attente",
+    "mediaCleanupJobs.statusRunning": "En Cours",
+    "mediaCleanupJobs.statusCompleted": "Terminé",
+    "mediaCleanupJobs.statusFailed": "Échoué",
+    "mediaCleanupJobs.statusPartial": "Partiellement Terminé",
+
     // Field labels
-    'mediaCleanupJobs.fieldsJobTypeLabel': "Type de Tâche",
-    'mediaCleanupJobs.fieldsStatusLabel': "Statut",
-    'mediaCleanupJobs.fieldsOrphanedFilesFilename': "Nom du Fichier",
-    'mediaCleanupJobs.fieldsOrphanedFilesPath': "Chemin",
-    
+    "mediaCleanupJobs.fieldsJobTypeLabel": "Type de Tâche",
+    "mediaCleanupJobs.fieldsStatusLabel": "Statut",
+    "mediaCleanupJobs.fieldsOrphanedFilesFilename": "Nom du Fichier",
+    "mediaCleanupJobs.fieldsOrphanedFilesPath": "Chemin",
+
     // Error messages
-    'mediaCleanupJobs.errorsScanFailed': "Échec du scan de fichiers orphelins",
-    'mediaCleanupJobs.errorsCleanupFailed': "Échec du nettoyage des fichiers",
-    'mediaCleanupJobs.errorsNoFilesSelected': "Aucun fichier sélectionné pour le nettoyage",
-    'mediaCleanupJobs.errorsLoadJobsFailed': "Impossible de charger l'historique des tâches",
-    
+    "mediaCleanupJobs.errorsScanFailed": "Échec du scan de fichiers orphelins",
+    "mediaCleanupJobs.errorsCleanupFailed": "Échec du nettoyage des fichiers",
+    "mediaCleanupJobs.errorsNoFilesSelected":
+      "Aucun fichier sélectionné pour le nettoyage",
+    "mediaCleanupJobs.errorsLoadJobsFailed":
+      "Impossible de charger l'historique des tâches",
+
     // Success/Info messages
-    'mediaCleanupJobs.messagesFoundOrphanedFiles': "Trouvé {count} fichiers orphelins",
-    'mediaCleanupJobs.messagesDryRunCompleted': "Test terminé. Supprimerait {count} fichiers",
-    'mediaCleanupJobs.messagesFilesDeleted': "Supprimé {count} fichiers avec succès",
-    
+    "mediaCleanupJobs.messagesFoundOrphanedFiles":
+      "Trouvé {count} fichiers orphelins",
+    "mediaCleanupJobs.messagesDryRunCompleted":
+      "Test terminé. Supprimerait {count} fichiers",
+    "mediaCleanupJobs.messagesFilesDeleted":
+      "Supprimé {count} fichiers avec succès",
+
     // Units and labels
-    'mediaCleanupJobs.unitsBytes': "o",
-    'mediaCleanupJobs.unitsKilobytes': "Ko",
-    'mediaCleanupJobs.unitsMegabytes': "Mo",
-    'mediaCleanupJobs.unitsGigabytes': "Go",
-    
+    "mediaCleanupJobs.unitsBytes": "o",
+    "mediaCleanupJobs.unitsKilobytes": "Ko",
+    "mediaCleanupJobs.unitsMegabytes": "Mo",
+    "mediaCleanupJobs.unitsGigabytes": "Go",
+
     // Additional labels
-    'mediaCleanupJobs.labelsTotal': "total",
-    'mediaCleanupJobs.labelsPlaceholderDirectories': "forms/, media/",
-    
+    "mediaCleanupJobs.labelsTotal": "total",
+    "mediaCleanupJobs.labelsPlaceholderDirectories": "forms/, media/",
+
     // BeforeDashboard component translations - FLATTENED
-    'beforeDashboard.title': "Tableau de bord HAPA",
-    'beforeDashboard.subtitle': "Interface d'administration - Haute Autorité de la Presse et de l'Audiovisuel",
-    'beforeDashboard.mediaSubmissions': "Soumissions Médiatiques",
-    'beforeDashboard.manageCollections': "Gérer les Collections",
-    'beforeDashboard.mediaSubmissionsAria': "Ouvrir les soumissions médiatiques",
-    'beforeDashboard.manageCollectionsAria': "Gérer les collections",
+    "beforeDashboard.title": "Tableau de bord HAPA",
+    "beforeDashboard.subtitle":
+      "Interface d'administration - Haute Autorité de la Presse et de l'Audiovisuel",
+    "beforeDashboard.mediaSubmissions": "Soumissions Médiatiques",
+    "beforeDashboard.manageCollections": "Gérer les Collections",
+    "beforeDashboard.mediaSubmissionsAria":
+      "Ouvrir les soumissions médiatiques",
+    "beforeDashboard.manageCollectionsAria": "Gérer les collections",
+
+    // Media Gallery component translations
+    "mediaGallery.mediaFiles": "Fichiers médias",
+    "mediaGallery.clickToPreviewPDF":
+      "Cliquez sur Prévisualiser pour ouvrir le PDF",
+    "mediaGallery.previewFile": "Prévisualiser",
+
+    // File Display component translations
+    "fileDisplay.fileWithoutURL": "Fichier sans URL",
+    "fileDisplay.downloadedFile": "Fichier téléchargé",
+    "fileDisplay.fileNumber": "Fichier {number}",
+    "fileDisplay.openFileInNewTab": "Ouvrir {filename} dans un nouvel onglet",
+    "fileDisplay.downloadFileTitle": "Télécharger le fichier",
   },
   ar: {
     // Plugin-generated collections
@@ -724,19 +863,19 @@ export const adminTranslations = {
       adminPanel: "واجهة إدارة هابا",
       welcome: "مرحباً بك في واجهة إدارة هابا",
     },
-    
+
     // ConsolidatedDashboard translations
     dashboard: {
-      title: "مركز التحكم في إرسالات الوسائط",
-      subtitle: "إدارة شاملة للتبليغات والشكاوى",
+      title: "مركز إدارة المحتوى الإعلامي",
+      subtitle: "الإدارة الشاملة للتقارير والشكاوى الإعلامية",
       refresh: "تحديث",
       selected: "محدد",
       actions: "الإجراءات",
-      bulkUpdateStatus: "تغيير الحالة",
-      bulkUpdatePriority: "تغيير الأولوية",
+      bulkUpdateStatus: "تحديث الحالة",
+      bulkUpdatePriority: "تحديث الأولوية",
       delete: "حذف",
     },
-    
+
     // Actions
     actions: {
       refresh: "تحديث",
@@ -765,38 +904,26 @@ export const adminTranslations = {
       close: "إغلاق",
       saveSettings: "حفظ الإعدادات",
     },
-    
-    // Status labels - FLATTENED for Payload CMS
-    'status.pending': "في الانتظار",
-    'status.reviewing': "قيد المراجعة",
-    'status.resolved': "محلول",
-    'status.dismissed': "مرفوض",
-    
-    // Priority labels - FLATTENED for Payload CMS
-    'priority.urgent': "عاجل",
-    'priority.high': "عالي",
-    'priority.medium': "متوسط",
-    'priority.low': "منخفض",
-    
+
     // Form types
     forms: {
-      report: "تبليغ",
-      complaint: "شكوى",
+      report: "تقرير إعلامي",
+      complaint: "شكوى إعلامية",
     },
-    
+
     // Statistics
     stats: {
-      total: "إجمالي الإرسالات",
-      reports: "البلاغات",
-      complaints: "الشكاوى",
-      pending: "في الانتظار",
-      resolved: "محلول",
+      total: "إجمالي المحتويات المقدمة",
+      reports: "التبليغات",
+      complaints: "الشكاوى المقدمة",
+      pending: "في انتظار المراجعة",
+      resolved: "تم الإنجاز",
       resolutionRate: "معدل الحل",
       urgent: "حالات عاجلة",
       thisWeek: "هذا الأسبوع",
-      responseTime: "وقت الاستجابة",
+      responseTime: "زمن الاستجابة",
     },
-    
+
     // Filters
     filters: {
       all: "الكل",
@@ -806,16 +933,16 @@ export const adminTranslations = {
       search: "بحث...",
       last30Days: "آخر 30 يومًا",
     },
-    
+
     // Tabs
     tabs: {
       overview: "نظرة عامة",
-      submissions: "الإرسالات",
+      submissions: "المحتويات المقدمة",
       analytics: "التحليلات",
       reports: "التقارير",
       team: "الفريق",
     },
-    
+
     // Table headers
     table: {
       title: "العنوان",
@@ -843,14 +970,14 @@ export const adminTranslations = {
       complainant: "المشتكي",
       date: "التاريخ",
     },
-    
+
     // Details section
     details: {
-      title: "تفاصيل المحتوى المقدم",
-      contentInfo: "معلومات المحتوى",
-      complainantInfo: "معلومات المشتكي",
-      programName: "البرنامج",
-      mediaType: "نوع الوسائط",
+      title: "تفاصيل المحتوى الإعلامي المقدم",
+      contentInfo: "معلومات المحتوى الإعلامي",
+      complainantInfo: "معلومات مقدم البلاغ",
+      programName: "اسم البرنامج",
+      mediaType: "نوع الوسائل الإعلامية",
       language: "اللغة",
       fullName: "الاسم الكامل",
       email: "البريد الإلكتروني",
@@ -858,24 +985,24 @@ export const adminTranslations = {
       french: "الفرنسية",
       arabic: "العربية",
     },
-    
+
     // Recent submissions
     recent: {
-      title: "المحتوى المقدم مؤخراً",
-      viewAll: "عرض الكل",
-      subtitle: "آخر المحتويات المقدمة",
+      title: "المحتوى الإعلامي المقدم مؤخراً",
+      viewAll: "عرض جميع المحتويات",
+      subtitle: "آخر المحتويات الإعلامية المقدمة",
     },
-    
+
     // Empty state
     empty: {
-      title: "لا يوجد محتوى مقدم",
-      description: "لا توجد أي محتويات مقدمة حتى الآن.",
+      title: "لا يوجد محتوى إعلامي مقدم",
+      description: "لا توجد أي محتويات إعلامية مقدمة حتى الآن.",
     },
-    
+
     // Additional labels
     common: {
       loading: "جاري تحميل البيانات...",
-      viewAllSubmissions: "عرض جميع المحتويات المقدمة",
+      viewAllSubmissions: "عرض جميع المحتويات الإعلامية",
       requiresReview: "تتطلب مراجعة",
       today: "اليوم",
       anonymous: "مجهول",
@@ -884,9 +1011,9 @@ export const adminTranslations = {
       import: "استيراد",
       statusDistribution: "توزيع الحالات",
       priorityLevels: "مستويات الأولوية",
-      recentSubmissions: "المحتويات المقدمة مؤخراً",
+      recentSubmissions: "المحتويات الإعلامية المقدمة مؤخراً",
       viewAll: "عرض الكل",
-      submissionManagement: "إدارة المحتويات المقدمة",
+      submissionManagement: "إدارة المحتويات الإعلامية",
       openInAdmin: "فتح في الإدارة",
       averageResponseTime: "متوسط وقت الاستجابة",
       lastThirtyDays: "خلال الثلاثين يوماً الماضية",
@@ -902,46 +1029,55 @@ export const adminTranslations = {
       requiresAction: "يتطلب إجراء",
       notProvided: "غير مقدم",
     },
-    
+
+    // Admin time/date translations
+    admin: {
+      lastUpdated: "آخر تحديث",
+      never: "أبداً",
+      justNow: "للتو",
+      minutesAgo: "منذ {minutes} دقيقة",
+      hoursAgo: "منذ {hours} ساعة",
+    },
+
     // Search
     search: {
       placeholder: "بحث...",
     },
-    
+
     // Quick Actions
     quickActions: {
       title: "إجراءات سريعة",
     },
-    
+
     // Distribution
     distribution: {
       title: "التوزيع",
     },
-    
+
     // View options
     viewAll: "عرض الكل",
-    
+
     // Submissions
     submissions: {
       allTitle: "جميع المحتويات المقدمة",
       description: "إدارة ومراجعة جميع المحتويات",
       fullTablePlaceholder: "جدول كامل للمحتويات المقدمة",
     },
-    
+
     // Analytics
     analytics: {
       title: "التحليلات",
       description: "عرض الاتجاهات والمقاييس",
       placeholder: "الرسوم البيانية والتحليلات التفصيلية قادمة...",
     },
-    
+
     // Reports
     reports: {
       title: "التقارير",
       description: "إنشاء وتصدير التقارير",
       placeholder: "إنشاء التقارير المخصصة قادم...",
     },
-    
+
     // Modal
     modal: {
       submittedOn: "تم التقديم في",
@@ -949,7 +1085,7 @@ export const adminTranslations = {
       contentInfo: "معلومات المحتوى",
       actions: "الإجراءات",
     },
-    
+
     // Fields
     fields: {
       fullName: "الاسم الكامل",
@@ -964,12 +1100,12 @@ export const adminTranslations = {
       priority: "الأولوية",
       notes: "ملاحظات",
     },
-    
+
     // Placeholders
     placeholders: {
       addNotes: "إضافة ملاحظات...",
     },
-    
+
     // Settings
     settings: {
       title: "الإعدادات",
@@ -982,14 +1118,14 @@ export const adminTranslations = {
       defaultView: "العرض الافتراضي",
       itemsPerPage: "عناصر لكل صفحة",
     },
-    
+
     // Views
     views: {
       grid: "شبكة",
       list: "قائمة",
       kanban: "كانبان",
     },
-    
+
     // Add top-level keys that are accessed without namespace
     bulkActions: "إجراءات جماعية",
     thisWeek: "هذا الأسبوع",
@@ -1000,32 +1136,32 @@ export const adminTranslations = {
     notProvided: "غير مقدم",
     selected: "محدد",
     itemsSelected: "عناصر محددة",
-    
+
     // Error messages
     errors: {
       fetchFailed: "فشل تحميل البيانات",
       updateFailed: "فشل التحديث",
       bulkActionFailed: "فشل الإجراء الجماعي",
     },
-    
+
     // Success messages
     success: {
       updated: "تم التحديث بنجاح",
       bulkAction: "تم تطبيق الإجراء على {count} عناصر",
       saved: "تم الحفظ بنجاح",
     },
-    
+
     // Warning messages
     warnings: {
       noSelection: "لم يتم تحديد أي عناصر",
     },
-    
+
     // ModernDashboard specific translations
     modernDashboard: {
       // Headers
-      controlCenterTitle: "مركز التحكم هابا",
-      mediaSubmissionsManagement: "إدارة الإرسالات الإعلامية",
-      
+      controlCenterTitle: "مركز إدارة الهيئة العليا للصحافة والسمعي البصري",
+      mediaSubmissionsManagement: "إدارة الشكاوى والتبليغات الإعلامية",
+
       // Time ranges
       last7Days: "آخر 7 أيام",
       last30Days: "آخر 30 يومًا",
@@ -1034,21 +1170,21 @@ export const adminTranslations = {
       timeRange30d: "30أ",
       timeRangeAll: "الكل",
       dataAnalysisPeriod: "فترة تحليل البيانات",
-      
-      // Actions  
+
+      // Actions
       export: "تصدير",
       exportToExcel: "تصدير البيانات بتنسيق Excel",
       retry: "إعادة المحاولة",
-      viewSubmissionsDirectly: "عرض الإرسالات مباشرة",
+      viewSubmissionsDirectly: "عرض المحتويات مباشرة",
       viewDetails: "عرض التفاصيل",
-      
+
       // Statistics
-      totalSubmissions: "إجمالي الإرسالات",
-      last30DaysLabel: "آخر 30 يومًا",
+      totalSubmissions: "إجمالي الطلبات المقدمة",
+      last30DaysLabel: "آخر 30 يوماً",
       urgentActionRequired: "إجراء عاجل مطلوب",
       criticalComplaints: "شكاوى حرجة",
-      submissionsToProcess: "إرسالات للمعالجة",
-      responseTime: "وقت الاستجابة",
+      submissionsToProcess: "طلبات تحتاج معالجة",
+      responseTime: "متوسط وقت الاستجابة",
       average: "المتوسط",
       overdueFiles: "ملفات متأخرة",
       moreThan7Days: "أكثر من 7 أيام",
@@ -1060,17 +1196,18 @@ export const adminTranslations = {
       attention: "انتباه",
       resolutionRate: "معدل الحل",
       complaints: "شكاوى",
-      reports: "تقارير",
-      dateRange: "من 1 ديسمبر - 31 ديسمبر 2024",
+      reports: "تبليغات",
+      dateRange: "جميع البيانات",
       completionPercentage: "35% اكتمال",
-      
+
       // Risk Analysis
       mediaRiskAnalysis: "تحليل مخاطر الوسائط",
       channelsWithMostComplaints: "القنوات/البرامج الأكثر شكاوى في الانتظار",
-      
+
       // Violations
       criticalViolationsAnalysis: "تحليل الانتهاكات الحرجة",
-      mostFrequentViolations: "أنواع الانتهاكات الأكثر تكرارًا التي تتطلب إجراءً تنظيميًا",
+      mostFrequentViolations:
+        "أنواع الانتهاكات الأكثر تكرارًا التي تتطلب إجراءً تنظيميًا",
       hateSpeech: "خطاب الكراهية",
       misinformation: "معلومات مضللة",
       privacy: "الخصوصية",
@@ -1085,34 +1222,34 @@ export const adminTranslations = {
       withEvidence: "مع أدلة",
       withoutEvidence: "بدون أدلة",
       evidenceQuality: "جودة الأدلة",
-      
+
       // Form Analysis
       formTypesAnalysis: "تحليل أنواع النماذج",
-      distributionAndPriorities: "التوزيع والأولويات حسب نوع الإرسال",
+      distributionAndPriorities: "التوزيع والأولويات حسب نوع الطلب",
       complaintsLabel: "شكاوى",
       reportsLabel: "تبليغات",
       pending: "في الانتظار",
       urgent: "عاجل",
       withContact: "مع جهة اتصال",
       anonymous: "مجهول",
-      
+
       // Charts
       weeklyTrend: "الاتجاه الأسبوعي",
-      submissionsAndResolutions7Days: "الإرسالات والحلول خلال آخر 7 أيام",
-      submissions: "الإرسالات",
+      submissionsAndResolutions7Days: "الطلبات والحلول خلال آخر 7 أيام",
+      submissions: "الطلبات المقدمة",
       statusDistribution: "توزيع الحالات",
-      currentDistribution: "التوزيع الحالي للإرسالات",
+      currentDistribution: "التوزيع الحالي للطلبات",
       monthlyAnalysis: "التحليل الشهري",
-      realEvolution6Months: "التطور الفعلي للإرسالات خلال آخر 6 أشهر",
-      total: "الإجمالي",
-      recentSubmissions: "الإرسالات الأخيرة",
-      allSubmissionsWithPagination: "جميع الإرسالات مع الترقيم والفرز والتصفية المتقدمة",
-      
+      realEvolution6Months: "تطور الطلبات المقدمة خلال آخر 6 أشهر",
+      total: "العدد الإجمالي",
+      recentSubmissions: "الطلبات الحديثة",
+      allSubmissionsWithPagination: "جميع الطلبات مع إمكانية التصفية والترتيب",
+
       // Status updates
-      markedAs: "تم وضع علامة على الإرسال كـ",
+      markedAs: "تم تصنيف الطلب كـ",
       inReview: "قيد المراجعة",
       dismissed: "مرفوض",
-      
+
       // Messages
       dataUpdated: "تم تحديث البيانات",
       unknownError: "خطأ غير معروف",
@@ -1120,13 +1257,13 @@ export const adminTranslations = {
       loadingDataError: "خطأ في تحميل البيانات",
       updatingInProgress: "جاري التحديث...",
       updateError: "خطأ في التحديث",
-      
+
       // Errors
       connectionError: "خطأ في الاتصال",
       noData: "لا توجد بيانات",
       unableToLoadDashboard: "غير قادر على تحميل بيانات لوحة القيادة",
       noDataAvailable: "لا توجد بيانات متاحة في الوقت الحالي",
-      
+
       // Month names
       months: {
         jan: "يناير",
@@ -1140,9 +1277,9 @@ export const adminTranslations = {
         sep: "سبتمبر",
         oct: "أكتوبر",
         nov: "نوفمبر",
-        dec: "ديسمبر"
+        dec: "ديسمبر",
       },
-      
+
       // Day names
       days: {
         sun: "الأحد",
@@ -1151,9 +1288,9 @@ export const adminTranslations = {
         wed: "الأربعاء",
         thu: "الخميس",
         fri: "الجمعة",
-        sat: "السبت"
+        sat: "السبت",
       },
-      
+
       // DataTable translations
       dataTable: {
         // Table headers
@@ -1164,298 +1301,251 @@ export const adminTranslations = {
         statusHeader: "الحالة",
         priorityHeader: "الأولوية",
         actionsHeader: "الإجراءات",
-        
+
         // Form type display
         complaint: "شكوى",
-        report: "بلاغ", 
+        report: "بلاغ",
         complaints: "شكاوى",
         reports: "بلاغات",
-        
+
         // User display
         anonymous: "مجهول",
-        
+
         // Locale display
         french: "🇫🇷 Français",
-        arabic: "🇦🇷 العربية",
-        
+        arabic: "🇲🇷 العربية",
+
         // Media type
         notSpecified: "غير محدد",
-        
+
         // Time status
         recent: "حديث",
         old: "قديم",
         hoursAgo: "{hours}س",
         daysAgo: "{days}ي",
-        
+
         // Priority values (consistent with component)
         urgentPriority: "عاجل",
-        highPriority: "عالي", 
+        highPriority: "عالي",
         mediumPriority: "متوسط",
         lowPriority: "منخفض",
-        
+
         // Status values (consistent with component)
-        pendingStatus: "قيد الانتظار",
+        pendingStatus: "في انتظار المراجعة",
         resolvedStatus: "محلول",
-        dismissedStatus: "مرفوض",
-        reviewingStatus: "قيد المراجعة",
-        
+        dismissedStatus: "مرفوضة",
+        reviewingStatus: "قيد الدراسة",
+
         // Action menu items
         viewDetails: "عرض التفاصيل",
         markInReview: "وضع علامة قيد المراجعة",
         markResolved: "وضع علامة كمحلول",
         reject: "رفض",
-        
+
         // Search and filters
         searchPlaceholder: "البحث (الاسم، الايميل، البرنامج، الوسائط)...",
         statusFilter: "الحالة",
-        priorityFilter: "الأولوية", 
+        priorityFilter: "الأولوية",
         typeFilter: "النوع",
         resetFilters: "إعادة تعيين المرشحات",
-        
+
         // Filter options
         allStatuses: "جميع الحالات",
-        allTypes: "جميع الأنواع", 
+        allTypes: "جميع الأنواع",
         allPriorities: "جميع الأولويات",
-        
+
         // Pagination
         rowsPerPage: "صفوف لكل صفحة:",
-        pageOf: "صفحة",  // Will be used with current/total values separately
+        pageOf: "صفحة", // Will be used with current/total values separately
         resultSingle: "نتيجة",
         resultPlural: "نتائج",
-        
+
         // Empty state
-        noDataFound: "لم يتم العثور على إرسالات",
+        noDataFound: "لم يتم العثور على طلبات",
         noDataMessage: "حاول تعديل المرشحات أو البحث",
-        
+
         // External link
-        viewInPayload: "عرض في Payload CMS"
-      }
+        viewInPayload: "عرض في Payload CMS",
+      },
     },
-    
-    // ModernDashboard flattened keys - Essential for dashboard functionality - Arabic
-    'modernDashboard.controlCenterTitle': "مركز التحكم هابا",
-    'modernDashboard.mediaSubmissionsManagement': "إدارة الإرسالات الإعلامية",
-    'modernDashboard.last7Days': "آخر 7 أيام",
-    'modernDashboard.last30Days': "آخر 30 يومًا",
-    'modernDashboard.allData': "جميع البيانات",
-    'modernDashboard.timeRange7d': "7أ",
-    'modernDashboard.timeRange30d': "30أ",
-    'modernDashboard.timeRangeAll': "الكل",
-    'modernDashboard.dataAnalysisPeriod': "فترة تحليل البيانات",
-    'modernDashboard.export': "تصدير",
-    'modernDashboard.exportToExcel': "تصدير البيانات بتنسيق Excel",
-    'modernDashboard.totalSubmissions': "إجمالي الإرسالات",
-    'modernDashboard.last30DaysLabel': "آخر 30 يومًا",
-    'modernDashboard.urgentActionRequired': "إجراء عاجل مطلوب",
-    'modernDashboard.criticalComplaints': "شكاوى حرجة",
-    'modernDashboard.pending': "في الانتظار",
-    'modernDashboard.submissionsToProcess': "إرسالات للمعالجة",
-    'modernDashboard.responseTime': "وقت الاستجابة",
-    'modernDashboard.average': "المتوسط",
-    'modernDashboard.overdueFiles': "ملفات متأخرة",
-    'modernDashboard.moreThan7Days': "أكثر من 7 أيام",
-    'modernDashboard.vsLastMonth': "مقابل الشهر الماضي",
-    'modernDashboard.vsPreviousMonth': "مقابل الشهر السابق",
-    'modernDashboard.vsLastWeek': "مقابل الأسبوع الماضي",
-    'modernDashboard.immediateAttentionRequired': "يتطلب اهتمامًا فوريًا",
-    'modernDashboard.excellent': "ممتاز",
-    'modernDashboard.attention': "انتباه",
-    'modernDashboard.resolutionRate': "معدل الحل",
-    'modernDashboard.complaints': "شكاوى",
-    'modernDashboard.reports': "تقارير",
-    'modernDashboard.dateRange': "من 1 ديسمبر - 31 ديسمبر 2024",
-    'modernDashboard.completionPercentage': "35% اكتمال",
-    'modernDashboard.resolved': "محلول",
-    'modernDashboard.urgent': "عاجل",
-    'modernDashboard.complaintsLabel': "شكاوى",
-    'modernDashboard.reportsLabel': "تبليغات",
-    'modernDashboard.withContact': "مع جهة اتصال",
-    'modernDashboard.anonymous': "مجهول",
-    'modernDashboard.formTypesAnalysis': "تحليل أنواع النماذج",
-    'modernDashboard.distributionAndPriorities': "التوزيع والأولويات حسب نوع الإرسال",
-    'modernDashboard.weeklyTrend': "الاتجاه الأسبوعي",
-    'modernDashboard.submissionsAndResolutions7Days': "الإرسالات والحلول خلال آخر 7 أيام",
-    'modernDashboard.submissions': "الإرسالات",
-    'modernDashboard.statusDistribution': "توزيع الحالات",
-    'modernDashboard.currentDistribution': "التوزيع الحالي للإرسالات",
-    'modernDashboard.monthlyAnalysis': "التحليل الشهري",
-    'modernDashboard.realEvolution6Months': "التطور الفعلي للإرسالات خلال آخر 6 أشهر",
-    'modernDashboard.total': "الإجمالي",
-    'modernDashboard.recentSubmissions': "الإرسالات الأخيرة",
-    'modernDashboard.allSubmissionsWithPagination': "جميع الإرسالات مع الترقيم والفرز والتصفية المتقدمة",
-    
-    // ModernDashboard dataTable translations - Arabic
-    'modernDashboard.dataTable.typeHeader': "النوع",
-    'modernDashboard.dataTable.submitterHeader': "المرسل",
-    'modernDashboard.dataTable.mediaHeader': "الوسائط/البرنامج",
-    'modernDashboard.dataTable.dateHeader': "التاريخ",
-    'modernDashboard.dataTable.statusHeader': "الحالة",
-    'modernDashboard.dataTable.priorityHeader': "الأولوية",
-    'modernDashboard.dataTable.actionsHeader': "الإجراءات",
-    'modernDashboard.dataTable.complaint': "شكوى",
-    'modernDashboard.dataTable.report': "تبليغ",
-    'modernDashboard.dataTable.complaints': "شكاوى",
-    'modernDashboard.dataTable.reports': "تبليغات",
-    'modernDashboard.dataTable.anonymous': "مجهول",
-    'modernDashboard.dataTable.french': "🇫🇷 فرنسي",
-    'modernDashboard.dataTable.arabic': "🇦🇷 العربية",
-    'modernDashboard.dataTable.pendingStatus': "قيد الانتظار",
-    'modernDashboard.dataTable.reviewingStatus': "قيد المراجعة",
-    'modernDashboard.dataTable.resolvedStatus': "محلول",
-    'modernDashboard.dataTable.dismissedStatus': "مرفوض",
-    'modernDashboard.dataTable.urgentPriority': "عاجل",
-    'modernDashboard.dataTable.highPriority': "عالية",
-    'modernDashboard.dataTable.mediumPriority': "متوسطة",
-    'modernDashboard.dataTable.lowPriority': "منخفضة",
-    'modernDashboard.dataTable.viewDetails': "عرض التفاصيل",
-    'modernDashboard.dataTable.markInReview': "وضع علامة قيد المراجعة",
-    'modernDashboard.dataTable.markResolved': "وضع علامة كمحلول",
-    'modernDashboard.dataTable.reject': "رفض",
-    'modernDashboard.dataTable.searchPlaceholder': "البحث...",
-    'modernDashboard.dataTable.statusFilter': "تصفية حسب الحالة",
-    'modernDashboard.dataTable.allStatuses': "جميع الحالات",
-    'modernDashboard.dataTable.priorityFilter': "تصفية حسب الأولوية",
-    'modernDashboard.dataTable.allPriorities': "جميع الأولويات",
-    'modernDashboard.dataTable.typeFilter': "تصفية حسب النوع",
-    'modernDashboard.dataTable.allTypes': "جميع الأنواع",
-    'modernDashboard.dataTable.resetFilters': "إعادة تعيين المرشحات",
-    'modernDashboard.dataTable.rowsPerPage': "صفوف لكل صفحة",
-    'modernDashboard.dataTable.pageOf': "صفحة {page} من {pages}",
-    'modernDashboard.dataTable.resultPlural': "نتائج",
-    'modernDashboard.dataTable.viewInPayload': "عرض في Payload CMS",
-    
-    // ModernDashboard flattened keys for days and months - Arabic
-    'modernDashboard.days.sun': "الأحد",
-    'modernDashboard.days.mon': "الإثنين",
-    'modernDashboard.days.tue': "الثلاثاء",
-    'modernDashboard.days.wed': "الأربعاء",
-    'modernDashboard.days.thu': "الخميس",
-    'modernDashboard.days.fri': "الجمعة",
-    'modernDashboard.days.sat': "السبت",
-    
-    'modernDashboard.months.jan': "يناير",
-    'modernDashboard.months.feb': "فبراير",
-    'modernDashboard.months.mar': "مارس",
-    'modernDashboard.months.apr': "أبريل",
-    'modernDashboard.months.may': "مايو",
-    'modernDashboard.months.jun': "يونيو",
-    'modernDashboard.months.jul': "يوليو",
-    'modernDashboard.months.aug': "أغسطس",
-    'modernDashboard.months.sep': "سبتمبر",
-    'modernDashboard.months.oct': "أكتوبر",
-    'modernDashboard.months.nov': "نوفمبر",
-    'modernDashboard.months.dec': "ديسمبر",
-    
+
     // Bulk actions menu items (renamed to avoid conflict with top-level bulkActions)
     bulkActionsMenu: {
       resolve: "حل المحدد",
       dismiss: "رفض المحدد",
       export: "تصدير المحدد",
     },
-    
-    // MediaCleanupJobs collection translations - FLATTENED
-    'mediaCleanupJobs.singular': "مهمة تنظيف الوسائط",
-    'mediaCleanupJobs.plural': "مهام تنظيف الوسائط",
-    'mediaCleanupJobs.group': "النظام",
-    'mediaCleanupJobs.description': "تتبع وإدارة عمليات تنظيف ملفات الوسائط اليتيمة",
-    'mediaCleanupJobs.titleSuffix': " – مهام تنظيف الوسائط",
-    'mediaCleanupJobs.metaDescription': "إدارة التنظيف التلقائي لملفات الوسائط اليتيمة",
-    
-    // Dashboard UI
-    'mediaCleanupJobs.dashboardTitle': "لوحة تحكم تنظيف الوسائط",
-    'mediaCleanupJobs.dashboardSubtitle': "إدارة ملفات الوسائط اليتيمة وعمليات التنظيف",
-    'mediaCleanupJobs.settings': "الإعدادات",
-    'mediaCleanupJobs.scanning': "جاري الفحص...",
-    'mediaCleanupJobs.scanForOrphaned': "البحث عن الملفات اليتيمة",
-    'mediaCleanupJobs.scanSettings': "إعدادات الفحص",
-    'mediaCleanupJobs.directoriesToScan': "المجلدات للفحص",
-    'mediaCleanupJobs.directoriesToScanDesc': "قائمة مجلدات R2 مفصولة بفواصل",
-    'mediaCleanupJobs.maxFilesToProcess': "الحد الأقصى للملفات للمعالجة",
-    'mediaCleanupJobs.retentionPeriod': "فترة الاحتفاظ (أيام)",
-    'mediaCleanupJobs.retentionPeriodDesc': "فحص الملفات الأقدم من هذا العدد من الأيام فقط",
-    'mediaCleanupJobs.dryRunMode': "وضع الاختبار (معاينة فقط، بدون حذف فعلي)",
-    'mediaCleanupJobs.totalScanned': "إجمالي المفحوص",
-    'mediaCleanupJobs.filesChecked': "الملفات المفحوصة في جميع عمليات الفحص",
-    'mediaCleanupJobs.orphanedFound': "اليتيمة الموجودة",
-    'mediaCleanupJobs.orphanedIdentified': "الملفات اليتيمة المحددة",
-    'mediaCleanupJobs.filesDeleted': "الملفات المحذوفة",
-    'mediaCleanupJobs.successfullyDeleted': "محذوفة بنجاح",
-    'mediaCleanupJobs.storageReclaimed': "التخزين المسترد",
-    'mediaCleanupJobs.totalSpaceReclaimed': "المساحة الإجمالية المستردة",
-    'mediaCleanupJobs.jobHistory': "سجل المهام",
-    'mediaCleanupJobs.noJobsFound': "لم يتم العثور على مهام تنظيف",
-    'mediaCleanupJobs.runFirstScan': "قم بإجراء فحص لاكتشاف الملفات اليتيمة",
-    'mediaCleanupJobs.scanResults': "نتائج الفحص",
-    'mediaCleanupJobs.foundOrphaned': "ملفات يتيمة موجودة",
-    'mediaCleanupJobs.selectAll': "تحديد الكل",
-    'mediaCleanupJobs.cleanupSelected': "تنظيف الملفات المحددة",
-    'mediaCleanupJobs.noFilesFound': "لم يتم العثور على ملفات يتيمة",
-    'mediaCleanupJobs.allFilesLinked': "جميع الملفات في R2 مرتبطة بشكل صحيح",
-    'mediaCleanupJobs.lastModified': "آخر تعديل",
-    'mediaCleanupJobs.size': "الحجم",
-    'mediaCleanupJobs.startCleanup': "بدء التنظيف",
-    'mediaCleanupJobs.cleaningInProgress': "جاري التنظيف...",
-    'mediaCleanupJobs.actions': "الإجراءات",
-    'mediaCleanupJobs.viewDetails': "عرض التفاصيل",
-    'mediaCleanupJobs.executedAt': "تم التنفيذ في",
-    'mediaCleanupJobs.completedAt': "اكتمل في",
-    'mediaCleanupJobs.duration': "المدة",
-    'mediaCleanupJobs.filesScanned': "الملفات المفحوصة",
-    'mediaCleanupJobs.filesProcessed': "الملفات المعالجة",
-    'mediaCleanupJobs.deletionErrors': "أخطاء الحذف",
-    'mediaCleanupJobs.jobDetails': "تفاصيل المهمة",
-    'mediaCleanupJobs.executionLog': "سجل التنفيذ",
-    'mediaCleanupJobs.errorLog': "سجل الأخطاء",
-    'mediaCleanupJobs.close': "إغلاق",
-    
-    // Job types
-    'mediaCleanupJobs.jobTypesVerification': "فحص التحقق",
-    'mediaCleanupJobs.jobTypesCleanup': "تنظيف الملفات اليتيمة",
-    'mediaCleanupJobs.jobTypesAudit': "مراجعة شاملة",
-    
-    // Status options
-    'mediaCleanupJobs.statusPending': "في الانتظار",
-    'mediaCleanupJobs.statusRunning': "قيد التشغيل",
-    'mediaCleanupJobs.statusCompleted': "مكتمل",
-    'mediaCleanupJobs.statusFailed': "فشل",
-    'mediaCleanupJobs.statusPartial': "مكتمل جزئياً",
-    
-    // Field labels
-    'mediaCleanupJobs.fieldsJobTypeLabel': "نوع المهمة",
-    'mediaCleanupJobs.fieldsStatusLabel': "الحالة",
-    'mediaCleanupJobs.fieldsOrphanedFilesFilename': "اسم الملف",
-    'mediaCleanupJobs.fieldsOrphanedFilesPath': "المسار",
-    
-    // Error messages
-    'mediaCleanupJobs.errorsScanFailed': "فشل فحص الملفات اليتيمة",
-    'mediaCleanupJobs.errorsCleanupFailed': "فشل تنظيف الملفات",
-    'mediaCleanupJobs.errorsNoFilesSelected': "لم يتم تحديد أي ملفات للتنظيف",
-    'mediaCleanupJobs.errorsLoadJobsFailed': "فشل تحميل سجل المهام",
-    
-    // Success/Info messages
-    'mediaCleanupJobs.messagesFoundOrphanedFiles': "تم العثور على {count} ملفات يتيمة",
-    'mediaCleanupJobs.messagesDryRunCompleted': "اكتمل الاختبار. سيحذف {count} ملفات",
-    'mediaCleanupJobs.messagesFilesDeleted': "تم حذف {count} ملفات بنجاح",
-    
-    // Units and labels
-    'mediaCleanupJobs.unitsBytes': "بايت",
-    'mediaCleanupJobs.unitsKilobytes': "ك.ب",
-    'mediaCleanupJobs.unitsMegabytes': "م.ب",
-    'mediaCleanupJobs.unitsGigabytes': "ج.ب",
-    
-    // Additional labels
-    'mediaCleanupJobs.labelsTotal': "المجموع",
-    'mediaCleanupJobs.labelsPlaceholderDirectories': "forms/, media/",
-    
-    // BeforeDashboard component translations - FLATTENED
-    'beforeDashboard.title': "لوحة تحكم هابا",
-    'beforeDashboard.subtitle': "واجهة الإدارة - الهيئة العليا للصحافة والسمعيات والبصريات",
-    'beforeDashboard.mediaSubmissions': "إرسالات الوسائط",
-    'beforeDashboard.manageCollections': "إدارة المجموعات",
-    'beforeDashboard.mediaSubmissionsAria': "فتح إرسالات الوسائط",
-    'beforeDashboard.manageCollectionsAria': "إدارة المجموعات",
-  }
-}
 
-export type AdminTranslationsObject = typeof adminTranslations.fr & typeof enTranslations
-export type AdminTranslationsKeys = NestedKeysStripped<AdminTranslationsObject> | NestedKeysStripped<typeof adminTranslations.fr>
+    // Common admin translations (Arabic)
+    "actions.refresh": "تحديث",
+    "admin.lastUpdated": "آخر تحديث",
+    "admin.never": "أبداً",
+    "admin.justNow": "للتو",
+    "admin.minutesAgo": "منذ {minutes} دقيقة",
+    "admin.hoursAgo": "منذ {hours} ساعة",
+
+    // Status labels - FLATTENED for Payload CMS (Arabic)
+    "status.pending": "قيد الانتظار",
+    "status.reviewing": "قيد المراجعة",
+    "status.resolved": "تم الحل",
+    "status.dismissed": "مرفوض",
+
+    // Priority labels - FLATTENED for Payload CMS (Arabic)
+    "priority.urgent": "عاجل",
+    "priority.high": "عالي",
+    "priority.medium": "متوسط",
+    "priority.low": "منخفض",
+
+    // BeforeDashboard component translations - FLATTENED (Arabic)
+    "beforeDashboard.title": "لوحة تحكم HAPA",
+    "beforeDashboard.subtitle": "واجهة الإدارة - الهيئة العليا للصحافة والسمعي البصري",
+    "beforeDashboard.mediaSubmissions": "الطلبات الإعلامية",
+    "beforeDashboard.manageCollections": "إدارة المجموعات",
+    "beforeDashboard.mediaSubmissionsAria": "فتح الطلبات الإعلامية",
+    "beforeDashboard.manageCollectionsAria": "إدارة المجموعات",
+
+    // ModernDashboard flattened keys - Essential for dashboard functionality (Arabic)
+    "modernDashboard.controlCenterTitle": "مركز التحكم هابا",
+    "modernDashboard.mediaSubmissionsManagement": "إدارة المحتويات الإعلامية",
+    "modernDashboard.last7Days": "آخر 7 أيام",
+    "modernDashboard.last30Days": "آخر 30 يوماً",
+    "modernDashboard.allData": "جميع البيانات",
+    "modernDashboard.timeRange7d": "7 أيام",
+    "modernDashboard.timeRange30d": "30 يوماً",
+    "modernDashboard.timeRangeAll": "الكل",
+    "modernDashboard.dataAnalysisPeriod": "فترة تحليل البيانات",
+    "modernDashboard.export": "تصدير",
+    "modernDashboard.exportToExcel": "تصدير البيانات بصيغة Excel",
+    "modernDashboard.totalSubmissions": "إجمالي المحتويات المقدمة",
+    "modernDashboard.last30DaysLabel": "آخر 30 يوماً",
+    "modernDashboard.urgentActionRequired": "إجراء عاجل مطلوب",
+    "modernDashboard.criticalComplaints": "شكاوى حرجة",
+    "modernDashboard.pending": "قيد الانتظار",
+    "modernDashboard.submissionsToProcess": "محتويات للمعالجة",
+    "modernDashboard.responseTime": "وقت الاستجابة",
+    "modernDashboard.average": "المتوسط",
+    "modernDashboard.overdueFiles": "ملفات متأخرة",
+    "modernDashboard.moreThan7Days": "أكثر من 7 أيام",
+    "modernDashboard.vsLastMonth": "مقابل الشهر الماضي",
+    "modernDashboard.vsPreviousMonth": "مقابل الشهر السابق",
+    "modernDashboard.vsLastWeek": "مقابل الأسبوع الماضي",
+    "modernDashboard.immediateAttentionRequired": "يتطلب اهتماماً فورياً",
+    "modernDashboard.excellent": "ممتاز",
+    "modernDashboard.attention": "انتباه",
+    "modernDashboard.resolutionRate": "معدل الحل",
+    "modernDashboard.complaints": "شكاوى",
+    "modernDashboard.reports": "تبليغات",
+    "modernDashboard.dateRange": "من 1 ديسمبر - 31 ديسمبر، 2024",
+    "modernDashboard.completionPercentage": "35% اكتمال",
+    "modernDashboard.resolved": "تم الحل",
+    "modernDashboard.urgent": "عاجل",
+    "modernDashboard.complaintsLabel": "الشكاوى",
+    "modernDashboard.reportsLabel": "التبليغات",
+    "modernDashboard.withContact": "مع معلومات الاتصال",
+    "modernDashboard.anonymous": "مجهول",
+    "modernDashboard.formTypesAnalysis": "تحليل أنواع النماذج",
+    "modernDashboard.distributionAndPriorities":
+      "التوزيع والأولويات حسب نوع المحتوى",
+    "modernDashboard.weeklyTrend": "الاتجاه الأسبوعي",
+    "modernDashboard.submissionsAndResolutions7Days":
+      "المحتويات والحلول خلال 7 أيام",
+    "modernDashboard.submissions": "المحتويات المقدمة",
+    "modernDashboard.statusDistribution": "توزيع الحالات",
+    "modernDashboard.currentDistribution": "التوزيع الحالي للمحتويات",
+    "modernDashboard.monthlyAnalysis": "التحليل الشهري",
+    "modernDashboard.realEvolution6Months":
+      "التطور الفعلي للمحتويات خلال 6 أشهر",
+    "modernDashboard.total": "الإجمالي",
+    "modernDashboard.recentSubmissions": "المحتويات المقدمة مؤخراً",
+    "modernDashboard.allSubmissionsWithPagination":
+      "جميع المحتويات مع الترقيم والفرز والتصفية المتقدمة",
+
+    // ModernDashboard dataTable translations (Arabic)
+    "modernDashboard.dataTable.noDataFound": "لا توجد طلبات",
+    "modernDashboard.dataTable.noDataMessage":
+      "لا توجد شكاوى أو تبليغات تتوافق مع معايير البحث المحددة",
+    "modernDashboard.dataTable.typeHeader": "النوع",
+    "modernDashboard.dataTable.submitterHeader": "المُقدِّم",
+    "modernDashboard.dataTable.mediaHeader": "الوسيلة/البرنامج",
+    "modernDashboard.dataTable.dateHeader": "التاريخ",
+    "modernDashboard.dataTable.statusHeader": "الحالة",
+    "modernDashboard.dataTable.priorityHeader": "الأولوية",
+    "modernDashboard.dataTable.actionsHeader": "الإجراءات",
+    "modernDashboard.dataTable.complaint": "شكوى",
+    "modernDashboard.dataTable.report": "تبليغ",
+    "modernDashboard.dataTable.complaints": "الشكاوى",
+    "modernDashboard.dataTable.reports": "التبليغات",
+    "modernDashboard.dataTable.anonymous": "مجهول",
+    "modernDashboard.dataTable.french": "🇫🇷 الفرنسية",
+    "modernDashboard.dataTable.arabic": "🇲🇷 العربية",
+    "modernDashboard.dataTable.pendingStatus": "قيد الانتظار",
+    "modernDashboard.dataTable.reviewingStatus": "قيد المراجعة",
+    "modernDashboard.dataTable.resolvedStatus": "تم الحل",
+    "modernDashboard.dataTable.dismissedStatus": "مرفوض",
+    "modernDashboard.dataTable.urgentPriority": "عاجل",
+    "modernDashboard.dataTable.highPriority": "عالي",
+    "modernDashboard.dataTable.mediumPriority": "متوسط",
+    "modernDashboard.dataTable.lowPriority": "منخفض",
+    "modernDashboard.dataTable.viewDetails": "عرض التفاصيل",
+    "modernDashboard.dataTable.markInReview": "وضع علامة قيد المراجعة",
+    "modernDashboard.dataTable.markResolved": "وضع علامة تم الحل",
+    "modernDashboard.dataTable.reject": "رفض",
+    "modernDashboard.dataTable.searchPlaceholder": "بحث...",
+    "modernDashboard.dataTable.statusFilter": "تصفية حسب الحالة",
+    "modernDashboard.dataTable.allStatuses": "جميع الحالات",
+    "modernDashboard.dataTable.priorityFilter": "تصفية حسب الأولوية",
+    "modernDashboard.dataTable.allPriorities": "جميع الأولويات",
+    "modernDashboard.dataTable.typeFilter": "تصفية حسب النوع",
+    "modernDashboard.dataTable.allTypes": "جميع الأنواع",
+    "modernDashboard.dataTable.resetFilters": "إعادة تعيين التصفية",
+    "modernDashboard.dataTable.rowsPerPage": "صفوف في الصفحة",
+    "modernDashboard.dataTable.pageOf": "صفحة {page} من {pages}",
+    "modernDashboard.dataTable.resultSingle": "نتيجة",
+    "modernDashboard.dataTable.resultPlural": "نتائج",
+    "modernDashboard.dataTable.viewInPayload": "عرض في Payload CMS",
+
+    // ModernDashboard flattened keys for days and months (Arabic)
+    "modernDashboard.days.sun": "الأحد",
+    "modernDashboard.days.mon": "الإثنين",
+    "modernDashboard.days.tue": "الثلاثاء",
+    "modernDashboard.days.wed": "الأربعاء",
+    "modernDashboard.days.thu": "الخميس",
+    "modernDashboard.days.fri": "الجمعة",
+    "modernDashboard.days.sat": "السبت",
+
+    "modernDashboard.months.jan": "يناير",
+    "modernDashboard.months.feb": "فبراير",
+    "modernDashboard.months.mar": "مارس",
+    "modernDashboard.months.apr": "أبريل",
+    "modernDashboard.months.may": "مايو",
+    "modernDashboard.months.jun": "يونيو",
+    "modernDashboard.months.jul": "يوليو",
+    "modernDashboard.months.aug": "أغسطس",
+    "modernDashboard.months.sep": "سبتمبر",
+    "modernDashboard.months.oct": "أكتوبر",
+    "modernDashboard.months.nov": "نوفمبر",
+    "modernDashboard.months.dec": "ديسمبر",
+
+    // Error handling and connection messages (Arabic)
+    "modernDashboard.loadingDataError": "خطأ في تحميل البيانات",
+    "modernDashboard.connectionError": "خطأ في الاتصال",
+
+    // Media Gallery component translations (Arabic)
+    "mediaGallery.mediaFiles": "الملفات الإعلامية",
+    "mediaGallery.clickToPreviewPDF": "انقر على معاينة لفتح ملف PDF",
+    "mediaGallery.previewFile": "معاينة",
+
+    // File Display component translations (Arabic)
+    "fileDisplay.fileWithoutURL": "ملف بدون رابط",
+    "fileDisplay.downloadedFile": "ملف تم تحميله",
+    "fileDisplay.fileNumber": "ملف {number}",
+    "fileDisplay.openFileInNewTab": "فتح {filename} في علامة تبويب جديدة",
+    "fileDisplay.downloadFileTitle": "تحميل الملف",
+  },
+};
+
+export type AdminTranslationsObject = typeof adminTranslations.fr &
+  typeof enTranslations;
+export type AdminTranslationsKeys =
+  | NestedKeysStripped<AdminTranslationsObject>
+  | NestedKeysStripped<typeof adminTranslations.fr>;

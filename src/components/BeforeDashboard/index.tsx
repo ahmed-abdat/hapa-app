@@ -1,11 +1,13 @@
 'use client'
 
 import { Banner } from "@payloadcms/ui/elements/Banner";
+import { useAuth } from '@payloadcms/ui';
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
+import Link from 'next/link';
 import { Inbox, FolderCog } from "lucide-react"; // Modern descriptive icons
 import { useAdminTranslation } from '@/utilities/admin-translations'
+import type { User } from '@/payload-types'
 
 import "./index.scss";
 
@@ -13,6 +15,7 @@ const baseClass = "before-dashboard";
 
 const BeforeDashboard: React.FC = () => {
   const { dt } = useAdminTranslation()
+  const { user } = useAuth<User>()
   
   return (
     <div className={baseClass}>
@@ -31,7 +34,8 @@ const BeforeDashboard: React.FC = () => {
               alt="HAPA Logo"
               width={96}
               height={17}
-              style={{ maxWidth: "100px", height: "auto" }}
+              style={{ maxWidth: "100px", height: "auto", width: "auto" }}
+              priority
             />
             <div>
               <h4 style={{ margin: 0, color: "#138B3A" }}>
@@ -45,7 +49,7 @@ const BeforeDashboard: React.FC = () => {
 
           <div style={{ display: "flex", gap: "0.5rem" }}>
             <Link
-              href="/admin/collections/media-content-submissions"
+              href="/admin"
               /* Enhanced UI/UX via scoped CSS (no Tailwind dependency in admin) */
               className="admin-action admin-action--outline"
               aria-label={dt('beforeDashboard.manageCollectionsAria')}
@@ -54,16 +58,19 @@ const BeforeDashboard: React.FC = () => {
               <FolderCog className="admin-action__icon" aria-hidden="true" />
               {dt('beforeDashboard.manageCollections')}
             </Link>
-            <Link
-              href="/admin/collections/dashboard-submissions"
-              /* Enhanced UI/UX via scoped CSS (no Tailwind dependency in admin) */
-              className="admin-action admin-action--primary"
-              aria-label={dt('beforeDashboard.mediaSubmissionsAria')}
-              title={dt('beforeDashboard.mediaSubmissions')}
-            >
-              <Inbox className="admin-action__icon" aria-hidden="true" />
-              {dt('beforeDashboard.mediaSubmissions')}
-            </Link>
+            {/* Hide "Soumissions Médiatiques" button for editors - only admins and moderators can access */}
+            {user?.role !== 'editor' && (
+              <Link
+                href="/admin/collections/dashboard-submissions"
+                /* Enhanced UI/UX via scoped CSS (no Tailwind dependency in admin) */
+                className="admin-action admin-action--primary"
+                aria-label={dt('beforeDashboard.mediaSubmissionsAria')}
+                title={dt('beforeDashboard.mediaSubmissions')}
+              >
+                <Inbox className="admin-action__icon" aria-hidden="true" />
+                {dt('beforeDashboard.mediaSubmissions')}
+              </Link>
+            )}
           </div>
         </div>
       </Banner>

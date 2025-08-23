@@ -4,21 +4,33 @@ export const CoreServices: Block = {
   slug: 'coreServices',
   interfaceName: 'CoreServicesBlock',
   labels: {
-    singular: 'Core Services',
-    plural: 'Core Services',
+    singular: {
+      fr: 'Services principaux',
+      ar: 'الخدمات الأساسية'
+    },
+    plural: {
+      fr: 'Services principaux',
+      ar: 'الخدمات الأساسية'
+    }
   },
   fields: [
     {
       name: 'title',
       type: 'text',
-      label: 'Section Title',
+      label: {
+        fr: 'Titre de la section',
+        ar: 'عنوان القسم'
+      },
       localized: true,
       required: false,
     },
     {
       name: 'description',
       type: 'textarea',
-      label: 'Section Description',
+      label: {
+        fr: 'Description de la section',
+        ar: 'وصف القسم'
+      },
       localized: true,
       required: false,
     },
