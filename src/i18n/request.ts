@@ -24,12 +24,13 @@ export default getRequestConfig(async ({requestLocale}) => {
       try {
         const defaultMessages = (await import(`../../messages/${routing.defaultLocale}.json`)).default;
         
-        // Simple merge function (deep merge for nested objects)
-        const mergeMessages = (defaults: any, user: any): any => {
+        // Type-safe merge function for translation messages
+        type Messages = Record<string, unknown>;
+        const mergeMessages = (defaults: Messages, user: Messages): Messages => {
           const merged = { ...defaults };
           for (const key in user) {
             if (user[key] && typeof user[key] === 'object' && !Array.isArray(user[key])) {
-              merged[key] = mergeMessages(merged[key] || {}, user[key]);
+              merged[key] = mergeMessages(merged[key] as Messages || {}, user[key] as Messages);
             } else if (user[key] !== undefined) {
               merged[key] = user[key];
             }
