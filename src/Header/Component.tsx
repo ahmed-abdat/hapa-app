@@ -1,5 +1,4 @@
 import { HeaderClient } from './Component.client'
-import React from 'react'
 
 export async function Header() {
   // Use empty data since we removed the global header configuration

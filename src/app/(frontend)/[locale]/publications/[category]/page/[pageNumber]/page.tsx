@@ -5,7 +5,6 @@ import { PaginationSuspense } from "@/components/Pagination/PaginationSuspense";
 import { PublicationsCategoryHero } from "@/heros/PublicationsCategoryHero";
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
-import React from "react";
 import { isValidLocale } from "@/utilities/locale";
 import { notFound } from "next/navigation";
 

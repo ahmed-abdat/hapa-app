@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { RowLabelComponent } from 'payload'
 import { getAttachmentTypeLabel } from '@/utilities/attachment-type-translations'
 

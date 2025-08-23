@@ -4,12 +4,10 @@ import React from "react";
 import { motion, Variants } from "framer-motion";
 import { Link } from "@/i18n/navigation";
 import {
-  Tv,
-  UserCheck,
+  Building2,
   Bell,
   FileText,
   Scale,
-  Phone,
   ArrowRight,
   ArrowLeft,
 } from "lucide-react";
@@ -23,28 +21,19 @@ type CoreServicesProps = {
 
 const services = [
   {
-    icon: Tv,
-    titleKey: "mediaLicensing",
-    descKey: "mediaLicensingDesc",
-    href: "/services/media-licensing",
+    icon: Building2,
+    titleKey: "generalServices",
+    descKey: "generalServicesDesc",
+    href: "/contact",
     color: "from-blue-500 to-blue-600",
     bgColor: "bg-blue-50",
     hoverColor: "hover:bg-blue-100",
   },
   {
-    icon: UserCheck,
-    titleKey: "professionalRegistration",
-    descKey: "professionalRegistrationDesc",
-    href: "/services/professional-registration",
-    color: "from-green-500 to-green-600",
-    bgColor: "bg-green-50",
-    hoverColor: "hover:bg-green-100",
-  },
-  {
     icon: Bell,
     titleKey: "publicComplaints",
     descKey: "publicComplaintsDesc",
-    href: "/services/complaints",
+    href: "/forms/media-content-complaint",
     color: "from-orange-500 to-orange-600",
     bgColor: "bg-orange-50",
     hoverColor: "hover:bg-orange-100",
@@ -53,7 +42,7 @@ const services = [
     icon: FileText,
     titleKey: "officialDocuments",
     descKey: "officialDocumentsDesc",
-    href: "/documents",
+    href: "/publications/decisions",
     color: "from-purple-500 to-purple-600",
     bgColor: "bg-purple-50",
     hoverColor: "hover:bg-purple-100",
@@ -62,19 +51,10 @@ const services = [
     icon: Scale,
     titleKey: "legalFramework",
     descKey: "legalFrameworkDesc",
-    href: "/legal",
+    href: "/publications/lois-et-reglements",
     color: "from-red-500 to-red-600",
     bgColor: "bg-red-50",
     hoverColor: "hover:bg-red-100",
-  },
-  {
-    icon: Phone,
-    titleKey: "informationServices",
-    descKey: "informationServicesDesc",
-    href: "/contact",
-    color: "from-indigo-500 to-indigo-600",
-    bgColor: "bg-indigo-50",
-    hoverColor: "hover:bg-indigo-100",
   },
 ];
 
@@ -147,9 +127,15 @@ export const CoreServicesBlock: React.FC<CoreServicesProps> = ({
                 variants={itemVariants}
                 className="group h-full"
               >
-                <Link href={service.href} className="block h-full">
+                <Link 
+                  href={service.href} 
+                  className="block h-full"
+                  aria-label={`${t(String(service.titleKey))} - ${t('learnMore')}`}
+                >
                   <div
                     className={`${service.bgColor} ${service.hoverColor} rounded-2xl p-4 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 ease-out border border-white/70 hover:border-primary/30 hover:-translate-y-1 hover:scale-[1.005] h-full flex flex-col backdrop-blur-sm`}
+                    role="region"
+                    aria-labelledby={`service-title-${index}`}
                   >
                     {/* Icon */}
                     <div
@@ -160,7 +146,10 @@ export const CoreServicesBlock: React.FC<CoreServicesProps> = ({
 
                     {/* Content */}
                     <div className="flex-grow">
-                      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 group-hover:text-primary transition-colors duration-300 ease-out">
+                      <h3 
+                        id={`service-title-${index}`}
+                        className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 group-hover:text-primary transition-colors duration-300 ease-out"
+                      >
                         {t(String(service.titleKey))}
                       </h3>
                       <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
@@ -173,11 +162,14 @@ export const CoreServicesBlock: React.FC<CoreServicesProps> = ({
                       <span className="text-primary font-medium text-sm sm:text-base">
                         {t('learnMore')}
                       </span>
-                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:scale-[1.02] transition-all duration-300 ease-out">
+                      <div 
+                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:scale-[1.02] transition-all duration-300 ease-out"
+                        aria-hidden="true"
+                      >
                         {isRtl ? (
-                          <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 text-primary group-hover:text-white group-hover:-translate-x-0.5 transition-all duration-300 ease-out" />
+                          <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 text-primary group-hover:text-white transition-colors duration-300 ease-out" />
                         ) : (
-                          <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-primary group-hover:text-white group-hover:translate-x-0.5 transition-all duration-300 ease-out" />
+                          <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 text-primary group-hover:text-white transition-colors duration-300 ease-out" />
                         )}
                       </div>
                     </div>

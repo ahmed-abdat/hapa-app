@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { ComplaintForm } from '@/components/CustomForms/ComplaintForm'
 import { FormSubmissionResponse } from '@/components/CustomForms/types'
 

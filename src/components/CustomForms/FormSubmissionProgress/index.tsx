@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { useTranslations } from 'next-intl'
 import { Progress } from '@/components/ui/progress'
 import { Upload, CheckCircle, AlertCircle, Clock } from 'lucide-react'

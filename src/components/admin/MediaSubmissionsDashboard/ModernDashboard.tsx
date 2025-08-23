@@ -701,7 +701,7 @@ export function ModernDashboard() {
       evidenceQuality,
       formTypeInsights: formBreakdown,
     };
-  }, [submissions, stats, dt, locale]);
+  }, [submissions, stats, dt]);
 
   if (loading) {
     return (

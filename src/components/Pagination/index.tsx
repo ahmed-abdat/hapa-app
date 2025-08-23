@@ -2,7 +2,7 @@
 import { cn } from '@/lib/utils'
 import { useRouter } from '@/i18n/navigation'
 import { useSearchParams } from 'next/navigation'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { type Locale } from '@/utilities/locale'
 import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
 import React from 'react'
@@ -23,6 +23,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   const router = useRouter()
   const searchParams = useSearchParams()
   const locale = useLocale() as Locale
+  const t = useTranslations()
   
   const isRtl = locale === 'ar'
   const totalPages = Math.ceil(totalItems / itemsPerPage)
@@ -119,7 +120,7 @@ export const Pagination: React.FC<PaginationProps> = ({
               ? 'text-gray-700 hover:text-primary hover:bg-primary/5 hover:border-primary/30 active:scale-95' 
               : 'text-gray-400 cursor-not-allowed opacity-50',
           )}
-          aria-label={locale === 'ar' ? 'الصفحة السابقة' : 'Page précédente'}
+          aria-label={t('previousPage')}
         >
           {isRtl ? (
             <ChevronRight className="w-4 h-4" />
@@ -127,7 +128,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             <ChevronLeft className="w-4 h-4" />
           )}
           <span className="hidden sm:inline">
-            {locale === 'ar' ? 'السابق' : 'Précédent'}
+            {t('previousPage')}
           </span>
         </button>
 
@@ -159,11 +160,7 @@ export const Pagination: React.FC<PaginationProps> = ({
                     ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg hover:shadow-xl transform hover:scale-105'
                     : 'text-gray-700 hover:text-primary hover:bg-primary/10 border border-gray-200 hover:border-primary/30'
                 )}
-                aria-label={
-                  locale === 'ar' 
-                    ? `الذهاب إلى الصفحة ${pageNumber}` 
-                    : `Aller à la page ${pageNumber}`
-                }
+                aria-label={(t as any)('goToPage', { page: pageNumber })}
                 aria-current={isActive ? 'page' : undefined}
               >
                 {pageNumber}
@@ -183,10 +180,10 @@ export const Pagination: React.FC<PaginationProps> = ({
               ? 'text-gray-700 hover:text-primary hover:bg-primary/5 hover:border-primary/30 active:scale-95' 
               : 'text-gray-400 cursor-not-allowed opacity-50',
           )}
-          aria-label={locale === 'ar' ? 'الصفحة التالية' : 'Page suivante'}
+          aria-label={t('nextPage')}
         >
           <span className="hidden sm:inline">
-            {locale === 'ar' ? 'التالي' : 'Suivant'}
+            {t('nextPage')}
           </span>
           {isRtl ? (
             <ChevronLeft className="w-4 h-4" />

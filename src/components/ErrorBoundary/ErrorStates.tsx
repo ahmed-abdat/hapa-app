@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 
 interface ErrorStateProps {
   type?: 'network' | 'notFound' | 'permission' | 'generic'

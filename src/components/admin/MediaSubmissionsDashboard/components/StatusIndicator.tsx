@@ -1,6 +1,5 @@
 "use client";
 
-import React from 'react';
 import { useAdminTranslation } from '@/utilities/admin-translations';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

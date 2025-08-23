@@ -6,6 +6,7 @@ import { Filter } from 'lucide-react'
 import type { Category } from '@/payload-types'
 import type { Locale } from '@/utilities/locale'
 import { motion } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 
 interface CategoryFilterProps {
   categories: Category[]
@@ -20,6 +21,7 @@ export function CategoryFilter({
 }: CategoryFilterProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const t = useTranslations()
   
   const isRtl = locale === 'ar'
 
@@ -45,7 +47,7 @@ export function CategoryFilter({
         <div className="flex items-center gap-2 text-primary mb-6">
           <Filter className="w-5 h-5" />
           <h3 className="text-lg font-semibold">
-            {locale === 'ar' ? 'فلترة المقالات' : 'Filtrer les articles'}
+            {t('filterArticles')}
           </h3>
         </div>
       )}
@@ -76,7 +78,7 @@ export function CategoryFilter({
               onClick={() => handleClearFilter()}
               dir={isRtl ? 'rtl' : 'ltr'}
             >
-              {locale === 'ar' ? 'جميع المقالات' : 'Tous les articles'}
+              {t('allArticles')}
             </Button>
           </motion.div>
 
