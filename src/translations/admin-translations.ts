@@ -51,6 +51,8 @@ export const adminTranslations = {
       share: "Partager",
       close: "Fermer",
       saveSettings: "Enregistrer les paramètres",
+      allMessages: "Tous les messages",
+      viewDetails: "Voir les détails",
     },
 
     // Status labels - FLATTENED for Payload CMS
@@ -904,6 +906,8 @@ export const adminTranslations = {
       share: "مشاركة",
       close: "إغلاق",
       saveSettings: "حفظ الإعدادات",
+      allMessages: "جميع الرسائل",
+      viewDetails: "عرض التفاصيل",
     },
 
     // Form types
