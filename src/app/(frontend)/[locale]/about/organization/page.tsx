@@ -20,150 +20,79 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
   
   const t = await getTranslations()
   
-  const organizationData = {
-    fr: {
-      title: t('organization'),
-      subtitle: t('organizationStructure'),
-      intro: t('legalFrameworkTitle'),
-      
-      governingCouncil: {
-        title: t('councilAuthority'),
-        description: "L'Autorité Supérieure est dirigée par un organe délibérant appelé le Conseil de l'Autorité Supérieure."
-      },
-      
-      composition: {
-        title: t('councilComposition'),
-        description: "Le Conseil de l'Autorité Supérieure se compose de neuf (9) membres, nommés par décret du Président de la République selon la répartition suivante :",
-        members: [
-          {
-            count: "4 membres",
-            description: "nommés par le Président de la République, dont le président de l'Autorité",
-            icon: "president"
-          },
-          {
-            count: "3 membres",
-            description: "proposés par le Président de l'Assemblée Nationale, dont au moins un représentant des partis d'opposition",
-            icon: "parliament"
-          },
-          {
-            count: "2 membres",
-            description: "proposés par les organismes professionnels de presse",
-            icon: "press"
-          }
-        ]
-      },
-      
-      qualifications: {
-        title: t('requiredQualifications'),
-        description: "Les membres doivent répondre aux critères suivants :",
-        criteria: [
-          "Diplôme universitaire (Bac + 3 minimum) en communication ou domaine connexe",
-          "Expérience de 5 ans minimum dans le secteur",
-          "Moralité irréprochable et compétences avérées",
-          "Engagement reconnu pour le développement des médias nationaux"
-        ]
-      },
-      
-      mandate: {
-        title: t('mandateDuration'),
-        president: "Le Président : mandat de 4 ans, renouvelable une fois",
-        members: "Les membres : mandat de 4 ans, non renouvelable",
-        replacement: "En cas de remplacement, le nouveau membre termine le mandat de son prédécesseur"
-      },
-      
-      oath: {
-        title: t('investmentOath'),
-        description: "Avant d'entrer en fonction, les membres prêtent serment devant la Cour Suprême :",
-        text: "« Je jure devant Dieu Tout-Puissant d'accomplir ma mission en toute loyauté et de l'exercer avec détachement, impartialité et intégrité conformément à la constitution et aux lois de la République Islamique de Mauritanie, et de préserver le secret des délibérations même après la fin de mes fonctions. »"
-      },
-      
-      functioning: {
-        title: t('councilFunctioning'),
-        meetings: "Réunions mensuelles ordinaires sur convocation du président ou des deux tiers des membres",
-        quorum: "Quorum de 6 membres minimum pour délibérer",
-        decisions: "Décisions à la majorité simple, voix prépondérante du président en cas d'égalité"
-      },
-      
-      confidentiality: {
-        title: t('confidentialityEthics'),
-        description: "Les membres sont tenus au secret professionnel pendant et après leur mandat concernant les faits, actes et informations dont ils ont eu connaissance dans l'exercice de leurs fonctions."
-      },
-      
-      backToTop: t('backToTop')
+  // Use translation keys for all content
+  const content = {
+    title: t('organization'),
+    subtitle: t('organizationStructure'),
+    intro: t('legalFrameworkTitle'),
+    
+    governingCouncil: {
+      title: t('councilAuthority'),
+      description: t('governingCouncilDescription')
     },
-    ar: {
-      title: t('organization'),
-      subtitle: t('organizationStructure'),
-      intro: t('legalFrameworkTitle'),
-      
-      governingCouncil: {
-        title: t('councilAuthority'),
-        description: "يدير السلطة العليا جهاز للمداولة يدعى مجلس السلطة العليا."
-      },
-      
-      composition: {
-        title: t('councilComposition'),
-        description: "يتكون مجلس السلطة العليا للصحافة والسمعيات البصرية من تسعة (9) أعضاء، يتم تعيينهم بمرسوم صادر عن رئيس الجمهورية على النحو التالي:",
-        members: [
-          {
-            count: "4 أعضاء",
-            description: "يعينهم رئيس الجمهورية من بينهم رئيس السلطة",
-            icon: "president"
-          },
-          {
-            count: "3 أعضاء",
-            description: "يقترحهم رئيس الجمعية الوطنية من بينهم واحد على الأقل يمثل أحزاب المعارضة الممثلة بالبرلمان",
-            icon: "parliament"
-          },
-          {
-            count: "عضوان",
-            description: "تقترحهما الهيئات الصحفية المهنية، وفي حالة تعذر التوافق يقترح الوزير المكلف بالاتصال بديلا",
-            icon: "press"
-          }
-        ]
-      },
-      
-      qualifications: {
-        title: t('requiredQualifications'),
-        description: "يتم اختيار رئيس وأعضاء السلطة العليا وفقًا للمعايير التالية:",
-        criteria: [
-          "الحصول على باكلوريا + 3 سنوات على الأقل في تخصص الإعلام أو إحدى التخصصات ذات الصلة",
-          "خبرة 5 سنوات في المجال",
-          "من ذوي الأخلاق الحميدة والكفاءات الأكيدة",
-          "المعروفين بالاهتمام الذي يولونه لتطوير وتنمية قطاع الصحافة الوطنية"
-        ]
-      },
-      
-      mandate: {
-        title: t('mandateDuration'),
-        president: "الرئيس: فترة انتداب مدتها 4 سنوات قابلة للتجديد مرة واحدة",
-        members: "الأعضاء: فترة انتداب مدتها 4 سنوات غير قابلة للتجديد",
-        replacement: "يكمل الأعضاء المعينون في محل الأعضاء المنتهية عضويتهم فترة انتداب من يحلون محلهم"
-      },
-      
-      oath: {
-        title: t('investmentOath'),
-        description: "يؤدي رئيس وأعضاء السلطة العليا، قبل توليهم مهامهم القسم التالي أمام المحكمة العليا:",
-        text: "«أقسم بالله العلي العظيم أن أؤدي مهمتي بكل أمانة وأن أمارسها بكل تجرد وحياد ونزاهة وفق دستور وقوانين الجمهورية الإسلامية الموريتانية، وأن أحافظ على سرية المداولات حتى بعد انتهاء مهاميَ»"
-      },
-      
-      functioning: {
-        title: t('councilFunctioning'),
-        meetings: "يجتمع مجلس السلطة العليا في دورة عادية كل شهر على الأقل بدعوة من رئيسه أو ثلثي أعضائه",
-        quorum: "لا يمكنه التداول إلا بحضور ستة (6) من أعضائه على الأقل",
-        decisions: "يتخذ القرارات بالأغلبية البسيطة للأعضاء الحاضرين ويكون صوت الرئيس مرجحا في حالة تعادل الأصوات"
-      },
-      
-      confidentiality: {
-        title: t('confidentialityEthics'),
-        description: "يلزم أعضاء السلطة العليا والأمين العام بالحفاظ على السرية المهنية بمناسبة مزاولة وظائفهم وبعد نهاية مأموريتهم فيما يخص الوقائع والأفعال والمعلومات التي اطلعوا عليها لدى السلطة العليا."
-      },
-      
-      backToTop: t('backToTop')
-    }
+    
+    composition: {
+      title: t('councilComposition'),
+      description: t('councilCompositionDescription'),
+      members: [
+        {
+          count: locale === 'ar' ? '4 أعضاء' : '4 membres',
+          description: t('membersByPresident'),
+          icon: 'president'
+        },
+        {
+          count: locale === 'ar' ? '3 أعضاء' : '3 membres',
+          description: t('membersByParliament'),
+          icon: 'parliament'
+        },
+        {
+          count: locale === 'ar' ? 'عضوان' : '2 membres',
+          description: t('membersByPress'),
+          icon: 'press'
+        }
+      ]
+    },
+    
+    qualifications: {
+      title: t('requiredQualifications'),
+      description: t('qualificationsDescription'),
+      criteria: [
+        t('qualificationEducation'),
+        t('qualificationExperience'),
+        t('qualificationIntegrity'),
+        t('qualificationCommitment')
+      ]
+    },
+    
+    mandate: {
+      title: t('mandateDuration'),
+      president: t('mandatePresident'),
+      members: t('mandateMembers'),
+      replacement: t('mandateReplacement')
+    },
+    
+    oath: {
+      title: t('investmentOath'),
+      description: t('oathDescription'),
+      text: t('oathText')
+    },
+    
+    functioning: {
+      title: t('councilFunctioning'),
+      meetings: t('councilMeetings'),
+      quorum: t('councilQuorum'),
+      decisions: t('councilDecisions')
+    },
+    
+    confidentiality: {
+      title: t('confidentialityEthics'),
+      description: t('confidentialityDescription')
+    },
+    
+    backToTop: t('backToTop')
   }
   
-  const content = organizationData[locale as keyof typeof organizationData]
+  // Content is now defined using translation keys above
   
   const getIcon = (iconType: string) => {
     switch (iconType) {
@@ -246,7 +175,9 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
               {content.governingCouncil.title}
             </h2>
             <div className="w-24 h-1 bg-primary mx-auto"></div>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className={`text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed ${
+              locale === 'ar' ? 'text-right' : 'text-left'
+            }`}>
               {content.governingCouncil.description}
             </p>
           </div>
@@ -262,7 +193,9 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
                 {content.composition.title}
               </h2>
               <div className="w-24 h-1 bg-primary mx-auto"></div>
-              <p className="text-lg text-gray-600 max-w-4xl mx-auto">
+              <p className={`text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed ${
+                locale === 'ar' ? 'text-right' : 'text-left'
+              }`}>
                 {content.composition.description}
               </p>
             </div>
@@ -285,7 +218,9 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
                       <h3 className="text-xl font-bold text-primary">
                         {member.count}
                       </h3>
-                      <p className="text-gray-600 leading-relaxed">
+                      <p className={`text-gray-600 leading-relaxed ${
+                        locale === 'ar' ? 'text-right' : 'text-left'
+                      }`}>
                         {member.description}
                       </p>
                     </div>
@@ -307,7 +242,9 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
                   {content.qualifications.title}
                 </h2>
                 <div className="w-20 h-1 bg-primary"></div>
-                <p className="text-lg text-gray-600">
+                <p className={`text-lg text-gray-600 leading-relaxed ${
+                  locale === 'ar' ? 'text-right' : 'text-left'
+                }`}>
                   {content.qualifications.description}
                 </p>
               </div>
@@ -320,7 +257,9 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
                         <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z"/>
                       </svg>
                     </div>
-                    <p className="text-gray-700 leading-relaxed flex-1">
+                    <p className={`text-gray-700 leading-relaxed flex-1 ${
+                      locale === 'ar' ? 'text-right' : 'text-left'
+                    }`}>
                       {criterion}
                     </p>
                   </div>
@@ -370,7 +309,9 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
                         <path d="M12 2L13.09 8.26L22 9L13.09 15.74L12 22L10.91 15.74L2 9L10.91 8.26L12 2Z"/>
                       </svg>
                     </div>
-                    <p className="text-gray-700 font-medium">
+                    <p className={`text-gray-700 font-medium leading-relaxed ${
+                      locale === 'ar' ? 'text-right' : 'text-left'
+                    }`}>
                       {content.mandate.president}
                     </p>
                   </div>
@@ -383,7 +324,9 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
                         <path d="M16 4C16.55 4 17 4.45 17 5V7H20C20.55 7 21 7.45 21 8V19C21 19.55 20.55 20 20 20H4C3.45 20 3 19.55 3 19V8C3 7.45 3.45 7 4 7H7V5C7 4.45 7.45 4 8 4H16Z"/>
                       </svg>
                     </div>
-                    <p className="text-gray-700 font-medium">
+                    <p className={`text-gray-700 font-medium leading-relaxed ${
+                      locale === 'ar' ? 'text-right' : 'text-left'
+                    }`}>
                       {content.mandate.members}
                     </p>
                   </div>
@@ -391,7 +334,9 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
               </div>
               
               <div className="pt-6 border-t border-gray-200">
-                <p className="text-gray-600 text-center">
+                <p className={`text-gray-600 leading-relaxed ${
+                  locale === 'ar' ? 'text-right' : 'text-left'
+                } text-center`}>
                   {content.mandate.replacement}
                 </p>
               </div>
@@ -406,13 +351,17 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
                   {content.oath.title}
                 </h2>
                 <div className="w-20 h-1 bg-secondary mx-auto"></div>
-                <p className="text-white/90 text-lg">
+                <p className={`text-white/90 text-lg leading-relaxed ${
+                  locale === 'ar' ? 'text-right' : 'text-left'
+                }`}>
                   {content.oath.description}
                 </p>
               </div>
               
               <div className="bg-white/10 rounded-xl p-8 backdrop-blur-sm border border-white/20">
-                <p className="text-white leading-relaxed text-center italic text-lg">
+                <p className={`text-white leading-loose italic text-lg ${
+                  locale === 'ar' ? 'text-right' : 'text-left'
+                } text-center`}>
                   {content.oath.text}
                 </p>
               </div>
@@ -440,7 +389,9 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
                     <path d="M12 2A10 10 0 0 0 2 12A10 10 0 0 0 12 22A10 10 0 0 0 22 12A10 10 0 0 0 12 2M16.2 16.2L11 13V7H12.5V12.2L17 14.9L16.2 16.2Z"/>
                   </svg>
                 </div>
-                <p className="text-gray-700 leading-relaxed">
+                <p className={`text-gray-700 leading-relaxed ${
+                  locale === 'ar' ? 'text-right' : 'text-left'
+                }`}>
                   {content.functioning.meetings}
                 </p>
               </div>
@@ -451,7 +402,9 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
                     <path d="M16 4C16.55 4 17 4.45 17 5V7H20C20.55 7 21 7.45 21 8V19C21 19.55 20.55 20 20 20H4C3.45 20 3 19.55 3 19V8C3 7.45 3.45 7 4 7H7V5C7 4.45 7.45 4 8 4H16ZM15 6H9V7H15V6ZM5 9V18H19V9H5ZM7 11H9V13H7V11ZM11 11H13V13H11V11ZM15 11H17V13H15V11Z"/>
                   </svg>
                 </div>
-                <p className="text-gray-700 leading-relaxed">
+                <p className={`text-gray-700 leading-relaxed ${
+                  locale === 'ar' ? 'text-right' : 'text-left'
+                }`}>
                   {content.functioning.quorum}
                 </p>
               </div>
@@ -462,7 +415,9 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
                     <path d="M18 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V4C20 2.9 19.1 2 18 2ZM18 20H6V4H18V20ZM8 6H16V8H8V6ZM8 10H16V12H8V10ZM8 14H16V16H8V14Z"/>
                   </svg>
                 </div>
-                <p className="text-gray-700 leading-relaxed">
+                <p className={`text-gray-700 leading-relaxed ${
+                  locale === 'ar' ? 'text-right' : 'text-left'
+                }`}>
                   {content.functioning.decisions}
                 </p>
               </div>
@@ -480,7 +435,9 @@ export default async function OrganizationPage({ params: paramsPromise }: Args) 
               </div>
               
               <div className="max-w-4xl mx-auto">
-                <p className="text-white/90 leading-relaxed text-lg">
+                <p className={`text-white/90 leading-relaxed text-lg ${
+                  locale === 'ar' ? 'text-right' : 'text-left'
+                }`}>
                   {content.confidentiality.description}
                 </p>
               </div>

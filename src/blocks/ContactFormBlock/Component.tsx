@@ -120,7 +120,7 @@ export function ContactFormBlock({ locale = 'fr' }: ContactFormBlockProps) {
                     <p className="font-medium mb-1">
                       {locale === 'ar' ? 'الهاتف' : 'Téléphone'}
                     </p>
-                    <p className="text-white/90 font-mono text-sm">
+                    <p className="text-white/90 font-mono text-sm" dir="ltr">
                       {t.phone}
                     </p>
                   </div>

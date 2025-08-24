@@ -15,7 +15,7 @@ public/sitemap*.xml
 
 # Debugging screenshots development
 debging-screenshots/*
-screenshots/
+# screenshots/
 
 hapa_backup/
 
@@ -34,3 +34,4 @@ playwright/.auth/
 .test-results/*
 test-results/
 playwright-report/
+tests/

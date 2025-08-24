@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useTranslations, useLocale } from 'next-intl';
 import { type Locale } from "@/utilities/locale";
+import { SectionHeader } from "@/components/SectionHeader";
 
 type CoreServicesProps = {
   title?: string;
@@ -95,21 +96,14 @@ export const CoreServicesBlock: React.FC<CoreServicesProps> = ({
     >
       <div className="hapa-container">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="header-spacing"
-        >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-            {title || t('coreServices')}
-          </h2>
-          <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            {description || t('coreServicesDesc')}
-          </p>
-          <div className="w-24 h-1.5 bg-gradient-to-r from-primary via-accent to-secondary mx-auto mt-8 rounded-full" />
-        </motion.div>
+        <SectionHeader
+          title={title || t('coreServices')}
+          description={description || t('coreServicesDesc')}
+          variant="main"
+          alignment="center"
+          showGradient={true}
+          gradientSize="md"
+        />
 
         {/* Services Grid */}
         <motion.div

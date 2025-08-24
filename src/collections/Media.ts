@@ -33,13 +33,17 @@ export const Media: CollectionConfig = {
     }
   },
   admin: {
+    group: {
+      fr: 'Contenu',
+      ar: 'المحتوى'
+    },
     useAsTitle: 'filename',
     defaultColumns: ['filename', 'alt', 'width', 'height', 'filesize', 'updatedAt'],
     listSearchableFields: ['filename', 'alt'],
     hidden: ({ user }) => user?.role === 'moderator',
     description: {
-      fr: 'Fichiers média pour les contenus éditoriaux. Les pièces jointes des formulaires sont automatiquement filtrées de cette vue.',
-      ar: 'ملفات الوسائط للمحتوى التحريري. يتم تصفية مرفقات النماذج تلقائياً من هذا العرض.'
+      fr: 'Gestion des fichiers média pour les contenus éditoriaux : images, documents, vidéos et audios. Les pièces jointes des formulaires sont automatiquement filtrées de cette vue pour maintenir une organisation claire.',
+      ar: 'إدارة ملفات الوسائط للمحتوى التحريري: الصور والمستندات ومقاطع الفيديو والصوت. يتم تصفية مرفقات النماذج تلقائياً من هذا العرض للحفاظ على تنظيم واضح.'
     },
   },
   access: {
@@ -201,8 +205,20 @@ export const Media: CollectionConfig = {
       name: 'source',
       type: 'select',
       options: [
-        { label: 'Admin Upload', value: 'admin' },
-        { label: 'Form Submission', value: 'form' }
+        { 
+          label: {
+            fr: 'Téléchargement Admin',
+            ar: 'تحميل المدير'
+          }, 
+          value: 'admin' 
+        },
+        { 
+          label: {
+            fr: 'Soumission de Formulaire',
+            ar: 'إرسال النموذج'
+          }, 
+          value: 'form' 
+        }
       ],
       defaultValue: 'admin',
       hidden: true, // Hidden from UI since it's auto-generated

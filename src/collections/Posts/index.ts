@@ -61,6 +61,10 @@ export const Posts: CollectionConfig<'posts'> = {
     },
   },
   admin: {
+    group: {
+      fr: 'Contenu',
+      ar: 'المحتوى'
+    },
     defaultColumns: ['title', 'slug', 'updatedAt'],
     hidden: ({ user }) => user?.role === 'moderator',
     components: {

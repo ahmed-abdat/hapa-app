@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Frontend**: Next.js 15.3.3 with App Router
 - **CMS**: Payload CMS 3.52.0 (headless, TypeScript-first)
 - **Internationalization**: next-intl with French (default) and Arabic (RTL) support
-- **Database**: Neon PostgreSQL with @payloadcms/db-postgres adapter
+- **Database**: Neon PostgreSQL with @payloadcms/db-postgres adapter (CLI: `neonctl`)
 - **Storage**: Cloudflare R2 (primary) + Vercel Blob (legacy support)
 - **UI Framework**: Tailwind CSS + shadcn/ui + Radix UI primitives
 - **Package Manager**: pnpm (required - see packageManager field in package.json)
@@ -38,6 +38,14 @@ pnpm dev:prod                    # Test production build locally
 ```bash
 pnpm payload migrate             # Apply database schema migrations
 pnpm payload                     # Access Payload CLI commands
+
+# Neon CLI Database Management (globally available)
+neonctl projects list            # List all Neon projects
+neonctl databases list           # List databases in current project
+neonctl branches list            # List branches in current project
+neonctl connection-string        # Get connection string
+neonctl connection-string --pooled  # Get pooled connection string
+neonctl operations list          # Check recent database operations
 ```
 
 ### Quality Assurance
@@ -161,6 +169,13 @@ EMAIL_FROM=noreply@hapa.mr
 5. Run `pnpm dev` to start development server
 
 ## Performance & Security
+
+### Database Management & Debugging
+
+**Neon CLI** - Global `neonctl` available for database debugging:
+- **Current Project**: `hapa` (cold-salad-11795734), context pre-configured
+- **Quick Debug**: `neonctl connection-string`, `neonctl operations list`
+- **Branch Testing**: `neonctl branches create --name debug-$(date +%s)`
 
 ### Build Configuration
 

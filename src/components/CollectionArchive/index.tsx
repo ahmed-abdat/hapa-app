@@ -9,10 +9,12 @@ export type Props = {
   posts: CardPostData[]
   locale: Locale
   showDescription?: boolean
+  showCategory?: boolean
+  shortDescription?: boolean
 }
 
 export const CollectionArchive: React.FC<Props> = (props) => {
-  const { posts, locale, showDescription = false } = props
+  const { posts, locale, showDescription = false, showCategory = true, shortDescription = false } = props
 
   return (
     <div className={cn('hapa-container')}>
@@ -47,6 +49,8 @@ export const CollectionArchive: React.FC<Props> = (props) => {
                 category={category}
                 date={result.publishedAt || result.createdAt || undefined}
                 showDescription={showDescription}
+                showCategory={showCategory}
+                shortDescription={shortDescription}
                 className="h-full"
               />
             )

@@ -4,6 +4,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 import { Link } from "@/i18n/navigation";
 import { PostCard } from "@/components/PostCard";
+import { SectionHeader } from "@/components/SectionHeader";
 
 // Dynamically import motion components and types
 const MotionDiv = dynamic(() => 
@@ -131,21 +132,14 @@ export const NewsAnnouncementsBlock: React.FC<NewsAnnouncementsProps> = ({
     >
       <div className="hapa-container">
         {/* Section Header */}
-        <MotionDiv
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="header-spacing"
-        >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6">
-            {title || t("newsAnnouncements")}
-          </h2>
-          <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed" suppressHydrationWarning>
-            {description || t("newsAnnouncementsDesc")}
-          </p>
-          <div className="w-20 sm:w-24 h-1 sm:h-1.5 bg-gradient-to-r from-primary via-accent to-secondary mx-auto mt-6 sm:mt-8 rounded-full" />
-        </MotionDiv>
+        <SectionHeader
+          title={title || t("newsAnnouncements")}
+          description={description || t("newsAnnouncementsDesc")}
+          variant="main"
+          alignment="center"
+          showGradient={true}
+          gradientSize="md"
+        />
 
 
         {/* News Grid */}

@@ -20,6 +20,8 @@ interface PostCardProps {
   category?: string
   date?: string
   showDescription?: boolean
+  showCategory?: boolean
+  shortDescription?: boolean
   className?: string
 }
 
@@ -31,6 +33,8 @@ export const PostCard: React.FC<PostCardProps> = ({
   category,
   date,
   showDescription = false,
+  showCategory = true,
+  shortDescription = false,
   className,
 }) => {
   const locale = useLocale()
@@ -63,8 +67,8 @@ export const PostCard: React.FC<PostCardProps> = ({
             </div>
           )}
           
-          {/* Category Badge */}
-          {category && (
+          {/* Category Badge - Conditional display for better UX flow */}
+          {category && showCategory && (
             <div className="absolute top-4 left-4 z-10">
               <Badge 
                 variant="default" 
@@ -103,7 +107,10 @@ export const PostCard: React.FC<PostCardProps> = ({
 
           {/* Description - Conditional with truncation */}
           {showDescription && description && (
-            <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-4">
+            <p className={cn(
+              "text-sm text-gray-600 leading-relaxed mb-4",
+              shortDescription ? "line-clamp-2" : "line-clamp-3"
+            )}>
               {description}
             </p>
           )}

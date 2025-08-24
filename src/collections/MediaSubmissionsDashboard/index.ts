@@ -23,10 +23,10 @@ export const MediaSubmissionsDashboard: CollectionConfig = {
     },
   },
   admin: {
-    // Group with other form-related collections
+    // Group with media-related forms for better admin organization
     group: {
-      fr: "Formulaires et Soumissions",
-      ar: "النماذج والطلبات",
+      fr: "Formulaires Médiatiques",
+      ar: "النماذج الإعلامية",
     },
     description: {
       fr: "Accéder au tableau de bord des soumissions médiatiques avec statistiques et gestion avancée",

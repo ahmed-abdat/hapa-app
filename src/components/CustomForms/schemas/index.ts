@@ -22,72 +22,41 @@ export const validationMessages = {
   }
 }
 
-// Contact Form Schema
-export const contactFormSchema = z.object({
-  name: z.string()
-    .min(2, validationMessages.fr.minLength(2))
-    .max(100, validationMessages.fr.maxLength(100)),
+// Contact Form Schema Factory
+export const createContactFormSchema = (locale: 'fr' | 'ar' = 'fr') => {
+  const messages = validationMessages[locale]
   
-  email: z.string()
-    .email(validationMessages.fr.email),
+  return z.object({
+    name: z.string()
+      .min(2, messages.minLength(2))
+      .max(100, messages.maxLength(100)),
     
-  phone: z.string()
-    .optional()
-    .refine((val) => !val || /^[+]?[0-9\s\-\(\)]{8,}$/.test(val), {
-      message: validationMessages.fr.phone
-    }),
+    email: z.string()
+      .email(messages.email),
+      
+    phone: z.string()
+      .optional()
+      .refine((val) => !val || /^[+]?[0-9\s\-\(\)]{8,}$/.test(val), {
+        message: messages.phone
+      }),
+      
+    subject: z.string()
+      .min(5, messages.minLength(5))
+      .max(200, messages.maxLength(200)),
+      
+    message: z.string()
+      .min(10, messages.minLength(10))
+      .max(2000, messages.maxLength(2000)),
+      
+    locale: z.enum(['fr', 'ar']),
     
-  subject: z.string()
-    .min(5, validationMessages.fr.minLength(5))
-    .max(200, validationMessages.fr.maxLength(200)),
-    
-  message: z.string()
-    .min(10, validationMessages.fr.minLength(10))
-    .max(2000, validationMessages.fr.maxLength(2000)),
-    
-  locale: z.enum(['fr', 'ar']),
-  
-  formType: z.literal('contact')
-})
+    formType: z.literal('contact')
+  })
+}
 
-// Complaint Form Schema
-export const complaintFormSchema = z.object({
-  name: z.string()
-    .min(2, validationMessages.fr.minLength(2))
-    .max(100, validationMessages.fr.maxLength(100)),
-    
-  email: z.string()
-    .email(validationMessages.fr.email),
-    
-  phone: z.string()
-    .optional()
-    .refine((val) => !val || /^[+]?[0-9\s\-\(\)]{8,}$/.test(val), {
-      message: validationMessages.fr.phone
-    }),
-    
-  organization: z.string()
-    .optional(),
-    
-  complaintType: z.enum(['service', 'staff', 'procedure', 'other']),
-  
-  subject: z.string()
-    .min(5, validationMessages.fr.minLength(5))
-    .max(200, validationMessages.fr.maxLength(200)),
-    
-  description: z.string()
-    .min(20, validationMessages.fr.minLength(20))
-    .max(3000, validationMessages.fr.maxLength(3000)),
-    
-  dateOfIncident: z.string()
-    .optional(),
-    
-  attachments: z.array(z.string())
-    .optional(),
-    
-  locale: z.enum(['fr', 'ar']),
-  
-  formType: z.literal('complaint')
-})
+// Default export for backward compatibility
+export const contactFormSchema = createContactFormSchema('fr')
+
 
 // Document Request Form Schema
 export const documentRequestSchema = z.object({
@@ -127,15 +96,13 @@ export const documentRequestSchema = z.object({
 
 // Export types
 export type ContactFormData = z.infer<typeof contactFormSchema>
-export type ComplaintFormData = z.infer<typeof complaintFormSchema>
 export type DocumentRequestData = z.infer<typeof documentRequestSchema>
 
-export type FormData = ContactFormData | ComplaintFormData | DocumentRequestData
+export type FormData = ContactFormData | DocumentRequestData
 
 // Form type union for validation
 export const formSchemas = {
   contact: contactFormSchema,
-  complaint: complaintFormSchema,
   'document-request': documentRequestSchema
 } as const
 

@@ -70,6 +70,8 @@ export interface Config {
     posts: Post;
     media: Media;
     categories: Category;
+    'contact-dashboard': ContactDashboard;
+    'contact-submissions': ContactSubmission;
     'dashboard-submissions': DashboardSubmission;
     'media-content-submissions': MediaContentSubmission;
     'media-cleanup-jobs': MediaCleanupJob;
@@ -85,6 +87,8 @@ export interface Config {
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    'contact-dashboard': ContactDashboardSelect<false> | ContactDashboardSelect<true>;
+    'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
     'dashboard-submissions': DashboardSubmissionsSelect<false> | DashboardSubmissionsSelect<true>;
     'media-content-submissions': MediaContentSubmissionsSelect<false> | MediaContentSubmissionsSelect<true>;
     'media-cleanup-jobs': MediaCleanupJobsSelect<false> | MediaCleanupJobsSelect<true>;
@@ -184,7 +188,7 @@ export interface Post {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Fichiers média pour les contenus éditoriaux. Les pièces jointes des formulaires sont automatiquement filtrées de cette vue.
+ * Gestion des fichiers média pour les contenus éditoriaux : images, documents, vidéos et audios. Les pièces jointes des formulaires sont automatiquement filtrées de cette vue pour maintenir une organisation claire.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
@@ -275,6 +279,70 @@ export interface User {
       }[]
     | null;
   password?: string | null;
+}
+/**
+ * Tableau de bord dédié à la gestion des messages de contact avec statistiques et outils de gestion
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-dashboard".
+ */
+export interface ContactDashboard {
+  id: number;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Messages de contact reçus via le formulaire de contact du site web
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-submissions".
+ */
+export interface ContactSubmission {
+  id: number;
+  status: 'pending' | 'in-progress' | 'resolved';
+  /**
+   * Langue du formulaire soumis (non modifiable)
+   */
+  locale: 'fr' | 'ar';
+  /**
+   * Nom fourni par l'utilisateur (non modifiable)
+   */
+  name: string;
+  /**
+   * Email fourni par l'utilisateur (non modifiable)
+   */
+  email: string;
+  /**
+   * Téléphone fourni par l'utilisateur (non modifiable)
+   */
+  phone?: string | null;
+  /**
+   * Sujet fourni par l'utilisateur (non modifiable)
+   */
+  subject: string;
+  /**
+   * Message original envoyé par l'utilisateur (non modifiable)
+   */
+  message?: string | null;
+  /**
+   * Notes internes pour l'équipe administrative
+   */
+  adminNotes?: string | null;
+  /**
+   * Réponse à envoyer à l'utilisateur par email
+   */
+  replyMessage?: string | null;
+  /**
+   * Indique si une réponse a été envoyée à l'utilisateur
+   */
+  emailSent?: boolean | null;
+  /**
+   * Date et heure d'envoi de la réponse
+   */
+  emailSentAt?: string | null;
+  submittedAt: string;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Accéder au tableau de bord des soumissions médiatiques avec statistiques et gestion avancée
@@ -660,6 +728,14 @@ export interface PayloadLockedDocument {
         value: number | Category;
       } | null)
     | ({
+        relationTo: 'contact-dashboard';
+        value: number | ContactDashboard;
+      } | null)
+    | ({
+        relationTo: 'contact-submissions';
+        value: number | ContactSubmission;
+      } | null)
+    | ({
         relationTo: 'dashboard-submissions';
         value: number | DashboardSubmission;
       } | null)
@@ -795,6 +871,35 @@ export interface CategoriesSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-dashboard_select".
+ */
+export interface ContactDashboardSelect<T extends boolean = true> {
+  id?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-submissions_select".
+ */
+export interface ContactSubmissionsSelect<T extends boolean = true> {
+  status?: T;
+  locale?: T;
+  name?: T;
+  email?: T;
+  phone?: T;
+  subject?: T;
+  message?: T;
+  adminNotes?: T;
+  replyMessage?: T;
+  emailSent?: T;
+  emailSentAt?: T;
+  submittedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
