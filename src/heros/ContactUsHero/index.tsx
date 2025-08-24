@@ -83,7 +83,7 @@ export const ContactUsHero: React.FC<ContactUsHeroProps> = ({ locale }) => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(15,122,46,0.1)_0%,transparent_50%)]" />
         <div className="absolute top-0 left-0 w-full h-full opacity-[0.02]">
           <Image
-            src="/hero.png"
+            src="/hero.webp"
             alt="HAPA Background"
             fill
             className="object-cover"

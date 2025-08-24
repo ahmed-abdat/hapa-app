@@ -44,7 +44,7 @@ export const ActualitesHero: React.FC<ActualitesHeroProps> = ({
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(15,122,46,0.08)_0%,transparent_50%)]" />
         <div className="absolute top-0 left-0 w-full h-full opacity-[0.015]">
           <Image
-            src="/hero.png"
+            src="/hero.webp"
             alt="HAPA Background"
             fill
             className="object-cover"

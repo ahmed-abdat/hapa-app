@@ -122,7 +122,7 @@ export const GradientHero: React.FC<HeroVariantProps> = ({ locale, translations 
                                   hover:shadow-2xl transition-all duration-300 ring-1 ring-black/5">
                     {/* Optimized Hero Image */}
                     <Image
-                      src="/hero.png"
+                      src="/hero.webp"
                       alt="HAPA - Haute Autorité de la Presse et de l'Audiovisuel"
                       fill
                       priority

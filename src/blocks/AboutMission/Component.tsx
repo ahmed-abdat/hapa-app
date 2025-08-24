@@ -209,7 +209,7 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
                 />
               ) : (
                 <Image
-                  src="/hapa-director-press-conference.png"
+                  src="/hapa-director-press-conference.webp"
                   alt="HAPA Director addressing media at official press conference"
                   width={1920}
                   height={1080}
