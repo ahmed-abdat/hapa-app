@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations, useLocale } from 'next-intl';
 import { ArrowRight, ArrowLeft, Bell, Scale, CheckCircle, HelpCircle } from "lucide-react";
+import { SectionHeader } from "@/components/SectionHeader";
 
 export const MediaReportingCTA: React.FC = () => {
   const t = useTranslations();
@@ -12,14 +13,15 @@ export const MediaReportingCTA: React.FC = () => {
     <section className="section-spacing bg-gradient-to-br from-gray-50 via-white to-primary/5">
       <div className="hapa-container">
         {/* Header */}
-        <div className="text-center max-w-4xl mx-auto mb-16">
-          <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight ${isRtl ? 'text-right' : 'text-left'} sm:text-center`}>
-            {t("mediaReportingCTATitle")}
-          </h2>
-          <p className={`text-lg sm:text-xl text-gray-600 leading-relaxed ${isRtl ? 'text-right' : 'text-left'} sm:text-center`}>
-            {t("mediaReportingCTASubtitle")}
-          </p>
-        </div>
+        <SectionHeader
+          title={t("mediaReportingCTATitle")}
+          description={t("mediaReportingCTASubtitle")}
+          variant="main"
+          alignment="center"
+          showGradient={true}
+          gradientSize="md"
+          className="mb-16"
+        />
 
         {/* Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">

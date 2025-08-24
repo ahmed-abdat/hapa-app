@@ -5,11 +5,12 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import { useParams } from 'next/navigation'
-import { contactFormSchema, ContactFormData } from '../schemas'
+import { createContactFormSchema, ContactFormData } from '../schemas'
 import { FormTranslations, FormSubmissionResponse } from '../types'
 import { BaseForm } from '../BaseForm'
 import { FormInput, FormTextarea } from '../FormFields'
 import { type Locale } from '@/utilities/locale'
+import { submitContactForm } from '@/app/actions/contact-form'
 
 
 interface ContactFormProps {
@@ -24,7 +25,7 @@ export function ContactForm({ locale, onSuccess, onError }: ContactFormProps) {
   const t = useTranslations()
 
   const methods = useForm<ContactFormData>({
-    resolver: zodResolver(contactFormSchema),
+    resolver: zodResolver(createContactFormSchema(locale)),
     defaultValues: {
       name: '',
       email: '',
@@ -41,15 +42,7 @@ export function ContactForm({ locale, onSuccess, onError }: ContactFormProps) {
       setIsLoading(true)
       setSubmitStatus('idle')
 
-      const response = await fetch('/api/custom-forms/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-
-      const result: FormSubmissionResponse = await response.json()
+      const result = await submitContactForm(data)
 
       if (result.success) {
         setSubmitStatus('success')

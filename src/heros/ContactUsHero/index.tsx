@@ -169,7 +169,7 @@ export const ContactUsHero: React.FC<ContactUsHeroProps> = ({ locale }) => {
                     </div>
                     <div className="space-y-1">
                       <h3 className="font-semibold text-gray-900">{content.phone.label}</h3>
-                      <p className="text-gray-600 font-mono">{content.phone.value}</p>
+                      <p className="text-gray-600 font-mono" dir="ltr">{content.phone.value}</p>
                     </div>
                   </div>
                 </div>

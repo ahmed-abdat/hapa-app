@@ -14,7 +14,7 @@ import { MediaContentSubmissions } from "./collections/MediaContentSubmissions";
 import { MediaSubmissionsDashboard } from "./collections/MediaSubmissionsDashboard";
 import { MediaCleanupJobs } from "./collections/MediaCleanupJobs";
 import { Media } from "./collections/Media";
-// import { FormMedia } from "./collections/FormMedia"; // Not needed for minimal solution
+import { FormSubmissions } from "./collections/FormSubmissions";
 import { Posts } from "./collections/Posts";
 import { Users } from "./collections/Users";
 import { plugins } from "./plugins";
@@ -162,7 +162,7 @@ export default buildConfig({
     MediaSubmissionsDashboard,
     MediaContentSubmissions,
     MediaCleanupJobs,
-    // FormMedia removed - using Media collection instead
+    FormSubmissions,
     Users,
   ],
   cors:

@@ -73,6 +73,7 @@ export interface Config {
     'dashboard-submissions': DashboardSubmission;
     'media-content-submissions': MediaContentSubmission;
     'media-cleanup-jobs': MediaCleanupJob;
+    'form-submissions': FormSubmission;
     users: User;
     search: Search;
     'payload-jobs': PayloadJob;
@@ -88,6 +89,7 @@ export interface Config {
     'dashboard-submissions': DashboardSubmissionsSelect<false> | DashboardSubmissionsSelect<true>;
     'media-content-submissions': MediaContentSubmissionsSelect<false> | MediaContentSubmissionsSelect<true>;
     'media-cleanup-jobs': MediaCleanupJobsSelect<false> | MediaCleanupJobsSelect<true>;
+    'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -518,6 +520,24 @@ export interface MediaCleanupJob {
   createdAt: string;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions".
+ */
+export interface FormSubmission {
+  id: number;
+  formType: 'contact' | 'complaint';
+  status: 'pending' | 'in-progress' | 'resolved';
+  locale: 'fr' | 'ar';
+  name: string;
+  email: string;
+  phone?: string | null;
+  subject: string;
+  message?: string | null;
+  submittedAt: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Collection automatique pour l'indexation des contenus. Mise à jour lors de la création/modification d'articles. Utilisée par le moteur de recherche du site.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -670,6 +690,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media-cleanup-jobs';
         value: number | MediaCleanupJob;
+      } | null)
+    | ({
+        relationTo: 'form-submissions';
+        value: number | FormSubmission;
       } | null)
     | ({
         relationTo: 'users';
@@ -939,6 +963,23 @@ export interface MediaCleanupJobsSelect<T extends boolean = true> {
   errorLog?: T;
   triggeredBy?: T;
   executedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions_select".
+ */
+export interface FormSubmissionsSelect<T extends boolean = true> {
+  formType?: T;
+  status?: T;
+  locale?: T;
+  name?: T;
+  email?: T;
+  phone?: T;
+  subject?: T;
+  message?: T;
+  submittedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }

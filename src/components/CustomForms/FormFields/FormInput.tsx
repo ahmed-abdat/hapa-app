@@ -12,8 +12,9 @@ export function FormInput({
   required = false,
   disabled = false,
   className = '',
-  type = 'text'
-}: FormFieldProps & { type?: 'text' | 'email' | 'tel' | 'password' | 'date' }) {
+  type = 'text',
+  dir
+}: FormFieldProps & { type?: 'text' | 'email' | 'tel' | 'password' | 'date'; dir?: 'ltr' | 'rtl' | 'auto' }) {
   const {
     register,
     formState: { errors }
@@ -36,6 +37,7 @@ export function FormInput({
         type={type}
         placeholder={placeholder}
         disabled={disabled}
+        dir={dir || (type === 'tel' ? 'ltr' : undefined)}
         className={`w-full h-12 px-4 rounded-lg border-2 transition-all duration-200 ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-primary focus:ring-primary/20'} focus:ring-4`}
         aria-invalid={error ? 'true' : 'false'}
         aria-describedby={error ? `${name}-error` : undefined}

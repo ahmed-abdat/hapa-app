@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { motion, Variants } from "framer-motion";
+import { motion, Variants, useReducedMotion } from "framer-motion";
 import { useTranslations, useLocale } from 'next-intl';
 import { 
   Shield, 
@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { type Locale } from "@/utilities/locale";
 import { Media } from "@/components/Media";
+import { SectionHeader } from "@/components/SectionHeader";
+import { AnimatedCounter } from "@/components/AnimatedCounter";
 import type { Media as MediaType } from "@/payload-types";
 
 type AboutMissionProps = {
@@ -83,20 +85,46 @@ const containerVariants: Variants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.15,
       delayChildren: 0.2,
     },
   },
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
   visible: {
     opacity: 1,
     y: 0,
+    scale: 1,
     transition: {
       duration: 0.6,
       ease: [0.25, 1, 0.5, 1],
+    },
+  },
+};
+
+const valueCardVariants: Variants = {
+  hidden: { opacity: 0, y: 40, rotateY: -10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    rotateY: 0,
+    transition: {
+      duration: 0.8,
+      ease: [0.25, 1, 0.5, 1],
+    },
+  },
+};
+
+const statCounterVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.6,
+      ease: [0.68, -0.55, 0.265, 1.55], // Spring easing
     },
   },
 };
@@ -109,6 +137,7 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
 }) => {
   const locale = useLocale() as Locale;
   const t = useTranslations();
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <section
@@ -116,21 +145,15 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
     >
       <div className="hapa-container">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="header-spacing"
-        >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-            {title || t("aboutHapa")}
-          </h2>
-          <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            {description || t("aboutHapaDesc")}
-          </p>
-          <div className="w-24 h-1.5 bg-gradient-to-r from-primary via-accent to-secondary mx-auto mt-8 rounded-full" />
-        </motion.div>
+        <SectionHeader
+          title={title || t("aboutHapa")}
+          description={description || t("aboutHapaDesc")}
+          variant="main"
+          alignment="center"
+          showGradient={true}
+          gradientSize="md"
+          animate={!shouldReduceMotion}
+        />
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center mb-16">
@@ -229,17 +252,16 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
           viewport={{ once: true, margin: "-50px" }}
           className="mb-16"
         >
-          <motion.div
-            variants={itemVariants}
-            className="text-center mb-12"
-          >
-            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              {t("ourValues")}
-            </h3>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              {t("ourValuesDesc")}
-            </p>
-          </motion.div>
+          <SectionHeader
+            title={t("ourValues")}
+            description={t("ourValuesDesc")}
+            variant="subsection"
+            alignment="center"
+            showGradient={true}
+            gradientSize="sm"
+            animate={!shouldReduceMotion}
+            className="mb-12"
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {missionValues.map((value, index) => {
@@ -247,13 +269,25 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
               return (
                 <motion.div
                   key={index}
-                  variants={itemVariants}
-                  className="group"
+                  variants={valueCardVariants}
+                  whileHover={!shouldReduceMotion ? {
+                    y: -8,
+                    scale: 1.03,
+                    transition: { duration: 0.3, ease: [0.25, 1, 0.5, 1] }
+                  } : {}}
+                  className="group perspective-1000"
                 >
-                  <div className={`${value.bgColor} rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300 ease-out border border-white/70 hover:border-primary/30 hover:-translate-y-1 hover:scale-[1.02] backdrop-blur-sm`}>
-                    <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${value.color} flex items-center justify-center mb-4 mx-auto group-hover:scale-[1.05] group-hover:rotate-1 transition-all duration-300 ease-out shadow-md`}>
+                  <div className={`${value.bgColor} rounded-2xl p-6 text-center hover:shadow-xl transition-all duration-300 ease-out border border-white/70 hover:border-primary/30 backdrop-blur-sm transform-gpu`}>
+                    <motion.div
+                      whileHover={!shouldReduceMotion ? {
+                        scale: 1.1,
+                        rotate: 3,
+                        transition: { duration: 0.3, ease: [0.68, -0.55, 0.265, 1.55] }
+                      } : {}}
+                      className={`w-16 h-16 rounded-xl bg-gradient-to-br ${value.color} flex items-center justify-center mb-4 mx-auto shadow-lg`}
+                    >
                       <Icon className="h-8 w-8 text-white" />
-                    </div>
+                    </motion.div>
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">
                       {t(String(value.titleKey))}
                     </h4>
@@ -291,18 +325,25 @@ export const AboutMissionBlock: React.FC<AboutMissionProps> = ({
                 return (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    variants={statCounterVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    transition={{ delay: index * 0.15 }}
                     viewport={{ once: true }}
+                    whileHover={!shouldReduceMotion ? {
+                      scale: 1.05,
+                      transition: { duration: 0.2 }
+                    } : {}}
                     className="text-center group"
                   >
                     <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:bg-white/30 group-hover:scale-105 transition-all duration-300">
                       <Icon className="h-8 w-8 text-white" />
                     </div>
-                    <div className="text-3xl sm:text-4xl font-bold mb-2 group-hover:scale-105 transition-transform duration-300">
-                      {achievement.number}
-                    </div>
+                    <AnimatedCounter
+                      value={achievement.number}
+                      duration={2.5}
+                      className="text-3xl sm:text-4xl font-bold mb-2 group-hover:scale-105 transition-transform duration-300 block"
+                    />
                     <div className="text-white/90 text-sm sm:text-base">
                       {t(String(achievement.labelKey))}
                     </div>

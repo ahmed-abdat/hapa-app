@@ -5,7 +5,6 @@ import { ArchiveBlock } from '@/blocks/ArchiveBlock/Component'
 import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { CodeBlock } from '@/blocks/Code/Component'
-import { ComplaintFormBlock } from '@/blocks/ComplaintFormBlock/Component'
 import { ContactFormBlock } from '@/blocks/ContactFormBlock/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { CoreServicesBlock } from '@/blocks/CoreServices/Component'
@@ -24,7 +23,6 @@ type BlockType =
   | { blockType: 'archive'; [key: string]: unknown }
   | { blockType: 'banner'; [key: string]: unknown }
   | { blockType: 'code'; [key: string]: unknown }
-  | { blockType: 'complaintForm'; [key: string]: unknown }
   | { blockType: 'contactForm'; [key: string]: unknown }
   | { blockType: 'content'; [key: string]: unknown }
   | { blockType: 'coreServices'; [key: string]: unknown }
@@ -42,7 +40,6 @@ const blockComponents = {
   archive: ArchiveBlock,
   banner: BannerBlock,
   code: CodeBlock,
-  complaintForm: ComplaintFormBlock,
   contactForm: ContactFormBlock,
   content: ContentBlock,
   coreServices: CoreServicesBlock,
