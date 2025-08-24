@@ -26,11 +26,7 @@ export default async function PresidentPage({ params: paramsPromise }: Args) {
       title: t('presidentMessage'),
       name: t('presidentName'),
       position: t('presidentTitle'),
-      content: `La Haute Autorité de la Presse et de l'Audiovisuel œuvre à l'accomplissement de ses missions dans la régulation et le développement du paysage médiatique national, en garantissant la liberté de communication audiovisuelle et l'expression des courants de pensée et d'opinion dans le respect des valeurs civilisationnelles et des constantes nationales et des lois de référence de la République, dans le but d'assurer le droit du citoyen à l'information.
-
-Et œuvrant à sécuriser et professionnaliser la liberté d'expression et à l'incarner comme acquis national et choix stratégique fondamental, constituant un pilier central de la pratique démocratique et un levier puissant pour le développement, à travers la veille à l'application des législations et systèmes relatifs à la presse et à la communication audiovisuelle et aux médias numériques, et le renforcement de la régulation et du contrôle des contenus médiatiques.
-
-L'Autorité Supérieure veille dans ce contexte à consacrer les libertés et l'engagement aux principes d'éthique, de responsabilité et de professionnalisme, et travaille de manière indépendante avec les acteurs médiatiques privés, publics et associatifs pour permettre à tous les citoyens d'exercer leur droit à l'information, et à sécuriser l'accès à des services d'information pluralistes et compétitifs répondant aux aspirations d'une opinion publique nationale qui s'est positionnée dans l'action médiatique à travers des moyens et supports qui évoluent à un rythme accéléré.`,
+      content: t('presidentMessageContent'),
       readMore: t('readMore'),
       backToTop: t('backToTop')
     },
@@ -38,7 +34,7 @@ L'Autorité Supérieure veille dans ce contexte à consacrer les libertés et l'
       title: t('presidentMessage'),
       name: t('presidentName'),
       position: t('presidentTitle'),
-      content: `تعمل السلطة العليا للصحافة والسمعيات البصرية على أداء مهامها في ضبط وتطوير المشهد الإعلامي الوطني، وضمان حرية الاتصال السمعي البصري، والتعبير عن تيارات الفكر والرأي في إطار احترام القيم الحضارية والثوابت الوطنية والقوانين المرجعية للجمهورية، بغية ضمان حق المواطن في المعلومة.
+      content: t('presidentMessageContent'),
 
 وعملا على تأمين وتمهين حرية التعبير وتجسيدها مكسبا وطنيا وخيارا استراتيجيا أساسيا، يشكل ركيزة محورية للممارسة الديمقراطية ورافعة قوية للتنمية، من خلال السهر على تطبيق التشريعات والنظم المتعلقة بالصحافة والاتصال السمعي البصري والإعلام الرقمي، وتعزيز ضبط ورقابة المضامين الإعلامية.
 
@@ -125,7 +121,9 @@ L'Autorité Supérieure veille dans ce contexte à consacrer les libertés et l'
       <section className="relative bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <div className="prose prose-lg prose-primary max-w-none">
-            <div className="text-gray-700 leading-relaxed space-y-6 text-base md:text-lg">
+            <div className={`text-gray-700 leading-relaxed space-y-6 text-base md:text-lg ${
+              locale === 'ar' ? 'text-right' : 'text-left'
+            }`}>
               {content.content.split('\n\n').map((paragraph, index) => {
                 if (paragraph.trim().startsWith('-')) {
                   // Handle bullet points
@@ -135,14 +133,18 @@ L'Autorité Supérieure veille dans ce contexte à consacrer les libertés et l'
                       {bulletPoints.map((point, i) => (
                         <li key={i} className="flex items-start gap-3">
                           <span className="inline-block w-2 h-2 bg-primary rounded-full mt-3 flex-shrink-0"></span>
-                          <span>{point.replace(/^-\s*/, '')}</span>
+                          <span className={locale === 'ar' ? 'text-right' : 'text-left'}>
+                            {point.replace(/^-\s*/, '')}
+                          </span>
                         </li>
                       ))}
                     </ul>
                   )
                 }
                 return (
-                  <p key={index} className="text-justify">
+                  <p key={index} className={`leading-relaxed ${
+                    locale === 'ar' ? 'text-right' : 'text-left'
+                  }`}>
                     {paragraph}
                   </p>
                 )

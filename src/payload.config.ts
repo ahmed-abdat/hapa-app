@@ -14,7 +14,8 @@ import { MediaContentSubmissions } from "./collections/MediaContentSubmissions";
 import { MediaSubmissionsDashboard } from "./collections/MediaSubmissionsDashboard";
 import { MediaCleanupJobs } from "./collections/MediaCleanupJobs";
 import { Media } from "./collections/Media";
-import { FormSubmissions } from "./collections/FormSubmissions";
+import { ContactSubmissions } from "./collections/ContactSubmissions";
+import { ContactDashboard } from "./collections/ContactDashboard";
 import { Posts } from "./collections/Posts";
 import { Users } from "./collections/Users";
 import { plugins } from "./plugins";
@@ -151,18 +152,20 @@ export default buildConfig({
       // createRetryIntervalMillis: 200, // Not available in current pool config type
     },
   }),
-  // Reordered to control sidebar grouping order for "Formulaires et Soumissions":
-  // 1) MediaSubmissionsDashboard (dashboard link)
-  // 2) MediaContentSubmissions (data list)
-  // 3) FormMedia (uploads from forms)
+  // Organized collection order for better admin UX:
+  // "Contenu" group: Posts, Media, Categories
+  // "Messages de Contact" group: Contact dashboard and submissions  
+  // "Formulaires Médiatiques" group: Media submissions dashboard and data
+  // "Système" group: Users, MediaCleanupJobs
   collections: [
     Posts,
     Media,
     Categories,
+    ContactDashboard,
+    ContactSubmissions,
     MediaSubmissionsDashboard,
     MediaContentSubmissions,
     MediaCleanupJobs,
-    FormSubmissions,
     Users,
   ],
   cors:

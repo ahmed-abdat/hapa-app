@@ -23,6 +23,10 @@ export const Categories: CollectionConfig = {
     update: isAdminOrEditor,
   },
   admin: {
+    group: {
+      fr: 'Contenu',
+      ar: 'المحتوى'
+    },
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
     listSearchableFields: ['title'],

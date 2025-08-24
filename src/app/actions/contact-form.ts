@@ -5,7 +5,8 @@ import config from '@payload-config'
 import { createContactFormSchema } from '@/components/CustomForms/schemas'
 import type { FormSubmissionResponse } from '@/components/CustomForms/types'
 import { render } from '@react-email/render'
-import ContactFormNotificationEmail from '@/emails/contact-form-notification'
+import { ContactFormNotificationEmail } from '@/emails/contact-form-notification'
+import { createElement } from 'react'
 
 export async function submitContactForm(data: any): Promise<FormSubmissionResponse> {
   try {
@@ -17,11 +18,10 @@ export async function submitContactForm(data: any): Promise<FormSubmissionRespon
     // Get Payload instance
     const payload = await getPayload({ config })
     
-    // Create form submission in database
+    // Create contact form submission
     const submission = await payload.create({
-      collection: 'form-submissions',
+      collection: 'contact-submissions',
       data: {
-        formType: validatedData.formType,
         status: 'pending',
         locale: validatedData.locale,
         name: validatedData.name,
@@ -35,15 +35,17 @@ export async function submitContactForm(data: any): Promise<FormSubmissionRespon
     
     // Send email notification using React Email template
     try {
-      const html = await render(ContactFormNotificationEmail({
-        name: validatedData.name,
-        email: validatedData.email,
-        phone: validatedData.phone,
-        subject: validatedData.subject,
-        message: validatedData.message,
-        locale: validatedData.locale,
-        submittedAt: new Date().toISOString()
-      }))
+      const html = await render(
+        createElement(ContactFormNotificationEmail, {
+          name: validatedData.name,
+          email: validatedData.email,
+          phone: validatedData.phone,
+          subject: validatedData.subject,
+          message: validatedData.message,
+          locale: validatedData.locale,
+          submittedAt: new Date().toISOString()
+        })
+      )
       
       await payload.sendEmail({
         to: 'admin@hapa.mr',

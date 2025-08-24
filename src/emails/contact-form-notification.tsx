@@ -116,7 +116,7 @@ export const ContactFormNotificationEmail: React.FC<ContactFormEmailProps> = ({
             <Text style={cardTitle}>
               {isArabic ? 'الموضوع' : 'Sujet'}
             </Text>
-            <Text style={subject}>{subject}</Text>
+            <Text style={subjectText}>{subject}</Text>
           </Section>
 
           {/* Message */}
@@ -231,7 +231,7 @@ const valueCell = {
   verticalAlign: 'top' as const,
 }
 
-const subject = {
+const subjectText = {
   color: '#1f2937',
   fontSize: '16px',
   fontWeight: '600',

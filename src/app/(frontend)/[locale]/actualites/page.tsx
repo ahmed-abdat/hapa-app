@@ -126,7 +126,7 @@ export default async function ActualitesPage({ params: paramsPromise }: Args) {
 
         {/* Posts Grid or Empty State */}
         {posts.docs.length > 0 ? (
-          <CollectionArchive posts={posts.docs} locale={locale} showDescription={true} />
+          <CollectionArchive posts={posts.docs} locale={locale} showDescription={true} shortDescription={true} />
         ) : (
           <div className="text-center py-16">
             <div className="max-w-md mx-auto">

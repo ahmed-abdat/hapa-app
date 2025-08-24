@@ -1,4 +1,3 @@
-import { formatDateTime } from 'src/utilities/formatDateTime'
 import React from 'react'
 
 import type { Post } from '@/payload-types'
@@ -11,7 +10,7 @@ export const PostHero: React.FC<{
   post: Post
   locale: Locale
 }> = ({ post, locale }) => {
-  const { categories, heroImage, publishedAt, title } = post
+  const { categories, heroImage, title } = post
   const t = useTranslations()
 
   // Calculate responsive title size based on title length
@@ -35,46 +34,27 @@ export const PostHero: React.FC<{
             </h1>
           </div>
 
-          {/* Metadata section below title - horizontal layout */}
-          <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-6">
-            {/* Categories */}
-            {categories && categories.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {categories.map((category) => {
-                  if (typeof category === 'object' && category !== null) {
-                    const { title: categoryTitle } = category
-                    const titleToUse = categoryTitle || t('untitledCategory')
+          {/* Categories section below title */}
+          {categories && categories.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {categories.map((category) => {
+                if (typeof category === 'object' && category !== null) {
+                  const { title: categoryTitle } = category
+                  const titleToUse = categoryTitle || t('untitledCategory')
 
-                    return (
-                      <span 
-                        key={category.id}
-                        className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 transition-colors"
-                      >
-                        {titleToUse}
-                      </span>
-                    )
-                  }
-                  return null
-                })}
-              </div>
-            )}
-
-            {/* Date separator and publication date */}
-            {publishedAt && (
-              <>
-                {categories && categories.length > 0 && (
-                  <div className="w-1 h-1 bg-white/40 rounded-full hidden sm:block" />
-                )}
-                <time 
-                  dateTime={publishedAt}
-                  className="text-sm text-white/90 font-medium flex items-center gap-1"
-                >
-                  <span className="text-white/60">{t('datePublished')}:</span>
-                  {formatDateTime(publishedAt)}
-                </time>
-              </>
-            )}
-          </div>
+                  return (
+                    <span 
+                      key={category.id}
+                      className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 transition-colors"
+                    >
+                      {titleToUse}
+                    </span>
+                  )
+                }
+                return null
+              })}
+            </div>
+          )}
         </div>
       </div>
       

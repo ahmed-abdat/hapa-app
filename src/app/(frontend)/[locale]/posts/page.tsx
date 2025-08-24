@@ -131,7 +131,7 @@ export default async function Page({
                     {t('exploreContentInCategory')} {selectedCategory.title}
                   </>
                 ) : (
-                  t('newsAnnouncementsDesc')
+                  t('allArticlesDesc')
                 )}
               </p>
 
@@ -178,7 +178,7 @@ export default async function Page({
 
         {/* Posts Grid or Empty State */}
         {posts.docs.length > 0 ? (
-          <CollectionArchive posts={posts.docs} locale={locale as Locale} showDescription={true} />
+          <CollectionArchive posts={posts.docs} locale={locale as Locale} showDescription={true} showCategory={!!category} />
         ) : (
           <div className="text-center py-16">
             <div className="max-w-md mx-auto">

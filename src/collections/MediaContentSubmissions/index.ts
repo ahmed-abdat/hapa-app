@@ -9,12 +9,10 @@ export const MediaContentSubmissions: CollectionConfig = {
   slug: "media-content-submissions",
   labels: {
     singular: {
-      en: "Media Content Submission",
       fr: "Soumission de Contenu Médiatique",
       ar: "شكوى/تبليغ إعلامي",
     },
     plural: {
-      en: "Media Content Submissions",
       fr: "Soumissions de Contenu Médiatique",
       ar: "الشكاوى والتبليغات الإعلامية",
     },
@@ -40,8 +38,8 @@ export const MediaContentSubmissions: CollectionConfig = {
     ],
     hidden: ({ user }) => user?.role === 'editor',
     group: {
-      fr: "Formulaires et Soumissions",
-      ar: "النماذج والطلبات"
+      fr: "Formulaires Médiatiques",
+      ar: "النماذج الإعلامية"
     },
     description: {
       fr: "Gérer les signalements et plaintes de contenu médiatique soumis via les formulaires du site. Visualiser les fichiers médias, suivre le statut et gérer les soumissions.",
@@ -67,11 +65,13 @@ export const MediaContentSubmissions: CollectionConfig = {
           ({ data }) => {
             if (data) {
               const formTypeLabel =
-                data.formType === "report" ? "Signalement" : "Plainte";
+                data.formType === "report" 
+                  ? (data.locale === "ar" ? "تبليغ" : "Signalement")
+                  : (data.locale === "ar" ? "شكوى" : "Plainte");
               const programName =
                 data.contentInfo?.programName ||
                 data.programName ||
-                "Sans titre";
+                (data.locale === "ar" ? "بدون عنوان" : "Sans titre");
               const mediaType =
                 data.contentInfo?.mediaType || data.mediaType || "";
 

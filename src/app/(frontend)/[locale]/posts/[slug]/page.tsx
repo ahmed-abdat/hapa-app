@@ -19,6 +19,7 @@ import PageClient from "./page.client";
 import { LivePreviewListener } from "@/components/LivePreviewListener";
 import { Link } from "@/i18n/navigation";
 import { ShareButton } from "@/components/ShareButton";
+import { formatDateTime } from "@/utilities/formatDateTime";
 import { 
   Breadcrumb,
   BreadcrumbItem,
@@ -138,10 +139,26 @@ export default async function Post({ params: paramsPromise }: Args) {
             </Breadcrumb>
           </div>
 
-          {/* Share Button Section */}
+          {/* Post Metadata Section */}
           <div className="mb-6">
-            <div className="flex items-center justify-end gap-4 pb-4 border-b border-gray-200">
-              <ShareButton url={url} title={post.title} locale={locale} shareText={t('share')} />
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-gray-200">
+              {/* Publish Date */}
+              {post.publishedAt && (
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <span className="font-medium">{t('datePublished')}:</span>
+                  <time 
+                    dateTime={post.publishedAt}
+                    className="text-gray-700"
+                  >
+                    {formatDateTime(post.publishedAt)}
+                  </time>
+                </div>
+              )}
+              
+              {/* Share Button */}
+              <div className="flex items-center">
+                <ShareButton url={url} title={post.title} locale={locale} shareText={t('share')} />
+              </div>
             </div>
           </div>
 

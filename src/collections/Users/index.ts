@@ -28,6 +28,10 @@ export const Users: CollectionConfig = {
     },
   },
   admin: {
+    group: {
+      fr: 'Système',
+      ar: 'النظام'
+    },
     defaultColumns: ['name', 'email'],
     listSearchableFields: ['name', 'email'],
     useAsTitle: 'name',
