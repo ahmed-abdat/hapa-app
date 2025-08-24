@@ -48,7 +48,7 @@ export default buildConfig({
       openGraph: {
         images: [
           {
-            url: "/logo_hapa1.png",
+            url: "/hapa-logo.webp",
             width: 800,
             height: 600,
           },

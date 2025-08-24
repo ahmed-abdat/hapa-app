@@ -72,7 +72,7 @@ export default async function PresidentPage({ params: paramsPromise }: Args) {
             <div className="relative">
               <div className="aspect-[3/4] sm:aspect-square relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20 max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
                 <Image
-                  src="/president-image.jpg"
+                  src="/president-image.webp"
                   alt={content.name}
                   fill
                   className="object-cover"

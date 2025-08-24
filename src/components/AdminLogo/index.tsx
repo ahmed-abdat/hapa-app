@@ -5,7 +5,7 @@ const AdminLogo: React.FC = () => {
   return (
     <div className="flex items-center py-2 max-w-32">
       <Image
-        src="/logo_hapa1.png"
+        src="/hapa-logo.webp"
         alt="HAPA - Haute Autorité de la Presse et de l'Audiovisuel"
         width={120}
         height={21}

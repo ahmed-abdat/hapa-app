@@ -164,7 +164,7 @@ export function ModernMobileNav() {
             >
               <div className="bg-white p-2 rounded-xl shadow-lg">
                 <Image
-                  src="/logo_hapa1.png"
+                  src="/hapa-logo.webp"
                   alt="HAPA Logo"
                   width={32}
                   height={32}

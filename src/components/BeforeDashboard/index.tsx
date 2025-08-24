@@ -30,7 +30,7 @@ const BeforeDashboard: React.FC = () => {
         >
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
             <Image
-              src="/logo_hapa1.png"
+              src="/hapa-logo.webp"
               alt="HAPA Logo"
               width={96}
               height={17}

@@ -48,7 +48,7 @@ export const ContactFormNotificationEmail: React.FC<ContactFormEmailProps> = ({
           {/* Header with HAPA branding */}
           <Section style={header}>
             <Img
-              src="https://hapa.mr/logo_hapa1.png"
+              src="https://hapa.mr/hapa-logo.webp"
               width="120"
               height="40"
               alt="HAPA"

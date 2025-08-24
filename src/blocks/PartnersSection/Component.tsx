@@ -34,7 +34,7 @@ type PartnersSectionProps = {
 const mockPartners = [
   {
     name: "CNRA - Conseil National de Régulation de l'Audiovisuel",
-    logoPath: "/partners/CNRA-logo.jpg",
+    logoPath: "/partners/CNRA-logo.webp",
     url: "https://cnra.sn/",
     description: {
       fr: "Autorité de régulation audiovisuelle du Sénégal",
@@ -43,7 +43,7 @@ const mockPartners = [
   },
   {
     name: "RDM - Réseau des Régulateurs des Médias",
-    logoPath: "/partners/RDM-logo.jpg", 
+    logoPath: "/partners/RDM-logo.webp", 
     url: "https://rdm-network.org/",
     description: {
       fr: "Réseau international des régulateurs des médias",
@@ -52,7 +52,7 @@ const mockPartners = [
   },
   {
     name: "HAICA - Haute Autorité Indépendante de la Communication Audiovisuelle",
-    logoPath: "/partners/logo-HAICA.jpg",
+    logoPath: "/partners/logo-HAICA.webp",
     url: "https://haica.tn/",
     description: {
       fr: "Autorité de régulation audiovisuelle de Tunisie",
@@ -61,7 +61,7 @@ const mockPartners = [
   },
   {
     name: "ARCOM - Autorité de Régulation de la Communication",
-    logoPath: "/partners/logo_ar_logo.jpg",
+    logoPath: "/partners/logo_ar_logo.webp",
     url: "https://arcom.fr/",
     description: {
       fr: "Autorité française de régulation de la communication",
@@ -70,7 +70,7 @@ const mockPartners = [
   },
   {
     name: "RE - Regulatory Entity",
-    logoPath: "/partners/re-logo.jpg",
+    logoPath: "/partners/re-logo.webp",
     url: "#",
     description: {
       fr: "Entité de régulation partenaire",
@@ -79,7 +79,7 @@ const mockPartners = [
   },
   {
     name: "RIARC - Réseau des Instances Africaines de Régulation de la Communication",
-    logoPath: "/partners/riarc.jpg",
+    logoPath: "/partners/riarc.webp",
     url: "https://riarc.org/",
     description: {
       fr: "Réseau des instances africaines de régulation de la communication",

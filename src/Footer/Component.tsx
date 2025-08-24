@@ -43,7 +43,7 @@ export function Footer({ footerData }: FooterProps = {}) {
               <div className="relative">
                 <div className="w-16 h-16 bg-white/10 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow p-2">
                   <Image 
-                    src="/logo_hapa1.png" 
+                    src="/hapa-logo.webp" 
                     alt="HAPA Logo" 
                     width={64}
                     height={64}

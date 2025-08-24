@@ -51,7 +51,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
               {/* Official Government Seal/Logo */}
               <div className="relative">
                 <Image
-                  src="/logo_hapa1.png"
+                  src="/hapa-logo.webp"
                   alt="HAPA Logo"
                   width={64}
                   height={64}
