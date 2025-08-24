@@ -148,7 +148,7 @@ export const ContactFormNotificationEmail: React.FC<ContactFormEmailProps> = ({
               }
             </Text>
             <Text style={footerText}>
-              © {new Date().getFullYear()} HAPA - Haute Autorité de la Presse et de l'Audiovisuel
+              © {new Date().getFullYear()} HAPA - Haute Autorité de la Presse et de l&apos;Audiovisuel
             </Text>
           </Section>
         </Container>
