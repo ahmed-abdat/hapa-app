@@ -572,6 +572,22 @@ export const adminTranslations = {
     "modernDashboard.withEvidence": "Avec preuves",
     "modernDashboard.withoutEvidence": "Sans preuves",
 
+    // Common admin translations - REQUIRED by MediaSubmissionsDashboard
+    "actions.copyId": "Copier l'ID",
+    "actions.delete": "Supprimer",
+    "actions.details": "Détails", 
+    "actions.openMenu": "Ouvrir le menu",
+    "actions.selectAll": "Sélectionner tout",
+    "actions.selectRow": "Sélectionner la ligne",
+    "actions.refresh": "Actualiser",
+    "actions.allMessages": "Tous les messages",
+    "actions.viewDetails": "Voir les détails",
+    "admin.lastUpdated": "Dernière mise à jour",
+    "admin.never": "Jamais",
+    "admin.justNow": "À l'instant",
+    "admin.minutesAgo": "Il y a {minutes} minute{minutes, plural, =1 {} other {s}}",
+    "admin.hoursAgo": "Il y a {hours} heure{hours, plural, =1 {} other {s}}",
+
     "common.loading": "Chargement...",
     "common.openInAdmin": "Ouvrir dans l'admin",
     "common.untitled": "Sans titre",
@@ -1381,6 +1397,21 @@ export const adminTranslations = {
       export: "تصدير المحدد",
     },
 
+    // Common admin translations - REQUIRED by MediaSubmissionsDashboard (Arabic)
+    "actions.copyId": "نسخ المعرف",
+    "actions.delete": "حذف",
+    "actions.details": "التفاصيل",
+    "actions.openMenu": "فتح القائمة",
+    "actions.refresh": "تحديث",
+    "actions.allMessages": "جميع الرسائل",
+    "actions.viewDetails": "عرض التفاصيل", 
+    "actions.selectAll": "تحديد الكل",
+    "actions.selectRow": "تحديد الصف",
+    "admin.lastUpdated": "آخر تحديث",
+    "admin.never": "أبداً",
+    "admin.justNow": "للتو",
+    "admin.minutesAgo": "منذ {minutes} دقيقة",
+    "admin.hoursAgo": "منذ {hours} ساعة",
 
     // MediaCleanupJobs translations (Arabic)
     "mediaCleanupJobs.dashboardTitle": "إدارة تنظيف ملفات الوسائط",
@@ -1560,7 +1591,11 @@ export const adminTranslations = {
     "modernDashboard.dataTable.pageOf": "صفحة {page} من {pages}",
     "modernDashboard.dataTable.resultSingle": "نتيجة",
     "modernDashboard.dataTable.resultPlural": "نتائج",
+    "modernDashboard.dataTable.resultMultiple": "نتائج",
+    "modernDashboard.dataTable.notSpecified": "غير محدد",
     "modernDashboard.dataTable.viewInPayload": "عرض في Payload CMS",
+    "modernDashboard.dataTable.old": "قديم",
+    "modernDashboard.dataTable.recent": "حديث",
 
     // ModernDashboard flattened keys for days and months (Arabic)
     "modernDashboard.days.sun": "الأحد",
@@ -1587,6 +1622,12 @@ export const adminTranslations = {
     // Error handling and connection messages (Arabic)
     "modernDashboard.loadingDataError": "خطأ في تحميل البيانات",
     "modernDashboard.connectionError": "خطأ في الاتصال",
+    "modernDashboard.unableToLoadDashboard": "غير قادر على تحميل لوحة التحكم",
+    "modernDashboard.retry": "إعادة المحاولة",
+    "modernDashboard.viewSubmissionsDirectly": "عرض المحتويات مباشرة",
+    "modernDashboard.requestTimeout": "انتهت مهلة الطلب. يرجى المحاولة مرة أخرى.",
+    "modernDashboard.unknownError": "حدث خطأ غير معروف",
+    "modernDashboard.dataUpdated": "تم تحديث البيانات بنجاح",
 
     // Media Gallery component translations (Arabic)
     "mediaGallery.mediaFiles": "الملفات الإعلامية",
