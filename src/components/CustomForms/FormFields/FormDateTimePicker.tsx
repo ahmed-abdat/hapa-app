@@ -104,10 +104,10 @@ export function FormDateTimePicker({
                 disabled={disabled}
                 className={cn(
                   "flex h-12 w-full items-center justify-start whitespace-nowrap rounded-lg border-2 bg-transparent px-4 py-2 text-sm shadow-sm transition-all duration-200",
-                  "hover:bg-primary/5 hover:border-primary/30 hover:text-primary",
+                  "hover:bg-primary/10 hover:border-primary hover:text-primary",
                   error 
                     ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20 hover:border-red-400 hover:bg-red-50' 
-                    : 'border-gray-200 focus:border-primary focus:ring-primary/20',
+                    : 'border-gray-300 focus:border-primary focus:ring-primary/20',
                   !field.value && "text-muted-foreground hover:text-primary",
                   isRTL && "flex-row-reverse"
                 )}
@@ -159,11 +159,11 @@ export function FormDateTimePicker({
                   captionLayout="dropdown"
                   className={cn(
                     isRTL && "[&_.rdp-nav]:flex-row-reverse [&_.rdp-button_next]:order-first [&_.rdp-button_previous]:order-last",
-                    // Primary color hover states for calendar navigation arrows
-                    "[&_.rdp-button_previous:hover]:bg-primary/10 [&_.rdp-button_previous:hover]:text-primary",
-                    "[&_.rdp-button_next:hover]:bg-primary/10 [&_.rdp-button_next:hover]:text-primary",
-                    // Primary color hover states for calendar days
-                    "[&_.rdp-day_button:hover]:bg-primary/10 [&_.rdp-day_button:hover]:text-primary",
+                    // Primary color hover states for calendar navigation arrows with better contrast
+                    "[&_.rdp-button_previous:hover]:bg-primary/20 [&_.rdp-button_previous:hover]:text-primary",
+                    "[&_.rdp-button_next:hover]:bg-primary/20 [&_.rdp-button_next:hover]:text-primary",
+                    // Primary color hover states for calendar days with better contrast
+                    "[&_.rdp-day_button:hover]:bg-primary/20 [&_.rdp-day_button:hover]:text-primary",
                     // Today styling (only when not selected)
                     "[&_.rdp-day_today:not([data-selected])]:bg-primary/10 [&_.rdp-day_today:not([data-selected])]:text-primary [&_.rdp-day_today:not([data-selected])]:font-medium",
                     // Selected day styling (takes precedence over today)
