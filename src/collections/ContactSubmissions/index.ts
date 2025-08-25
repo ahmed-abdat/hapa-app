@@ -87,6 +87,38 @@ export const ContactSubmissions: CollectionConfig = {
         }
       }
     },
+    {
+      name: 'preferredLanguage',
+      type: 'select',
+      options: [
+        {
+          label: 'Français',
+          value: 'fr'
+        },
+        {
+          label: 'العربية',
+          value: 'ar'
+        }
+      ],
+      admin: {
+        position: 'sidebar',
+        description: {
+          fr: 'Langue préférée pour la réponse',
+          ar: 'اللغة المفضلة للرد'
+        }
+      },
+      hooks: {
+        beforeChange: [
+          ({ data, originalDoc }) => {
+            // Set preferredLanguage to locale if not already set
+            if (data && !data.preferredLanguage && (data.locale || originalDoc?.locale)) {
+              data.preferredLanguage = data.locale || originalDoc?.locale
+            }
+            return data
+          }
+        ]
+      }
+    },
     // User-submitted data (read-only)
     {
       name: 'name',
@@ -182,6 +214,19 @@ export const ContactSubmissions: CollectionConfig = {
       }
     },
     {
+      name: 'replySection',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '@/components/admin/ContactSubmissions/ReplyField',
+        }
+      },
+      label: {
+        fr: 'Envoyer une réponse',
+        ar: 'إرسال رد'
+      }
+    },
+    {
       name: 'replyMessage',
       type: 'textarea',
       label: {
@@ -192,7 +237,8 @@ export const ContactSubmissions: CollectionConfig = {
         description: {
           fr: 'Réponse à envoyer à l\'utilisateur par email',
           ar: 'الرد المراد إرساله للمستخدم عبر البريد الإلكتروني'
-        }
+        },
+        condition: () => false // Hide this field as it's managed by the custom component
       }
     },
     {

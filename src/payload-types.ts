@@ -305,6 +305,10 @@ export interface ContactSubmission {
    */
   locale: 'fr' | 'ar';
   /**
+   * Langue préférée pour la réponse
+   */
+  preferredLanguage?: ('fr' | 'ar') | null;
+  /**
    * Nom fourni par l'utilisateur (non modifiable)
    */
   name: string;
@@ -890,6 +894,7 @@ export interface ContactDashboardSelect<T extends boolean = true> {
 export interface ContactSubmissionsSelect<T extends boolean = true> {
   status?: T;
   locale?: T;
+  preferredLanguage?: T;
   name?: T;
   email?: T;
   phone?: T;

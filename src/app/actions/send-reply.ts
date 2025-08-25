@@ -5,11 +5,18 @@ import config from "@payload-config";
 import { render } from "@react-email/render";
 import { createElement } from "react";
 import SimpleReplyEmail from "@/emails/simple-reply";
+import EnhancedReplyEmail from "@/emails/templates/enhanced-reply";
 
-export async function sendContactFormReply(
-  submissionId: string,
-  replyMessage: string
-) {
+interface SendReplyOptions {
+  submissionId: string;
+  replyMessage: string;
+  subject?: string;
+  useEnhancedTemplate?: boolean;
+}
+
+export async function sendReplyAction(options: SendReplyOptions) {
+  const { submissionId, replyMessage, subject, useEnhancedTemplate = true } = options;
+  
   try {
     const payload = await getPayload({ config });
 
@@ -22,23 +29,40 @@ export async function sendContactFormReply(
     if (!submission) {
       return {
         success: false,
-        message: "Soumission introuvable",
+        error: "Soumission introuvable",
       };
     }
 
-    // Render simple email template
+    const locale = submission.preferredLanguage || submission.locale || "fr";
+    
+    // Render enhanced or simple email template based on preference
     const html = await render(
-      createElement(SimpleReplyEmail, {
-        userName: submission.name,
-        userEmail: submission.email,
-        originalSubject: submission.subject,
-        originalMessage: submission.message || "",
-        replyMessage: replyMessage,
-        locale: submission.locale || "fr",
-      })
+      useEnhancedTemplate
+        ? createElement(EnhancedReplyEmail, {
+            userName: submission.name,
+            subject: submission.subject || "Votre demande",
+            message: replyMessage,
+            locale: locale as 'fr' | 'ar',
+            includeFooter: true,
+          })
+        : createElement(SimpleReplyEmail, {
+            userName: submission.name,
+            userEmail: submission.email,
+            originalSubject: submission.subject,
+            originalMessage: submission.message || "",
+            replyMessage: replyMessage,
+            locale: locale,
+          })
     );
 
-    // Send email using direct Resend API (consistent with contact form)
+    // Determine email subject
+    const emailSubject = subject || (
+      locale === "ar"
+        ? `رد من HAPA: ${submission.subject}`
+        : `Réponse HAPA: ${submission.subject}`
+    );
+
+    // Send email using direct Resend API
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -46,12 +70,9 @@ export async function sendContactFormReply(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: process.env.EMAIL_FROM, // support@hapa.mr
+        from: `${process.env.EMAIL_FROM_NAME || 'HAPA Support'} <${process.env.EMAIL_FROM}>`,
         to: submission.email,
-        subject:
-          submission.locale === "ar"
-            ? `رد من HAPA: ${submission.subject}`
-            : `Réponse HAPA: ${submission.subject}`,
+        subject: emailSubject,
         html: html,
       }),
     });
@@ -62,8 +83,6 @@ export async function sendContactFormReply(
       throw new Error(`Email API failed: ${emailResult.message}`);
     }
 
-
-
     // Update submission record
     await payload.update({
       collection: "contact-submissions",
@@ -72,23 +91,34 @@ export async function sendContactFormReply(
         replyMessage: replyMessage,
         emailSent: true,
         emailSentAt: new Date().toISOString(),
+        status: 'resolved', // Auto-update status when reply is sent
       },
     });
 
     return {
       success: true,
-      message:
-        submission.locale === "ar"
-          ? "تم إرسال الرد بنجاح"
-          : "Réponse envoyée avec succès",
+      message: locale === "ar"
+        ? "تم إرسال الرد بنجاح"
+        : "Réponse envoyée avec succès",
     };
   } catch (error) {
     console.error("Reply email error:", error);
 
     return {
       success: false,
-      message: "Erreur lors de l'envoi de la réponse",
       error: error instanceof Error ? error.message : "Unknown error",
     };
   }
+}
+
+// Keep the old function for backward compatibility
+export async function sendContactFormReply(
+  submissionId: string,
+  replyMessage: string
+) {
+  return sendReplyAction({
+    submissionId,
+    replyMessage,
+    useEnhancedTemplate: false, // Use simple template for backward compatibility
+  });
 }
