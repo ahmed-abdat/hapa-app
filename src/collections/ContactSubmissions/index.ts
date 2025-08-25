@@ -218,7 +218,7 @@ export const ContactSubmissions: CollectionConfig = {
       type: 'ui',
       admin: {
         components: {
-          Field: '@/components/admin/ContactSubmissions/ReplyField',
+          Field: '@/components/admin/ContactSubmissions/InlineReplyPanel',
         }
       },
       label: {

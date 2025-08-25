@@ -19,15 +19,22 @@ export async function GET(request: NextRequest) {
       sort: '-createdAt',
     })
 
-    // Calculate statistics
+    // Calculate statistics - matching ContactStats interface
     const stats = {
-      total: allSubmissions.totalDocs,
-      today: 0,
-      week: 0,
-      month: 0,
-      pending: 0,
-      inProgress: 0,
-      resolved: 0,
+      totalSubmissions: allSubmissions.totalDocs,
+      totalToday: 0,
+      totalThisWeek: 0,
+      totalThisMonth: 0,
+      statusBreakdown: {
+        pending: 0,
+        inProgress: 0,
+        resolved: 0,
+      },
+      localeBreakdown: {
+        fr: 0,
+        ar: 0,
+      },
+      recentSubmissions: [],
       emailsSent: 0,
     }
 
@@ -36,21 +43,28 @@ export async function GET(request: NextRequest) {
       const createdAt = new Date(submission.createdAt)
       
       // Time-based stats
-      if (createdAt >= todayStart) stats.today++
-      if (createdAt >= weekStart) stats.week++
-      if (createdAt >= monthStart) stats.month++
+      if (createdAt >= todayStart) stats.totalToday++
+      if (createdAt >= weekStart) stats.totalThisWeek++
+      if (createdAt >= monthStart) stats.totalThisMonth++
       
       // Status stats
       switch (submission.status) {
         case 'pending':
-          stats.pending++
+          stats.statusBreakdown.pending++
           break
         case 'in-progress':
-          stats.inProgress++
+          stats.statusBreakdown.inProgress++
           break
         case 'resolved':
-          stats.resolved++
+          stats.statusBreakdown.resolved++
           break
+      }
+      
+      // Locale stats
+      if (submission.locale === 'fr') {
+        stats.localeBreakdown.fr++
+      } else if (submission.locale === 'ar') {
+        stats.localeBreakdown.ar++
       }
       
       // Email stats
@@ -74,10 +88,13 @@ export async function GET(request: NextRequest) {
       },
     })
 
+    // Add recent submissions to stats
+    stats.recentSubmissions = recentSubmissions.docs as any
+
     return NextResponse.json({
       success: true,
       stats,
-      recent: recentSubmissions.docs,
+      submissions: recentSubmissions.docs, // Dashboard expects 'submissions' not 'recent'
     })
   } catch (error) {
     console.error('Error fetching contact submissions stats:', error)

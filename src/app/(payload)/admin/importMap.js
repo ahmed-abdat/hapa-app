@@ -20,7 +20,7 @@ import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 }
 import { SlugFieldWithNotice as SlugFieldWithNotice_e83c5ccf8f9b3dccc0f0e2a7ece0904e } from '@/fields/slug/SlugFieldWithNotice.tsx'
 import { ForceLocaleMessage as ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62 } from '@/components/ForceLocaleMessage/index.tsx'
 import { default as default_6746f2f3c7bc378b9736d34bc75b4093 } from '@/components/admin/ContactDashboard/index.tsx'
-import { default as default_71b454ec5ca107c1fb793b9818f83cbf } from '@/components/admin/ContactSubmissions/ReplyField'
+import { default as default_4e0e102bc651161aeb8d7d72b4ea7a25 } from '@/components/admin/ContactSubmissions/InlineReplyPanel'
 import { default as default_4422a77cfdc4eb7c4845f13c5e26d5ab } from '@/components/admin/MediaSubmissionsDashboard/index.tsx'
 import { default as default_f029fb13fc5082e6c7ba564df85c4540 } from '@/components/admin/LocalizedDateField/index'
 import { default as default_8926d9b46ab7ff1b1765c6d2df708c04 } from '@/components/admin/MediaTypeField/index'
@@ -62,7 +62,7 @@ export const importMap = {
   "@/fields/slug/SlugFieldWithNotice.tsx#SlugFieldWithNotice": SlugFieldWithNotice_e83c5ccf8f9b3dccc0f0e2a7ece0904e,
   "@/components/ForceLocaleMessage/index.tsx#ForceLocaleMessage": ForceLocaleMessage_d6054ed7dc6cd387332747b392b25f62,
   "@/components/admin/ContactDashboard/index.tsx#default": default_6746f2f3c7bc378b9736d34bc75b4093,
-  "@/components/admin/ContactSubmissions/ReplyField#default": default_71b454ec5ca107c1fb793b9818f83cbf,
+  "@/components/admin/ContactSubmissions/InlineReplyPanel#default": default_4e0e102bc651161aeb8d7d72b4ea7a25,
   "@/components/admin/MediaSubmissionsDashboard/index.tsx#default": default_4422a77cfdc4eb7c4845f13c5e26d5ab,
   "@/components/admin/LocalizedDateField/index#default": default_f029fb13fc5082e6c7ba564df85c4540,
   "@/components/admin/MediaTypeField/index#default": default_8926d9b46ab7ff1b1765c6d2df708c04,

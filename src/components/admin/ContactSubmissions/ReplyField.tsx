@@ -8,7 +8,7 @@ import { Reply, Send, Check, Clock, X } from 'lucide-react'
 import { ContactSubmission } from '@/payload-types'
 import { ReplyDialog } from '../EmailReply'
 
-export const ReplyField: React.FC = () => {
+const ReplyField: React.FC = () => {
   const { value: replyMessage } = useField<string>({ path: 'replyMessage' })
   const { value: emailSent } = useField<boolean>({ path: 'emailSent' })
   const { value: emailSentAt } = useField<string>({ path: 'emailSentAt' })
@@ -103,3 +103,5 @@ export const ReplyField: React.FC = () => {
     </div>
   )
 }
+
+export default ReplyField
