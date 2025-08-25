@@ -53,9 +53,9 @@ export function Footer({ footerData }: FooterProps = {}) {
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white mb-1">
+                <div className="text-xl font-bold text-white mb-1" role="heading" aria-level={2}>
                   {locale === 'ar' ? t('hapaFullName') : 'HAPA'}
-                </h3>
+                </div>
                 <p className="text-secondary text-sm font-medium">
                   {t('hapaFullName')}
                 </p>
@@ -87,9 +87,9 @@ export function Footer({ footerData }: FooterProps = {}) {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold text-secondary mb-4 border-b-2 border-secondary/30 pb-2">
+            <div className="text-lg font-semibold text-secondary mb-4 border-b-2 border-secondary/30 pb-2" role="heading" aria-level={3}>
               {t('quickLinks')}
-            </h4>
+            </div>
             <nav className="flex flex-col gap-2">
               {defaultNavItems.map((item, i) => (
                 <Link 
@@ -105,9 +105,9 @@ export function Footer({ footerData }: FooterProps = {}) {
 
           {/* Services */}
           <div>
-            <h4 className="text-lg font-semibold text-secondary mb-4 border-b-2 border-secondary/30 pb-2">
+            <div className="text-lg font-semibold text-secondary mb-4 border-b-2 border-secondary/30 pb-2" role="heading" aria-level={3}>
               {t('services')}
-            </h4>
+            </div>
             <nav className="flex flex-col gap-2 text-sm">
               <Link 
                 href={`/forms/media-content-report`}

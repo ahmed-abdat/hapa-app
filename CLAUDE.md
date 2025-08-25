@@ -106,6 +106,11 @@ npx playwright codegen           # Generate test code
 
 ## Critical Development Rules
 
+### Import Path Standards
+
+- **ALWAYS use `cn` from `@/lib/utils`** - NOT from `@/utilities/cn`
+- The correct import is: `import { cn } from '@/lib/utils'`
+
 ### Internationalization Requirements
 
 - **NEVER import Link from `next/link`** - always use `@/i18n/navigation`
@@ -155,9 +160,14 @@ R2_BUCKET_NAME=your_bucket
 R2_ACCOUNT_ID=your_account_id
 R2_PUBLIC_URL=https://pub-hash.r2.dev
 
-# Email (Resend)
-RESEND_API_KEY=your_api_key
-EMAIL_FROM=noreply@hapa.mr
+# Email (Resend) - Required for production
+RESEND_API_KEY=re_xxxxxxxxxxxxx         # Required: Get from resend.com
+EMAIL_FROM=support@hapa.mr              # Required: Verified domain email
+EMAIL_FROM_NAME=HAPA Support            # Optional
+
+# Email addresses (create these mailboxes in cPanel)
+# support@hapa.mr   - Main email for everything (system emails, replies, notifications)
+# contact@hapa.mr   - Public contact (used on website) - can forward to support@hapa.mr
 ```
 
 ### Local Development Setup
@@ -173,6 +183,7 @@ EMAIL_FROM=noreply@hapa.mr
 ### Database Management & Debugging
 
 **Neon CLI** - Global `neonctl` available for database debugging:
+
 - **Current Project**: `hapa` (cold-salad-11795734), context pre-configured
 - **Quick Debug**: `neonctl connection-string`, `neonctl operations list`
 - **Branch Testing**: `neonctl branches create --name debug-$(date +%s)`

@@ -14,6 +14,7 @@ type SectionHeaderProps = {
   gradientSize?: "sm" | "md" | "lg";
   className?: string;
   animate?: boolean;
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
 };
 
 export const SectionHeader: React.FC<SectionHeaderProps> = ({
@@ -26,6 +27,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
   gradientSize = "md",
   className,
   animate = true,
+  headingLevel = 2,
 }) => {
   const shouldReduceMotion = useReducedMotion();
   const shouldAnimate = animate && !shouldReduceMotion;
@@ -71,13 +73,17 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
         </motion.p>
       )}
 
-      <h2 className={cn(
-        titleSizes[variant],
-        "font-bold text-gray-900 mb-6",
-        variant === "subsection" && "mb-4"
-      )}>
-        {title}
-      </h2>
+      {React.createElement(
+        `h${headingLevel}` as "h1" | "h2" | "h3" | "h4" | "h5" | "h6",
+        {
+          className: cn(
+            titleSizes[variant],
+            "font-bold text-gray-900 mb-6",
+            variant === "subsection" && "mb-4"
+          )
+        },
+        title
+      )}
 
       {description && (
         <p className={cn(

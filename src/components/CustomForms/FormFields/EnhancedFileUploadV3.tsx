@@ -345,7 +345,7 @@ export function EnhancedFileUploadV3({
                   <p className="text-sm text-muted-foreground">
                     {description}
                   </p>
-                  <p className="text-xs text-muted-foreground/80">
+                  <p className="text-xs text-muted-foreground">
                     {t('fileUpload.maxFiles', { maxFiles })} • {maxSize}MB {t('fileUpload.maxSizeEach')}
                   </p>
                 </div>

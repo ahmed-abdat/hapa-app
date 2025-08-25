@@ -77,6 +77,9 @@
   "specifyOther": "حدد",
   "programName": "اسم البرنامج أو المحتوى",
   "broadcastDateTime": "تاريخ ووقت البث أو النشر",
+  "broadcastDate": "تاريخ البث",
+  "broadcastTime": "وقت البث",
+  "timeOptional": "الوقت (اختياري)",
   "linkScreenshot": "الرابط أو صورة الشاشة (إن توفرت)",
 
   "fullName": "الاسم الكامل",
@@ -120,6 +123,11 @@
   "submitComplaint": "إرسال الشكوى",
   "reset": "إعادة تعيين",
   "cancel": "إلغاء",
+
+  "Share": {
+    "copiedToClipboard": "تم النسخ إلى الحافظة",  
+    "share": "شارك"
+  },
 
   "fieldRequired": "هذا الحقل مطلوب",
   "invalidEmail": "عنوان بريد إلكتروني غير صحيح",

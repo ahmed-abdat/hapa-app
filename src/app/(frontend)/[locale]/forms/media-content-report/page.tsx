@@ -72,9 +72,9 @@ export default async function MediaContentReportPage({ params }: PageProps) {
                 <div className="bg-primary/10 rounded-lg p-2 flex items-center justify-center">
                   <Clock className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                 </div>
-                <h3 className="text-sm md:text-base font-semibold text-gray-900">
+                <h2 className="text-sm md:text-base font-semibold text-gray-900">
                   {t('quickProcess')}
-                </h3>
+                </h2>
               </div>
               <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
                 {t('quickProcessDesc')}
@@ -87,9 +87,9 @@ export default async function MediaContentReportPage({ params }: PageProps) {
                 <div className="bg-primary/10 rounded-lg p-2 flex items-center justify-center">
                   <Shield className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                 </div>
-                <h3 className="text-sm md:text-base font-semibold text-gray-900">
+                <h2 className="text-sm md:text-base font-semibold text-gray-900">
                   {t('confidential')}
-                </h3>
+                </h2>
               </div>
               <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
                 {t('confidentialDesc')}
@@ -102,9 +102,9 @@ export default async function MediaContentReportPage({ params }: PageProps) {
                 <div className="bg-primary/10 rounded-lg p-2 flex items-center justify-center">
                   <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                 </div>
-                <h3 className="text-sm md:text-base font-semibold text-gray-900">
+                <h2 className="text-sm md:text-base font-semibold text-gray-900">
                   {t('guaranteedFollowup')}
-                </h3>
+                </h2>
               </div>
               <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
                 {t('guaranteedFollowupDesc')}
@@ -125,9 +125,9 @@ export default async function MediaContentReportPage({ params }: PageProps) {
       <div className="bg-gray-50 py-8 md:py-10">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-3">
+            <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3">
               {t('needHelpQuestion')}
-            </h2>
+            </h3>
             <p className="text-sm md:text-base text-gray-600 mb-6">
               {t('helpTeamAvailable')}
             </p>

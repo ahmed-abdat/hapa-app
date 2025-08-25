@@ -1,11 +1,12 @@
 # MVP Testing Checklist - HAPA Website
 
 **Date**: Phase 2 MVP Completion  
-**Status**: Ready for Production Testing  
+**Status**: Ready for Production Testing
 
 ## 🚀 **MVP Core Features**
 
-### ✅ **Security Implementation** 
+### ✅ **Security Implementation**
+
 - [x] **CSRF Protection** - Forms protected against cross-site attacks
 - [x] **Rate Limiting** - 5 form submissions/hour, 10 file uploads/hour
 - [x] **Security Headers** - CSP, HSTS, X-Frame-Options, etc.
@@ -13,6 +14,7 @@
 - [x] **Input Validation** - Zod schemas for all form data
 
 ### ✅ **Core Functionality**
+
 - [x] **Form Submissions** - Complaint and Report forms working
 - [x] **File Uploads** - Images and documents with validation
 - [x] **Admin Panel** - Payload CMS accessible and functional
@@ -20,6 +22,7 @@
 - [x] **Email Notifications** - Resend integration configured
 
 ### ✅ **Performance & Reliability**
+
 - [x] **Error Handling** - Structured logging and error boundaries
 - [x] **Health Monitoring** - `/api/health` endpoint for monitoring
 - [x] **Build System** - TypeScript compilation without errors
@@ -30,6 +33,7 @@
 ## 🧪 **Manual Testing Checklist**
 
 ### 1. **Website Access**
+
 ```bash
 # Test basic site access
 curl -I http://localhost:3000/
@@ -43,6 +47,7 @@ curl -I http://localhost:3000/ar/
 ```
 
 ### 2. **Form Security Testing**
+
 ```bash
 # Test CSRF protection
 curl -X POST http://localhost:3000/api/media-forms/submit \
@@ -60,6 +65,7 @@ done
 ```
 
 ### 3. **Health Check**
+
 ```bash
 # Test health endpoint
 curl http://localhost:3000/api/health
@@ -67,6 +73,7 @@ curl http://localhost:3000/api/health
 ```
 
 ### 4. **Security Headers**
+
 ```bash
 # Test security headers
 curl -I http://localhost:3000/fr/
@@ -78,6 +85,7 @@ curl -I http://localhost:3000/fr/
 ## 🌐 **Frontend Testing (Browser)**
 
 ### 1. **Form Functionality**
+
 - [ ] Navigate to `/fr/forms/media-content-complaint`
 - [ ] Fill out complaint form with all required fields
 - [ ] Upload test image file (< 5MB)
@@ -86,12 +94,14 @@ curl -I http://localhost:3000/fr/
 - [ ] Check admin panel for submission
 
 ### 2. **RTL Language Support**
+
 - [ ] Navigate to `/ar/forms/media-content-complaint`
 - [ ] Verify layout is right-to-left
 - [ ] Test form functionality in Arabic
 - [ ] Verify proper Arabic text display
 
 ### 3. **File Upload Testing**
+
 - [ ] Test image uploads (JPG, PNG)
 - [ ] Test document uploads (PDF)
 - [ ] Verify file size validation (try >5MB file)
@@ -99,6 +109,7 @@ curl -I http://localhost:3000/fr/
 - [ ] Check file compression works
 
 ### 4. **Admin Panel Testing**
+
 - [ ] Access `/admin` panel
 - [ ] Login with admin credentials
 - [ ] View media submissions
@@ -110,11 +121,13 @@ curl -I http://localhost:3000/fr/
 ## ⚡ **Performance Testing**
 
 ### 1. **Page Load Speed**
+
 - [ ] Homepage loads < 3 seconds
 - [ ] Form pages load < 2 seconds
 - [ ] Admin panel loads < 5 seconds
 
 ### 2. **Core Web Vitals**
+
 ```bash
 # Run Lighthouse test
 npx lighthouse http://localhost:3000/fr/forms/media-content-complaint \
@@ -123,6 +136,7 @@ npx lighthouse http://localhost:3000/fr/forms/media-content-complaint \
 ```
 
 **Targets**:
+
 - LCP (Largest Contentful Paint): < 2.5s
 - FID (First Input Delay): < 100ms
 - CLS (Cumulative Layout Shift): < 0.1
@@ -132,21 +146,25 @@ npx lighthouse http://localhost:3000/fr/forms/media-content-complaint \
 ## 🔒 **Security Testing**
 
 ### 1. **CSRF Protection**
+
 - [ ] Try form submission without CSRF token (should fail)
 - [ ] Verify CSRF token is generated on page load
 - [ ] Test form submission with valid token (should work)
 
 ### 2. **Rate Limiting**
+
 - [ ] Submit 5 forms rapidly (should work)
 - [ ] Submit 6th form (should be rate limited)
 - [ ] Wait 1 hour and test again (should work)
 
 ### 3. **File Upload Security**
+
 - [ ] Try uploading .exe file (should be rejected)
 - [ ] Try uploading oversized file (should be rejected)
 - [ ] Upload valid image (should work)
 
 ### 4. **Content Security Policy**
+
 - [ ] Check browser console for CSP violations
 - [ ] Verify no inline scripts or styles cause issues
 - [ ] Test that external resources load correctly
@@ -156,6 +174,7 @@ npx lighthouse http://localhost:3000/fr/forms/media-content-complaint \
 ## 📊 **Production Readiness**
 
 ### Environment Variables Required
+
 ```env
 # Core
 POSTGRES_URL=postgresql://...
@@ -170,7 +189,7 @@ R2_ACCOUNT_ID=your-account-id
 R2_PUBLIC_URL=https://pub-hash.r2.dev
 
 # Email
-EMAIL_FROM=noreply@hapa.mr
+EMAIL_FROM=support@hapa.mr
 RESEND_API_KEY=your-resend-key
 
 # Optional Security Enhancement
@@ -179,6 +198,7 @@ UPSTASH_REDIS_REST_TOKEN=your-token
 ```
 
 ### Deployment Commands
+
 ```bash
 # Verify build
 pnpm build
@@ -201,6 +221,7 @@ pnpm start
 ## 🎯 **Success Criteria**
 
 ### Must Pass (Blocking)
+
 - [x] Build completes without errors
 - [x] All forms submit successfully
 - [x] File uploads work with validation
@@ -210,6 +231,7 @@ pnpm start
 - [x] Rate limiting functional
 
 ### Should Pass (Important)
+
 - [ ] Page load time < 3s
 - [ ] No console errors
 - [ ] RTL layout works
@@ -231,12 +253,14 @@ pnpm start
 ## 📝 **Next Steps After MVP**
 
 1. **Phase 3 Enhancements**:
+
    - Automated testing suite
    - Enhanced monitoring (Sentry)
    - Advanced admin features
    - Email template improvements
 
 2. **Performance Optimization**:
+
    - Bundle analysis and optimization
    - Image pre-loading
    - API response caching

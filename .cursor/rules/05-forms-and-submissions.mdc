@@ -6,10 +6,26 @@ globs: src/actions/media-forms.ts,src/components/CustomForms/**/*.tsx,src/collec
 
 - Frontend forms
 
-  - Complaint: [`src/components/CustomForms/MediaContentComplaintForm/index.tsx`](mdc:src/components/CustomForms/MediaContentComplaintForm/index.tsx)
-  - Report: [`src/components/CustomForms/MediaContentReportForm/index.tsx`](mdc:src/components/CustomForms/MediaContentReportForm/index.tsx)
+  - Dynamic forms: [`src/components/CustomForms/DynamicMediaForms.tsx`](mdc:src/components/CustomForms/DynamicMediaForms.tsx)
+  - Static forms:
+    - Complaint: [`src/components/CustomForms/MediaContentComplaintForm/index.tsx`](mdc:src/components/CustomForms/MediaContentComplaintForm/index.tsx)
+    - Report: [`src/components/CustomForms/MediaContentReportForm/index.tsx`](mdc:src/components/CustomForms/MediaContentReportForm/index.tsx)
   - Use Zod + React Hook Form; provide bilingual labels
   - Validate files before submission; use `convertToFormData`
+
+- Form components architecture
+
+  - Base form: [`src/components/CustomForms/BaseForm/index.tsx`](mdc:src/components/CustomForms/BaseForm/index.tsx)
+  - Form fields: [`src/components/CustomForms/FormFields/`](mdc:src/components/CustomForms/FormFields/) (reusable field components)
+  - Validation schemas: [`src/components/CustomForms/schemas/`](mdc:src/components/CustomForms/schemas/)
+  - Form types: [`src/components/CustomForms/types/`](mdc:src/components/CustomForms/types/)
+
+- Additional components
+
+  - Contact form: [`src/components/CustomForms/ContactForm/index.tsx`](mdc:src/components/CustomForms/ContactForm/index.tsx)
+  - Progress tracking: [`src/components/CustomForms/FormSubmissionProgress/index.tsx`](mdc:src/components/CustomForms/FormSubmissionProgress/index.tsx)
+  - Submission display: [`src/components/CustomForms/SubmissionDisplay/index.tsx`](mdc:src/components/CustomForms/SubmissionDisplay/index.tsx)
+  - Thank you card: [`src/components/CustomForms/ThankYouCard/index.tsx`](mdc:src/components/CustomForms/ThankYouCard/index.tsx)
 
 - Server action
 
@@ -19,7 +35,7 @@ globs: src/actions/media-forms.ts,src/components/CustomForms/**/*.tsx,src/collec
 
 - Storage separation
 
-  - Form uploads use `FormMedia` collection (isolated from admin media)
+  - Form uploads use unified `Media` collection with dedicated prefixes for form submissions
 
 - Admin collection
 

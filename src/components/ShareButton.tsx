@@ -5,6 +5,8 @@ import { Share2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import type { Locale } from '@/utilities/locale'
+import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 
 interface ShareButtonProps {
   url: string
@@ -14,7 +16,8 @@ interface ShareButtonProps {
   shareText?: string
 }
 
-export const ShareButton: React.FC<ShareButtonProps> = ({ url, title, className, locale, shareText = 'Partager' }) => {
+export const ShareButton: React.FC<ShareButtonProps> = ({ url, title, className, locale, shareText }) => {
+  const t = useTranslations()
   const handleShare = async () => {
     if (navigator.share) {
       try {
@@ -30,11 +33,15 @@ export const ShareButton: React.FC<ShareButtonProps> = ({ url, title, className,
       try {
         await navigator.clipboard.writeText(window.location.href)
         // You could add a toast notification here
+        toast.success(t('Share.copiedToClipboard'))
       } catch (err) {
         console.error('Failed to copy URL')
       }
     }
   }
+
+  const isRTL = locale === 'ar'
+  const buttonText = shareText || t('Share.share')
 
   return (
     <Button
@@ -46,8 +53,17 @@ export const ShareButton: React.FC<ShareButtonProps> = ({ url, title, className,
         className
       )}
     >
-      <Share2 className="h-4 w-4" />
-      <span>{shareText}</span>
+      {isRTL ? (
+        <>
+          <span className="hidden sm:inline">{buttonText}</span>
+          <Share2 className="h-4 w-4" />
+        </>
+      ) : (
+        <>
+          <Share2 className="h-4 w-4" />
+          <span className="hidden sm:inline">{buttonText}</span>
+        </>
+      )}
     </Button>
   )
 }

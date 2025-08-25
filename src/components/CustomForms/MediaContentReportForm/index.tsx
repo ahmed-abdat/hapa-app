@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import { useParams, useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion'
 
 import { BaseForm } from '../BaseForm'
 import { ThankYouCard } from '../ThankYouCard'
@@ -18,8 +18,12 @@ import {
   TVChannelCombobox,
   RadioStationCombobox,
   FormDateTimePicker,
+  FormDateTimePickerV2,
   EnhancedFileUploadV3
 } from '../FormFields'
+import { FormDatePicker } from '../FormFields/FormDatePicker'
+import { FormTimePicker } from '../FormFields/FormTimePicker'
+import { combineDateTimeFields } from '@/utilities/date-time-helpers'
 import { 
   createMediaContentReportSchema, 
   type MediaContentReportFormData,
@@ -44,6 +48,9 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
   const [submissionProgress, setSubmissionProgress] = useState(0)
   const [submissionStage, setSubmissionStage] = useState<'preparing' | 'uploading' | 'validating' | 'saving' | 'complete' | 'error'>('preparing')
   const [submissionError, setSubmissionError] = useState<string>()
+  const [showProgressModal, setShowProgressModal] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const formHeight = useRef<number>(0)
   const params = useParams()
   const router = useRouter()
   const locale = (params?.locale as Locale) || 'fr'
@@ -60,7 +67,8 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
       radioStation: '',
       radioStationOther: '',
       programName: '',
-      broadcastDateTime: '',
+      broadcastDate: '',
+      broadcastTime: '',
       linkScreenshot: '',
       screenshotFiles: [], // Will be managed as File objects by EnhancedFileUploadV3
       // Report Reasons
@@ -106,8 +114,23 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
 
 
   const onSubmit = async (data: MediaContentReportFormData) => {
+    // Capture form height before submission
+    if (containerRef.current) {
+      formHeight.current = containerRef.current.offsetHeight
+    }
+    
+    // Combine date and time fields into broadcastDateTime
+    const processedData = {
+      ...data,
+      broadcastDateTime: combineDateTimeFields(
+        (data as any).broadcastDate,
+        (data as any).broadcastTime
+      )
+    }
+    
     // Initialize loading state immediately
     setIsSubmitting(true)
+    setShowProgressModal(true)
     setSubmissionStage('preparing')
     setSubmissionProgress(0)
     setSubmissionError(undefined)
@@ -119,8 +142,8 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
     
     try {
       // File validation for V2 component (URLs instead of File objects)
-      const screenshotCount = Array.isArray(data.screenshotFiles) ? data.screenshotFiles.length : 0
-      const attachmentCount = Array.isArray(data.attachmentFiles) ? data.attachmentFiles.length : 0
+      const screenshotCount = Array.isArray(processedData.screenshotFiles) ? processedData.screenshotFiles.length : 0
+      const attachmentCount = Array.isArray(processedData.attachmentFiles) ? processedData.attachmentFiles.length : 0
       
       logger.log('File check:', {
         sessionId: clientSessionId,
@@ -142,12 +165,12 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
 
       const fileFields: FileUploadField[] = [
         {
-          files: data.screenshotFiles || [],
+          files: processedData.screenshotFiles || [],
           fieldName: 'screenshotFiles',
           fileType: 'screenshot'
         },
         {
-          files: data.attachmentFiles || [],
+          files: processedData.attachmentFiles || [],
           fieldName: 'attachmentFiles', 
           fileType: 'attachment'
         }
@@ -175,7 +198,7 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
       }
 
       // Prepare submission data with uploaded URLs
-      const submissionData = uploadService.createSubmissionData(data, uploadResult.uploadedUrls, {
+      const submissionData = uploadService.createSubmissionData(processedData, uploadResult.uploadedUrls, {
         formType: 'report',
         submittedAt: new Date().toISOString(),
         locale,
@@ -211,11 +234,21 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
         
         logger.success('Form submitted successfully', result.submissionId)
         
-        // Small delay to show completion state
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        // Show completion state for a moment
+        await new Promise(resolve => setTimeout(resolve, 1500))
+        
+        // Smooth transition: fade out modal, then show thank you
+        setShowProgressModal(false)
+        
+        // Wait for modal to fade out
+        await new Promise(resolve => setTimeout(resolve, 300))
+        
+        // Scroll to top smoothly before showing thank you
+        window.scrollTo({ top: 0, behavior: 'smooth' })
         
         setSubmissionId(result.submissionId || 'success')
         setIsSubmitted(true)
+        setIsSubmitting(false)
       } else {
         // Error handling with progress feedback
         setSubmissionStage('error')
@@ -251,6 +284,7 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
         
         // Keep error state visible for 3 seconds before hiding progress
         setTimeout(() => {
+          setShowProgressModal(false)
           setIsSubmitting(false)
         }, 3000)
         
@@ -272,32 +306,58 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
       
       // Keep error state visible for 3 seconds before hiding progress
       setTimeout(() => {
+        setShowProgressModal(false)
         setIsSubmitting(false)
       }, 3000)
     }
   }
 
+  // Effect to manage container height during transitions
+  useEffect(() => {
+    if (containerRef.current && formHeight.current > 0 && isSubmitted) {
+      // Maintain minimum height during transition
+      containerRef.current.style.minHeight = `${Math.min(formHeight.current, 600)}px`
+      
+      // After animation completes, remove the min-height
+      const timer = setTimeout(() => {
+        if (containerRef.current) {
+          containerRef.current.style.minHeight = ''
+        }
+      }, 1000)
+      
+      return () => clearTimeout(timer)
+    }
+  }, [isSubmitted])
+
   return (
     <div className={className}>
-      <AnimatePresence mode="wait">
-        {isSubmitted ? (
-          <motion.div
-            key="thank-you"
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -50, scale: 0.9 }}
-            transition={{
-              duration: 0.6,
-              ease: [0.04, 0.62, 0.23, 0.98]
-            }}
-          >
-            <ThankYouCard 
-              locale={locale}
-              formType="report"
-              submissionId={submissionId}
-            />
-          </motion.div>
-        ) : (
+      <motion.div
+        ref={containerRef}
+        layout
+        transition={{ type: "spring", damping: 30, stiffness: 200 }}
+        className="relative"
+        style={{ minHeight: isSubmitted ? '500px' : 'auto' }}
+      >
+        <AnimatePresence mode="wait">
+          {isSubmitted ? (
+            <motion.div
+              key="thank-you"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{
+                duration: 0.5,
+                ease: [0.25, 0.46, 0.45, 0.94]
+              }}
+              className="flex items-center justify-center min-h-[500px]"
+            >
+              <ThankYouCard 
+                locale={locale}
+                formType="report"
+                submissionId={submissionId}
+              />
+            </motion.div>
+          ) : (
           <motion.div
             key="form"
             initial={{ opacity: 0, y: 20 }}
@@ -399,12 +459,24 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
             required
           />
 
-          <FormDateTimePicker
-            name="broadcastDateTime"
-            label={t('broadcastDateTime')}
-            locale={locale}
-            required
-          />
+          {/* Separated Date and Time Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormDatePicker
+              name="broadcastDate"
+              label={t('broadcastDate')}
+              locale={locale}
+              required
+              maxDate={new Date()}
+            />
+            <FormTimePicker
+              name="broadcastTime"
+              label={t('broadcastTime')}
+              locale={locale}
+              use12Hour={locale === 'ar'}
+              minuteInterval={15}
+              placeholder={t('timeOptional')}
+            />
+          </div>
 
           <FormTextarea
             name="linkScreenshot"
@@ -520,17 +592,20 @@ export function MediaContentReportForm({ className }: MediaContentReportFormProp
 
       </BaseForm>
 
-              {/* Progress Modal */}
-              <FormSubmissionProgress
-                isVisible={isSubmitting}
-                stage={submissionStage}
-                progress={submissionProgress}
-                errorMessage={submissionError}
-                locale={locale}
-              />
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+        
+        {/* Progress Modal - Outside AnimatePresence for independent animation */}
+        <FormSubmissionProgress
+          isVisible={showProgressModal}
+          stage={submissionStage}
+          progress={submissionProgress}
+          errorMessage={submissionError}
+          locale={locale}
+          onClose={() => setShowProgressModal(false)}
+        />
+      </motion.div>
+    </div>
     )
   }
