@@ -1,17 +1,17 @@
-'use client'
+"use client";
 
-import React, { ReactNode } from 'react'
-import { FormProvider, UseFormReturn, FieldValues } from 'react-hook-form'
-import { FormTranslations } from '../types'
+import React, { ReactNode } from "react";
+import { FormProvider, UseFormReturn, FieldValues } from "react-hook-form";
+import { FormTranslations } from "../types";
 
 interface BaseFormProps<T extends FieldValues = FieldValues> {
-  children: ReactNode
-  methods: UseFormReturn<T>
-  onSubmit: (data: T) => void
-  translations: FormTranslations
-  locale: 'fr' | 'ar'
-  isLoading?: boolean
-  className?: string
+  children: ReactNode;
+  methods: UseFormReturn<T>;
+  onSubmit: (data: T) => void;
+  translations: FormTranslations;
+  locale: "fr" | "ar";
+  isLoading?: boolean;
+  className?: string;
 }
 
 export function BaseForm<T extends FieldValues = FieldValues>({
@@ -21,9 +21,9 @@ export function BaseForm<T extends FieldValues = FieldValues>({
   translations,
   locale,
   isLoading = false,
-  className = ''
+  className = "",
 }: BaseFormProps<T>) {
-  const config = translations[locale] || translations['fr'] // Fallback to French if locale not found
+  const config = translations[locale] || translations["fr"]; // Fallback to French if locale not found
 
   return (
     <div className={className}>
@@ -31,7 +31,7 @@ export function BaseForm<T extends FieldValues = FieldValues>({
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-6">
           {children}
-          
+
           {/* Submit Button */}
           <div className="pt-6">
             <button
@@ -42,7 +42,7 @@ export function BaseForm<T extends FieldValues = FieldValues>({
               {isLoading ? (
                 <div className="flex items-center justify-center">
                   <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
-                  {locale === 'fr' ? 'Envoi en cours...' : 'جاري الإرسال...'}
+                  {locale === "fr" ? "Envoi en cours..." : "جاري الإرسال..."}
                 </div>
               ) : (
                 config.submitButtonText
@@ -52,5 +52,5 @@ export function BaseForm<T extends FieldValues = FieldValues>({
         </form>
       </FormProvider>
     </div>
-  )
+  );
 }

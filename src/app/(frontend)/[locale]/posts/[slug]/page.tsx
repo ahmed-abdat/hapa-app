@@ -141,7 +141,7 @@ export default async function Post({ params: paramsPromise }: Args) {
 
           {/* Post Metadata Section */}
           <div className="mb-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-gray-200">
+            <div className="flex items-center justify-between gap-3 pb-4 border-b border-gray-200">
               {/* Publish Date */}
               {post.publishedAt && (
                 <div className="flex items-center gap-2 text-sm text-gray-600">

@@ -36,3 +36,52 @@ alwaysApply: true
   - For schema/storage changes, confirm admin works and media uploads succeed
 
 See also [CLAUDE.md](mdc:CLAUDE.md) for project conventions.
+
+## Model Context Protocol (MCP) servers in Cursor
+
+- Config file: `.mcp.json` at the project root
+- Do not hardcode secrets in JSON. Reference env vars using `${VAR_NAME}` and export them in your shell before launching Cursor
+- After editing `.mcp.json`, restart Cursor (Developer → Reload Window) to apply changes
+
+### Existing configured MCP servers
+
+- `context7`: `npx -y @upstash/context7-mcp`
+- `sequential-thinking`: `npx -y @modelcontextprotocol/server-sequential-thinking`
+- `shadcn-ui`: `npx -y @jpisnice/shadcn-ui-mcp-server` (requires `GITHUB_TOKEN`)
+- `tweakcn`: `npx -y shadcn@canary registry:mcp` (uses `REGISTRY_URL`)
+- `playwright`: `npx -y @playwright/mcp@latest --headless`
+- `playwright-headed`: `npx -y @playwright/mcp@latest`
+- `playwright-mobile`: `npx -y @playwright/mcp@latest --device "iPhone 15"`
+- `github`: `npx -y @modelcontextprotocol/server-github@latest` (requires `GITHUB_TOKEN`)
+
+### Recommended `.mcp.json` pattern for secrets
+
+```json
+{
+  "mcpServers": {
+    "shadcn-ui": {
+      "command": "npx",
+      "args": ["-y", "@jpisnice/shadcn-ui-mcp-server"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github@latest"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+### Set environment variables before launching Cursor
+
+```bash
+# Example
+export GITHUB_TOKEN=your_token_here
+export REGISTRY_URL=https://tweakcn.com/r/themes/registry.json
+# Start Cursor from this shell so it inherits env vars
+```

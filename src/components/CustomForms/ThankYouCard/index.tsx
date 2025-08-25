@@ -25,48 +25,51 @@ export function ThankYouCard({ locale, formType }: ThankYouCardProps) {
 
   // Animation variants with proper typing
   const containerVariants: Variants = {
-    hidden: { opacity: 0, y: 50 },
+    hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6,
-        staggerChildren: 0.15
+        duration: 0.4,
+        ease: [0.25, 0.46, 0.45, 0.94],
+        staggerChildren: 0.1
       }
     }
   }
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 15 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.5
+        duration: 0.3,
+        ease: "easeOut"
       }
     }
   }
 
   const iconVariants: Variants = {
-    hidden: { scale: 0, rotate: -180 },
+    hidden: { scale: 0.8, opacity: 0 },
     visible: {
       scale: 1,
-      rotate: 0,
+      opacity: 1,
       transition: {
         type: "spring",
-        stiffness: 100,
-        damping: 10,
-        delay: 0.2
+        stiffness: 200,
+        damping: 15,
+        delay: 0.1
       }
     }
   }
 
   const pulseVariants: Variants = {
     pulse: {
-      scale: [1, 1.05, 1],
+      scale: [1, 1.03, 1],
       transition: {
-        duration: 2,
-        repeat: 2 // Reduced from Infinity to 2 repeats
+        duration: 1.5,
+        repeat: 1,
+        ease: "easeInOut"
       }
     }
   }
@@ -107,15 +110,15 @@ export function ThankYouCard({ locale, formType }: ThankYouCardProps) {
                   {/* Ripple effect - Single animation on mount */}
                   <motion.div
                     className="absolute inset-0 rounded-full border-2 border-primary/20"
-                    initial={{ scale: 1, opacity: 0.5 }}
+                    initial={{ scale: 1, opacity: 0.4 }}
                     animate={{
-                      scale: [1, 1.3, 1.5],
-                      opacity: [0.5, 0.2, 0]
+                      scale: [1, 1.2, 1.4],
+                      opacity: [0.4, 0.15, 0]
                     }}
                     transition={{
-                      duration: 1.5,
-                      repeat: 0, // Changed from Infinity to 0 (run once)
-                      delay: 0.3
+                      duration: 1.2,
+                      ease: "easeOut",
+                      delay: 0.2
                     }}
                   />
                 </motion.div>

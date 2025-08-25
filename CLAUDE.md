@@ -106,6 +106,11 @@ npx playwright codegen           # Generate test code
 
 ## Critical Development Rules
 
+### Import Path Standards
+
+- **ALWAYS use `cn` from `@/lib/utils`** - NOT from `@/utilities/cn`
+- The correct import is: `import { cn } from '@/lib/utils'`
+
 ### Internationalization Requirements
 
 - **NEVER import Link from `next/link`** - always use `@/i18n/navigation`

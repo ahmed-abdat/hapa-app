@@ -74,9 +74,9 @@ export default async function MediaContentComplaintPage({ params }: PageProps) {
                 <div className="bg-primary/10 rounded-lg p-2">
                   <UserCheck className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                 </div>
-                <h3 className="text-sm md:text-base font-semibold text-gray-900">
+                <h2 className="text-sm md:text-base font-semibold text-gray-900">
                   {t("officialResponse")}
-                </h3>
+                </h2>
               </div>
               <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
                 {t("officialResponseDesc")}
@@ -89,9 +89,9 @@ export default async function MediaContentComplaintPage({ params }: PageProps) {
                 <div className="bg-primary/10 rounded-lg p-2">
                   <Shield className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                 </div>
-                <h3 className="text-sm md:text-base font-semibold text-gray-900">
+                <h2 className="text-sm md:text-base font-semibold text-gray-900">
                   {t("legalProtection")}
-                </h3>
+                </h2>
               </div>
               <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
                 {t("legalProtectionDesc")}
@@ -104,9 +104,9 @@ export default async function MediaContentComplaintPage({ params }: PageProps) {
                 <div className="bg-primary/10 rounded-lg p-2">
                   <Clock className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                 </div>
-                <h3 className="text-sm md:text-base font-semibold text-gray-900">
+                <h2 className="text-sm md:text-base font-semibold text-gray-900">
                   {t("followupGuaranteed")}
-                </h3>
+                </h2>
               </div>
               <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
                 {t("followupGuaranteedDesc")}
@@ -125,9 +125,9 @@ export default async function MediaContentComplaintPage({ params }: PageProps) {
                 <MessageCircle className="h-4 w-4 md:h-5 md:w-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-primary mb-1.5 md:mb-2 text-sm md:text-base">
+                <h2 className="font-semibold text-primary mb-1.5 md:mb-2 text-sm md:text-base">
                   {t("officialComplaint")}
-                </h3>
+                </h2>
                 <p className="text-primary/80 text-xs md:text-sm leading-relaxed">
                   {t("officialComplaintNotice")}
                 </p>
@@ -148,9 +148,9 @@ export default async function MediaContentComplaintPage({ params }: PageProps) {
       <div className="bg-gray-50 py-8 md:py-10">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-3">
+            <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3">
               {t("processQuestionsTitle")}
-            </h2>
+            </h3>
             <p className="text-sm md:text-base text-gray-600 mb-6">{t("guidanceText")}</p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
               <a

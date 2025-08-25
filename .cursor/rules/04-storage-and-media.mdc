@@ -1,5 +1,5 @@
 ---
-globs: src/utilities/storage-config.ts,src/utilities/r2-client.ts,src/collections/Media.ts,src/collections/FormMedia.ts
+globs: src/utilities/storage-config.ts,src/utilities/r2-client.ts,src/collections/Media.ts
 ---
 
 # Storage and Media Rules (Cloudflare R2)
@@ -19,7 +19,7 @@ globs: src/utilities/storage-config.ts,src/utilities/r2-client.ts,src/collection
 
   - `Media` collection sets `data.prefix` by file type (images/docs/videos/audio)
     - See hook in [`src/collections/Media.ts`](mdc:src/collections/Media.ts)
-  - `FormMedia` collection isolates form uploads (see its config)
+  - Unified media collection handles both admin uploads and form submissions with appropriate prefixes
 
 - Rules
 

@@ -116,14 +116,14 @@ const createContentInformationSchema = (validationMessages: ReturnType<typeof ge
     .refine((val) => val.trim().length >= 2 && !/^(undefined|null|[0-9\s]+)$/i.test(val.trim()), {
       message: "Nom du programme invalide"
     }),
+  // Support for separated date/time fields (will be combined on submit)
+  broadcastDate: z.string()
+    .min(1, validationMessages.required),
+  broadcastTime: z.string()
+    .optional(),
+  // Legacy combined field (maintained for backward compatibility)
   broadcastDateTime: z.string()
-    .min(1, validationMessages.required)
-    .refine((val) => !isNaN(Date.parse(val)), {
-      message: "Date de diffusion invalide"
-    })
-    .refine((val) => new Date(val) <= new Date(), {
-      message: "La date de diffusion ne peut pas être dans le futur"
-    }),
+    .optional(),
   linkScreenshot: z.string()
     .max(500, validationMessages.max_length(500))
     .optional()

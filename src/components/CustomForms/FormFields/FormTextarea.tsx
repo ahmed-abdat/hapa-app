@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { useFormContext } from 'react-hook-form'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { FormTextareaProps } from '../types'
+import { useFormContext } from "react-hook-form";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { FormTextareaProps } from "../types";
 
 export function FormTextarea({
   name,
@@ -11,19 +11,19 @@ export function FormTextarea({
   placeholder,
   required = false,
   disabled = false,
-  className = '',
+  className = "",
   rows = 4,
-  maxLength
+  maxLength,
 }: FormTextareaProps) {
   const {
     register,
     watch,
-    formState: { errors }
-  } = useFormContext()
+    formState: { errors },
+  } = useFormContext();
 
-  const error = errors[name]?.message as string | undefined
-  const currentValue = watch(name) || ''
-  const currentLength = currentValue.length
+  const error = errors[name]?.message as string | undefined;
+  const currentValue = watch(name) || "";
+  const currentLength = currentValue.length;
 
   return (
     <div className={`space-y-2 ${className}`}>
@@ -40,7 +40,7 @@ export function FormTextarea({
           </span>
         )}
       </div>
-      
+
       <Textarea
         {...register(name)}
         id={name}
@@ -48,16 +48,20 @@ export function FormTextarea({
         disabled={disabled}
         rows={rows}
         maxLength={maxLength}
-        className={`w-full resize-none p-4 rounded-lg border-2 transition-all duration-200 ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200 focus:border-primary focus:ring-primary/20'} focus:ring-4`}
-        aria-invalid={error ? 'true' : 'false'}
+        className={`w-full resize-none p-4 rounded-lg border-2 transition-all duration-200 ${
+          error
+            ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+            : "border-gray-200 focus:border-primary focus:ring-primary/20"
+        } focus:ring-4`}
+        aria-invalid={error ? "true" : "false"}
         aria-describedby={error ? `${name}-error` : undefined}
       />
-      
+
       {error && (
         <p id={`${name}-error`} className="text-sm text-red-600 mt-1">
           {error}
         </p>
       )}
     </div>
-  )
+  );
 }

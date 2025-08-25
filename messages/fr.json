@@ -52,6 +52,11 @@
 
   "mediaType": "Type de média",
 
+  "Share": {
+    "copiedToClipboard": "URL copiée dans le presse-papiers",
+    "share": "Partager"
+  },
+
   "LocaleSwitcher": {
     "select-language": "Choisir la langue"
   },
@@ -64,6 +69,9 @@
   "specifyOther": "Préciser",
   "programName": "Nom de l'émission ou du contenu",
   "broadcastDateTime": "Date et heure de diffusion ou de publication",
+  "broadcastDate": "Date de diffusion",
+  "broadcastTime": "Heure de diffusion",
+  "timeOptional": "Heure (optionnel)",
   "linkScreenshot": "Lien ou capture d'écran (si disponible)",
 
   "fullName": "Nom complet",

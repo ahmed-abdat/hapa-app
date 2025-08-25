@@ -1,9 +1,15 @@
-'use client'
+"use client";
 
-import { useFormContext } from 'react-hook-form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
-import { FormSelectProps } from '../types'
+import { useFormContext } from "react-hook-form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { FormSelectProps } from "../types";
 
 export function FormSelect({
   name,
@@ -11,17 +17,17 @@ export function FormSelect({
   placeholder,
   required = false,
   disabled = false,
-  className = '',
-  options
+  className = "",
+  options,
 }: FormSelectProps) {
   const {
     setValue,
     watch,
-    formState: { errors }
-  } = useFormContext()
+    formState: { errors },
+  } = useFormContext();
 
-  const error = errors[name]?.message as string | undefined
-  const currentValue = watch(name)
+  const error = errors[name]?.message as string | undefined;
+  const currentValue = watch(name);
 
   return (
     <div className={`space-y-2 ${className}`}>
@@ -31,15 +37,15 @@ export function FormSelect({
           {required && <span className="text-destructive ms-1">*</span>}
         </bdi>
       </Label>
-      
+
       <Select
-        value={currentValue || ''}
+        value={currentValue || ""}
         onValueChange={(value) => setValue(name, value)}
         disabled={disabled}
       >
-        <SelectTrigger 
-          className={error ? 'border-destructive' : ''}
-          aria-invalid={error ? 'true' : 'false'}
+        <SelectTrigger
+          className={error ? "border-destructive" : ""}
+          aria-invalid={error ? "true" : "false"}
           aria-describedby={error ? `${name}-error` : undefined}
         >
           <SelectValue placeholder={placeholder} />
@@ -52,12 +58,12 @@ export function FormSelect({
           ))}
         </SelectContent>
       </Select>
-      
+
       {error && (
         <p id={`${name}-error`} className="text-sm text-destructive mt-1">
           {error}
         </p>
       )}
     </div>
-  )
+  );
 }

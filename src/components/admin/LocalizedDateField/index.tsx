@@ -3,7 +3,7 @@
 import React from 'react'
 import { useField } from '@payloadcms/ui'
 
-const LocalizedDateField: React.FC<{ fieldPath?: string }> = ({ fieldPath = 'createdAt' }) => {
+const LocalizedDateField: React.FC<{ fieldPath?: string }> = ({ fieldPath = 'broadcastDateTime' }) => {
   const { value } = useField<string>({ path: fieldPath })
   const { value: formData } = useField<any>({ path: '' })
   

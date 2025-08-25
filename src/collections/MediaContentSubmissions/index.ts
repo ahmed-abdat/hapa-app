@@ -598,7 +598,7 @@ export const MediaContentSubmissions: CollectionConfig = {
           admin: {
             readOnly: true,
             components: {
-              Field: "@/components/admin/StyledTextField/index",
+              Field: "@/components/admin/LocalizedDateField/index",
             },
             description: {
               en: "Date and time when the content was broadcast",
