@@ -53,7 +53,7 @@ export function Footer({ footerData }: FooterProps = {}) {
                 </div>
               </div>
               <div>
-                <div className="text-xl font-bold text-white mb-1" role="heading" aria-level="2">
+                <div className="text-xl font-bold text-white mb-1" role="heading" aria-level={2}>
                   {locale === 'ar' ? t('hapaFullName') : 'HAPA'}
                 </div>
                 <p className="text-secondary text-sm font-medium">
@@ -87,7 +87,7 @@ export function Footer({ footerData }: FooterProps = {}) {
 
           {/* Quick Links */}
           <div>
-            <div className="text-lg font-semibold text-secondary mb-4 border-b-2 border-secondary/30 pb-2" role="heading" aria-level="3">
+            <div className="text-lg font-semibold text-secondary mb-4 border-b-2 border-secondary/30 pb-2" role="heading" aria-level={3}>
               {t('quickLinks')}
             </div>
             <nav className="flex flex-col gap-2">
@@ -105,7 +105,7 @@ export function Footer({ footerData }: FooterProps = {}) {
 
           {/* Services */}
           <div>
-            <div className="text-lg font-semibold text-secondary mb-4 border-b-2 border-secondary/30 pb-2" role="heading" aria-level="3">
+            <div className="text-lg font-semibold text-secondary mb-4 border-b-2 border-secondary/30 pb-2" role="heading" aria-level={3}>
               {t('services')}
             </div>
             <nav className="flex flex-col gap-2 text-sm">

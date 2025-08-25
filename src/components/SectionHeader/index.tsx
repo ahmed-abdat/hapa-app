@@ -74,7 +74,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
       )}
 
       {React.createElement(
-        `h${headingLevel}` as keyof JSX.IntrinsicElements,
+        `h${headingLevel}` as "h1" | "h2" | "h3" | "h4" | "h5" | "h6",
         {
           className: cn(
             titleSizes[variant],

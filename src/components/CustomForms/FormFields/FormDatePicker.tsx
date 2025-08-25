@@ -113,40 +113,6 @@ export function FormDatePicker({
                   if (maxDate && date > maxDate) return true
                   return false
                 }}
-                onKeyDown={(e: React.KeyboardEvent) => {
-                  if (e.ctrlKey || e.metaKey) {
-                    const currentDate = field.value ? new Date(field.value) : new Date()
-                    if (e.key === 'ArrowLeft') {
-                      // Previous year
-                      e.preventDefault()
-                      const newDate = new Date(currentDate)
-                      newDate.setFullYear(newDate.getFullYear() - 1)
-                      if (newDate.getFullYear() >= 1960) {
-                        field.onChange(format(newDate, 'yyyy-MM-dd'))
-                      }
-                    } else if (e.key === 'ArrowRight') {
-                      // Next year
-                      e.preventDefault()
-                      const newDate = new Date(currentDate)
-                      newDate.setFullYear(newDate.getFullYear() + 1)
-                      if (newDate.getFullYear() <= new Date().getFullYear()) {
-                        field.onChange(format(newDate, 'yyyy-MM-dd'))
-                      }
-                    } else if (e.key === 'ArrowUp') {
-                      // Next month
-                      e.preventDefault()
-                      const newDate = new Date(currentDate)
-                      newDate.setMonth(newDate.getMonth() + 1)
-                      field.onChange(format(newDate, 'yyyy-MM-dd'))
-                    } else if (e.key === 'ArrowDown') {
-                      // Previous month
-                      e.preventDefault()
-                      const newDate = new Date(currentDate)
-                      newDate.setMonth(newDate.getMonth() - 1)
-                      field.onChange(format(newDate, 'yyyy-MM-dd'))
-                    }
-                  }
-                }}
                 initialFocus
                 locale={dateLocale}
                 dir={isRTL ? 'rtl' : 'ltr'}
