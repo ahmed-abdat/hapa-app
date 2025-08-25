@@ -1,38 +1,40 @@
-'use server'
+"use server";
 
-import { getPayload } from 'payload'
-import config from '@payload-config'
-import { createContactFormSchema } from '@/components/CustomForms/schemas'
-import type { FormSubmissionResponse } from '@/components/CustomForms/types'
-import { render } from '@react-email/render'
-import { ContactFormNotificationEmail } from '@/emails/contact-form-notification'
-import { createElement } from 'react'
+import { getPayload } from "payload";
+import config from "@payload-config";
+import { createContactFormSchema } from "@/components/CustomForms/schemas";
+import type { FormSubmissionResponse } from "@/components/CustomForms/types";
+import { render } from "@react-email/render";
+import { ContactFormNotificationEmail } from "@/emails/contact-form-notification";
+import { createElement } from "react";
 
-export async function submitContactForm(data: any): Promise<FormSubmissionResponse> {
+export async function submitContactForm(
+  data: any
+): Promise<FormSubmissionResponse> {
   try {
     // Validate with locale-specific schema
-    const locale = data.locale || 'fr'
-    const schema = createContactFormSchema(locale)
-    const validatedData = schema.parse(data)
-    
+    const locale = data.locale || "fr";
+    const schema = createContactFormSchema(locale);
+    const validatedData = schema.parse(data);
+
     // Get Payload instance
-    const payload = await getPayload({ config })
-    
+    const payload = await getPayload({ config });
+
     // Create contact form submission
     const submission = await payload.create({
-      collection: 'contact-submissions',
+      collection: "contact-submissions",
       data: {
-        status: 'pending',
+        status: "pending",
         locale: validatedData.locale,
         name: validatedData.name,
         email: validatedData.email,
-        phone: validatedData.phone || '',
+        phone: validatedData.phone || "",
         subject: validatedData.subject,
         message: validatedData.message,
         submittedAt: new Date().toISOString(),
-      }
-    })
-    
+      },
+    });
+
     // Send email notification using React Email template
     try {
       const html = await render(
@@ -43,39 +45,59 @@ export async function submitContactForm(data: any): Promise<FormSubmissionRespon
           subject: validatedData.subject,
           message: validatedData.message,
           locale: validatedData.locale,
-          submittedAt: new Date().toISOString()
+          submittedAt: new Date().toISOString(),
         })
-      )
-      
-      await payload.sendEmail({
-        to: 'admin@hapa.mr',
-        subject: locale === 'ar' 
-          ? `رسالة اتصال جديدة: ${validatedData.subject}`
-          : `Nouveau message de contact: ${validatedData.subject}`,
-        html: html
-      })
+      );
+
+      // Use direct Resend API for reliable email delivery
+
+      const emailResponse = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: process.env.EMAIL_FROM, // support@hapa.mr
+          to: "support@hapa.mr", // Notification to support team
+          subject:
+            locale === "ar"
+              ? `رسالة اتصال جديدة: ${validatedData.subject}`
+              : `Nouveau message de contact: ${validatedData.subject}`,
+          html: html,
+        }),
+      });
+
+      const emailResult = await emailResponse.json();
+
+      if (!emailResponse.ok) {
+        throw new Error(`Email API failed: ${emailResult.message}`);
+      }
     } catch (emailError) {
       // Log email error but don't fail the submission
-      console.error('Email notification failed:', emailError)
+      console.error("Email notification failed:", emailError);
     }
-    
+
     return {
       success: true,
-      message: locale === 'ar' 
-        ? 'تم إرسال رسالتك بنجاح. سنتواصل معك قريباً.'
-        : 'Votre message a été envoyé avec succès. Nous vous contacterons bientôt.',
-      submissionId: String(submission.id)
-    }
-    
+      message:
+        locale === "ar"
+          ? "تم إرسال رسالتك بنجاح. سنتواصل معك قريباً."
+          : "Votre message a été envoyé avec succès. Nous vous contacterons bientôt.",
+      submissionId: String(submission.id),
+    };
   } catch (error) {
-    console.error('Form submission error:', error)
-    
+    console.error("Form submission error:", error);
+
     return {
       success: false,
-      message: data.locale === 'ar'
-        ? 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.'
-        : 'Une erreur est survenue lors de l\'envoi du message. Veuillez réessayer.',
-      errors: { general: error instanceof Error ? [error.message] : ['Unknown error'] }
-    }
+      message:
+        data.locale === "ar"
+          ? "حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى."
+          : "Une erreur est survenue lors de l'envoi du message. Veuillez réessayer.",
+      errors: {
+        general: error instanceof Error ? [error.message] : ["Unknown error"],
+      },
+    };
   }
 }

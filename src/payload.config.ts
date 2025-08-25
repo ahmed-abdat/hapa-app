@@ -27,11 +27,24 @@ import { adminTranslations } from "./translations/admin-translations";
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
+// Environment validation for email configuration
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+if (!RESEND_API_KEY) {
+  throw new Error(
+    "RESEND_API_KEY environment variable is required but not set"
+  );
+}
+
+const EMAIL_FROM = process.env.EMAIL_FROM;
+if (!EMAIL_FROM) {
+  throw new Error("EMAIL_FROM environment variable is required but not set");
+}
+
 export default buildConfig({
   admin: {
     // Custom avatar component for account area
     avatar: {
-      Component: '@/components/CustomAvatar/index.tsx#CustomAvatar',
+      Component: "@/components/CustomAvatar/index.tsx#CustomAvatar",
     },
     // Custom components for admin UI
     meta: {
@@ -154,7 +167,7 @@ export default buildConfig({
   }),
   // Organized collection order for better admin UX:
   // "Contenu" group: Posts, Media, Categories
-  // "Messages de Contact" group: Contact dashboard and submissions  
+  // "Messages de Contact" group: Contact dashboard and submissions
   // "Formulaires Médiatiques" group: Media submissions dashboard and data
   // "Système" group: Users, MediaCleanupJobs
   collections: [
@@ -194,9 +207,9 @@ export default buildConfig({
   },
   // Email configuration: Use Resend adapter for modern email delivery
   email: resendAdapter({
-    defaultFromAddress: process.env.EMAIL_FROM || "noreply@hapa.mr",
-    defaultFromName: "HAPA - Haute Autorité de la Presse et de l'Audiovisuel",
-    apiKey: process.env.RESEND_API_KEY || "",
+    defaultFromAddress: EMAIL_FROM,
+    defaultFromName: process.env.EMAIL_FROM_NAME ?? "HAPA Support",
+    apiKey: RESEND_API_KEY,
   }),
   jobs: {
     access: {

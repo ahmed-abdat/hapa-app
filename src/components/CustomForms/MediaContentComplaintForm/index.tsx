@@ -29,6 +29,20 @@ import {
   FormDateTimePickerV2,
   EnhancedFileUploadV3,
 } from "../FormFields";
+import {
+  User,
+  Radio,
+  AlertTriangle,
+  FileText,
+  Paperclip,
+  ShieldCheck,
+  UserCheck,
+  Radio as RadioIcon,
+  AlertTriangle as AlertIcon,
+  FileText as FileIcon,
+  Paperclip as AttachmentIcon,
+  ShieldCheck as DeclarationIcon,
+} from "lucide-react";
 import { FormDatePicker } from "../FormFields/FormDatePicker";
 import { FormTimePicker } from "../FormFields/FormTimePicker";
 import { combineDateTimeFields } from "@/utilities/date-time-helpers";
@@ -477,9 +491,18 @@ export function MediaContentComplaintForm({
                 {/* Section 1: Complainant Information */}
                 <div className="space-y-6">
                   <div className="border-b border-gray-200 pb-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                      {t("complainantInformation")}
-                    </h3>
+                    <div
+                      className={`flex items-center gap-3 mb-2 ${
+                        locale === "ar" ? "flex-row-reverse" : "flex-row"
+                      }`}
+                    >
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {t("complainantInformation")}
+                      </h3>
+                      <div className="bg-primary/10 rounded-lg p-2">
+                        <UserCheck className="h-5 w-5 text-primary" />
+                      </div>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

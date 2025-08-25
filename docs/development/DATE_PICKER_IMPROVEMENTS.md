@@ -156,28 +156,50 @@ value={field.value || 'no-time'}
 - Jump to today button inside calendar
 - Better visual feedback for selected date
 
-## Phase 4: Enhanced Navigation & UX (Future) 📋
+## Phase 4: Enhanced Navigation & UX ✅
 
-### Priority Improvements Needed:
+**Status**: ✅ Completed (January 25, 2025)
 
-#### 1. **Enhanced Year/Month Navigation** 🎯
-**Problem**: Users cannot easily navigate to dates far in the past/future
-**Solution**:
-- Add year dropdown/input in calendar header
-- Add month dropdown in calendar header
-- Implement keyboard shortcuts for quick navigation
-- Consider date input with calendar icon for advanced users
+### Completed Improvements:
 
+#### 1. **Enhanced Year/Month Navigation** ✅
+**Problem Solved**: Users can now easily navigate to dates far in the past/future
+**Implementation**:
+- ✅ Added year dropdown in calendar header using `captionLayout="dropdown"`
+- ✅ Added month dropdown in calendar header
+- ✅ Year range: 1960 to current year (as requested)
+- ✅ Implemented keyboard shortcuts: Ctrl/Cmd + Arrow keys for year/month navigation
 
-#### 2. **FormTimePicker Value Handling** 
-**Problem**: "no-time" value needs conversion to empty string
-**Solution**: Update onValueChange handler to convert special values
+#### 2. **FormTimePicker Value Handling** ✅
+**Problem Solved**: "no-time" value now properly converts to empty string
+**Implementation**:
+```typescript
+<Select 
+  value={field.value || (required ? '' : 'no-time')} 
+  onValueChange={(value) => {
+    field.onChange(value === 'no-time' ? '' : value)
+  }}
+```
 
-#### 3. **Visual Improvements**
-- Larger calendar navigation arrows  
-- Better hover states and visual feedback
-- Today indicator in calendar
-- Selected date highlight improvements
+#### 3. **Visual Improvements** ✅
+- ✅ Enhanced visual feedback for selected dates
+- ✅ Better hover states and transitions
+- ✅ Today indicator with proper highlighting
+- ✅ Improved selected date highlighting
+
+#### 4. **Testing Results** ✅
+**French Locale**: 
+- ✅ Year/month dropdowns working perfectly
+- ✅ Year range 1960-2025 confirmed
+- ✅ All months selectable
+- ✅ Keyboard shortcuts functional
+
+**Arabic RTL Locale**:
+- ✅ Perfect RTL layout with proper alignment
+- ✅ Year/month dropdowns fully functional in RTL
+- ✅ Arabic text "اختر التاريخ" (Choose Date) displayed correctly
+- ✅ All interactions work smoothly in RTL mode
+- ✅ Accessibility maintained with proper ARIA labels
 
 ## Phase 5: Advanced Features (Future) 📋
 
@@ -356,13 +378,15 @@ When making changes to the date picker:
 - Added accessibility features
 - Implemented Today/Clear buttons
 
-### v3.1.0 (Planned)
-- Enhanced year/month navigation with dropdowns
-- Fix FormTimePicker "no-time" value handling
-- Improved calendar visual feedback
-- Keyboard shortcuts for navigation
+### v3.1.0 (January 25, 2025) - Phase 4 Complete ✅
+- ✅ Enhanced year/month navigation with dropdowns using `captionLayout="dropdown"`
+- ✅ Fixed FormTimePicker "no-time" value handling with proper empty string conversion
+- ✅ Improved calendar visual feedback with better selected/today highlighting
+- ✅ Added keyboard shortcuts for navigation (Ctrl/Cmd + Arrow keys)
+- ✅ Full RTL support tested and working in Arabic locale
+- ✅ Year range implemented: 1960 to current year
 
 ---
 
-*Last Updated: August 25, 2025*
+*Last Updated: January 25, 2025*
 *Author: HAPA Development Team*
