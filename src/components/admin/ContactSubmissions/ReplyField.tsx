@@ -29,9 +29,9 @@ const ReplyField: React.FC = () => {
   }, [])
 
   const handleSuccess = useCallback(async () => {
-    // Refresh the form data
+    // Refresh the form data to show updated status
     await submit()
-    window.location.reload()
+    setIsDialogOpen(false)
   }, [submit])
 
   return (

@@ -12,6 +12,8 @@ import {
   Text,
 } from '@react-email/components'
 import * as React from 'react'
+import DOMPurify from 'dompurify'
+import { JSDOM } from 'jsdom'
 import { getServerSideURL } from '@/utilities/getURL'
 import { HAPA_CONTACT_INFO, getContactDisplay } from '@/emails/constants/contact-info'
 
@@ -38,7 +40,7 @@ export const EnhancedReplyEmail = ({
 
   // If message is already rich HTML from Lexical, use it directly
   // Otherwise, convert markdown-style formatting to HTML
-  const formattedMessage = isRichContent 
+  const rawFormattedMessage = isRichContent 
     ? message 
     : message
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
@@ -48,6 +50,18 @@ export const EnhancedReplyEmail = ({
       .replace(/\n/g, '<br />')
       .replace(/^- (.+)$/gm, '<li style="margin: 4px 0;">$1</li>')
       .replace(/(<li.*<\/li>)/s, '<ul style="margin: 16px 0; padding-left: 24px;">$1</ul>')
+
+  // Sanitize the HTML to prevent XSS attacks
+  const formattedMessage = (() => {
+    const window = new JSDOM('').window
+    const purifyInstance = DOMPurify(window)
+    
+    return purifyInstance.sanitize(rawFormattedMessage, {
+      ALLOWED_TAGS: ['strong', 'em', 'u', 'a', 'ul', 'ol', 'li', 'br'],
+      ALLOWED_ATTR: ['href', 'style'],
+      ALLOW_DATA_ATTR: false,
+    })
+  })()
 
   const previewText = `${contactInfo.messages.replyToYourRequest}: ${subject}`
   const greeting = `${contactInfo.messages.greeting} ${userName},`

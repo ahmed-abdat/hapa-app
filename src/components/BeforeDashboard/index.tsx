@@ -4,7 +4,7 @@ import { Banner } from "@payloadcms/ui/elements/Banner";
 import { useAuth } from '@payloadcms/ui';
 import React from "react";
 import Image from "next/image";
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { Inbox, FolderCog } from "lucide-react"; // Modern descriptive icons
 import { useAdminTranslation } from '@/utilities/admin-translations'
 import type { User } from '@/payload-types'

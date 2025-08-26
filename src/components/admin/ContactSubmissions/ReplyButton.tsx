@@ -27,8 +27,9 @@ export const ReplyButton: React.FC = () => {
   }, [id])
 
   const handleSuccess = useCallback(() => {
-    // Refresh the page to show updated status
-    window.location.reload()
+    // Close dialog and reset state - server action should handle status updates
+    setIsDialogOpen(false)
+    setSubmissionData(null)
   }, [])
 
   // Only show button if user has update permission

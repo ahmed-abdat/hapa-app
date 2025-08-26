@@ -96,8 +96,8 @@ const InlineReplyPanel: React.FC = () => {
             message: '',
             template: 'standard',
           })
-          // Refresh the page to show updated status
-          window.location.reload()
+          // Note: Email status updates should be handled by the server action
+          // No need for full page reload - the success state is maintained in local state
         }, 2000)
       } else {
         const errorMsg = result?.error || dt('emailReply.replyError')
@@ -233,6 +233,8 @@ const InlineReplyPanel: React.FC = () => {
                 value={replyData.subject}
                 onChange={(e) => setReplyData(prev => ({ ...prev, subject: e.target.value }))}
                 dir={isAdminRTL ? 'rtl' : 'ltr'}
+                aria-label={dt('emailReply.subject')}
+                aria-required="true"
                 style={{
                   width: '100%',
                   padding: '8px 12px',
@@ -295,6 +297,9 @@ const InlineReplyPanel: React.FC = () => {
                   onChange={(e) => setReplyData(prev => ({ ...prev, message: e.target.value }))}
                   placeholder={dt('emailReply.messagePlaceholder')}
                   dir="auto"
+                  aria-label={dt('emailReply.message')}
+                  aria-required="true"
+                  aria-describedby="message-tip"
                   style={{
                     width: '100%',
                     minHeight: '250px',
@@ -352,7 +357,7 @@ const InlineReplyPanel: React.FC = () => {
                 </div>
               </div>
               
-              <p style={{ 
+              <p id="message-tip" style={{ 
                 marginTop: '8px',
                 fontSize: '12px', 
                 color: '#6b7280'
@@ -396,6 +401,7 @@ const InlineReplyPanel: React.FC = () => {
           }}>
             <button
               onClick={() => setIsExpanded(false)}
+              aria-label={dt('emailReply.cancel')}
               style={{
                 padding: '10px 20px',
                 backgroundColor: 'white',
@@ -412,6 +418,11 @@ const InlineReplyPanel: React.FC = () => {
             <button
               onClick={handleSendReply}
               disabled={isSending || !replyData.subject.trim() || !replyData.message.trim()}
+              aria-label={isSending 
+                ? dt('emailReply.sending') 
+                : dt('emailReply.sendReply')
+              }
+              aria-describedby={(!replyData.subject.trim() || !replyData.message.trim()) ? "form-validation-error" : undefined}
               style={{
                 padding: '10px 20px',
                 backgroundColor: isSending || !replyData.subject.trim() || !replyData.message.trim() ? '#9ca3af' : '#16a34a', // HAPA green-600

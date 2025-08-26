@@ -67,7 +67,14 @@ export async function PATCH(
         }
         
         // Parse the JSON from the _payload field
-        data = JSON.parse(payloadField.toString())
+        try {
+          data = JSON.parse(payloadField.toString())
+        } catch (parseError) {
+          return NextResponse.json(
+            { success: false, error: 'Invalid JSON in payload field' },
+            { status: 400 }
+          )
+        }
       } catch (formError) {
         return NextResponse.json(
           { success: false, error: 'Invalid form data' },
