@@ -12,6 +12,8 @@ import {
   Text,
 } from '@react-email/components'
 import * as React from 'react'
+import { getServerSideURL } from '@/utilities/getURL'
+import { HAPA_CONTACT_INFO, getContactDisplay } from '@/emails/constants/contact-info'
 
 interface EnhancedReplyEmailProps {
   userName: string
@@ -32,6 +34,7 @@ export const EnhancedReplyEmail = ({
 }: EnhancedReplyEmailProps) => {
   const isRTL = locale === 'ar'
   const direction = isRTL ? 'rtl' : 'ltr'
+  const contactInfo = getContactDisplay(locale)
 
   // If message is already rich HTML from Lexical, use it directly
   // Otherwise, convert markdown-style formatting to HTML
@@ -46,25 +49,11 @@ export const EnhancedReplyEmail = ({
       .replace(/^- (.+)$/gm, '<li style="margin: 4px 0;">$1</li>')
       .replace(/(<li.*<\/li>)/s, '<ul style="margin: 16px 0; padding-left: 24px;">$1</ul>')
 
-  const previewText = locale === 'fr'
-    ? `Réponse à votre demande: ${subject}`
-    : `رد على طلبك: ${subject}`
-
-  const greeting = locale === 'fr'
-    ? `Bonjour ${userName},`
-    : `مرحبا ${userName}،`
-
-  const signature = locale === 'fr'
-    ? 'Cordialement,'
-    : 'مع أطيب التحيات،'
-
-  const teamName = locale === 'fr'
-    ? 'Équipe HAPA'
-    : 'فريق HAPA'
-
-  const footerText = locale === 'fr'
-    ? 'Ceci est une réponse à votre demande de contact.'
-    : 'هذا رد على طلب الاتصال الخاص بك.'
+  const previewText = `${contactInfo.messages.replyToYourRequest}: ${subject}`
+  const greeting = `${contactInfo.messages.greeting} ${userName},`
+  const signature = `${contactInfo.messages.regards},`
+  const teamName = contactInfo.messages.emailSignature
+  const footerText = contactInfo.messages.replyToYourRequest
 
   return (
     <Html>
@@ -74,9 +63,18 @@ export const EnhancedReplyEmail = ({
         <Container style={container}>
           {/* Header with Logo */}
           <Section style={logoSection}>
-            <Heading style={h1}>HAPA</Heading>
+            <Img
+              src={`${getServerSideURL()}/hapa-logo.webp`}
+              width="160"
+              height="60"
+              alt={contactInfo.organization}
+              style={{
+                display: 'block',
+                margin: '0 auto 16px auto',
+              }}
+            />
             <Text style={tagline}>
-              Haute Autorité de la Presse et de l&apos;Audiovisuel
+              {contactInfo.organizationFull}
             </Text>
           </Section>
 
@@ -100,10 +98,13 @@ export const EnhancedReplyEmail = ({
           {/* Contact Information */}
           <Section style={contactSection}>
             <Text style={contactText}>
-              Email: <Link href="mailto:support@hapa.mr" style={link}>support@hapa.mr</Link>
+              {contactInfo.labels.email}: <Link href={`mailto:${HAPA_CONTACT_INFO.email.primary}`} style={link}>{HAPA_CONTACT_INFO.email.primary}</Link>
             </Text>
             <Text style={contactText}>
-              Web: <Link href="https://www.hapa.mr" style={link}>www.hapa.mr</Link>
+              {contactInfo.labels.website}: <Link href={getServerSideURL()} style={link}>{HAPA_CONTACT_INFO.website.displayName}</Link>
+            </Text>
+            <Text style={contactText}>
+              {contactInfo.labels.phone}: <Link href={HAPA_CONTACT_INFO.phone.tel_href} style={link}>{HAPA_CONTACT_INFO.phone.formatted}</Link>
             </Text>
           </Section>
 
@@ -112,7 +113,7 @@ export const EnhancedReplyEmail = ({
             <Section style={footer}>
               <Text style={footerTextStyle}>{footerText}</Text>
               <Text style={footerTextStyle}>
-                © {new Date().getFullYear()} HAPA - {locale === 'fr' ? 'Tous droits réservés' : 'جميع الحقوق محفوظة'}
+                © {new Date().getFullYear()} {contactInfo.organization} - {contactInfo.messages.copyright}
               </Text>
             </Section>
           )}

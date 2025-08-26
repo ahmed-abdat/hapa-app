@@ -90,6 +90,10 @@ export const ContactSubmissions: CollectionConfig = {
     {
       name: 'preferredLanguage',
       type: 'select',
+      label: {
+        fr: 'Langue du destinataire',
+        ar: 'لغة المستلم'
+      },
       options: [
         {
           label: 'Français',
@@ -103,9 +107,10 @@ export const ContactSubmissions: CollectionConfig = {
       admin: {
         position: 'sidebar',
         description: {
-          fr: 'Langue préférée pour la réponse',
-          ar: 'اللغة المفضلة للرد'
-        }
+          fr: 'Langue préférée du destinataire pour la réponse par email',
+          ar: 'اللغة التي يفضلها المستلم للرد عبر البريد الإلكتروني'
+        },
+        readOnly: true
       },
       hooks: {
         beforeChange: [

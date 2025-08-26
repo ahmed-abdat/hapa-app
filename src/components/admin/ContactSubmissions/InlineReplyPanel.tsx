@@ -6,6 +6,7 @@ import { ContactSubmission } from '@/payload-types'
 import { sendReplyAction } from '@/app/actions/send-reply'
 import { TemplateSelector, EmailTemplate } from '../EmailReply'
 import { toast } from '@payloadcms/ui'
+import { useAdminTranslation } from '@/utilities/admin-translations'
 
 export interface EmailReplyData {
   subject: string
@@ -14,6 +15,7 @@ export interface EmailReplyData {
 }
 
 const InlineReplyPanel: React.FC = () => {
+  const { dt, i18n } = useAdminTranslation()
   const { value: emailSent } = useField<boolean>({ path: 'emailSent' })
   const { value: emailSentAt } = useField<string>({ path: 'emailSentAt' })
   const { getData } = useForm()
@@ -53,7 +55,7 @@ const InlineReplyPanel: React.FC = () => {
 
   const handleSendReply = useCallback(async () => {
     if (!submissionData || !id) {
-      setSendError('No submission data available')
+      setSendError(dt('emailReply.replyError'))
       return
     }
 
@@ -61,7 +63,7 @@ const InlineReplyPanel: React.FC = () => {
     const hasSubject = replyData.subject && replyData.subject.trim().length > 0
     
     if (!hasMessage || !hasSubject) {
-      setSendError('Please enter a subject and message')
+      setSendError(dt('emailReply.pleaseEnterMessage'))
       return
     }
 
@@ -81,8 +83,8 @@ const InlineReplyPanel: React.FC = () => {
         
         // Include email ID in success message if available
         const successMsg = result.emailId 
-          ? `Email sent successfully! (ID: ${result.emailId})` 
-          : 'Email sent successfully!'
+          ? `${dt('emailReply.replySent')} (ID: ${result.emailId})` 
+          : dt('emailReply.replySent')
         toast.success(successMsg)
         
         // Reset the form after a delay
@@ -98,33 +100,41 @@ const InlineReplyPanel: React.FC = () => {
           window.location.reload()
         }, 2000)
       } else {
-        const errorMsg = result?.error || 'Failed to send email'
+        const errorMsg = result?.error || dt('emailReply.replyError')
         setSendError(errorMsg)
         toast.error(errorMsg)
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred while sending the email'
+      const errorMessage = error instanceof Error ? error.message : dt('emailReply.replyError')
       setSendError(errorMessage)
       toast.error(errorMessage)
     } finally {
       setIsSending(false)
     }
-  }, [replyData, submissionData, id])
+  }, [replyData, submissionData, id, dt])
 
   if (!submissionData) {
     return <div>Loading...</div>
   }
 
+  // Get admin's interface language for UI display
+  const adminLocale = i18n.language
+  const isAdminRTL = adminLocale === 'ar'
+  
+  // Keep submission locale for email content
   const locale = submissionData.preferredLanguage || 'fr'
-  const isRTL = locale === 'ar'
+  const isEmailRTL = locale === 'ar'
 
   return (
-    <div style={{ 
-      padding: '20px',
-      backgroundColor: '#f9fafb',
-      borderRadius: '8px',
-      marginTop: '20px'
-    }}>
+    <div 
+      dir={isAdminRTL ? 'rtl' : 'ltr'}
+      style={{ 
+        padding: '20px',
+        backgroundColor: '#f9fafb',
+        borderRadius: '8px',
+        marginTop: '20px',
+        direction: isAdminRTL ? 'rtl' : 'ltr'
+      }}>
       {/* Header - Only show if reply was already sent */}
       {emailSent && (
         <div style={{ 
@@ -135,7 +145,7 @@ const InlineReplyPanel: React.FC = () => {
           color: '#059669',
           fontSize: '14px'
         }}>
-          ✓ Reply Sent on {emailSentAt ? new Date(emailSentAt).toLocaleDateString() : ''}
+          ✓ {dt('emailReply.replySent')} - {emailSentAt ? new Date(emailSentAt).toLocaleDateString() : ''}
         </div>
       )}
 
@@ -145,25 +155,32 @@ const InlineReplyPanel: React.FC = () => {
           onClick={() => setIsExpanded(true)}
           aria-expanded={isExpanded}
           aria-controls="reply-panel"
-          aria-label={emailSent ? 'Send another reply' : 'Compose reply'}
+          aria-label={dt('emailReply.composeReplyButton')}
           style={{
             padding: '10px 20px',
-            backgroundColor: '#2563eb',
+            backgroundColor: '#16a34a', // HAPA green-600
             color: 'white',
             border: 'none',
             borderRadius: '6px',
             cursor: 'pointer',
             fontSize: '14px',
-            fontWeight: '500'
+            fontWeight: '500',
+            transition: 'background-color 0.2s'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#15803d' // green-700
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#16a34a' // green-600
           }}
         >
-          {emailSent ? '↩ Send Another Reply' : '✉ Compose Reply'}
+          {dt('emailReply.composeReplyButton')}
         </button>
       )}
 
       {/* Expanded Reply Interface */}
       {isExpanded && (
-        <div id="reply-panel" role="region" aria-label="Reply composition panel" style={{ marginTop: '20px' }}>
+        <div id="reply-panel" role="region" aria-label={dt('emailReply.replyInterface')} style={{ marginTop: '20px' }}>
           {/* Success Message */}
           {sendSuccess && (
             <div style={{
@@ -175,10 +192,10 @@ const InlineReplyPanel: React.FC = () => {
               color: '#065f46'
             }}>
               <div style={{ fontSize: '16px', fontWeight: '600' }}>
-                ✓ Email sent successfully!
+                ✓ {dt('emailReply.replySent')}
               </div>
               <p style={{ marginTop: '8px', fontSize: '14px' }}>
-                The reply has been sent to {submissionData.email}
+                {dt('emailReply.replySent')} - {submissionData.email}
               </p>
             </div>
           )}
@@ -206,76 +223,142 @@ const InlineReplyPanel: React.FC = () => {
                 marginBottom: '8px',
                 fontSize: '14px',
                 fontWeight: '500',
-                color: '#374151'
+                color: '#374151',
+                textAlign: isAdminRTL ? 'right' : 'left'
               }}>
-                Subject
+                {dt('emailReply.subject')}
               </label>
               <input
                 type="text"
                 value={replyData.subject}
                 onChange={(e) => setReplyData(prev => ({ ...prev, subject: e.target.value }))}
+                dir={isAdminRTL ? 'rtl' : 'ltr'}
                 style={{
                   width: '100%',
                   padding: '8px 12px',
                   border: '1px solid #d1d5db',
                   borderRadius: '6px',
-                  fontSize: '14px'
-                }}
-              />
-            </div>
-
-            {/* Template Selector */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '8px',
-                fontSize: '14px',
-                fontWeight: '500',
-                color: '#374151'
-              }}>
-                Template
-              </label>
-              <TemplateSelector
-                value={replyData.template}
-                submission={submissionData}
-                onChange={handleTemplateChange}
-              />
-            </div>
-
-            {/* Simple Message Textarea */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '8px',
-                fontSize: '14px',
-                fontWeight: '500',
-                color: '#374151'
-              }}>
-                Message
-              </label>
-              
-              <textarea
-                value={replyData.message}
-                onChange={(e) => setReplyData(prev => ({ ...prev, message: e.target.value }))}
-                placeholder={locale === 'ar' 
-                  ? 'اكتب رسالة الرد هنا...'
-                  : 'Tapez votre message de réponse ici...'
-                }
-                dir={isRTL ? 'rtl' : 'ltr'}
-                style={{
-                  width: '100%',
-                  minHeight: '200px',
-                  padding: '12px',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '6px',
-                  backgroundColor: 'white',
-                  resize: 'vertical',
-                  fontFamily: 'inherit',
                   fontSize: '14px',
-                  lineHeight: '1.5',
-                  direction: isRTL ? 'rtl' : 'ltr',
+                  textAlign: isAdminRTL ? 'right' : 'left',
+                  direction: isAdminRTL ? 'rtl' : 'ltr'
                 }}
               />
+            </div>
+
+            {/* Template Selector with proper RTL support */}
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '8px',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#374151',
+                textAlign: isAdminRTL ? 'right' : 'left'
+              }}>
+                {dt('emailReply.template')}
+              </label>
+              <div dir={isAdminRTL ? 'rtl' : 'ltr'} style={{ direction: isAdminRTL ? 'rtl' : 'ltr' }}>
+                <TemplateSelector
+                  value={replyData.template}
+                  submission={submissionData}
+                  onChange={handleTemplateChange}
+                />
+              </div>
+            </div>
+
+            {/* Enhanced Message Textarea with proper RTL/LTR support */}
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '8px'
+              }}>
+                <label style={{ 
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: '#374151',
+                  textAlign: isAdminRTL ? 'right' : 'left'
+                }}>
+                  {dt('emailReply.message')}
+                </label>
+                {replyData.message.length > 0 && (
+                  <span style={{ fontSize: '12px', color: '#9ca3af' }}>
+                    {replyData.message.length} {dt('emailReply.characters')}
+                  </span>
+                )}
+              </div>
+              
+              <div style={{ position: 'relative' }}>
+                <textarea
+                  value={replyData.message}
+                  onChange={(e) => setReplyData(prev => ({ ...prev, message: e.target.value }))}
+                  placeholder={dt('emailReply.messagePlaceholder')}
+                  dir="auto"
+                  style={{
+                    width: '100%',
+                    minHeight: '250px',
+                    padding: '16px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '8px',
+                    backgroundColor: 'white',
+                    resize: 'vertical',
+                    fontFamily: isAdminRTL ? 
+                      '-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Arabic", "Arabic UI Display", sans-serif' : 
+                      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                    fontSize: '15px',
+                    lineHeight: '1.6',
+                    textAlign: isAdminRTL ? 'right' : 'left',
+                    transition: 'border-color 0.2s',
+                    outline: 'none'
+                  }}
+                  onFocus={(e) => {
+                    const target = e.target as HTMLTextAreaElement
+                    target.style.borderColor = '#16a34a' // green-600
+                    target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)' // green-500 with opacity
+                  }}
+                  onBlur={(e) => {
+                    const target = e.target as HTMLTextAreaElement
+                    target.style.borderColor = '#d1d5db'
+                    target.style.boxShadow = 'none'
+                  }}
+                  onMouseEnter={(e) => {
+                    const target = e.target as HTMLTextAreaElement
+                    if (document.activeElement !== target) {
+                      target.style.borderColor = '#86efac' // green-300
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    const target = e.target as HTMLTextAreaElement
+                    if (document.activeElement !== target) {
+                      target.style.borderColor = '#d1d5db'
+                    }
+                  }}
+                />
+                {/* Text direction indicator with HAPA colors */}
+                <div style={{
+                  position: 'absolute',
+                  top: '8px',
+                  [isAdminRTL ? 'left' : 'right']: '8px',
+                  fontSize: '11px',
+                  color: '#15803d', // green-700
+                  backgroundColor: '#dcfce7', // green-100
+                  padding: '2px 8px',
+                  borderRadius: '6px',
+                  border: '1px solid #bbf7d0', // green-200
+                  fontWeight: '500'
+                }}>
+                  {isAdminRTL ? 'RTL' : 'LTR'}
+                </div>
+              </div>
+              
+              <p style={{ 
+                marginTop: '8px',
+                fontSize: '12px', 
+                color: '#6b7280'
+              }}>
+                {dt('emailReply.messageTip')}
+              </p>
             </div>
 
             {/* Original Message */}
@@ -291,11 +374,11 @@ const InlineReplyPanel: React.FC = () => {
                 marginBottom: '12px',
                 color: '#4b5563'
               }}>
-                Original Message:
+                {dt('emailReply.originalMessageLabel')}
               </h4>
               <div style={{ fontSize: '14px', color: '#6b7280' }}>
-                <p><strong>From:</strong> {submissionData.name} ({submissionData.email})</p>
-                <p><strong>Subject:</strong> {submissionData.subject}</p>
+                <p><strong>{dt('emailReply.fromLabel')}</strong> {submissionData.name} ({submissionData.email})</p>
+                <p><strong>{dt('emailReply.subjectLabel')}</strong> {submissionData.subject}</p>
                 <p style={{ marginTop: '8px', whiteSpace: 'pre-wrap' }}>
                   {submissionData.message}
                 </p>
@@ -324,23 +407,37 @@ const InlineReplyPanel: React.FC = () => {
                 fontWeight: '500'
               }}
             >
-              Cancel
+              {dt('emailReply.cancel')}
             </button>
             <button
               onClick={handleSendReply}
               disabled={isSending || !replyData.subject.trim() || !replyData.message.trim()}
               style={{
                 padding: '10px 20px',
-                backgroundColor: isSending || !replyData.subject.trim() || !replyData.message.trim() ? '#9ca3af' : '#2563eb',
+                backgroundColor: isSending || !replyData.subject.trim() || !replyData.message.trim() ? '#9ca3af' : '#16a34a', // HAPA green-600
                 color: 'white',
                 border: 'none',
                 borderRadius: '6px',
                 cursor: isSending || !replyData.subject.trim() || !replyData.message.trim() ? 'not-allowed' : 'pointer',
                 fontSize: '14px',
-                fontWeight: '500'
+                fontWeight: '500',
+                transition: 'background-color 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                if (!isSending && replyData.subject.trim() && replyData.message.trim()) {
+                  e.currentTarget.style.backgroundColor = '#15803d' // green-700
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isSending && replyData.subject.trim() && replyData.message.trim()) {
+                  e.currentTarget.style.backgroundColor = '#16a34a' // green-600
+                }
               }}
             >
-              {isSending ? '⏳ Sending...' : '📤 Send Reply'}
+              {isSending 
+                ? dt('emailReply.sending') 
+                : dt('emailReply.sendReply')
+              }
             </button>
           </div>
         </div>

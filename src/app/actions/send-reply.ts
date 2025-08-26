@@ -146,10 +146,10 @@ export async function sendReplyAction(options: SendReplyOptions): Promise<SendRe
         id: submissionId,
         data: {
           emailSent: true,
+          emailSentAt: new Date().toISOString(), // Back to ISO string as the field expects string
         },
         depth: 0,
-        overrideAccess: false,
-        showHiddenFields: false,
+        overrideAccess: true, // Allow server action to update without user context
       });
     } catch (updateError) {
       // Log for monitoring but don't fail the operation since email was sent

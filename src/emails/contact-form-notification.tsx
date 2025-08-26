@@ -12,6 +12,8 @@ import {
   Section,
   Text,
 } from "@react-email/components";
+import { getServerSideURL } from "@/utilities/getURL";
+import { HAPA_CONTACT_INFO, getContactDisplay } from "@/emails/constants/contact-info";
 
 interface ContactFormEmailProps {
   name: string;
@@ -33,6 +35,7 @@ export const ContactFormNotificationEmail: React.FC<ContactFormEmailProps> = ({
   submittedAt,
 }) => {
   const isArabic = locale === "ar";
+  const contactData = getContactDisplay(locale);
 
   return (
     <Html dir={isArabic ? "rtl" : "ltr"} lang={isArabic ? "ar" : "fr"}>
@@ -53,22 +56,16 @@ export const ContactFormNotificationEmail: React.FC<ContactFormEmailProps> = ({
               <tr>
                 <td style={{ textAlign: "center", padding: "0" }}>
                   <Img
-                    src="https://www.hapa.mr/hapa-logo.webp"
+                    src={`${getServerSideURL()}/hapa-logo.webp`}
                     width="160"
                     height="60"
-                    alt={
-                      isArabic
-                        ? "الهيئة العليا للصحافة والسمعيات البصرية"
-                        : "HAPA - Haute Autorité de la Presse et de l'Audiovisuel"
-                    }
+                    alt={contactData.organization}
                     style={logoWhite}
                   />
                   {/* Fallback text in case logo doesn't load */}
                   <Text style={headerLogo}>HAPA</Text>
                   <Text style={headerTitle}>
-                    {isArabic
-                      ? "الهيئة العليا للصحافة والإذاعة والتلفزيون"
-                      : "Haute Autorité de la Presse et de l'Audiovisuel"}
+                    {contactData.organizationFull}
                   </Text>
                 </td>
               </tr>
@@ -240,11 +237,33 @@ export const ContactFormNotificationEmail: React.FC<ContactFormEmailProps> = ({
           {/* Action Buttons */}
           <Section style={buttonContainer}>
             <Link
-              href={`${process.env.NEXT_PUBLIC_SERVER_URL}/admin/collections/contact-submissions`}
+              href={`${getServerSideURL()}/admin/collections/contact-submissions`}
               style={{ ...button, direction: "ltr" }}
             >
               {isArabic ? "عرض في لوحة التحكم" : "Voir dans le tableau de bord"}
             </Link>
+          </Section>
+
+          {/* Contact Information */}
+          <Section style={contactInfo}>
+            <Text
+              style={{
+                ...contactInfoText,
+                textAlign: isArabic ? ("right" as const) : ("center" as const),
+              }}
+            >
+              {contactData.labels.contact}:
+            </Text>
+            <Text
+              style={{
+                ...contactInfoText,
+                textAlign: isArabic ? ("right" as const) : ("center" as const),
+              }}
+            >
+              📧 <Link href={`mailto:${HAPA_CONTACT_INFO.email.primary}`} style={link}>{HAPA_CONTACT_INFO.email.primary}</Link> | 
+              🌐 <Link href={getServerSideURL()} style={link}>{HAPA_CONTACT_INFO.website.displayName}</Link> | 
+              📞 <Link href={HAPA_CONTACT_INFO.phone.tel_href} style={link}>{HAPA_CONTACT_INFO.phone.formatted}</Link>
+            </Text>
           </Section>
 
           {/* Footer */}
@@ -255,9 +274,7 @@ export const ContactFormNotificationEmail: React.FC<ContactFormEmailProps> = ({
                 textAlign: isArabic ? ("right" as const) : ("center" as const),
               }}
             >
-              {isArabic
-                ? "هذا البريد الإلكتروني تم إرساله تلقائياً من نظام HAPA"
-                : "Cet email a été envoyé automatiquement depuis le système HAPA"}
+              {contactData.messages.autoMessage}
             </Text>
             <Text
               style={{
@@ -265,8 +282,7 @@ export const ContactFormNotificationEmail: React.FC<ContactFormEmailProps> = ({
                 textAlign: isArabic ? ("right" as const) : ("center" as const),
               }}
             >
-              © {new Date().getFullYear()} HAPA - Haute Autorité de la Presse et
-              de l&apos;Audiovisuel
+              © {new Date().getFullYear()} {contactData.organization} - {contactData.messages.copyright}
             </Text>
           </Section>
         </Container>
@@ -421,6 +437,22 @@ const link = {
 const footer = {
   padding: "0 20px",
   marginTop: "32px",
+};
+
+const contactInfo = {
+  padding: "16px 20px",
+  backgroundColor: "#f9fafb",
+  borderRadius: "8px",
+  margin: "20px 20px 0",
+  border: "1px solid #e5e7eb",
+};
+
+const contactInfoText = {
+  color: "#6b7280",
+  fontSize: "14px",
+  lineHeight: "20px",
+  textAlign: "center" as const,
+  margin: "8px 0",
 };
 
 const footerText = {

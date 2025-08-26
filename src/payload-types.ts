@@ -305,7 +305,7 @@ export interface ContactSubmission {
    */
   locale: 'fr' | 'ar';
   /**
-   * Langue préférée pour la réponse
+   * Langue préférée du destinataire pour la réponse par email
    */
   preferredLanguage?: ('fr' | 'ar') | null;
   /**

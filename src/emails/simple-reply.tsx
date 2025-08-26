@@ -12,6 +12,8 @@ import {
   Section,
   Text,
 } from "@react-email/components";
+import { getServerSideURL } from '@/utilities/getURL';
+import { HAPA_CONTACT_INFO, getContactDisplay } from '@/emails/constants/contact-info';
 
 interface SimpleReplyEmailProps {
   userName: string;
@@ -49,7 +51,7 @@ export const SimpleReplyEmail: React.FC<SimpleReplyEmailProps> = ({
               <tr>
                 <td style={{ textAlign: "center", padding: "0" }}>
                   <Img
-                    src="https://www.hapa.mr/hapa-logo.webp"
+                    src={`${getServerSideURL()}/hapa-logo.webp`}
                     width="160"
                     height="60"
                     alt={
@@ -160,10 +162,10 @@ export const SimpleReplyEmail: React.FC<SimpleReplyEmailProps> = ({
             >
               🌐{" "}
               <Link
-                href={process.env.NEXT_PUBLIC_SERVER_URL}
+                href={getServerSideURL()}
                 style={{ ...link, direction: "ltr" }}
               >
-                {process.env.NEXT_PUBLIC_SERVER_URL?.replace('https://', '') || 'hapa.mr'}
+                {getServerSideURL()?.replace('https://', '').replace('http://', '') || 'hapa.mr'}
               </Link>
               <br />
               ✉️{" "}
@@ -173,6 +175,11 @@ export const SimpleReplyEmail: React.FC<SimpleReplyEmailProps> = ({
               >
                 contact@hapa.mr
               </Link>
+              <br />
+              📞{" "}
+              <span style={{ ...link, direction: "ltr" }}>
+                +222 45 25 26 27
+              </span>
             </Text>
           </Section>
 
