@@ -14,7 +14,6 @@ export interface EmailReplyData {
 }
 
 const InlineReplyPanel: React.FC = () => {
-  const { value: replyMessage, setValue: setReplyMessage } = useField<string>({ path: 'replyMessage' })
   const { value: emailSent } = useField<boolean>({ path: 'emailSent' })
   const { value: emailSentAt } = useField<string>({ path: 'emailSentAt' })
   const { getData } = useForm()
@@ -79,7 +78,6 @@ const InlineReplyPanel: React.FC = () => {
 
       if (result && result.success) {
         setSendSuccess(true)
-        setReplyMessage(replyData.message)
         
         // Include email ID in success message if available
         const successMsg = result.emailId 
@@ -111,7 +109,7 @@ const InlineReplyPanel: React.FC = () => {
     } finally {
       setIsSending(false)
     }
-  }, [replyData, submissionData, id, setReplyMessage])
+  }, [replyData, submissionData, id])
 
   if (!submissionData) {
     return <div>Loading...</div>
@@ -145,6 +143,9 @@ const InlineReplyPanel: React.FC = () => {
       {!isExpanded && (
         <button
           onClick={() => setIsExpanded(true)}
+          aria-expanded={isExpanded}
+          aria-controls="reply-panel"
+          aria-label={emailSent ? 'Send another reply' : 'Compose reply'}
           style={{
             padding: '10px 20px',
             backgroundColor: '#2563eb',
@@ -162,7 +163,7 @@ const InlineReplyPanel: React.FC = () => {
 
       {/* Expanded Reply Interface */}
       {isExpanded && (
-        <div style={{ marginTop: '20px' }}>
+        <div id="reply-panel" role="region" aria-label="Reply composition panel" style={{ marginTop: '20px' }}>
           {/* Success Message */}
           {sendSuccess && (
             <div style={{
@@ -342,33 +343,6 @@ const InlineReplyPanel: React.FC = () => {
               {isSending ? '⏳ Sending...' : '📤 Send Reply'}
             </button>
           </div>
-        </div>
-      )}
-
-      {/* Previous Reply Display */}
-      {replyMessage && !isExpanded && (
-        <div style={{
-          marginTop: '20px',
-          padding: '16px',
-          backgroundColor: 'white',
-          borderRadius: '6px',
-          border: '1px solid #e5e7eb'
-        }}>
-          <h4 style={{ 
-            fontSize: '14px', 
-            fontWeight: '600',
-            marginBottom: '8px',
-            color: '#4b5563'
-          }}>
-            Last Reply:
-          </h4>
-          <p style={{ 
-            fontSize: '14px', 
-            color: '#6b7280',
-            whiteSpace: 'pre-wrap'
-          }}>
-            {replyMessage}
-          </p>
         </div>
       )}
     </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useMemo } from 'react'
+import DOMPurify from 'dompurify'
 import { ContactSubmission } from '@/payload-types'
 import { EmailReplyData } from './ReplyDialog'
 import { Card } from '@/components/ui/card'
@@ -45,7 +46,14 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
       .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
       .replace(/(<li>.*<\/li>)/s, '<ol style="margin: 16px 0; padding-left: 24px;">$1</ol>')
 
-    return html
+    // Sanitize HTML to prevent XSS attacks
+    const sanitized = DOMPurify.sanitize(html, {
+      ALLOWED_TAGS: ['strong', 'em', 'u', 'a', 'ul', 'ol', 'li', 'br'],
+      ALLOWED_ATTR: ['href', 'style'],
+      ALLOW_DATA_ATTR: false,
+    })
+    
+    return sanitized
   }, [replyData.message])
 
   const emailContent = (isMobile: boolean = false) => (

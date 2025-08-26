@@ -227,21 +227,6 @@ export const ContactSubmissions: CollectionConfig = {
       }
     },
     {
-      name: 'replyMessage',
-      type: 'textarea',
-      label: {
-        fr: 'Message de réponse (Legacy)',
-        ar: 'رسالة الرد (قديم)'
-      },
-      admin: {
-        description: {
-          fr: 'Champ legacy pour compatibilité',
-          ar: 'حقل قديم للتوافق'
-        },
-        condition: () => false // Hide this field as it's managed by the custom component
-      }
-    },
-    {
       name: 'emailSent',
       type: 'checkbox',
       label: {

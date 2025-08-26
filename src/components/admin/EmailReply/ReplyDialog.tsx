@@ -77,7 +77,7 @@ export const ReplyDialog: React.FC<ReplyDialogProps> = ({
           toast.error(result.error || 'Failed to send reply')
         }
       } catch (error) {
-        // Error is already displayed in toast notification
+        // Display error in toast notification
         toast.error('An unexpected error occurred')
       }
     })

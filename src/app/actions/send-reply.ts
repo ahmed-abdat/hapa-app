@@ -151,22 +151,9 @@ export async function sendReplyAction(options: SendReplyOptions): Promise<SendRe
         overrideAccess: false,
         showHiddenFields: false,
       });
-      
-      // Try to save the reply message separately
-      try {
-        await payload.update({
-          collection: "contact-submissions", 
-          id: submissionId,
-          data: {
-            replyMessage: emailContent || "Email sent",
-          },
-          depth: 0,
-        });
-      } catch (e) {
-        // Silent fail - email was sent which is what matters
-      }
     } catch (updateError) {
-      // Silent fail - email was sent successfully which is the important part
+      // Log for monitoring but don't fail the operation since email was sent
+      console.error("[send-reply] Failed to update emailSent flag after sending email:", updateError);
     }
 
     return {
@@ -182,16 +169,4 @@ export async function sendReplyAction(options: SendReplyOptions): Promise<SendRe
       error: error instanceof Error ? error.message : "Unknown error occurred while sending email",
     };
   }
-}
-
-// Keep the old function for backward compatibility
-export async function sendContactFormReply(
-  submissionId: string,
-  replyMessage: string
-) {
-  return sendReplyAction({
-    submissionId,
-    replyMessage,
-    useEnhancedTemplate: false, // Use simple template for backward compatibility
-  });
 }

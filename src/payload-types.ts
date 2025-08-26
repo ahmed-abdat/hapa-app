@@ -333,10 +333,6 @@ export interface ContactSubmission {
    */
   adminNotes?: string | null;
   /**
-   * Champ legacy pour compatibilité
-   */
-  replyMessage?: string | null;
-  /**
    * Indique si une réponse a été envoyée à l'utilisateur
    */
   emailSent?: boolean | null;
@@ -901,7 +897,6 @@ export interface ContactSubmissionsSelect<T extends boolean = true> {
   subject?: T;
   message?: T;
   adminNotes?: T;
-  replyMessage?: T;
   emailSent?: T;
   emailSentAt?: T;
   submittedAt?: T;
