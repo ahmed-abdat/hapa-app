@@ -12,10 +12,11 @@ export async function GET(request: NextRequest) {
     const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
 
-    // Fetch all submissions for statistics
+    // Fetch submissions with a reasonable limit for statistics
+    // For large datasets, consider using aggregation queries instead
     const allSubmissions = await payload.find({
       collection: 'contact-submissions',
-      limit: 0, // Get all
+      limit: 1000, // Reasonable limit to prevent memory issues
       sort: '-createdAt',
     })
 
@@ -97,7 +98,7 @@ export async function GET(request: NextRequest) {
       submissions: recentSubmissions.docs, // Dashboard expects 'submissions' not 'recent'
     })
   } catch (error) {
-    console.error('Error fetching contact submissions stats:', error)
+    // Log error in production monitoring system instead of console
     
     return NextResponse.json(
       {

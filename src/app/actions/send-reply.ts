@@ -56,8 +56,24 @@ export async function sendReplyAction(options: SendReplyOptions): Promise<SendRe
       };
     }
 
-    // Extract only the needed fields to avoid circular references
-    const { email, name, subject: originalSubject, message: originalMessage, preferredLanguage, locale: submissionLocale } = submission;
+    // Extract only the needed fields to avoid circular references with defensive null checks
+    const { 
+      email = '', 
+      name = 'User', 
+      subject: originalSubject = '', 
+      message: originalMessage = '', 
+      preferredLanguage, 
+      locale: submissionLocale 
+    } = submission || {};
+    
+    // Validate required fields
+    if (!email) {
+      return {
+        success: false,
+        error: "No email address found for this submission",
+      };
+    }
+    
     const locale = preferredLanguage || submissionLocale || "fr";
     
     // Use plain text message
