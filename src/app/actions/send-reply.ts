@@ -138,22 +138,49 @@ export async function sendReplyAction(options: SendReplyOptions): Promise<SendRe
       throw new Error(`Email API failed: ${emailResult.message || emailResult.error || 'Unknown error'}`);
     }
 
-    // Try the absolute simplest update possible to avoid deepmerge issues
+    // Update the emailSent flag - try the absolute minimal approach
     try {
-      // Just update the emailSent flag, nothing else
+      // First, just try updating the boolean flag alone
       await payload.update({
         collection: "contact-submissions",
         id: submissionId,
         data: {
           emailSent: true,
-          emailSentAt: new Date().toISOString(), // Back to ISO string as the field expects string
         },
-        depth: 0,
-        overrideAccess: true, // Allow server action to update without user context
+        depth: 0, // No relationships
+        overrideAccess: true,
       });
+      
+      console.log("[send-reply] Successfully updated emailSent flag for submission:", submissionId);
+      
+      // If the first update succeeded, try to add the timestamp separately
+      try {
+        await payload.update({
+          collection: "contact-submissions",
+          id: submissionId,
+          data: {
+            emailSentAt: new Date().toISOString(),
+          },
+          depth: 0,
+          overrideAccess: true,
+        });
+        console.log("[send-reply] Successfully updated emailSentAt timestamp");
+      } catch (timestampError) {
+        console.warn("[send-reply] Failed to update timestamp but emailSent flag was set:", timestampError);
+      }
+      
     } catch (updateError) {
-      // Log for monitoring but don't fail the operation since email was sent
+      // Log the detailed error for debugging
       console.error("[send-reply] Failed to update emailSent flag after sending email:", updateError);
+      console.error("[send-reply] Stack trace:", updateError instanceof Error ? updateError.stack : 'No stack trace');
+      
+      // Check if it's specifically a stack overflow
+      if (updateError instanceof RangeError && updateError.message.includes('Maximum call stack size exceeded')) {
+        console.error("[send-reply] STACK OVERFLOW detected in database update operation");
+        console.error("[send-reply] This suggests a circular reference in the data or collection hooks");
+      }
+      
+      // Email was sent successfully, so don't fail the entire operation
     }
 
     return {
