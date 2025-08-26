@@ -1,69 +1,111 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import type { ContactSubmission } from '@/payload-types'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const payload = await getPayload({ config })
-    
-    // Get all contact submissions
-    const result = await payload.find({
+
+    // Get date ranges
+    const now = new Date()
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+
+    // Fetch submissions with a reasonable limit for statistics
+    // For large datasets, consider using aggregation queries instead
+    const allSubmissions = await payload.find({
       collection: 'contact-submissions',
-      depth: 0,
-      limit: 1000,
+      limit: 1000, // Reasonable limit to prevent memory issues
       sort: '-createdAt',
     })
-    
-    const submissions = result.docs as ContactSubmission[]
-    
-    // Calculate statistics
-    const now = new Date()
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-    const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-    
+
+    // Calculate statistics - matching ContactStats interface
     const stats = {
-      totalSubmissions: submissions.length,
-      totalToday: submissions.filter(sub => 
-        new Date(sub.createdAt) >= startOfToday
-      ).length,
-      totalThisWeek: submissions.filter(sub => 
-        new Date(sub.createdAt) >= startOfWeek
-      ).length,
-      totalThisMonth: submissions.filter(sub => 
-        new Date(sub.createdAt) >= startOfMonth
-      ).length,
+      totalSubmissions: allSubmissions.totalDocs,
+      totalToday: 0,
+      totalThisWeek: 0,
+      totalThisMonth: 0,
       statusBreakdown: {
-        pending: submissions.filter(sub => sub.status === 'pending').length,
-        inProgress: submissions.filter(sub => sub.status === 'in-progress').length,
-        resolved: submissions.filter(sub => sub.status === 'resolved').length,
+        pending: 0,
+        inProgress: 0,
+        resolved: 0,
       },
       localeBreakdown: {
-        fr: submissions.filter(sub => sub.locale === 'fr').length,
-        ar: submissions.filter(sub => sub.locale === 'ar').length,
+        fr: 0,
+        ar: 0,
       },
-      recentSubmissions: submissions.slice(0, 10) // Get the 10 most recent
+      recentSubmissions: [],
+      emailsSent: 0,
     }
-    
+
+    // Process each submission for statistics
+    allSubmissions.docs.forEach((submission) => {
+      const createdAt = new Date(submission.createdAt)
+      
+      // Time-based stats
+      if (createdAt >= todayStart) stats.totalToday++
+      if (createdAt >= weekStart) stats.totalThisWeek++
+      if (createdAt >= monthStart) stats.totalThisMonth++
+      
+      // Status stats
+      switch (submission.status) {
+        case 'pending':
+          stats.statusBreakdown.pending++
+          break
+        case 'in-progress':
+          stats.statusBreakdown.inProgress++
+          break
+        case 'resolved':
+          stats.statusBreakdown.resolved++
+          break
+      }
+      
+      // Locale stats
+      if (submission.locale === 'fr') {
+        stats.localeBreakdown.fr++
+      } else if (submission.locale === 'ar') {
+        stats.localeBreakdown.ar++
+      }
+      
+      // Email stats
+      if (submission.emailSent) stats.emailsSent++
+    })
+
+    // Get recent submissions (last 10)
+    const recentSubmissions = await payload.find({
+      collection: 'contact-submissions',
+      limit: 10,
+      sort: '-createdAt',
+      select: {
+        name: true,
+        email: true,
+        subject: true,
+        status: true,
+        emailSent: true,
+        createdAt: true,
+        locale: true,
+        preferredLanguage: true,
+      },
+    })
+
+    // Add recent submissions to stats
+    stats.recentSubmissions = recentSubmissions.docs as any
+
     return NextResponse.json({
       success: true,
       stats,
-      submissions: submissions.slice(0, 20) // Return recent submissions for the dashboard
+      submissions: recentSubmissions.docs, // Dashboard expects 'submissions' not 'recent'
     })
-    
-  } catch (error: any) {
-    console.error('Contact submissions stats API error:', error)
+  } catch (error) {
+    // Log error in production monitoring system instead of console
     
     return NextResponse.json(
       {
         success: false,
-        error: 'Failed to fetch contact submissions statistics',
-        details: error.message
+        error: 'Failed to fetch statistics',
       },
       { status: 500 }
     )
   }
 }
-
-export const dynamic = 'force-dynamic'

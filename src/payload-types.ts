@@ -305,6 +305,10 @@ export interface ContactSubmission {
    */
   locale: 'fr' | 'ar';
   /**
+   * Langue préférée du destinataire pour la réponse par email
+   */
+  preferredLanguage?: ('fr' | 'ar') | null;
+  /**
    * Nom fourni par l'utilisateur (non modifiable)
    */
   name: string;
@@ -328,10 +332,6 @@ export interface ContactSubmission {
    * Notes internes pour l'équipe administrative
    */
   adminNotes?: string | null;
-  /**
-   * Réponse à envoyer à l'utilisateur par email
-   */
-  replyMessage?: string | null;
   /**
    * Indique si une réponse a été envoyée à l'utilisateur
    */
@@ -890,13 +890,13 @@ export interface ContactDashboardSelect<T extends boolean = true> {
 export interface ContactSubmissionsSelect<T extends boolean = true> {
   status?: T;
   locale?: T;
+  preferredLanguage?: T;
   name?: T;
   email?: T;
   phone?: T;
   subject?: T;
   message?: T;
   adminNotes?: T;
-  replyMessage?: T;
   emailSent?: T;
   emailSentAt?: T;
   submittedAt?: T;

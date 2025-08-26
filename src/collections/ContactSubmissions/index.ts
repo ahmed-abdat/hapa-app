@@ -87,6 +87,43 @@ export const ContactSubmissions: CollectionConfig = {
         }
       }
     },
+    {
+      name: 'preferredLanguage',
+      type: 'select',
+      label: {
+        fr: 'Langue du destinataire',
+        ar: 'لغة المستلم'
+      },
+      options: [
+        {
+          label: 'Français',
+          value: 'fr'
+        },
+        {
+          label: 'العربية',
+          value: 'ar'
+        }
+      ],
+      admin: {
+        position: 'sidebar',
+        description: {
+          fr: 'Langue préférée du destinataire pour la réponse par email',
+          ar: 'اللغة التي يفضلها المستلم للرد عبر البريد الإلكتروني'
+        },
+        readOnly: true
+      },
+      hooks: {
+        beforeChange: [
+          ({ data, originalDoc }) => {
+            // Set preferredLanguage to locale if not already set
+            if (data && !data.preferredLanguage && (data.locale || originalDoc?.locale)) {
+              data.preferredLanguage = data.locale || originalDoc?.locale
+            }
+            return data
+          }
+        ]
+      }
+    },
     // User-submitted data (read-only)
     {
       name: 'name',
@@ -182,17 +219,16 @@ export const ContactSubmissions: CollectionConfig = {
       }
     },
     {
-      name: 'replyMessage',
-      type: 'textarea',
-      label: {
-        fr: 'Message de réponse',
-        ar: 'رسالة الرد'
-      },
+      name: 'replySection',
+      type: 'ui',
       admin: {
-        description: {
-          fr: 'Réponse à envoyer à l\'utilisateur par email',
-          ar: 'الرد المراد إرساله للمستخدم عبر البريد الإلكتروني'
+        components: {
+          Field: '@/components/admin/ContactSubmissions/InlineReplyPanel',
         }
+      },
+      label: {
+        fr: 'Envoyer une réponse',
+        ar: 'إرسال رد'
       }
     },
     {
