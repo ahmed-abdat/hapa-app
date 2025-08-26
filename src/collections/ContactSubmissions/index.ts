@@ -230,13 +230,13 @@ export const ContactSubmissions: CollectionConfig = {
       name: 'replyMessage',
       type: 'textarea',
       label: {
-        fr: 'Message de réponse',
-        ar: 'رسالة الرد'
+        fr: 'Message de réponse (Legacy)',
+        ar: 'رسالة الرد (قديم)'
       },
       admin: {
         description: {
-          fr: 'Réponse à envoyer à l\'utilisateur par email',
-          ar: 'الرد المراد إرساله للمستخدم عبر البريد الإلكتروني'
+          fr: 'Champ legacy pour compatibilité',
+          ar: 'حقل قديم للتوافق'
         },
         condition: () => false // Hide this field as it's managed by the custom component
       }

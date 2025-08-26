@@ -15,7 +15,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Loader2, Send, Eye, FileText, X } from 'lucide-react'
 import { toast } from '@payloadcms/ui'
 import { ContactSubmission } from '@/payload-types'
-import { RichTextReplyField } from './RichTextReplyField'
 import { EmailPreview } from './EmailPreview'
 import { TemplateSelector } from './TemplateSelector'
 import { sendReplyAction } from '@/app/actions/send-reply'
@@ -78,7 +77,7 @@ export const ReplyDialog: React.FC<ReplyDialogProps> = ({
           toast.error(result.error || 'Failed to send reply')
         }
       } catch (error) {
-        console.error('Error sending reply:', error)
+        // Error is already displayed in toast notification
         toast.error('An unexpected error occurred')
       }
     })
@@ -92,11 +91,10 @@ export const ReplyDialog: React.FC<ReplyDialogProps> = ({
     }))
   }, [])
 
-  const handleMessageChange = useCallback((content: string, richText?: any) => {
+  const handleMessageChange = useCallback((content: string) => {
     setReplyData(prev => ({
       ...prev,
       message: content,
-      richText,
     }))
   }, [])
 
@@ -167,14 +165,24 @@ export const ReplyDialog: React.FC<ReplyDialogProps> = ({
                 />
               </div>
 
-              {/* Rich Text Editor */}
+              {/* Simple Textarea Editor */}
               <div className="space-y-2">
                 <Label>Message</Label>
-                <RichTextReplyField
+                <textarea
                   value={replyData.message}
-                  onChange={handleMessageChange}
-                  locale={locale}
-                  placeholder="Type your reply message..."
+                  onChange={(e) => handleMessageChange(e.target.value)}
+                  placeholder={locale === 'ar' 
+                    ? 'اكتب رسالة الرد هنا...'
+                    : 'Tapez votre message de réponse ici...'
+                  }
+                  dir={isRTL ? 'rtl' : 'ltr'}
+                  className="w-full min-h-[200px] px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-vertical"
+                  style={{
+                    fontFamily: 'inherit',
+                    fontSize: '14px',
+                    lineHeight: '1.5',
+                    direction: isRTL ? 'rtl' : 'ltr',
+                  }}
                 />
               </div>
 

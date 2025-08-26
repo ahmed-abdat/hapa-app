@@ -93,6 +93,10 @@ npx playwright codegen           # Generate test code
 
 - **Posts**: Main content with blocks, categories, and multi-language support
 - **Media**: File management with Cloudflare R2 integration
+- **ContactSubmissions**: Contact form submissions with simplified email reply
+  - Uses simple textarea for replies (no complex rich text editor)
+  - Generates mailto and webmail links for sending replies
+  - No database migrations required for email functionality
 - **MediaContentSubmissions**: User-submitted media content with approval workflow
 - **MediaSubmissionsDashboard**: Admin interface for managing submissions
 - **Categories**: Hierarchical content organization
@@ -160,14 +164,15 @@ R2_BUCKET_NAME=your_bucket
 R2_ACCOUNT_ID=your_account_id
 R2_PUBLIC_URL=https://pub-hash.r2.dev
 
-# Email (Resend) - Required for production
-RESEND_API_KEY=re_xxxxxxxxxxxxx         # Required: Get from resend.com
-EMAIL_FROM=support@hapa.mr              # Required: Verified domain email
+# Email (Resend) - Optional (system uses email client links instead)
+RESEND_API_KEY=re_xxxxxxxxxxxxx         # Optional: Only if direct API sending needed
+EMAIL_FROM=support@hapa.mr              # Optional: For future API integration
 EMAIL_FROM_NAME=HAPA Support            # Optional
 
-# Email addresses (create these mailboxes in cPanel)
-# support@hapa.mr   - Main email for everything (system emails, replies, notifications)
-# contact@hapa.mr   - Public contact (used on website) - can forward to support@hapa.mr
+# Email Reply System (Simplified)
+# The admin email reply system now uses mailto and webmail links
+# No direct API sending - admins use their preferred email client
+# Webmail URL: https://hapa.mr:2096/cpsess.../3rdparty/roundcube/
 ```
 
 ### Local Development Setup

@@ -333,7 +333,7 @@ export interface ContactSubmission {
    */
   adminNotes?: string | null;
   /**
-   * Réponse à envoyer à l'utilisateur par email
+   * Champ legacy pour compatibilité
    */
   replyMessage?: string | null;
   /**

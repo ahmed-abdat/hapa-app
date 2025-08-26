@@ -1,30 +1,26 @@
 'use client'
 
-import React, { useState, useCallback, useEffect, useTransition } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { useField, useDocumentInfo, useForm } from '@payloadcms/ui'
 import { ContactSubmission } from '@/payload-types'
 import { sendReplyAction } from '@/app/actions/send-reply'
-import { RichTextReplyField } from '../EmailReply/RichTextReplyField'
-import { EmailPreview } from '../EmailReply/EmailPreview'
 import { TemplateSelector, EmailTemplate } from '../EmailReply'
+import { toast } from '@payloadcms/ui'
 
 export interface EmailReplyData {
   subject: string
   message: string
   template: EmailTemplate
-  richText?: any
 }
 
 const InlineReplyPanel: React.FC = () => {
-  const { value: replyMessage } = useField<string>({ path: 'replyMessage' })
+  const { value: replyMessage, setValue: setReplyMessage } = useField<string>({ path: 'replyMessage' })
   const { value: emailSent } = useField<boolean>({ path: 'emailSent' })
   const { value: emailSentAt } = useField<string>({ path: 'emailSentAt' })
-  const { getData, submit } = useForm()
+  const { getData } = useForm()
   const { id } = useDocumentInfo()
   
-  const [isPending, startTransition] = useTransition()
   const [isExpanded, setIsExpanded] = useState(false)
-  const [showPreview, setShowPreview] = useState(false)
   const [submissionData, setSubmissionData] = useState<ContactSubmission | null>(null)
   const [replyData, setReplyData] = useState<EmailReplyData>({
     subject: '',
@@ -33,6 +29,7 @@ const InlineReplyPanel: React.FC = () => {
   })
   const [sendError, setSendError] = useState<string | null>(null)
   const [sendSuccess, setSendSuccess] = useState(false)
+  const [isSending, setIsSending] = useState(false)
 
   // Get the full document data
   useEffect(() => {
@@ -54,43 +51,67 @@ const InlineReplyPanel: React.FC = () => {
     }))
   }, [])
 
-  const handleMessageChange = useCallback((content: string, richText?: any) => {
-    setReplyData(prev => ({
-      ...prev,
-      message: content,
-      richText,
-    }))
-  }, [])
 
   const handleSendReply = useCallback(async () => {
-    if (!replyData.message.trim() || !submissionData) {
-      setSendError('Please enter a message')
+    if (!submissionData || !id) {
+      setSendError('No submission data available')
+      return
+    }
+
+    const hasMessage = replyData.message && replyData.message.trim().length > 0
+    const hasSubject = replyData.subject && replyData.subject.trim().length > 0
+    
+    if (!hasMessage || !hasSubject) {
+      setSendError('Please enter a subject and message')
       return
     }
 
     setSendError(null)
-    startTransition(async () => {
-      try {
-        const result = await sendReplyAction({
-          submissionId: String(submissionData.id),
-          replyMessage: replyData.message,
-          subject: replyData.subject,
-        })
+    setIsSending(true)
 
-        if (result.success) {
-          setSendSuccess(true)
-          setTimeout(() => {
-            window.location.reload()
-          }, 2000)
-        } else {
-          setSendError(result.error || 'Failed to send reply')
-        }
-      } catch (error) {
-        console.error('Error sending reply:', error)
-        setSendError('An unexpected error occurred')
+    try {
+      const result = await sendReplyAction({
+        submissionId: String(id),
+        replyMessage: replyData.message,
+        subject: replyData.subject,
+        useEnhancedTemplate: true, // Always use enhanced template
+      })
+
+      if (result && result.success) {
+        setSendSuccess(true)
+        setReplyMessage(replyData.message)
+        
+        // Include email ID in success message if available
+        const successMsg = result.emailId 
+          ? `Email sent successfully! (ID: ${result.emailId})` 
+          : 'Email sent successfully!'
+        toast.success(successMsg)
+        
+        // Reset the form after a delay
+        setTimeout(() => {
+          setIsExpanded(false)
+          setSendSuccess(false)
+          setReplyData({
+            subject: `Re: ${submissionData.subject || 'Your contact request'}`,
+            message: '',
+            template: 'standard',
+          })
+          // Refresh the page to show updated status
+          window.location.reload()
+        }, 2000)
+      } else {
+        const errorMsg = result?.error || 'Failed to send email'
+        setSendError(errorMsg)
+        toast.error(errorMsg)
       }
-    })
-  }, [replyData, submissionData])
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred while sending the email'
+      setSendError(errorMessage)
+      toast.error(errorMessage)
+    } finally {
+      setIsSending(false)
+    }
+  }, [replyData, submissionData, id, setReplyMessage])
 
   if (!submissionData) {
     return <div>Loading...</div>
@@ -106,32 +127,19 @@ const InlineReplyPanel: React.FC = () => {
       borderRadius: '8px',
       marginTop: '20px'
     }}>
-      {/* Header */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        marginBottom: '20px'
-      }}>
-        <h3 style={{ 
-          fontSize: '18px', 
-          fontWeight: '600',
-          color: '#1f2937'
+      {/* Header - Only show if reply was already sent */}
+      {emailSent && (
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'flex-end', 
+          alignItems: 'center',
+          marginBottom: '20px',
+          color: '#059669',
+          fontSize: '14px'
         }}>
-          Email Reply System
-        </h3>
-        
-        {emailSent && (
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '8px',
-            color: '#059669'
-          }}>
-            ✓ Reply Sent on {emailSentAt ? new Date(emailSentAt).toLocaleDateString() : ''}
-          </div>
-        )}
-      </div>
+          ✓ Reply Sent on {emailSentAt ? new Date(emailSentAt).toLocaleDateString() : ''}
+        </div>
+      )}
 
       {/* Toggle Button */}
       {!isExpanded && (
@@ -158,14 +166,19 @@ const InlineReplyPanel: React.FC = () => {
           {/* Success Message */}
           {sendSuccess && (
             <div style={{
-              padding: '12px',
+              padding: '16px',
               backgroundColor: '#d1fae5',
               border: '1px solid #6ee7b7',
               borderRadius: '6px',
               marginBottom: '20px',
               color: '#065f46'
             }}>
-              ✓ Reply sent successfully! Refreshing page...
+              <div style={{ fontSize: '16px', fontWeight: '600' }}>
+                ✓ Email sent successfully!
+              </div>
+              <p style={{ marginTop: '8px', fontSize: '14px' }}>
+                The reply has been sent to {submissionData.email}
+              </p>
             </div>
           )}
 
@@ -183,140 +196,111 @@ const InlineReplyPanel: React.FC = () => {
             </div>
           )}
 
-          {/* Tab Navigation */}
-          <div style={{ 
-            display: 'flex', 
-            gap: '10px',
-            marginBottom: '20px',
-            borderBottom: '2px solid #e5e7eb',
-            paddingBottom: '10px'
-          }}>
-            <button
-              onClick={() => setShowPreview(false)}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: !showPreview ? '#2563eb' : 'transparent',
-                color: !showPreview ? 'white' : '#6b7280',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontWeight: '500'
-              }}
-            >
-              📝 Compose
-            </button>
-            <button
-              onClick={() => setShowPreview(true)}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: showPreview ? '#2563eb' : 'transparent',
-                color: showPreview ? 'white' : '#6b7280',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontWeight: '500'
-              }}
-            >
-              👁 Preview
-            </button>
-          </div>
-
           {/* Content Area */}
-          {!showPreview ? (
-            <div>
-              {/* Subject Field */}
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ 
-                  display: 'block', 
-                  marginBottom: '8px',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  color: '#374151'
-                }}>
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  value={replyData.subject}
-                  onChange={(e) => setReplyData(prev => ({ ...prev, subject: e.target.value }))}
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '6px',
-                    fontSize: '14px'
-                  }}
-                />
-              </div>
-
-              {/* Template Selector */}
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ 
-                  display: 'block', 
-                  marginBottom: '8px',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  color: '#374151'
-                }}>
-                  Template
-                </label>
-                <TemplateSelector
-                  value={replyData.template}
-                  submission={submissionData}
-                  onChange={handleTemplateChange}
-                />
-              </div>
-
-              {/* Message Field */}
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ 
-                  display: 'block', 
-                  marginBottom: '8px',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  color: '#374151'
-                }}>
-                  Message
-                </label>
-                <RichTextReplyField
-                  value={replyData.message}
-                  onChange={handleMessageChange}
-                  locale={locale}
-                  placeholder="Type your reply message..."
-                />
-              </div>
-
-              {/* Original Message */}
-              <div style={{
-                padding: '16px',
-                backgroundColor: '#f3f4f6',
-                borderRadius: '6px',
-                marginBottom: '20px'
+          <div>
+            {/* Subject Field */}
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '8px',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#374151'
               }}>
-                <h4 style={{ 
-                  fontSize: '14px', 
-                  fontWeight: '600',
-                  marginBottom: '12px',
-                  color: '#4b5563'
-                }}>
-                  Original Message:
-                </h4>
-                <div style={{ fontSize: '14px', color: '#6b7280' }}>
-                  <p><strong>From:</strong> {submissionData.name} ({submissionData.email})</p>
-                  <p><strong>Subject:</strong> {submissionData.subject}</p>
-                  <p style={{ marginTop: '8px', whiteSpace: 'pre-wrap' }}>
-                    {submissionData.message}
-                  </p>
-                </div>
+                Subject
+              </label>
+              <input
+                type="text"
+                value={replyData.subject}
+                onChange={(e) => setReplyData(prev => ({ ...prev, subject: e.target.value }))}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '6px',
+                  fontSize: '14px'
+                }}
+              />
+            </div>
+
+            {/* Template Selector */}
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '8px',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#374151'
+              }}>
+                Template
+              </label>
+              <TemplateSelector
+                value={replyData.template}
+                submission={submissionData}
+                onChange={handleTemplateChange}
+              />
+            </div>
+
+            {/* Simple Message Textarea */}
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '8px',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#374151'
+              }}>
+                Message
+              </label>
+              
+              <textarea
+                value={replyData.message}
+                onChange={(e) => setReplyData(prev => ({ ...prev, message: e.target.value }))}
+                placeholder={locale === 'ar' 
+                  ? 'اكتب رسالة الرد هنا...'
+                  : 'Tapez votre message de réponse ici...'
+                }
+                dir={isRTL ? 'rtl' : 'ltr'}
+                style={{
+                  width: '100%',
+                  minHeight: '200px',
+                  padding: '12px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '6px',
+                  backgroundColor: 'white',
+                  resize: 'vertical',
+                  fontFamily: 'inherit',
+                  fontSize: '14px',
+                  lineHeight: '1.5',
+                  direction: isRTL ? 'rtl' : 'ltr',
+                }}
+              />
+            </div>
+
+            {/* Original Message */}
+            <div style={{
+              padding: '16px',
+              backgroundColor: '#f3f4f6',
+              borderRadius: '6px',
+              marginBottom: '20px'
+            }}>
+              <h4 style={{ 
+                fontSize: '14px', 
+                fontWeight: '600',
+                marginBottom: '12px',
+                color: '#4b5563'
+              }}>
+                Original Message:
+              </h4>
+              <div style={{ fontSize: '14px', color: '#6b7280' }}>
+                <p><strong>From:</strong> {submissionData.name} ({submissionData.email})</p>
+                <p><strong>Subject:</strong> {submissionData.subject}</p>
+                <p style={{ marginTop: '8px', whiteSpace: 'pre-wrap' }}>
+                  {submissionData.message}
+                </p>
               </div>
             </div>
-          ) : (
-            <EmailPreview
-              submission={submissionData}
-              replyData={replyData}
-              locale={locale}
-            />
-          )}
+          </div>
 
           {/* Action Buttons */}
           <div style={{ 
@@ -343,19 +327,19 @@ const InlineReplyPanel: React.FC = () => {
             </button>
             <button
               onClick={handleSendReply}
-              disabled={isPending || !replyData.message.trim()}
+              disabled={isSending || !replyData.subject.trim() || !replyData.message.trim()}
               style={{
                 padding: '10px 20px',
-                backgroundColor: isPending || !replyData.message.trim() ? '#9ca3af' : '#2563eb',
+                backgroundColor: isSending || !replyData.subject.trim() || !replyData.message.trim() ? '#9ca3af' : '#2563eb',
                 color: 'white',
                 border: 'none',
                 borderRadius: '6px',
-                cursor: isPending || !replyData.message.trim() ? 'not-allowed' : 'pointer',
+                cursor: isSending || !replyData.subject.trim() || !replyData.message.trim() ? 'not-allowed' : 'pointer',
                 fontSize: '14px',
                 fontWeight: '500'
               }}
             >
-              {isPending ? '⏳ Sending...' : '📤 Send Reply'}
+              {isSending ? '⏳ Sending...' : '📤 Send Reply'}
             </button>
           </div>
         </div>

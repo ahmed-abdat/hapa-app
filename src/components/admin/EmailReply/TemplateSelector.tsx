@@ -208,7 +208,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
       <div className="text-xs text-gray-500 space-y-1">
         <p>💡 Templates provide a starting point for your reply</p>
         <p>✏️ You can customize the content after selecting a template</p>
-        <p>🌐 Template content is automatically adjusted based on the user's preferred language</p>
+        <p>🌐 Template content is automatically adjusted based on the user&apos;s preferred language</p>
       </div>
     </div>
   )

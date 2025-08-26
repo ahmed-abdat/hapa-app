@@ -19,6 +19,7 @@ interface EnhancedReplyEmailProps {
   message: string
   locale?: 'fr' | 'ar'
   includeFooter?: boolean
+  isRichContent?: boolean
 }
 
 export const EnhancedReplyEmail = ({
@@ -27,19 +28,23 @@ export const EnhancedReplyEmail = ({
   message = '',
   locale = 'fr',
   includeFooter = true,
+  isRichContent = false,
 }: EnhancedReplyEmailProps) => {
   const isRTL = locale === 'ar'
   const direction = isRTL ? 'rtl' : 'ltr'
 
-  // Convert markdown-style formatting to HTML
-  const formattedMessage = message
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/__(.+?)__/g, '<u>$1</u>')
-    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" style="color: #2563eb;">$1</a>')
-    .replace(/\n/g, '<br />')
-    .replace(/^- (.+)$/gm, '<li style="margin: 4px 0;">$1</li>')
-    .replace(/(<li.*<\/li>)/s, '<ul style="margin: 16px 0; padding-left: 24px;">$1</ul>')
+  // If message is already rich HTML from Lexical, use it directly
+  // Otherwise, convert markdown-style formatting to HTML
+  const formattedMessage = isRichContent 
+    ? message 
+    : message
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/__(.+?)__/g, '<u>$1</u>')
+      .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" style="color: #2563eb;">$1</a>')
+      .replace(/\n/g, '<br />')
+      .replace(/^- (.+)$/gm, '<li style="margin: 4px 0;">$1</li>')
+      .replace(/(<li.*<\/li>)/s, '<ul style="margin: 16px 0; padding-left: 24px;">$1</ul>')
 
   const previewText = locale === 'fr'
     ? `Réponse à votre demande: ${subject}`
@@ -71,7 +76,7 @@ export const EnhancedReplyEmail = ({
           <Section style={logoSection}>
             <Heading style={h1}>HAPA</Heading>
             <Text style={tagline}>
-              Haute Autorité de la Presse et de l'Audiovisuel
+              Haute Autorité de la Presse et de l&apos;Audiovisuel
             </Text>
           </Section>
 

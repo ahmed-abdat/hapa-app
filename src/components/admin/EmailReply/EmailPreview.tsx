@@ -97,7 +97,7 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
             >
               <h1 style={{ margin: 0, fontSize: '24px', color: '#1f2937' }}>HAPA</h1>
               <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#6b7280' }}>
-                Haute Autorité de la Presse et de l'Audiovisuel
+                Haute Autorité de la Presse et de l&apos;Audiovisuel
               </p>
             </div>
           </div>
@@ -184,7 +184,7 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
       {/* Preview Info */}
       <div className="text-sm text-gray-500 space-y-1">
         <p>• This preview shows how the email will appear in most email clients</p>
-        <p>• Actual rendering may vary slightly depending on the recipient's email client</p>
+        <p>• Actual rendering may vary slightly depending on the recipient&apos;s email client</p>
         <p>• The email will be sent in {locale === 'fr' ? 'French' : 'Arabic'}</p>
       </div>
     </div>

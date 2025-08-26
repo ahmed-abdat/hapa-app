@@ -1,5 +1,4 @@
 export { ReplyDialog } from './ReplyDialog'
 export type { EmailReplyData, EmailTemplate } from './ReplyDialog'
-export { RichTextReplyField } from './RichTextReplyField'
 export { EmailPreview } from './EmailPreview'
 export { TemplateSelector } from './TemplateSelector'
