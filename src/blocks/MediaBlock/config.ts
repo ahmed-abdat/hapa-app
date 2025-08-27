@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { validateMediaRequired } from './validation'
 
 export const MediaBlock: Block = {
   slug: 'mediaBlock',
@@ -29,13 +30,7 @@ export const MediaBlock: Block = {
           ar: 'حدد ملف الوسائط'
         }
       },
-      validate: (value: any) => {
-        // Custom validation to ensure media is selected
-        if (!value) {
-          return 'Le média est requis / الوسائط مطلوبة'
-        }
-        return true
-      }
+      validate: validateMediaRequired
     },
   ],
 }

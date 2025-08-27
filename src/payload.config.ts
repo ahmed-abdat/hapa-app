@@ -29,15 +29,23 @@ const dirname = path.dirname(filename);
 
 // Environment validation for email configuration
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-if (!RESEND_API_KEY) {
-  throw new Error(
-    "RESEND_API_KEY environment variable is required but not set"
-  );
-}
-
 const EMAIL_FROM = process.env.EMAIL_FROM;
-if (!EMAIL_FROM) {
-  throw new Error("EMAIL_FROM environment variable is required but not set");
+
+// Only require email configuration in production or when email features are needed
+if (process.env.NODE_ENV === 'production') {
+  if (!RESEND_API_KEY) {
+    console.warn(
+      "⚠️ RESEND_API_KEY not set - email features will be disabled"
+    );
+  }
+  if (!EMAIL_FROM) {
+    console.warn("⚠️ EMAIL_FROM not set - email features will be disabled");
+  }
+} else if (process.env.NODE_ENV === 'development') {
+  // In development, just log info if email config is missing
+  if (!RESEND_API_KEY || !EMAIL_FROM) {
+    console.info("ℹ️ Email configuration not set - features will be limited");
+  }
 }
 
 export default buildConfig({
@@ -205,12 +213,14 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },
-  // Email configuration: Use Resend adapter for modern email delivery
-  email: resendAdapter({
-    defaultFromAddress: EMAIL_FROM,
-    defaultFromName: process.env.EMAIL_FROM_NAME ?? "HAPA Support",
-    apiKey: RESEND_API_KEY,
-  }),
+  // Email configuration: Use Resend adapter for modern email delivery (when configured)
+  email: RESEND_API_KEY && EMAIL_FROM 
+    ? resendAdapter({
+        defaultFromAddress: EMAIL_FROM,
+        defaultFromName: process.env.EMAIL_FROM_NAME ?? "HAPA Support",
+        apiKey: RESEND_API_KEY,
+      })
+    : undefined,
   jobs: {
     access: {
       run: ({ req }: { req: PayloadRequest }): boolean => {
