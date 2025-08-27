@@ -48,9 +48,9 @@ export function getValidationMessages(t: ReturnType<typeof useTranslations>) {
     refine_attachment_other: t('specifyOther'),
     
     // File upload validation (if used in forms)
-    file_too_large: (maxSize: string) => t('FileUpload.fileTooLarge', { maxSize }),
-    unsupported_file_type: t('FileUpload.unsupportedFileType'),
-    upload_failed: t('FileUpload.uploadFailed'),
+    file_too_large: (maxSize: string) => t('fileUpload.fileSizeExceeds', { size: maxSize, limit: maxSize }),
+    unsupported_file_type: t('fileUpload.unsupportedFileType'),
+    upload_failed: t('fileUpload.uploadFailed', { error: '' }),
   }
 }
 

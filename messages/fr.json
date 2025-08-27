@@ -14,7 +14,7 @@
   "noImage": "Aucune image",
   "heroTitle": "Haute Autorité de la Presse et de l'Audiovisuel",
   "heroSubtitle": "L'autorité nationale qui garantit l'équilibre entre liberté de presse et responsabilité médiatique en République Islamique de Mauritanie",
-  "reportMediaContent": "Signaler",
+  "reportMediaContent": "Alertez-nous",
   "contactHapa": "Nous contacter",
   "registeredJournalists": "Journalistes agréés (2024)",
   "complaintsResolved": "Dossiers traités (2023)",
@@ -30,33 +30,28 @@
   "generalServicesDesc": "Licences médiatiques, inscription des journalistes et informations générales",
   "publicComplaints": "Plaintes & Signalements",
   "publicComplaintsDesc": "Signaler un contenu non-conforme ou déposer une plainte officielle",
-  "officialDocuments": "Décisions & Communiqués", 
+  "officialDocuments": "Décisions & Communiqués",
   "officialDocumentsDesc": "Décisions officielles, communiqués et rapports d'activité",
   "legalFramework": "Lois & Règlements",
   "legalFrameworkDesc": "Textes de loi et réglementations du secteur médiatique",
   "learnMore": "En savoir plus",
-
   "mediaContentReportTitle": "Formulaire de signalement concernant un contenu médiatique",
   "mediaContentReportDesc": "Ce formulaire est destiné aux institutions, organismes ou citoyens souhaitant signaler un contenu médiatique audiovisuel ou numérique jugé contraire aux lois ou à l'éthique publique.",
   "mediaContentComplaintTitle": "Formulaire de plainte concernant un contenu médiatique",
   "mediaContentComplaintDesc": "Ce formulaire est destiné aux institutions, organismes ou citoyens souhaitant se plaindre d'un contenu médiatique audiovisuel ou numérique jugé contraire aux lois ou à l'éthique publique.",
-
   "contentInformation": "Informations sur le contenu signalé",
   "contentInformationComplaint": "Informations sur le contenu signalé",
   "complainantInformation": "Informations sur le plaignant",
   "reportReason": "Motif du signalement",
   "complaintReason": "Motif de la plainte",
   "contentDescription": "Description du contenu concerné",
-  "attachments": "Pièces jointes (facultatives mais recommandées)",
+  "attachments": "Pièces jointes",
   "declarationConsent": "Déclaration et consentement",
-
   "mediaType": "Type de média",
-
   "Share": {
     "copiedToClipboard": "URL copiée dans le presse-papiers",
     "share": "Partager"
   },
-
   "LocaleSwitcher": {
     "select-language": "Choisir la langue"
   },
@@ -73,7 +68,6 @@
   "broadcastTime": "Heure de diffusion",
   "timeOptional": "Heure (optionnel)",
   "linkScreenshot": "Lien ou capture d'écran (si disponible)",
-
   "fullName": "Nom complet",
   "gender": "Genre",
   "male": "Homme",
@@ -89,7 +83,6 @@
   "viewer": "Téléspectateur / Internaute",
   "directlyConcerned": "Directement concerné",
   "journalist": "Journaliste",
-
   "hateSpeech": "Discours de haine / Incitation à la violence",
   "misinformation": "Désinformation / Informations mensongères",
   "fakeNews": "Désinformation / Fake news",
@@ -98,79 +91,34 @@
   "pluralismViolation": "Non-respect du pluralisme politique",
   "falseAdvertising": "Publicité mensongère ou interdite",
   "otherReason": "Autre",
-
   "contentDescriptionPlaceholderReport": "Veuillez fournir une description précise du contenu signalé, de son contexte et des raisons pour lesquelles il est jugé inapproprié",
   "contentDescriptionPlaceholderComplaint": "Veuillez fournir une description précise du contenu, de son contexte et de la raison pour laquelle il est jugé inapproprié",
-
   "screenshot": "Capture d'écran",
   "videoLink": "Lien vers une vidéo / page",
   "writtenStatement": "Déclaration écrite",
   "audioRecording": "Enregistrement audio",
-
   "declarationText": "Je certifie que toutes les informations fournies dans ce formulaire sont exactes et véridiques.",
   "consentText": "J'autorise l'autorité compétente à utiliser ces données dans le cadre du traitement de cette plainte.",
   "iAccept": "J'accepte",
-
   "submitReport": "Soumettre le signalement",
   "submitComplaint": "Soumettre la plainte",
   "reset": "Réinitialiser",
   "cancel": "Annuler",
-
   "fieldRequired": "Ce champ est requis",
   "invalidEmail": "Adresse e-mail invalide",
   "invalidPhone": "Numéro de téléphone invalide",
   "selectAtLeastOne": "Veuillez sélectionner au moins une option",
-
-  "dragDropText": "Glissez vos fichiers ici ou cliquez pour sélectionner",
-  "maxSizeText": "Taille max: {maxSize} MB",
-  "chooseFile": "Choisir un fichier",
-  "chooseFiles": "Choisir des fichiers",
-  "uploading": "Téléchargement...",
-  "uploadSuccess": "Téléchargé avec succès",
-  "fileTooLarge": "Fichier trop volumineux. Taille maximale: {maxSize} MB",
-  "unsupportedFileType": "Type de fichier non supporté",
-  "uploadFailed": "Échec du téléchargement",
-  "invalidFileName": "Le nom de fichier contient des caractères invalides",
-  "invalidFileFormat": "Échec de validation du format de fichier - le fichier peut être corrompu ou malveillant",
-  "fileValidationError": "Impossible de valider la sécurité du fichier",
-  "filesValidatedSecurity": "Les fichiers sont validés pour la sécurité avant téléchargement",
-  "validatingFile": "Validation de la sécurité du fichier",
-
-  "FileUpload": {
-    "fileTooLarge": "Fichier trop volumineux. Taille maximale: {maxSize} MB",
-    "unsupportedFileType": "Type de fichier non supporté",
-    "uploadFailed": "Échec du téléchargement",
-    "dragDropText": "Glissez vos fichiers ici ou cliquez pour sélectionner",
-    "maxSizeText": "Taille max: {maxSize} MB",
-    "chooseFile": "Choisir un fichier",
-    "uploading": "Téléchargement...",
-    "uploadSuccess": "Téléchargé avec succès",
-    "invalidFileName": "Le nom de fichier contient des caractères invalides",
-    "invalidFileFormat": "Échec de validation du format de fichier - le fichier peut être corrompu ou malveillant",
-    "fileValidationError": "Impossible de valider la sécurité du fichier",
-    "filesValidatedSecurity": "Les fichiers sont validés pour la sécurité avant téléchargement",
-    "validatingFile": "Validation de la sécurité du fichier",
-    "supportedFormats": "Formats supportés",
-    "dropFilesHere": "Déposez vos fichiers ici",
-    "or": "ou",
-    "clickToSelect": "cliquez pour sélectionner",
-    "maxFiles": "Maximum {count} fichiers"
-  },
-
   "linkScreenshotPlaceholder": "Collez l'URL du contenu ou décrivez les captures d'écran que vous avez prises (ex: capture d'écran de la publication Facebook, photo de l'article, etc.)",
   "screenshotFiles": "Captures d'écran ou images (facultatif)",
   "attachmentFiles": "Fichiers de preuves (facultatif mais recommandé)",
   "attachmentOtherDescription": "Description des pièces jointes",
   "attachmentOtherPlaceholder": "Décrivez les documents ou preuves que vous souhaitez soumettre (ex: enregistrement audio de l'émission, copie du journal, déclaration de témoin, etc.)",
-
   "submissionSuccess": "Votre {type} a été soumis avec succès. Nous vous contacterons bientôt.",
   "submissionError": "Une erreur s'est produite lors de la soumission. Veuillez réessayer.",
   "networkError": "Erreur de connexion. Vérifiez votre connexion internet.",
   "submissionLoading": "Envoi en cours...",
-
   "reportForm": "signalement",
   "complaintForm": "plainte",
-
   "needHelp": "Besoin d'aide avec nos services?",
   "contactSupport": "Contacter le Support",
   "aboutHapa": "À Propos de HAPA",
@@ -227,6 +175,8 @@
   "digitalPlatforms": "Plateformes numériques",
   "printPublications": "Publications imprimées",
   "viewDirectory": "Voir l'annuaire",
+  "filterArticles": "Filtrer les articles",
+  "allArticles": "Tous les articles",
   "showing": "Affichage",
   "of": "sur",
   "posts": "articles",
@@ -264,7 +214,7 @@
   "qualificationIntegrity": "Moralité irréprochable et compétences avérées",
   "qualificationCommitment": "Engagement reconnu pour le développement des médias nationaux",
   "mandatePresident": "Le Président : mandat de 4 ans, renouvelable une fois",
-  "mandateMembers": "Les membres : mandat de 4 ans, non renouvelable", 
+  "mandateMembers": "Les membres : mandat de 4 ans, non renouvelable",
   "mandateReplacement": "En cas de remplacement, le nouveau membre termine le mandat de son prédécesseur",
   "oathDescription": "Avant d'entrer en fonction, les membres prêtent serment devant la Cour Suprême :",
   "oathText": "« Je jure devant Dieu Tout-Puissant d'accomplir ma mission en toute loyauté et de l'exercer avec détachement, impartialité et intégrité conformément à la constitution et aux lois de la République Islamique de Mauritanie, et de préserver le secret des délibérations même après la fin de mes fonctions. »",
@@ -292,7 +242,6 @@
   "minLength": "Ce champ doit contenir au moins {min} caractères",
   "maxLength": "Ce champ ne peut pas dépasser {max} caractères",
   "formSubmitted": "Formulaire soumis avec succès",
-
   "footerAboutHapa": "Institution publique indépendante créée par la loi 2006/015 pour la régulation du secteur audiovisuel en République Islamique de Mauritanie.",
   "quickLinks": "Liens rapides",
   "services": "Services",
@@ -311,7 +260,6 @@
   "about": "À propos",
   "news": "Actualités",
   "contact": "Contact",
-
   "quickProcess": "Processus Rapide",
   "quickProcessDesc": "Signalement traité sous 24-48h par nos équipes spécialisées",
   "confidential": "Confidentiel",
@@ -338,12 +286,10 @@
   "processQuestionsTitle": "Questions sur le processus ?",
   "guidanceText": "Nous sommes là pour vous guider dans votre démarche de plainte officielle",
   "simpleReportText": "Signalement Simple",
-
   "organizationName": "Haute Autorité de la Presse et de l'Audiovisuel",
   "searchButton": "Rechercher",
   "siteDescription": "Site officiel de la Haute Autorité de la Presse et de l'Audiovisuel de Mauritanie. Régulation et supervision des médias mauritaniens.",
   "siteKeywords": "HAPA, Mauritanie, Presse, Audiovisuel, Média, Régulation",
-
   "pageNotFound": "Page non trouvée",
   "pageNotFoundDesc": "Désolé, la page que vous recherchez n'existe pas.",
   "goBackHome": "Retour à l'accueil",
@@ -389,7 +335,6 @@
   "contentReporting": "Signalement de contenu",
   "officialComplaintService": "Plainte officielle",
   "decisionsAndCommuniques": "Décisions et communiqués",
-
   "mediaReportingCTATitle": "Services de Signalement et Plaintes",
   "mediaReportingCTASubtitle": "Protégez l'intégrité du paysage médiatique mauritanien en signalant les contenus non conformes",
   "reportContentCardTitle": "Alertez-nous",
@@ -410,7 +355,6 @@
   "fileComplaint": "Déposer une Plainte",
   "ctaHelpText": "Vous ne savez pas quel service choisir ?",
   "ctaHelpLink": "Consultez notre guide d'aide",
-
   "errorOccurred": "Une erreur s'est produite",
   "errorDescription": "Désolé, quelque chose s'est mal passé. Nous travaillons pour résoudre ce problème.",
   "errorTryAgain": "Réessayer",
@@ -457,7 +401,6 @@
   "submissionSuccessDescription": "Nous avons bien reçu votre demande et notre équipe spécialisée l'examinera dans les plus brefs délais.",
   "complaintProcessingTime": "Traitement sous 7 jours ouvrables avec réponse officielle par email",
   "reportProcessingTime": "Traitement sous 24-48 heures de manière confidentielle",
-
   "compressingImage": "Compression de l'image...",
   "compressionComplete": "Compression terminée",
   "compressionSavings": "Compressé de {originalSize} à {compressedSize} ({savings}% d'économie)",
@@ -477,20 +420,18 @@
   "compressionOptimizing": "Optimisation de la qualité...",
   "compressionBestQuality": "Meilleure qualité obtenue",
   "fileSizeReduced": "Taille du fichier réduite de {percent}%",
-
   "retry": "Réessayer",
   "filesUploaded": "fichiers téléchargés",
   "uploadFailures": "échecs",
   "submissionSuccessfullyRecorded": "Votre soumission a été enregistrée avec succès.",
   "filesSuccessful": "Fichiers réussis",
-
   "fileUpload": {
     "dropFilesHere": "Déposer les fichiers ici...",
     "uploadFiles": "Télécharger des fichiers",
     "uploadDescription": "Téléchargez vos fichiers ici",
     "chooseFiles": "Choisir des fichiers",
-    "maxFiles": "Max {maxFiles} fichiers",
-    "maxSizeEach": "{maxSize}MB chacun",
+    "maxFiles": "Maximum {maxFiles} fichiers",
+    "maxSizeEach": "chacun",
     "validatingFiles": "Validation des fichiers...",
     "uploaded": "Téléchargé",
     "failed": "Échec",
@@ -507,8 +448,6 @@
     "play": "Lecture",
     "pause": "Pause",
     "totalSize": "{size} total",
-    "maxFiles": "Maximum {maxFiles} fichiers",
-    "maxSizeEach": "chacun",
     "unsupportedFileType": "Type de fichier non supporté - non dans les catégories autorisées",
     "fileSizeExceeds": "La taille du fichier ({size}MB) dépasse la limite de {limit}MB",
     "mimeTypeNotAllowed": "Le type MIME {mimeType} n'est pas autorisé pour les fichiers {category}",
@@ -543,12 +482,10 @@
   "autoRetrying": "Nouvelle tentative automatique dans {seconds}s",
   "maxRetriesReached": "Nombre maximum de tentatives atteint",
   "canRetryManually": "Vous pouvez réessayer manuellement",
-
   "dashboard": {
     "title": "Tableau de Bord des Soumissions Médiatiques",
     "subtitle": "Gestion centralisée des signalements et plaintes"
   },
-
   "filters": {
     "type": "Type",
     "all": "Tous",
@@ -556,19 +493,16 @@
     "status": "Statut",
     "priority": "Priorité"
   },
-
   "forms": {
     "report": "Signalement",
     "complaint": "Plainte"
   },
-
   "actions": {
     "refresh": "Actualiser",
     "bulkActions": "Actions Groupées",
     "view": "Voir",
     "edit": "Modifier"
   },
-
   "stats": {
     "total": "Total",
     "thisWeek": "Cette Semaine",
@@ -577,21 +511,18 @@
     "resolved": "Résolus",
     "urgent": "Urgent"
   },
-
   "status": {
     "pending": "En Attente",
     "reviewing": "En Révision",
     "resolved": "Résolu",
     "dismissed": "Rejeté"
   },
-
   "priority": {
     "urgent": "Urgent",
     "high": "Élevée",
     "medium": "Moyenne",
     "low": "Faible"
   },
-
   "common": {
     "requiresImmediateAction": "Nécessite une Action Immédiate",
     "averageResponseTime": "Temps de Réponse Moyen",
@@ -615,7 +546,6 @@
     "unknownUser": "Utilisateur anonyme",
     "noMessage": "Aucun message"
   },
-
   "tabs": {
     "overview": "Aperçu",
     "submissions": "Soumissions",
@@ -623,7 +553,6 @@
     "reports": "Rapports",
     "team": "Équipe"
   },
-
   "table": {
     "title": "Titre",
     "type": "Type",
@@ -633,7 +562,6 @@
     "language": "Langue",
     "actions": "Actions"
   },
-
   "supportedFormats": "Formats supportés",
   "dropFilesHere": "Déposez vos fichiers ici",
   "or": "ou",
@@ -651,13 +579,11 @@
   "showPreview": "Afficher l'aperçu",
   "removeFile": "Supprimer le fichier",
   "screenshots": "Captures d'écran",
-  "attachments": "Pièces jointes",
   "uploadScreenshotFiles": "Télécharger des fichiers de capture d'écran (images ou documents)",
   "uploadAttachmentFiles": "Télécharger des fichiers joints (vidéo, audio, images ou documents)",
   "events": "Événements",
   "eventsDesc": "Événements et conférences organisés par HAPA",
   "decisionsDesc": "Décisions réglementaires et administratives officielles",
-  
   "validation": {
     "required": "Ce champ est requis",
     "email": "Veuillez saisir une adresse email valide",
@@ -667,7 +593,6 @@
     "dateTime": "Veuillez saisir une date et heure valides",
     "fileType": "Type de fichier non autorisé"
   },
-  
   "formProgress": {
     "preparing": "Préparation en cours...",
     "uploading": "Téléchargement des fichiers...",
@@ -676,14 +601,12 @@
     "complete": "Soumission terminée avec succès",
     "error": "Erreur lors de la soumission"
   },
-  
   "complaintTypes": {
     "service": "Problème de service",
     "staff": "Comportement du personnel",
     "procedure": "Procédure administrative",
     "other": "Autre"
   },
-  
   "submissionStatus": {
     "new": "Nouveau",
     "reviewed": "Consulté",
@@ -691,7 +614,6 @@
     "responded": "Répondu",
     "closed": "Fermé"
   },
-  
   "admin": {
     "addingImages": "Ajout en cours... ({count} images)",
     "addMultipleImages": "📁 Ajouter plusieurs images",
@@ -705,7 +627,7 @@
     "document": "Document",
     "file": "Fichier",
     "open": "Ouvrir",
-    "mediaFiles": "Fichiers multimédias ({count})",
+    "mediaFiles": "Fichiers médias",
     "enlargedImage": "Image agrandie",
     "redirectionFailed": "Redirection automatique échouée",
     "clickLinkToDashboard": "Cliquez sur le lien ci-dessous pour accéder au tableau de bord",
@@ -727,7 +649,6 @@
     "selectedImages": "Selected {count} images. Please add them manually...",
     "selectMultipleImages": "📁 Sélection multiple d'images",
     "supportedFormats": "Supports: PNG, JPG, JPEG, WEBP, GIF",
-    "mediaFiles": "Fichiers médias",
     "clickToPreviewPDF": "Cliquez sur Prévisualiser pour ouvrir le PDF",
     "previewFile": "Prévisualiser",
     "downloadFile": "Télécharger",
@@ -741,7 +662,6 @@
     "never": "Jamais",
     "minutesAgo": "Il y a {minutes}min",
     "hoursAgo": "Il y a {hours}h",
-    
     "frequency": "Fréquence",
     "coverage": "Couverture",
     "programming": "Programmation",
@@ -770,7 +690,6 @@
     "relatedStations": "Stations similaires",
     "relatedChannels": "Chaînes similaires",
     "visitWebsite": "Visiter le site web",
-    
     "previousPage": "Précédent",
     "nextPage": "Suivant",
     "goToPage": "Aller à la page {page}",
@@ -801,7 +720,6 @@
     "nationalCoverage": "Couverture nationale",
     "printPress": "Presse Écrite"
   },
-  
   "stateOwned": "Publique",
   "privateOwned": "Privée",
   "backToDirectory": "Retour à l'annuaire",
@@ -817,7 +735,6 @@
   "channelCount": "{count, plural, =0 {Aucune chaîne} =1 {1 chaîne} other {{count} chaînes}}",
   "comingSoon": "Bientôt disponible",
   "stayTuned": "Restez à l'écoute",
-  
   "emailReply": {
     "replyTo": "Répondre à {name}",
     "composeReply": "Composer et envoyer une réponse pour cette soumission",
@@ -843,7 +760,7 @@
     "templates": {
       "standard": "Réponse standard",
       "standardDesc": "Réponse professionnelle avec tous les détails",
-      "quick": "Réponse rapide", 
+      "quick": "Réponse rapide",
       "quickDesc": "Accusé de réception bref",
       "detailed": "Réponse détaillée",
       "detailedDesc": "Explication complète et prochaines étapes",

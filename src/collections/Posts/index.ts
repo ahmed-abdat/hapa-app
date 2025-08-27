@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig } from "payload";
 
 import {
   BlocksFeature,
@@ -7,40 +7,46 @@ import {
   HorizontalRuleFeature,
   InlineToolbarFeature,
   lexicalEditor,
-} from '@payloadcms/richtext-lexical'
+  OrderedListFeature,
+  UnorderedListFeature,
+  ChecklistFeature,
+  AlignFeature,
+  IndentFeature,
+} from "@payloadcms/richtext-lexical";
 
-import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { isAdminOrEditor } from '../../access/isAdminOrEditor'
-import { Banner } from '../../blocks/Banner/config'
-import { Code } from '../../blocks/Code/config'
-import { Gallery } from '../../blocks/Gallery/config'
-import { MediaBlock } from '../../blocks/MediaBlock/config'
-import { YouTubeVideo } from '../../blocks/YouTubeVideo/config'
-import { generatePreviewPath } from '../../utilities/generatePreviewPath'
-import { populateAuthors } from './hooks/populateAuthors'
-import { revalidateDelete, revalidatePost } from './hooks/revalidatePost'
-import { enforceFrenchLocale } from '@/utilities/hooks/enforceFrenchLocale'
+import { authenticatedOrPublished } from "../../access/authenticatedOrPublished";
+import { isAdminOrEditor } from "../../access/isAdminOrEditor";
+import { Banner } from "../../blocks/Banner/config";
+import { Code } from "../../blocks/Code/config";
+import { Gallery } from "../../blocks/Gallery/config";
+import { MediaBlock } from "../../blocks/MediaBlock/config";
+import { YouTubeVideo } from "../../blocks/YouTubeVideo/config";
+import { generatePreviewPath } from "../../utilities/generatePreviewPath";
+import { populateAuthors } from "./hooks/populateAuthors";
+import { revalidateDelete, revalidatePost } from "./hooks/revalidatePost";
+import { autoPopulateSEO } from "./hooks/autoPopulateSEO";
+import { enforceFrenchLocale } from "@/utilities/hooks/enforceFrenchLocale";
 import {
   MetaDescriptionField,
   MetaImageField,
   MetaTitleField,
   OverviewField,
   PreviewField,
-} from '@payloadcms/plugin-seo/fields'
-import { slugField } from '@/fields/slug'
-import { formatSlug } from '@/fields/slug/formatSlug'
+} from "@payloadcms/plugin-seo/fields";
+import { slugField } from "@/fields/slug";
+import { formatSlug } from "@/fields/slug/formatSlug";
 
-export const Posts: CollectionConfig<'posts'> = {
-  slug: 'posts',
+export const Posts: CollectionConfig<"posts"> = {
+  slug: "posts",
   labels: {
     singular: {
-      fr: 'Article',
-      ar: 'مقال'
+      fr: "Article",
+      ar: "مقال",
     },
     plural: {
-      fr: 'Articles',
-      ar: 'مقالات'
-    }
+      fr: "Articles",
+      ar: "مقالات",
+    },
   },
   access: {
     create: isAdminOrEditor,
@@ -62,157 +68,174 @@ export const Posts: CollectionConfig<'posts'> = {
   },
   admin: {
     group: {
-      fr: 'Contenu',
-      ar: 'المحتوى'
+      fr: "Contenu",
+      ar: "المحتوى",
     },
-    defaultColumns: ['title', 'slug', 'updatedAt'],
-    hidden: ({ user }) => user?.role === 'moderator',
+    defaultColumns: ["title", "slug", "updatedAt"],
+    hidden: ({ user }) => user?.role === "moderator",
     components: {
       edit: {
         beforeDocumentControls: [
-          '@/components/ForceLocaleMessage/index.tsx#ForceLocaleMessage',
+          "@/components/ForceLocaleMessage/index.tsx#ForceLocaleMessage",
         ],
       },
     },
     livePreview: {
       url: ({ data, req, locale }) => {
-        
         // Handle the case where data might be the document object or just a string
-        let frenchTitle = ''
-        let slug = ''
-        
-        if (typeof data === 'object' && data !== null) {
+        let frenchTitle = "";
+        let slug = "";
+
+        if (typeof data === "object" && data !== null) {
           // Normal case - data is the document object
-          if (data.title && typeof data.title === 'object' && 'fr' in data.title) {
-            frenchTitle = String(data.title.fr || '')
-          } else if (typeof data.title === 'string') {
-            frenchTitle = data.title
+          if (
+            data.title &&
+            typeof data.title === "object" &&
+            "fr" in data.title
+          ) {
+            frenchTitle = String(data.title.fr || "");
+          } else if (typeof data.title === "string") {
+            frenchTitle = data.title;
           }
-          
-          slug = typeof data.slug === 'string' ? data.slug : ''
-        } else if (typeof data === 'string') {
+
+          slug = typeof data.slug === "string" ? data.slug : "";
+        } else if (typeof data === "string") {
           // Fallback case - data is just the title string
-          frenchTitle = data
+          frenchTitle = data;
           // We'll need to generate the slug from the title
-          slug = '' // Will be handled below
+          slug = ""; // Will be handled below
         }
 
-
         if (!frenchTitle || !frenchTitle.trim()) {
-          return '' // Return empty string to disable preview for posts without French title
+          return ""; // Return empty string to disable preview for posts without French title
         }
 
         // If we don't have a slug but have a title, generate it
         if (!slug && frenchTitle) {
-          slug = formatSlug(frenchTitle)
+          slug = formatSlug(frenchTitle);
         }
 
         if (!slug) {
-          return '' // Return empty string if no slug is available
+          return ""; // Return empty string if no slug is available
         }
 
         // For live preview, return direct frontend URL (not preview route)
         // This allows the iframe to load the actual content without redirect issues
-        const currentLocale = (locale && typeof locale === 'object' && 'code' in locale) 
-          ? String((locale as { code: string }).code) 
-          : String(locale || 'fr')
-        
-        return `/${currentLocale}/posts/${slug}`
+        const currentLocale =
+          locale && typeof locale === "object" && "code" in locale
+            ? String((locale as { code: string }).code)
+            : String(locale || "fr");
+
+        return `/${currentLocale}/posts/${slug}`;
       },
     },
     preview: (data, { req, locale }) => {
-      
       // Handle the case where data might be the document object or just a string
-      let frenchTitle = ''
-      let slug = ''
-      
-      if (typeof data === 'object' && data !== null) {
+      let frenchTitle = "";
+      let slug = "";
+
+      if (typeof data === "object" && data !== null) {
         // Normal case - data is the document object
-        if (data.title && typeof data.title === 'object' && 'fr' in data.title) {
-          frenchTitle = String(data.title.fr || '')
-        } else if (typeof data.title === 'string') {
-          frenchTitle = data.title
+        if (
+          data.title &&
+          typeof data.title === "object" &&
+          "fr" in data.title
+        ) {
+          frenchTitle = String(data.title.fr || "");
+        } else if (typeof data.title === "string") {
+          frenchTitle = data.title;
         }
-        
-        slug = typeof data.slug === 'string' ? data.slug : ''
-      } else if (typeof data === 'string') {
+
+        slug = typeof data.slug === "string" ? data.slug : "";
+      } else if (typeof data === "string") {
         // Fallback case - data is just the title string
-        frenchTitle = data
+        frenchTitle = data;
         // We'll need to generate the slug from the title
-        slug = '' // Will be handled below
+        slug = ""; // Will be handled below
       }
 
-
       if (!frenchTitle || !frenchTitle.trim()) {
-        return '' // Return empty string to disable preview for posts without French title
+        return ""; // Return empty string to disable preview for posts without French title
       }
 
       // If we don't have a slug but have a title, generate it
       if (!slug && frenchTitle) {
         // Use imported formatSlug function
-        slug = formatSlug(frenchTitle)
+        slug = formatSlug(frenchTitle);
       }
 
       if (!slug) {
-        return '' // Return empty string if no slug is available
+        return ""; // Return empty string if no slug is available
       }
 
       const path = generatePreviewPath({
         slug,
-        collection: 'posts',
-        req, 
-        locale: (locale && typeof locale === 'object' && 'code' in locale) ? String((locale as { code: string }).code) : String(locale || 'fr'),
-      })
+        collection: "posts",
+        req,
+        locale:
+          locale && typeof locale === "object" && "code" in locale
+            ? String((locale as { code: string }).code)
+            : String(locale || "fr"),
+      });
 
-      return path
+      return path;
     },
-    useAsTitle: 'title',
+    useAsTitle: "title",
   },
   fields: [
     {
-      name: 'title',
-      type: 'text',
+      name: "title",
+      type: "text",
       label: {
-        fr: 'Titre',
-        ar: 'العنوان'
+        fr: "Titre",
+        ar: "العنوان",
       },
       required: true,
       localized: true,
       index: true, // Add database index for search queries
     },
     {
-      type: 'tabs',
+      type: "tabs",
       tabs: [
         {
           fields: [
             {
-              name: 'heroImage',
-              type: 'upload',
+              name: "heroImage",
+              type: "upload",
               label: {
-                fr: 'Image principale',
-                ar: 'الصورة الرئيسية'
+                fr: "Image principale",
+                ar: "الصورة الرئيسية",
               },
-              relationTo: 'media',
+              relationTo: "media",
               // Note: filterOptions removed as Media collection access control handles filtering globally
               // This prevents conflicts and ensures consistent behavior with other media fields
             },
             {
-              name: 'content',
-              type: 'richText',
+              name: "content",
+              type: "richText",
               label: {
-                fr: 'Contenu de l\'article',
-                ar: 'محتوى المقال'
+                fr: "Contenu de l'article",
+                ar: "محتوى المقال",
               },
               editor: lexicalEditor({
                 features: ({ rootFeatures }) => {
                   return [
                     ...rootFeatures,
-                    HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    BlocksFeature({ blocks: [Banner, Code, Gallery, MediaBlock, YouTubeVideo] }),
+                    HeadingFeature({
+                      enabledHeadingSizes: ["h1", "h2", "h3", "h4"],
+                    }),
+                    OrderedListFeature(),
+                    UnorderedListFeature(),
+                    ChecklistFeature(),
+                    AlignFeature(),
+                    IndentFeature(),
+                    BlocksFeature({
+                      blocks: [Banner, Code, Gallery, MediaBlock, YouTubeVideo],
+                    }),
                     FixedToolbarFeature(),
                     InlineToolbarFeature(),
                     HorizontalRuleFeature(),
-                  ]
+                  ];
                 },
               }),
               required: true,
@@ -220,83 +243,84 @@ export const Posts: CollectionConfig<'posts'> = {
             },
           ],
           label: {
-            fr: 'Contenu',
-            ar: 'المحتوى'
+            fr: "Contenu",
+            ar: "المحتوى",
           },
         },
         {
           fields: [
             {
-              name: 'relatedPosts',
-              type: 'relationship',
+              name: "relatedPosts",
+              type: "relationship",
               label: {
-                fr: 'Articles liés',
-                ar: 'المقالات ذات الصلة'
+                fr: "Articles liés",
+                ar: "المقالات ذات الصلة",
               },
               filterOptions: ({ id }) => {
                 return {
                   id: {
                     not_in: [id],
                   },
-                }
+                };
               },
               hasMany: true,
-              relationTo: 'posts',
+              relationTo: "posts",
             },
             {
-              name: 'categories',
-              type: 'relationship',
+              name: "categories",
+              type: "relationship",
               label: {
-                fr: 'Catégories',
-                ar: 'الفئات'
+                fr: "Catégories",
+                ar: "الفئات",
               },
               hasMany: true,
-              relationTo: 'categories',
+              relationTo: "categories",
             },
           ],
           label: {
-            fr: 'Métadonnées',
-            ar: 'البيانات الوصفية'
+            fr: "Métadonnées",
+            ar: "البيانات الوصفية",
           },
         },
         {
-          name: 'meta',
+          name: "meta",
           label: {
-            fr: 'SEO',
-            ar: 'تحسين محركات البحث'
+            fr: "SEO",
+            ar: "تحسين محركات البحث",
           },
           fields: [
             OverviewField({
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
-              imagePath: 'meta.image',
+              titlePath: "meta.title",
+              descriptionPath: "meta.description",
+              imagePath: "meta.image",
             }),
             MetaTitleField({
               hasGenerateFn: true,
               overrides: {
                 label: {
-                  fr: 'Titre SEO',
-                  ar: 'عنوان السيو'
-                }
-              }
+                  fr: "Titre SEO",
+                  ar: "عنوان السيو",
+                },
+              },
             }),
             MetaImageField({
-              relationTo: 'media',
+              relationTo: "media",
               overrides: {
                 label: {
-                  fr: 'Image SEO',
-                  ar: 'صورة السيو'
-                }
-              }
+                  fr: "Image SEO",
+                  ar: "صورة السيو",
+                },
+              },
               // Note: filterOptions not supported by MetaImageField
               // Media collection access control handles filtering
             }),
             {
-              type: 'ui',
-              name: 'seoDescriptionGenerator',
+              type: "ui",
+              name: "seoDescriptionGenerator",
               admin: {
                 components: {
-                  Field: '@/components/admin/SEODescriptionGenerator/index.tsx#SEODescriptionGenerator',
+                  Field:
+                    "@/components/admin/SEODescriptionGenerator/index.tsx#SEODescriptionGenerator",
                 },
               },
             },
@@ -304,17 +328,17 @@ export const Posts: CollectionConfig<'posts'> = {
               hasGenerateFn: true,
               overrides: {
                 label: {
-                  fr: 'Description SEO',
-                  ar: 'وصف السيو'
+                  fr: "Description SEO",
+                  ar: "وصف السيو",
                 },
                 // SEO best practice: 150-160 characters for meta descriptions
                 minLength: 120,
                 maxLength: 160,
                 admin: {
                   description: {
-                    fr: 'Ceci devrait contenir entre 120 et 160 caractères. Pour obtenir de l\'aide pour rédiger des descriptions meta de qualité, consultez les bonnes pratiques.',
-                    ar: 'يجب أن تحتوي على 120-160 حرفاً. للحصول على مساعدة في كتابة أوصاف سيو عالية الجودة، راجع أفضل الممارسات.'
-                  }
+                    fr: "Ceci devrait contenir entre 120 et 160 caractères. Pour obtenir de l'aide pour rédiger des descriptions meta de qualité, consultez les bonnes pratiques.",
+                    ar: "يجب أن تحتوي على 120-160 حرفاً. للحصول على مساعدة في كتابة أوصاف سيو عالية الجودة، راجع أفضل الممارسات.",
+                  },
                 },
               },
             }),
@@ -323,57 +347,57 @@ export const Posts: CollectionConfig<'posts'> = {
               hasGenerateFn: true,
 
               // field paths to match the target field for data
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
+              titlePath: "meta.title",
+              descriptionPath: "meta.description",
             }),
           ],
         },
       ],
     },
     {
-      name: 'publishedAt',
-      type: 'date',
+      name: "publishedAt",
+      type: "date",
       label: {
-        fr: 'Date de publication',
-        ar: 'تاريخ النشر'
+        fr: "Date de publication",
+        ar: "تاريخ النشر",
       },
       index: true, // Add database index for faster date-based queries
       admin: {
         date: {
-          pickerAppearance: 'dayAndTime',
+          pickerAppearance: "dayAndTime",
         },
-        position: 'sidebar',
+        position: "sidebar",
       },
       hooks: {
         beforeChange: [
           ({ siblingData, value }) => {
-            if (siblingData._status === 'published' && !value) {
-              return new Date()
+            if (siblingData._status === "published" && !value) {
+              return new Date();
             }
-            return value
+            return value;
           },
         ],
       },
     },
     {
-      name: 'authors',
-      type: 'relationship',
+      name: "authors",
+      type: "relationship",
       label: {
-        fr: 'Auteurs',
-        ar: 'المؤلفون'
+        fr: "Auteurs",
+        ar: "المؤلفون",
       },
       admin: {
-        position: 'sidebar',
+        position: "sidebar",
       },
       hasMany: true,
-      relationTo: 'users',
+      relationTo: "users",
     },
     // This field is only used to populate the user data via the `populateAuthors` hook
     // This is because the `user` collection has access control locked to protect user privacy
     // GraphQL will also not return mutated user data that differs from the underlying schema
     {
-      name: 'populatedAuthors',
-      type: 'array',
+      name: "populatedAuthors",
+      type: "array",
       access: {
         update: () => false,
       },
@@ -383,12 +407,12 @@ export const Posts: CollectionConfig<'posts'> = {
       },
       fields: [
         {
-          name: 'id',
-          type: 'text',
+          name: "id",
+          type: "text",
         },
         {
-          name: 'name',
-          type: 'text',
+          name: "name",
+          type: "text",
         },
       ],
     },
@@ -396,6 +420,7 @@ export const Posts: CollectionConfig<'posts'> = {
   ],
   hooks: {
     beforeOperation: [enforceFrenchLocale],
+    beforeChange: [autoPopulateSEO],
     afterChange: [revalidatePost],
     afterRead: [populateAuthors],
     afterDelete: [revalidateDelete],
@@ -412,8 +437,8 @@ export const Posts: CollectionConfig<'posts'> = {
   // Add compound indexes for common query patterns
   indexes: [
     {
-      fields: ['_status', 'publishedAt'],
+      fields: ["_status", "publishedAt"],
       unique: false,
     },
   ],
-}
+};

@@ -1254,7 +1254,10 @@ export interface GalleryBlock {
  * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
-  media: number | Media;
+  /**
+   * Sélectionner un fichier média
+   */
+  media?: (number | null) | Media;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
