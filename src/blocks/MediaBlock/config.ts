@@ -18,10 +18,23 @@ export const MediaBlock: Block = {
       name: 'media',
       type: 'upload',
       relationTo: 'media',
-      required: true,
+      required: false, // Changed to false to avoid validation issues in lexical editor
       label: {
         fr: 'Média',
         ar: 'الوسائط'
+      },
+      admin: {
+        description: {
+          fr: 'Sélectionner un fichier média',
+          ar: 'حدد ملف الوسائط'
+        }
+      },
+      validate: (value: any) => {
+        // Custom validation to ensure media is selected
+        if (!value) {
+          return 'Media is required'
+        }
+        return true
       }
     },
   ],

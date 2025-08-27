@@ -285,6 +285,23 @@ html[data-theme='light'] {
   color: hsl(var(--foreground));
 }
 
+/* Text alignment support for Lexical editor content */
+.payload-richtext [style*="text-align: left"] {
+  text-align: left !important;
+}
+
+.payload-richtext [style*="text-align: center"] {
+  text-align: center !important;
+}
+
+.payload-richtext [style*="text-align: right"] {
+  text-align: right !important;
+}
+
+.payload-richtext [style*="text-align: justify"] {
+  text-align: justify !important;
+}
+
 /* Ensure prose elements use proper colors with targeted selectors */
 .prose {
   color: hsl(var(--foreground));

@@ -6,6 +6,10 @@ import {
   ParagraphFeature,
   lexicalEditor,
   UnderlineFeature,
+  OrderedListFeature,
+  UnorderedListFeature,
+  AlignFeature,
+  IndentFeature,
   type LinkFields,
 } from '@payloadcms/richtext-lexical'
 
@@ -15,6 +19,10 @@ export const defaultLexical = lexicalEditor({
     UnderlineFeature(),
     BoldFeature(),
     ItalicFeature(),
+    OrderedListFeature(),
+    UnorderedListFeature(),
+    AlignFeature(),
+    IndentFeature(),
     LinkFeature({
       enabledCollections: ['posts'], // 'pages' temporarily removed for fresh start
       fields: ({ defaultFields }) => {
