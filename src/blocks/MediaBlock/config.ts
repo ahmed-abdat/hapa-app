@@ -32,7 +32,7 @@ export const MediaBlock: Block = {
       validate: (value: any) => {
         // Custom validation to ensure media is selected
         if (!value) {
-          return 'Media is required'
+          return 'Le média est requis / الوسائط مطلوبة'
         }
         return true
       }
