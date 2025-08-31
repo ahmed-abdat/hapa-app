@@ -33,14 +33,19 @@ import { Home, FileText, ChevronRight, ChevronLeft } from "lucide-react";
 // Use ISR for better performance with automatic revalidation
 export const revalidate = 300 // 5 minutes - good balance for news content
 
+// Allow dynamic params for on-demand generation of posts not in generateStaticParams
+export const dynamicParams = true // This enables ISR fallback for non-pre-generated posts
+
 export async function generateStaticParams() {
   // Generate static params for most popular posts at build time
   try {
     const payload = await getPayload({ config: configPromise });
     
+    // Increase the number of pre-generated posts for better coverage
+    // This reduces 404s for popular content while keeping build times reasonable
     const posts = await payload.find({
       collection: 'posts',
-      limit: 20, // Generate top 20 posts at build time
+      limit: 100, // Increased from 20 to 100 for better ISR coverage
       sort: '-publishedAt',
       where: {
         _status: { equals: 'published' }
@@ -196,11 +201,26 @@ export async function generateMetadata({
 
 const queryPostBySlug = cache(
   async ({ slug, locale }: { slug: string; locale?: Locale }) => {
+    const startTime = Date.now();
     const { isEnabled: draft } = await draftMode();
 
     const payload = await getPayload({ config: configPromise });
 
     const shouldDisableFallback = locale && locale !== "fr";
+
+    // Log query details in development for debugging
+    if (process.env.NODE_ENV === 'development') {
+      logger.info('Querying post by slug', {
+        component: 'PostPage',
+        action: 'query_post',
+        metadata: { 
+          slug, 
+          locale, 
+          draft,
+          fallbackDisabled: shouldDisableFallback 
+        }
+      });
+    }
 
     const result = await payload.find({
       collection: "posts",
@@ -216,6 +236,22 @@ const queryPostBySlug = cache(
         },
       },
     });
+
+    const queryTime = Date.now() - startTime;
+    
+    // Log slow queries for performance monitoring
+    if (queryTime > 1000) {
+      logger.warn('Slow post query detected', {
+        component: 'PostPage',
+        action: 'slow_query',
+        metadata: { 
+          slug, 
+          locale, 
+          queryTime,
+          found: !!result.docs?.[0]
+        }
+      });
+    }
 
     return result.docs?.[0] || null;
   }
